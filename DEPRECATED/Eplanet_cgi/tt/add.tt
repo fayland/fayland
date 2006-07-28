@@ -1,0 +1,24 @@
+﻿[% INCLUDE post_bar.tt %]
+
+Add a new entry:<p />
+<form action="Eplanet.cgi" method="POST">
+<input type="hidden" name="q" value="add">
+<input type="hidden" name="act" value="do">
+<table>
+<tr><td>Filename</td><td><input type="text" name="file" size="30"></td></tr>
+<tr><td>Category</td><td>
+<select name="cate_id">
+[% FOREACH cate IN cates -%]
+<option value="[% cate.cat_id %]">[% cate.cat_name_ch %]
+[% END -%]
+</select>
+</td></tr>
+<tr><td>Title</td><td><input type="text" name="tilte" size="30"></td></tr>
+<tr><td>Describe</td><td><textarea name="describe" rows="5" cols="70" wrap="virtual"></textarea></td></tr>
+<tr><td>Text</td><td><textarea name="text" rows="30" cols="100" wrap="virtual"></textarea></td></tr>
+<tr><td>Keywords</td><td><input type="text" name="keywords" size="30"></td></tr>
+<tr><td colspan="2"><input type="submit"></td></tr>
+</table>
+</form>
+
+[% INCLUDE footer.tt %]

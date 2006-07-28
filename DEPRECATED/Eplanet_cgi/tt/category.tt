@@ -1,0 +1,12 @@
+﻿<h1>[% TITLE %]</h1><p>
+
+[% INCLUDE category_bar.tt %]
+
+<ul type="square">
+[% FOREACH one IN all -%]
+<li><a href="[% one.cms_file %].html">[% one.cms_title %]</a> < <span class='digit'>[% one.cms_cre_data %]</span> ><br>
+[% one.cms_describe %]
+[% END -%]
+</ul>
+
+[% INCLUDE footer.tt %]

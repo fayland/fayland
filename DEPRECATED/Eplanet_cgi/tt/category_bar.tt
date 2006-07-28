@@ -1,0 +1,30 @@
+<style>
+.high_digit {
+	font-family: georgia;font-style: italic;
+	color:darkred; font-weight:bold
+}
+.right_float {
+	float:right;position:absolute;left:80%;border: 1px solid #cccc33;
+}
+.friendsite_bar {
+	background:#cccc33;color:#3333cc;text-align:center;padding:2px
+}
+.right_float_text {
+	padding:8px;text-align:center
+}
+</style>
+<div class="right_float">
+<div class="friendsite_bar">Catagory</div>
+<div class="right_float_text">
+[% FOREACH cate IN cats -%]
+<a href="[% cate.cat_name %].html">[% cate.cat_name_ch %]</a><br />
+[% END -%]
+</div>
+<div class="friendsite_bar">Friends' Sites</div>
+<div class="right_float_text">
+<a href='http://www.ourparrot.org/'>Bloves' OurParrot</a><br />
+<a href='http://www.easyya.com/'>Qiang's EasyYa</a><br />
+<a href='http://www.perlsoft.org'>y6cmE's PerlSoft</a><br />
+<a href='http://www.livejournal.com/users/joe_jiang/'>joe_jiang's Blog</a>
+</div>
+</div>

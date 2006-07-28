@@ -1,0 +1,21 @@
+﻿<p>
+[% IF PREVT %]<a href="[% PREVT.cms_file %].html"><<上一篇：[% PREVT.cms_title %]</a>[% END %]
+[% IF PREVT and NEXTT %] | <a href='index.html'>Main</a> | [% END %]
+[% IF NEXTT %]<a href="[% NEXTT.cms_file %].html">>>下一篇：[% NEXTT.cms_title %]</a>[% END %]
+<br>
+<h1>[% TOPIC.cms_title %]</h1>
+<div class='content'>
+[% TOPIC.cms_text %]
+</div>
+<p>
+[% IF PREVT %]<a href="[% PREVT.cms_file %].html"><<上一篇：[% PREVT.cms_title %]</a>[% END %]
+[% IF PREVT and NEXTT %] | <a href='index.html'>Main</a> | [% END %]
+[% IF NEXTT %]<a href="[% NEXTT.cms_file %].html">>>下一篇：[% NEXTT.cms_title %]</a>[% END %]
+</p>
+
+<p>Created on <span class="digit">[% TOPIC.cms_cre_data %]</span>
+[%- IF TOPIC.cms_mod_data -%]
+, Last modified on <span class="digit">[% TOPIC.cms_mod_data %]</span>
+[%- END -%]
+
+[% INCLUDE footer.tt %]

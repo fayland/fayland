@@ -1,0 +1,6 @@
+<br />Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a>.
+[% IF build %]
+<p>
+[% END %]
+</body>
+</html>

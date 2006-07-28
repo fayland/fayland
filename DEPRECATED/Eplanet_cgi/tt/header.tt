@@ -1,0 +1,20 @@
+﻿[% IF TOPIC.cms_title %]
+[% TITLE = TOPIC.cms_title %]
+[% END %]
+[% UNLESS TITLE %]
+[% TITLE = 'Fayland' %]
+[% END %]
+[% UNLESS build %]
+[% DIR = 'http://localhost/cms/' %]
+[% END %]
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="[% DIR %]style.css" type="text/css" />
+<title>[% TITLE %]</title>
+</head>
+<body>
+<a href="index.html">IndexPage</a> | <a href="Archive.html">Archive</a> | <a href="http://www.1313s.com/guestbook.html">GuestBook</a> | <a href="AboutFayland.html">Who's Fayland?</a> | <a href="ReferSite.html">PerlSite</a> | <a href="http://www.fayland.org/">HomePage</a>

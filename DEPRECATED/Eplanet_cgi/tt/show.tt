@@ -1,0 +1,23 @@
+﻿<style>
+.new {
+	color:green; font-weight:bold
+}
+.update {
+	color:#DAA520; font-weight:bold
+}
+</style>
+
+<p>
+<span class="new">New</span> Posted within 4 days, <span class="update">Update</span> Modified within 2 days. Document Data: <span class="digit">[% LASTMODDATA %]</span> <a href='../recent.rdf'><img src='../images/rss.png' /></a><br>
+We Have <span class="high_digit">[% total %]</span> articles, [% page %]
+</p>
+
+[% INCLUDE category_bar.tt %]
+
+<ul type="square">
+[% FOREACH list IN LIST -%]
+[% list %]<br />
+[% END -%]
+</ul>
+[% page %]<br>
+[% INCLUDE footer.tt %]

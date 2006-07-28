@@ -1,0 +1,7 @@
+﻿<div style="float:right">
+<ul>特殊说明：
+<li>Text文本框所写的&lt;code>&lt;/code>之间 < 将发生转义。<br>
+简单的讲就是HTML代码将以原来面目出现
+<li>[[(http|ftp)://]] L<Module> 自动转换成超链接
+</ul>
+</div>

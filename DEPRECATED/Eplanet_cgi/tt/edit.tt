@@ -1,0 +1,29 @@
+﻿[% INCLUDE post_bar.tt %]
+
+<br>Edit an entry:<p />
+<form action="Eplanet.cgi" method="POST">
+<input type="hidden" name="q" value="edit">
+<input type="hidden" name="act" value="do">
+<input type="hidden" name="id" value="[% ID %]">
+<table>
+<tr><td>Category</td><td>
+<select name="cate_id">
+[% FOREACH cate IN cates -%]
+[% IF cate.cat_id == CATID %]
+<option value="[% cate.cat_id %]" selected>[% cate.cat_name %]
+[% ELSE %]
+<option value="[% cate.cat_id %]">[% cate.cat_name %]
+[% END %]
+[% END -%]
+</select>
+</td></tr>
+<tr><td>FileName</td><td>[% FILENAME %].html</td></tr>
+<tr><td>Title</td><td><input type="text" name="tilte" size="30" value="[% TITLE %]"></td></tr>
+<tr><td>Describe</td><td><textarea name="describe" rows="5" cols="70" wrap="virtual">[% DESCRIBE %]</textarea></td></tr>
+<tr><td>Text</td><td><textarea name="text" rows="30" cols="100" wrap="virtual">[% TEXT %]</textarea></td></tr>
+<tr><td>Keywords</td><td><input type="text" name="keywords" size="30" value="[% KEYWORDS %]"></td></tr>
+<tr><td colspan="2"><input type="submit"></td></tr>
+</table>
+</form>
+
+[% INCLUDE footer.tt %]

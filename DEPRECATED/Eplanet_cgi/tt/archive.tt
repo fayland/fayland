@@ -1,0 +1,28 @@
+﻿<p>
+<style>
+.block {
+	padding:6px;
+}
+</style>
+Guide Here: 
+[% FOREACH cate_gory IN category -%]
+<a href='#[% cate_gory.cat_name %]'>[% cate_gory.cat_name_ch %]</a> 
+[% END %]
+
+[% FOREACH cat IN cats -%]
+[% FOREACH cate_gory IN category -%]
+[% IF cate_gory.cat_id == cat.cms_cat_id %]
+[% now_cat = cate_gory.cat_name %]
+[% END %]
+[% END %]
+[% UNLESS now_cat == last_cat %]
+<h1><a name='[% now_cat %]'>[% now_cat %]</a></h1>
+[% END %]
+<div class='block'>
+<a href="[% cat.cms_file %].html">[% cat.cms_title %]</a> < <span class='digit'>[% cat.cms_cre_data %]</span> ><br>
+[% cat.cms_describe %]
+</div>
+[% last_cat = now_cat %]
+[% END %]
+
+[% INCLUDE footer.tt %]
