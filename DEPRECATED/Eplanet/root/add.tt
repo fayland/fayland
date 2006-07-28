@@ -1,0 +1,40 @@
+﻿<p>Add a new entry:</p>
+<script language=JavaScript src='[% DIR %]../javascript/AutoSave.js'></script>
+<form id='addform' action="[% base %]add/submit" method="POST" onSubmit="DeleteCookie('AutoSaveContent')">
+<table>
+<tr><td>Subdir</td><td><input type="text" name="cms_subdir" size="30"> Default: journal</td></tr>
+<tr><td>Filename</td><td><input type="text" name="cms_file" size="30"></td></tr>
+<tr><td>Category</td><td>
+<select name="cms_cat_id">
+[% FOREACH cate IN cates -%]
+<option value="[% cate.cat_id %]">[% cate.cat_name %]
+[% END -%]
+</select>
+</td></tr>
+<tr><td>Title</td><td><input type="text" name="cms_title" size="30"></td></tr>
+<tr><td>Describe</td><td><textarea name="cms_describe" rows="5" cols="70" wrap="virtual"></textarea></td></tr>
+<tr><td>Text</td><td><textarea name="cms_text" rows="20" cols="107" wrap="virtual"  onkeyup="AutoSave(this);" onselect="AutoSave(this);" onclick="AutoSave(this);"></textarea></td></tr>
+<tr><td>Keywords</td><td><input type="text" name="cms_keywords" size="30"></td></tr>
+<tr><td>Formatter</td><td>
+<input type="radio" name="cms_formatter" value="land" checked> Land 
+<input type="radio" name="cms_formatter" value="fayland"> Fayland(Abandoned) 
+<input type="radio" name="cms_formatter" value="textile"> Textile
+<input type="radio" name="cms_formatter" value="kwiki"> Kwiki
+<input type="radio" name="cms_formatter" value=""> N/A 
+</td></tr>
+<tr><td colspan="2"><input type="submit"><input type='button' onclick="KickYourAss(this.form)" value='Preview Me'></td></tr>
+<script>
+function KickYourAss(form) {
+	for (var i=0;i<form.elements.length;i++) {
+		var e = form.elements[i];
+		if (e.checked == true) {
+			PreviewMe(form.cms_text.value, e.value, '');
+		}
+	}	
+}
+var watcher = new FormSubmitWatcher('addform');
+</script>	
+</table>
+</form>
+
+[% INCLUDE addin/Ajax.tt %]

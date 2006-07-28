@@ -1,0 +1,48 @@
+---
+name: Eplanet
+version: 0.03
+author: ~
+abstract: ~
+license: perl
+requires:
+  Catalyst: 5.10
+provides:
+  Eplanet:
+    file: lib/Eplanet.pm
+    version: 0.03
+  Eplanet::C::Add:
+    file: lib/Eplanet/C/Add.pm
+  Eplanet::C::BuildAll:
+    file: lib/Eplanet/C/BuildAll.pm
+  Eplanet::C::Del:
+    file: lib/Eplanet/C/Del.pm
+  Eplanet::C::Edit:
+    file: lib/Eplanet/C/Edit.pm
+  Eplanet::C::List:
+    file: lib/Eplanet/C/List.pm
+  Eplanet::C::ListCat:
+    file: lib/Eplanet/C/ListCat.pm
+  Eplanet::C::Preview:
+    file: lib/Eplanet/C/Preview.pm
+  Eplanet::C::RSSUpdate:
+    file: lib/Eplanet/C/RSSUpdate.pm
+  Eplanet::C::Search:
+    file: lib/Eplanet/C/Search.pm
+  Eplanet::C::Top:
+    file: lib/Eplanet/C/Top.pm
+  Eplanet::C::View:
+    file: lib/Eplanet/C/View.pm
+  Eplanet::M::CDBI:
+    file: lib/Eplanet/M/CDBI.pm
+  Eplanet::V::TT:
+    file: lib/Eplanet/V/TT.pm
+  Text::Formatter::Fayland:
+    file: lib/Text/Formatter/Fayland.pm
+    version: 0.01
+  Text::KwikiFormatter:
+    file: lib/Text/KwikiFormatter.pm
+    version: 0.01
+  XML::Atom::SimpleFeed:
+    file: lib/XML/Atom/SimpleFeed.pm
+    version: 0.5
+generated_by: Module::Build version 0.2611

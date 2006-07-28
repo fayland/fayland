@@ -1,0 +1,30 @@
+﻿[% IF topic.cms_title %]
+[% TITLE = topic.cms_title %]
+[% END %]
+[% UNLESS TITLE %]
+[% TITLE = "Fayland's" %]
+[% END %]
+[% UNLESS build %]
+[% DIR = 'http://localhost/org/journal/' %]
+[% END %]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="[% DIR %]../style/journal.css" type="text/css" />
+[% IF build %]
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script>
+[% ELSE %]
+<script src="http://localhost/org/javascript/prototype.js" type="text/javascript"></script>
+<script src="http://localhost/org/javascript/FormSubmit.js" type="text/javascript"></script>
+[% END %]
+<title>[% TITLE %]</title>
+</head>
+<body>
+<a href="index.html">Doodle</a>(2006) | <a href="../journal/">Journal</a>(2005) | <a href="../journal/AboutFayland.html">WhoAmI</a> | <a href="../journal/LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>

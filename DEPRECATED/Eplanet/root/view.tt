@@ -1,0 +1,41 @@
+[% show_guidebar = BLOCK %]
+<p>
+[% IF prev_topic %]<&lt;Previous: <a href="[% prev_topic.cms_file %].html">[% prev_topic.cms_title %]</a>[% END %]
+[% IF prev_topic and next_topic %]&nbsp;&nbsp;[% END %]
+[% IF next_topic %]>>Next: <a href="[% next_topic.cms_file %].html">[% next_topic.cms_title %]</a>[% END %]
+</p>
+[% END %]
+
+[% show_guidebar %]
+
+<h1>[% topic.cms_title %]</h1>
+<div class='content'>
+<p>Category: <a href='[% category.cat_name %].html'>[% category.cat_name %]</a> &nbsp; Keywords: <b>[% topic.cms_keywords %]</b></p>
+[% cms_text %]
+</div>
+
+[% show_guidebar %]
+
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=[% topic.cms_title | uri %]&url=http://www.fayland.org/doodle/[% topic.cms_file | uri %].html'>+Del.icio.us</a></p>
+
+[% IF related_items %]
+<strong>Related items</strong>
+<ul>
+[% FOREACH item IN related_items %]
+[% UNLESS item.cms_file == topic.cms_file %]
+<li><a href='[% item.cms_file %].html'>[% item.cms_title %]</a> < <span class='digit'>[% item.cms_cre_data %]</span> ></li>
+[% END %]
+[% END %]
+</ul>
+[% END %]
+
+Created on <span class="digit">[% topic.cms_cre_data %]</span>
+[%- IF topic.cms_mod_data -%]
+, Last modified on <span class="digit">[% topic.cms_mod_data %]</span>
+[%- END -%]<br />
+
+[% INCLUDE footer.tt %]
+
+[% UNLESS build %]
+<p class='op'><a href='[% base %]list'>Back 2 IndexPage</a> | <a href='[% base _ 'view/' _ topic.cms_id %]/build'>Build it!</a> | <a href='[% base _ 'edit/' _ topic.cms_id %]'>Edit</a> | <a href='[% base %]del/[% topic.cms_id %]'>Del</a></p>
+[% END %]

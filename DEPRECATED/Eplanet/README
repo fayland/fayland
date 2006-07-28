@@ -1,0 +1,5 @@
+Database:
+    1. mysqladmin -uroot -p create Eplanet
+    2. mysql < Eplanet.sql;
+
+Run script/eplanet_server.pl to test the application.

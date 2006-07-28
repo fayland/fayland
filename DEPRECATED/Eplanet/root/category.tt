@@ -1,0 +1,25 @@
+<h2>[% cat.cat_name %]</h2>
+
+[% PROCESS addin/category_bar.tt %]
+
+<ul type="square">
+[% FOREACH list IN lists -%]
+<li><a href='
+[% IF build %]
+[% list.cms_file %].html
+[% ELSE %][% base %]view/[% list.cms_id %]
+[% END %]
+'>[% list.cms_title %]</a> < <span class='digit'>[% list.cms_cre_data %]</span> ><br>
+[% list.cms_describe %]<br />
+[% END -%]
+</ul>
+
+[% IF more %]
+<pre style='width: 50%'>Want to read more, find more doodles at <a href='../journal/[% cat.cat_name %].html'>here</a></pre>
+[% END %]
+
+[% INCLUDE footer.tt %]
+
+[% UNLESS build %]
+<p class='op'><a href='[% base _ 'category/' _ cat.cat_id %]/build'>Build This Page</a> | <a href='[% base %]list'>Back 2 IndexPage</a></p>
+[% END %]

@@ -1,0 +1,58 @@
+<link rel="alternate" type="application/rss+xml" title="Fayland's Blog" href="http://feeds.feedburner.com/fayland" />
+<style type="text/css">
+.new {
+	color:green; font-weight:bold
+}
+.update {
+	color:#DAA520; font-weight:bold
+}
+.high_digit {
+	font-family: georgia;font-style: italic;
+	color:darkred; font-weight:bold
+}
+</style>
+
+<p><span class="new">New</span> Posted within 4 days, <span class="update">Update</span> Modified within 2 days. Document Date: <span class="digit">[% date_now %]</span><br>
+We Have <span class="high_digit">[% total + 219 %]</span> articles, [% page_list %]</p>
+
+[% PROCESS addin/category_bar.tt %]
+
+<ul type="square">
+[% FOREACH list IN lists -%]
+<li><a href='
+[% IF build %]
+[% list.cms_file %].html
+[% ELSE %][% base %]view/[% list.cms_id %]
+[% END %]
+'>[% list.cms_title %]</a>
+[% PERL %]
+if ($stash->{'date_now'} - '4D' < $stash->{list}->{'cms_cre_data'}) {
+		print qq~ <span class="new">New</span>~;
+} else {
+		print qq~ <span class="update">Update</span>~ if ($stash->{'date_now'} - '2D' < $stash->{list}->{'cms_mod_data'});
+}
+[% END %]
+ < <span class='digit'>[% list.cms_cre_data %]</span> > <br>
+[% list.cms_describe %]<br />
+[% UNLESS build %]
+<span class='op'>(<a href='[% base %]view/[% list.cms_id %]/build'>Build</a>)(<a href='[% base %]edit/[% list.cms_id %]'>Edit</a>)(<a href='[% base %]del/[% list.cms_id %]'>Del</a>)(<a href='[% base %]top/[% list.cms_id %]'>ToP</a>)</span>
+[% END %]
+[% END -%]
+</ul>
+[% page_list %]<br />
+[% INCLUDE footer.tt %]
+
+[% UNLESS build %]
+<br><div class='op'><a href='[% base %]add'>Add a new Entry</a> | <a href='[% base _ 'list/' _ inpage %]/build'>Build This Page</a>(<a href='[% base _ 'build_indexs/list/' _ lastpage %]'>ALL</a>) | <a href='[% base %]rss'>RSS Update</a> | <a href='[% base %]build_alltopics/'> build ALLtopics</a><br>
+Category:
+[% FOREACH cat IN cats -%]
+ - <a href="[% base %]category/[% cat.cat_id %]">[% cat.cat_name %]</a>
+[% END -%]
+(<a href='[% base _ 'build_indexs/category/' _ lastcat %]'>ALL</a>)<br>
+<form action='[% base %]search' method='post'>Search: <select name='type'>
+<option value='title'>Title</option>
+<option value='Content'>Content</option>
+</select>
+<input type='text' name='key' size='30'><input type='submit'></form>
+</div>
+[% END %]

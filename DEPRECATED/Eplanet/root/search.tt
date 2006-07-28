@@ -1,0 +1,9 @@
+﻿<ul type="square">
+[% FOREACH list IN lists -%]
+<li><a href='[% base %]view/[% list.cms_id %]'>[% list.cms_title %]</a>
+<br>
+[% list.cms_describe %]<br />
+<span class='op'>(<a href='[% base %]view/[% list.cms_id %]/build'>Build</a>)(<a href='[% base %]edit/[% list.cms_id %]'>Edit</a>)(<a href='[% base %]del/[% list.cms_id %]'>Del</a>)(<a href='[% base %]top/[% list.cms_id %]'>ToP</a>)</span>
+[% END -%]
+</ul>
+<p><a href='[% base %]list'>Back 2 IndexPage</a></p>

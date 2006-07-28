@@ -1,0 +1,75 @@
+[% USE ListUtil %]
+
+[% color_set = [ 'cccc33', '81c700', 'EEC6AC', 'D4ACEE', 'ACC6EE', 'ACDBEE', 'EDEEAC', 'D2DCC9' ] %]
+[% border_color = ListUtil.random(color_set) %]
+
+<style type="text/css">
+.right_float {
+	float:right;position:absolute;left:80%;border: 1px solid #[% border_color %];
+}
+.friendsite_bar {
+	background:#[% border_color %];text-align:center;padding:2px
+}
+.right_float_text {
+	padding:4px;text-align:center
+}
+.quotes {
+	white-space: -moz-pre-wrap;  /* Mozilla, supported since 1999 */
+	white-space: -pre-wrap;      /* Opera 4 - 6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	white-space: pre-wrap;       /* CSS3 - Text module (Candidate Recommendation)
+                                 http://www.w3.org/TR/css3-text/#white-space */
+	word-wrap: break-word;       /* IE 5.5+ */
+}
+</style>
+
+[% quote_words = [ 
+ "Call me bored, but don't call me boring. -- Larry Wall",
+ "I don't know if it's what you want, but it's what you get.  :-)
+             -- Larry Wall in <10502@jpl-devvax.JPL.NASA.GOV>",
+ "I think it's a new feature.  Don't tell anyone it was an accident.  :-)
+         -- Larry Wall on s/foo/bar/eieio in <10911@jpl-devvax.JPL.NASA.GOV>",
+ "Obviously I was either onto something, or on something. -- Larry Wall",
+ "The following two statements are usually both true:
+  There's not enough documentation.
+  There's too much documentation. -- Larry Wall",
+ "If someone stinks, view it as a reason to help them, not a reason to avoid them. -- Larry Wall",
+ "In general, if you think something isn't in Perl, try it out, because it usually is. :-)
+    --Larry Wall in <1991Jul31.174523.9447@netlabs.com>",
+ "The computer should be doing the hard work. That's what it's paid to do, after all. -- Larry Wall",
+ "I write C because I have to. I write perl because I like to. –- Sullivan Beck",
+ "[Perl] allows me to craft the precise compromise I want between code size, maintainability, efficiency, and complexity.
+   -- Damain Conway",
+ "Programs must be written for people to read, and only incidentally for machines to execute.
+            --Abelson and Sussman",
+ "We all agree on the necessity of compromise. We just can't agree on when it's necessary to compromise.
+            -- Larry Wall",
+] %]
+
+<div class='quotes'>[% ListUtil.random(quote_words) %]</div>
+<div class="right_float">
+<div class="friendsite_bar">Catagory</div>
+<div class="right_float_text">
+[% FOREACH cate IN cats -%]
+<a href="[% cate.cat_name %].html">[% cate.cat_name %]</a><br />
+[% END -%]
+</div>
+<div class="friendsite_bar">RSS stuff</div>
+<div class="right_float_text">
+[% IF build %]
+<a href="http://feeds.feedburner.com/fayland" title="Subscribe to my feed, Fayland&#039;s Perl stuff" rel="alternate" type="application/rss+xml"><img src="http://www.feedburner.com/fb/images/pub/flchklt.gif" alt="" style="border: 0;padding: 2px"/></a><br />
+<a href="http://www.bloglines.com/sub/http://feeds.feedburner.com/fayland">
+<img src="http://www.bloglines.com/images/sub_modern1.gif" style="border: 0;padding: 2px;" alt="Subscribe with Bloglines" />
+</a>
+[% END %]
+</div>
+<div class="friendsite_bar">Friends' Sites</div>
+<div class="right_float_text">
+<a href='http://www.easyya.com/'>Qiang</a><br />
+<a href='http://www.perlsoft.org/'>y6cmE</a><br />
+<a href='http://www.livejournal.com/users/joe_jiang/'>joe jiang</a><br />
+<a href='http://www.wanghui.org/'>cnhackTNT</a><br />
+<a href='http://blog.chunzi.org/'>chunzi</a><br />
+<a href='http://www.chedong.com/'>CheDong</a><br />
+</div>
+</div>

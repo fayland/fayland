@@ -1,0 +1,36 @@
+﻿<p>Edit an entry:</p>
+<script language=JavaScript src='[% DIR %]../javascript/AutoSave.js'></script>
+<form id='editform' action="[% base %]edit/[% topic.cms_id %]/submit" method="POST" onSubmit="DeleteCookie('AutoSaveContent')">
+<table>
+<tr><td>topicgory</td><td>
+<select name="cms_cat_id">
+[% FOREACH cate IN cates -%]
+[% IF cate.cat_id == topic.cms_cat_id %]
+<option value="[% cate.cat_id %]" selected>[% cate.cat_name %]
+[% ELSE %]
+<option value="[% cate.cat_id %]">[% cate.cat_name %]
+[% END %]
+[% END -%]
+</select>
+</td></tr>
+[% PERL %]
+$stash->{'topic'}->{'cms_describe'} =~ s{\<\/textarea\>}{\&lt\;\/textarea\>}isg;
+[% END %]
+<tr><td>Subdir</td><td><input type="text" name="cms_subdir" size="30" value="[% topic.cms_subdir %]"> Default: journal</td></tr>
+<tr><td>FileName</td><td><input type="text" name="cms_file" size="30" value="[% topic.cms_file %]">.html</td></tr>
+<tr><td>Title</td><td><input type="text" name="cms_title" size="30" value="[% topic.cms_title %]"></td></tr>
+<tr><td>Describe</td><td><textarea name="cms_describe" rows="5" cols="70" wrap="virtual"  onkeyup="AutoSave(this);" onselect="AutoSave(this);" onclick="AutoSave(this);">[% topic.cms_describe %]</textarea></td></tr>
+<tr><td>Text</td><td><textarea name="cms_text" rows="20" cols="107" wrap="virtual">[% cms_text %]</textarea></td></tr>
+<tr><td>Keywords</td><td><input type="text" name="cms_keywords" size="30" value="[% topic.cms_keywords %]"></td></tr>
+<tr><td>Formatter</td><td>
+<input type="text" name="cms_formatter" value="[% topic.cms_formatter %]">
+</td></tr>
+<tr><td colspan="2"><input type="submit"><input type='button' onclick="PreviewMe(this.form.cms_text.value, this.form.cms_formatter.value, '');" value='Preview Me'></td></tr>
+</table>
+</form>
+
+<script>
+var watcher = new FormSubmitWatcher('editform');
+</script>
+
+[% INCLUDE addin/Ajax.tt %]

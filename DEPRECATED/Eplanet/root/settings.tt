@@ -1,0 +1,18 @@
+﻿<p>Welcome to the setting center:</p>
+
+<form action="[% base %]settings/save" method="POST">
+<table>
+<tr><td>Build Root</td><td>
+<input type="text" name="build_root" size="30" value="[% config.build_root %]">
+</td></tr>
+<tr><td>GoogleGroup Account</td><td>
+<input type="text" name="gg_account" size="30" value="[% config.gg_account %]">
+</td></tr>
+<tr><td>GoogleGroup Password</td><td>
+<input type="text" name="gg_pwd" size="30" value="[% config.gg_pwd %]">
+</td></tr>
+<tr><td colspan="2"><br><input type="submit"></td></tr>
+</table>
+</form>
+
+[% INCLUDE footer.tt %]
