@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>纲要十：包</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="IDCardValidate.html">中国身份证验证模块</a>&nbsp;&nbsp;>>Next: <a href="050312.html">给 eclipse 安装 EPIC plug-in</a></p>
+<h1>纲要十：包</h1>
+<div class='content'>
+<p>Category: <a href='Translation.html'>Translation</a> &nbsp; Keywords: <b>Synopsis</b></p>English version: <a href='http://dev.perl.org/perl6/synopsis/S10.html'>http://dev.perl.org/perl6/synopsis/S10.html</a><br><p>
+<!-- INDEX BEGIN -->
+<ul>
+	<li><a href="#title">TITLE</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#version">VERSION</a></li>
+	<li><a href="#overview">Overview / 概述</a></li>
+	<li><a href="#packages">Packages / 包</a></li>
+	<li><a href="#autoloading">Autoloading / 自动加载</a></li>
+</ul>
+<!-- INDEX END -->
+
+<h2><a name="title">TITLE</a></h2>
+<p>Synopsis 10: Packages</p>
+<p>纲要 十：包</p>
+
+<h2><a name="author">AUTHOR</a></h2>
+<p>Larry Wall <<a href="mailto:larry@wall.org">larry@wall.org</a>></p>
+
+<h2><a name="version">VERSION</a></h2>
+<pre>
+  Maintainer: Larry Wall <larry@wall.org>
+  Date: 27 Oct 2004
+  Last Modified: 20 Nov 2004
+  Number: 10
+  Version: 2</pre>
+
+<h2><a name="overview">Overview / 概述</a></h2>
+<p>This synopsis summarizes Apocalypse 10, which discusses packages
+despite never having been written.</p>
+<p>本纲要为启示录十的摘要，那份启示录讨论了从没写过的包。</p>
+
+<h2><a name="packages">Packages / 包</a></h2>
+<p>As in Perl 5, packages are the basis of modules and classes.  Unlike in
+Perl 5, modules and classes are declared with separate keywords,
+but they're still just packages with extra behaviors.</p>
+<p>与 Perl 5 中一样，包仍然是模块与类的基础。所不同的是，模块与类是用不同的
+关键字声明。不过它们仍然只是带着额外操作的包。</p>
+<p>An ordinary package is declared with the <code>package</code> keyword.  There are
+two basic declaration syntaxes:</p>
+<p>包一般是用关键字 <code>package</code> 来声明。这里有两种基本的声明语法：</p>
+<pre>
+    package Foo;        # rest of scope is in package Foo
+                  # 下面的作用域都在包 Foo 内
+    ...</pre>
+<pre>
+    package Bar {...} # block is in package Bar
+                      # 块在包 Bar 内</pre>
+<p>The first form, if it occurs as the first thing in a file, is taken to
+mean that the rest of the file is Perl 5 code.  In any other place it just
+indicates a Perl 6 package (but maybe you should use a module instead).</p>
+<p>第一种形式，如果它是一个文件的第一行，那就意味着整个文件都是 Perl 5 代码。
+而在其他地方的话，那它只是说明这是个 Perl 6 包（但是或许你应该使用 module 来代替。</p>
+<p>Since there are no barewords in Perl 6, package names must be predeclared,
+or use the sigil-like <code>::PackageName</code> syntax.  The <code>::</code> prefix does not
+imply top-levelness as it does in Perl 5.  (Use <code>::*</code> for that.)</p>
+<p>因为 Perl 6 中将不允许出现 裸字/bareword, 所以包名必须得预先声明，否则你就得使用
+类似 <code>::PackageName</code> 这样的标记语法。与 Perl 5 不同，前缀 <code>::</code> 不再意味着这是
+最高阶。（我们使用 <code>::*</code> 来代替。）</p>
+<p>A bare <code>package</code> declarator declares a global package name in <code>::*</code>.
+To declare a package in the current package (or module, or class), use
+<code>our package</code>.  To declare a lexically scoped package, use <code>my package</code>.
+Package names are always searched for from innermost scopes to outermost.
+As with an initial <code>::</code>, the presence of a <code>::</code> within the name
+does not imply globalness (unlike in Perl 5).</p>
+<p>一个单独的 <code>package</code> 声明符是在 <code>::*</code> 中声明一个全局包名。如果想在当前包（或模块
+或类）中声明一个包，请使用 <code>our package</code>. 如果想要声明一个词法作用域包，请使用
+ <code>my package</code>. 包名总是总最近的作用域搜索到最外层作用域。以 <code>::</code> 开头的名字并不
+意味着这是全局的（这点与 Perl 5 不同）。</p>
+<p>The <code>::*</code> namespace is not ``main''.  The default namespace for the main
+program is <code>::*Main</code>.</p>
+<p><code>::*</code> 命名空间不是 ``main''. 默认给主程序的命名空间为 <code>::*Main</code>.</p>
+<p>Package traits are set using <code>is</code>:</p>
+<p>包的 traits 是用 <code>is</code> 来设定的：</p>
+<pre>
+    package Foo is bar {...}</pre>
+<p>All symbolic links are done with the <code>::($expr)</code> syntax, which is
+legal in any variable, package, module, or class name anywhere a
+<code>::Ident</code> is legal.  The string returned by the expression will be
+parsed for <code>::</code> indicating subpackage names.  Do not confuse this
+with the</p>
+<p>所有的符号连接都是通过 C:<::($expr)> 语法来操作。只要是 <code>::Ident</code> 合法的地方，
+$expr 可以是变量，包，模块或类名。表达式返回的字符串默认在 <code>::</code> 包内。
+请不要与</p>
+<pre>
+    %Foo::{$key}</pre>
+<p>syntax that lets you do a lookup in a particular symbol table.  In this case,
+the key is not parsed for <code>::</code>.</p>
+<p>语法混淆，此语法会让你在一个特殊的符号表中做一查找。这种情况下， key 不是在
+包 <code>::</code> 内。</p>
+
+<h2><a name="autoloading">Autoloading / 自动加载</a></h2>
+<p>The package is the namespace that controls autoloading.  There is still
+an <code>AUTOLOAD</code> hook that behaves as in Perl 5.  However, that is being
+replaced by various autoload hooks that distinguish declaration from
+definition, and various types from one another.  In particular:</p>
+<p>包是用命名空间来控制自动加载的。你仍然可以像在 Perl 5 中一样使用 <code>AUTOLOAD</code> 
+hook. 但是在 Perl 6 中它被不同的自动加载 hooks 所替代。这些 hooks 通过定义
+和各自不同的类型来区分声明。特别的：</p>
+<pre>
+    AUTOSCALAR
+    AUTOARRAY
+    AUTOHASH
+    AUTOSUB
+    AUTOMETH</pre>
+<p>stand in for the declaration of objects; they are called when anyone
+is searching for a name in the package (or module, or class), and the
+name doesn't already exist in the package.  (In particular, <code>.can</code>
+calls <code>AUTOMETH</code> when trying to determine if a class supports a
+particular method.)  The routines are expected to return a reference to
+an object of the proper sort (i.e. a variable, subroutine, or method
+reference), or undef if that name is not to be considered declared.
+That object need not be defined yet, though the routine is allowed
+to define it, and even install it into the symbol table if it likes.</p>
+<p>代表对象的声明。当有人搜索包（或模块，或类）中一个不存在的名时，将调用它们。
+（特别的，当查看一个类是否支持一个特定方法时，<code>.can</code> 将调用 <code>AUTOMETH</code>.）
+程序期待着返回一个特定类型的对象引用（如变量，子程序或方法的引用），或者如果
+名字没有被声明则返回 undef. 只要程序允许定义对象，对象不需要被事先定义，
+甚至只要你喜欢，将它加入符号表就可以了。</p>
+<p>When someone tries to actually call or access an undefined object
+(which may have come from one of the routines above, or might have
+just been declared with a body of <code>{...}</code>), a different set of hooks
+is used to define actual behavior at the last moment:</p>
+<p>当某人试图调用或获取一个未定义的对象（这可能来自上面的程序，或者只是在主体中
+声明了 <code>(...)</code> ），一些不同的 hooks 会在在最后时刻被用以定义真实的操作：</p>
+<pre>
+    AUTOSCALARDEF
+    AUTOARRAYDEF
+    AUTOHASHDEF
+    AUTOSUBDEF
+    AUTOMETHDEF</pre>
+<p>These routines are expected to define the object, but not to call
+it, since the call is already ``scheduled'' from somewhere else.
+(The <code>goto &$AUTOLOAD</code> is implicit, in other words.  But you can
+hijack the call via the <code>call</code> builtin, in which case the autoloader
+behaves just like a wrapper--see A6.)</p>
+<p>这些程序是被用来定义对象的，而不是调用它，因为调用已经在其他地方被“预定”了。
+（换句话说，隐含调用了 <code>go &$AUTOLOAD</code> 。但是你可以通过内置的 <code>call</code> 来抢先调用，
+这种情况下自动加载就类似于 wrapper —— 请参考 A6 。）</p>
+<p>In any case, there is no longer any magical <code>$AUTOLOAD</code> variable.
+The name being declared or defined can be found in <code>$_</code>
+instead.  The name does not include the package name.  You can always
+get your own package name with <code>$?PACKAGENAME</code>.</p>
+<p>无论如何，你都不能使用 <code>$AUTOLOAD</code> 变量了。这个变量的定义和声明都将被 <code>$_</code> 替换。
+这个变量不包含包名。你可以使用 <code>$?PACKAGENAME</code> 来获得你的包名。</p></div>
+<p><&lt;Previous: <a href="IDCardValidate.html">中国身份证验证模块</a>&nbsp;&nbsp;>>Next: <a href="050312.html">给 eclipse 安装 EPIC plug-in</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E7%BA%B2%E8%A6%81%E5%8D%81%EF%BC%9A%E5%8C%85&url=http://www.fayland.org/journal/Synopsis10.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='050307.html'>The project of Synopsis localization</a> < <span class='digit'>2005-03-07 22:55:26</span> ></li><li><a href='Synopsis1.html'>Synopsis 1 / 纲要一</a> < <span class='digit'>2005-03-08 00:11:40</span> ></li><li><a href='Synopsis13.html'>Synopsis 13: 重载</a> < <span class='digit'>2005-03-09 20:53:09</span> ></li><li><a href='Synopsis11.html'>纲要十一：模块</a> < <span class='digit'>2005-03-14 15:32:36</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li></ul>
+Created on <span class="digit">2005-03-12 16:31:57</span>, Last modified on <span class="digit">2005-03-12 16:33:10</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

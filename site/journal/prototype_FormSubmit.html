@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>用 prototype 来写 Ctrl+Enter 提交表单</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="C3_method_resolution_orde.html">C3 method resolution order</a>&nbsp;&nbsp;>>Next: <a href="modperl_PerlAuthenHandler.html">modperl 的用户验证</a></p>
+<h1>用 prototype 来写 Ctrl+Enter 提交表单</h1>
+<div class='content'>
+<p>Category: <a href='Javascript.html'>Javascript</a> &nbsp; Keywords: <b>prototype formsubmit</b></p>我以前写过一个用 Ctrl+Enter 来提交表单同时让 Submit 按钮灰掉的代码。（见 <a href='JS_event.html'>Javascript: Events</a>）<p />今天在 <a href="http://blog.chunzi.org">chunzi</a> 兄那看到他用 <a href='http://prototype.conio.net'>prototype</a> 写了个例子，觉得自己也该再好好看看 prototype, 同时也该写个例子。<br />挑来挑去，最后还是写以前的那个例子。不过不同的是用 prototype 实现。<br />代码如下：<br /><pre>var FormSubmitWatcher = Class.create();<p />FormSubmitWatcher.prototype = {<br /> &nbsp; &nbsp;initialize: function(cForm) {<br /> &nbsp; &nbsp; &nbsp; &nbsp;this.cForm = $(cForm);<br /> &nbsp; &nbsp; &nbsp; &nbsp;var elements = Form.getElements(cForm);<br /> &nbsp; &nbsp; &nbsp; &nbsp;for (var i = 0; i &lt; elements.length; i++) {<br />       &nbsp; &nbsp; &nbsp; &nbsp;var element = elements[i];<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (element.type.toLowerCase() == "textarea") {<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.cText = element;<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.cText.onkeypress = this.SubmitOnce.bindAsEventListener(this);<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br /> &nbsp; &nbsp; &nbsp; &nbsp;}<br /> &nbsp; &nbsp;},<br /> &nbsp; &nbsp;SubmitOnce : function(evt) {<br /> &nbsp; &nbsp; &nbsp; &nbsp;var x = evt.keyCode;<br /> &nbsp; &nbsp; &nbsp; &nbsp;var q = evt.ctrlKey;<br /> &nbsp; &nbsp; &nbsp; &nbsp;if (q &amp;&amp; ( x == 13 || x == 10)) {<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.cForm.submit();<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Form.disable(this.cForm);<br /> &nbsp; &nbsp; &nbsp; &nbsp;}<br /> &nbsp; &nbsp;}<br />}</pre>应用的时候可以怎么写：<br /><pre>&lt;script src="<a href="http://www.fayland.org/javascript/prototype.js">http://www.fayland.org/javascript/prototype.js</a>" type="text/javascript">&lt;/script><br />&lt;script src="<a href="http://www.fayland.org/javascript/FormSubmit.js">http://www.fayland.org/javascript/FormSubmit.js</a>" type="text/javascript">&lt;/script><p />&lt;form id="test1"><br />&lt;textarea id="content1" rows="10" cols="60">&lt;lt;/textarea><br />&lt;input type=submit><br />&lt;/form><br />&lt;form id="test2"><br />&lt;textarea id="content2" rows="10" cols="60">&lt;lt;/textarea><br />&lt;input type=submit><br />&lt;/form><p />&lt;script type="text/javascript"><br />var watcher = new FormSubmitWatcher('test1');<br />var watcher = new FormSubmitWatcher('test2');<br />&lt;/script></pre>这样就能可以了。如果只应用到 test2 表单，就把 FormSubmitWatcher('test1'); 那一句去掉。<br />用 prototype.js 写的一个很大的好处就是 js 代码和 html 代码分开的很清楚。<br />另外 protoype 提供了非常强大而常用的几个扩展。有机会我会再试试。:-)<p />对于 prototype.js 的很多方法和类我都没应用，就用了两个：Class.create 和 Form.disable/Form.getElements<br />需要更多的运用我是推荐仔细再看一遍：<a href="https://compdoc2cn.dev.java.net/prototype/html/prototype.js.cn.html">https://compdoc2cn.dev.java.net/prototype/html/prototype.js.cn.html</a></div>
+<p><&lt;Previous: <a href="C3_method_resolution_orde.html">C3 method resolution order</a>&nbsp;&nbsp;>>Next: <a href="modperl_PerlAuthenHandler.html">modperl 的用户验证</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E7%94%A8%20prototype%20%E6%9D%A5%E5%86%99%20Ctrl+Enter%20%E6%8F%90%E4%BA%A4%E8%A1%A8%E5%8D%95&url=http://www.fayland.org/journal/prototype_FormSubmit.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='modperl_helloworld.html'>modperl Apache2::HelloWorld</a> < <span class='digit'>2005-11-16 23:24:07</span> ></li><li><a href='modperl_http_cycle.html'>modperl 服务器的运行阶段和句柄</a> < <span class='digit'>2005-11-22 15:33:08</span> ></li><li><a href='modperl_PerlTransHandler.html'>modperl 的 PerlTransHandler 应用</a> < <span class='digit'>2005-11-23 22:24:02</span> ></li><li><a href='modperl_PerlAuthenHandler.html'>modperl 的用户验证</a> < <span class='digit'>2005-11-26 00:08:37</span> ></li><li><a href='modperl_Filter_part1.html'>modperl Filter Part1</a> < <span class='digit'>2005-12-18 14:47:29</span> ></li></ul>
+Created on <span class="digit">2005-11-25 21:44:37</span>, Last modified on <span class="digit">2005-11-25 22:57:44</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

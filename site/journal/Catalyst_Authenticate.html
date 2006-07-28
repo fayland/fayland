@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Catalyst Authenticate</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="050925_RSS.html">RSS date</a>&nbsp;&nbsp;>>Next: <a href="Perl6_Rules.html">用 Perl6::Rules 来写 Formatter</a></p>
+<h1>Catalyst Authenticate</h1>
+<div class='content'>
+<p>Category: <a href='Catalyst.html'>Catalyst</a> &nbsp; Keywords: <b>Authenticate Catalyst</b></p><p>针对不同的情况，Catalyst 提供了十几种验证用户的方法（详细的 svn catalyst）。<br />
+一般来说，我们都将用户名和密码存进一个 table 中（如表 users, 字段 usr/pwd 例子 fayland/123456）。<br />
+这次我使用 <a href='http://search.cpan.org/perldoc?Catalyst::Plugin::Authenticate::CDBI'>Catalyst::Plugin::Authenticate::CDBI</a> 来验证用户。这个 plugin 非常简单。很容易就看懂源代码。<br />
+<a href='http://search.cpan.org'>CPAN</a> 中可能没有，不过 <a href='http://dev.catalyst.perl.org'>Catalyst</a> 的 <a href='http://maypole.perl.org/repos/Catalyst/trunk'>svn 目录</a>中有。</p>
+
+<p>假设我有一个 catalyst FForum 工程。根据 <a href='http://search.cpan.org/perldoc?Catalyst::Plugin::Authenticate::CDBI'>Catalyst::Plugin::Authenticate::CDBI</a> 的指导，我们先在 FForum.pm 中的 config 下（或里） setup 上加进
+<pre># Authenticate::CDBI
+FForum->config->{authenticate}->{cdbi} = {
+    class    => 'FForum::M::CDBI::Users',
+    username => 'usr',
+    password => 'pwd'
+};</pre>
+<p>这里我们得生成一个 model CDBI::Users.<br />
+然后我们生成一个 perl script/fforum_server.pl controller Login, 然后在 Login.pm 中：</p>
+<pre>sub in : Local {
+    my ( $self, $c ) = @_;
+    
+    # Retrieve params of username/password
+    my $username = $c->req->param('username');
+    my $password = $c->req->param('password');
+    
+    if ( $c->authenticate_cdbi($username, $password) ) {
+        # successful authentication
+        $c->res->output('Login!');
+    } else {
+        $c->res->output('Failed!');
+    }
+}</pre>
+<p>这样当我们访问 http://fayland:3000/login/in?username=fayland&password=123456 时就会显示 Login!<br />
+而 http://fayland:3000/login/in?username=fayland&password=12345 时就会显示 Failed!<br />
+在我们的命令行调式器中会显示错误的原因。比如这次为 User 'fayland' credentials is invalid'.</p>
+
+<p>这里只是用最简单的直接调用 URL, 一般要详细添加用户登陆界面。<br />
+写本文并无其他用意，只是告诉各位如果碰到这种情况还可以考虑这种方法。</p>
+
+<p>如果有时间我会介绍下 Session, 这个或许更有趣一些。</p></div>
+<p><&lt;Previous: <a href="050925_RSS.html">RSS date</a>&nbsp;&nbsp;>>Next: <a href="Perl6_Rules.html">用 Perl6::Rules 来写 Formatter</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Catalyst%20Authenticate&url=http://www.fayland.org/journal/Catalyst_Authenticate.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='050328.html'>Catalyst & Eplanet</a> < <span class='digit'>2005-03-28 13:19:19</span> ></li><li><a href='050423.html'>Day [05.4.23] stay with me</a> < <span class='digit'>2005-04-23 16:17:02</span> ></li><li><a href='Catalyst_Flaw.html'>Catalyst 的一个不足（一个已去掉）</a> < <span class='digit'>2005-09-27 13:44:31</span> ></li><li><a href='Catalyst_Session_Win32.html'>Catalyst 在 Win32 下的 Session</a> < <span class='digit'>2005-09-29 11:08:04</span> ></li><li><a href='Catalyst_NoFavIcon.html'>Catalyst && favicon.ico</a> < <span class='digit'>2005-09-30 00:57:57</span> ></li><li><a href='Catalyst_Overview.html'>我对 Catalyst 的理解和介绍</a> < <span class='digit'>2005-10-08 01:39:40</span> ></li><li><a href='Catalyst_XMLRPC.html'>Catalyst && XML-RPC</a> < <span class='digit'>2005-10-11 21:50:30</span> ></li><li><a href='Catalyst_YAML.html'>Catalyst config YAML</a> < <span class='digit'>2005-12-10 12:50:39</span> ></li><li><a href='CatalystAdventCalendar_CN.html'>Catalyst Advent Calendar 中文版</a> < <span class='digit'>2005-12-15 23:28:40</span> ></li></ul>
+Created on <span class="digit">2005-09-26 12:50:39</span>, Last modified on <span class="digit">2005-09-26 12:59:14</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

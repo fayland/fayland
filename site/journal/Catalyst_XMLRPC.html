@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Catalyst && XML-RPC</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="051009_practice.html">Practice</a>&nbsp;&nbsp;>>Next: <a href="051013.html">Hey, DONOT waste time anymore</a></p>
+<h1>Catalyst && XML-RPC</h1>
+<div class='content'>
+<p>Category: <a href='Catalyst.html'>Catalyst</a> &nbsp; Keywords: <b>XML RPC Catalyst</b></p>今天因为用到了这个模块，所以就在这里提一下。如果你有机会碰到同样的问题可以参考一下。<p />因为 <a href="http://blog.chunzi.org">chunzi</a> 有很多工作要做，而我又有点空加上想锻炼下自己。所以就配合他写 <a href='http://memebr.perlchina.org'>member.perlchina</a> 的代码。<br />代码块中有一功能是用户认证 API, 当然这个很复杂。首先需要一个详细的 SPEC 规格文档。<br />就目前处于没有文档的情况下，我就先试着用 XMLRPC 来写一个远程验证 API. 待文档确定后再修补。<p /><a href="http://dev.catalyst.perl.org">Catalyst</a> 用于 RPC 有一 plugin 为 <a href="http://search.cpan.org/perldoc?Catalyst::Plugin::XMLRPC">Catalyst::Plugin::XMLRPC</a> , 它是以 <a href="http://search.cpan.org/perldoc?RPC::XML">RPC::XML</a> 为基础的一个插件。<br />doc 很简单。唯一要注意的是要写在 use Catalyst qw/XMLRPC/; 同一文件里。<p />以代码为例：<br /><pre># 主程序模块文件（use Catalyst qw/XMLRPC）那文件，添加<p /># 这与其他 Catalyst 的 Global 函数一样。定义了一个 rpc 方法。注意函数名不要为 xmlrpc, 这是插件的函数<br />sub rpc : Global {<br />    my ( $self, $c ) = @_;<br />    $c->xmlrpc;<br />}<p /># 所有方法后面带有 : Remote 的都是 XMLRPC 方法<br />sub auth : Remote {<br />    my ( $self, $c, @args ) = @_;<br />    return 'ERR_ARG_COUNT' if (scalar @args != 2);<br />    my ($username, $password) = @args;<br />    <br />    # 这里调用的是模块里自己定义的一个函数 auth, 你可以自己写 CDBI 代码<br />    my $person = Person::M::CDBI::Person->auth( $username, $password );<br />    <br />    return 'ERR_LOGIN_FAILED' unless ($person);<br />    return 'ERR_UNACTIVED' unless ($person->has_actived);<br />    <br />    return 'SUCCUSS';<br />}</pre>而验证代码我们可以简单写一下：<br /><pre>#!/usr/bin/perl<br />use strict;<br />use warnings;<br />use Data::Dumper;<br />use RPC::XML;<br />use RPC::XML::Client;<p />my $cli = RPC::XML::Client->new('http://fayland:3000/rpc'); # XMLRPC 地址<p />my $request = RPC::XML::request->new('auth', 'fayland', '123456'); # 方法名和两个参数<p />my $response = $cli->simple_request($request);<p />if (!$response) {<br />    print "$RPC::XML::ERROR \n"; # No response<br />}<br />else {<br />    print Dumper($response);<br />}</pre>这是访问的一种方法，其他的可以参考 <a href='xml-rpc-client.html'>XML-PRC Client 客户端编写</a>。<p />Enjoy!</div>
+<p><&lt;Previous: <a href="051009_practice.html">Practice</a>&nbsp;&nbsp;>>Next: <a href="051013.html">Hey, DONOT waste time anymore</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Catalyst%20&&%20XML-RPC&url=http://www.fayland.org/journal/Catalyst_XMLRPC.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='perlxmlqstart1.html'>快速开始Perl XML：接口篇</a> < <span class='digit'>2004-12-27 22:17:54</span> ></li><li><a href='RSS.html'>给网页增加RSS</a> < <span class='digit'>2005-01-12 18:22:53</span> ></li><li><a href='xml-rpc-client.html'>XML-PRC Client 客户端编写</a> < <span class='digit'>2005-03-02 00:04:31</span> ></li><li><a href='050328.html'>Catalyst & Eplanet</a> < <span class='digit'>2005-03-28 13:19:19</span> ></li><li><a href='050423.html'>Day [05.4.23] stay with me</a> < <span class='digit'>2005-04-23 16:17:02</span> ></li><li><a href='Catalyst_Authenticate.html'>Catalyst Authenticate</a> < <span class='digit'>2005-09-26 12:50:39</span> ></li><li><a href='Catalyst_Flaw.html'>Catalyst 的一个不足（一个已去掉）</a> < <span class='digit'>2005-09-27 13:44:31</span> ></li><li><a href='Catalyst_Session_Win32.html'>Catalyst 在 Win32 下的 Session</a> < <span class='digit'>2005-09-29 11:08:04</span> ></li><li><a href='Catalyst_NoFavIcon.html'>Catalyst && favicon.ico</a> < <span class='digit'>2005-09-30 00:57:57</span> ></li><li><a href='Catalyst_Overview.html'>我对 Catalyst 的理解和介绍</a> < <span class='digit'>2005-10-08 01:39:40</span> ></li><li><a href='Catalyst_YAML.html'>Catalyst config YAML</a> < <span class='digit'>2005-12-10 12:50:39</span> ></li><li><a href='CatalystAdventCalendar_CN.html'>Catalyst Advent Calendar 中文版</a> < <span class='digit'>2005-12-15 23:28:40</span> ></li></ul>
+Created on <span class="digit">2005-10-11 21:50:30</span>, Last modified on <span class="digit">2005-10-11 21:51:38</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

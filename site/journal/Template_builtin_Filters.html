@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Template builtin Filters</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="CPANPLUS_Tester.html">be a CPANPLUS Tester</a>&nbsp;&nbsp;>>Next: <a href="Template_customized_Filte.html">Template customized Filters</a></p>
+<h1>Template builtin Filters</h1>
+<div class='content'>
+<p>Category: <a href='Catalyst.html'>Catalyst</a> &nbsp; Keywords: <b>Template Filter</b></p>所谓 filter, 过滤器。想像一下咖啡的过滤器，想像下香烟的过滤嘴。Template 的过滤器也差不多。<br />我打算先介绍下 <a href="http://www.template-toolkit.org">TT</a> 内置的一些 filters, 然后明天介绍下如何写自己的 filter.<h4>builtin filters</h4>恐怕最最常用的一个 filter 就是 html, filter 的用法有以下几种：<br /><pre>[% FILTER html %]<br />&lt;script language="JavaScript" type="text/javascript"><br />&lt;!--<br />document.writeln("Hello, world");<br />//--><br />&lt;/script><br />[% END %]</pre>TT 给懒人们弄了个简单的符号 | 用以代替 FILTER 这六个英文字母。所以你也可以这么写：<br /><pre>[% | html %]</pre>另一种是外来的一个变量或者在其他地方定义的一个变量。比如我们在其他的模版里定义了：<br /><pre>[% output = '&lt;script language="JavaScript" type="text/javascript"><br />&lt;!--<br />document.writeln("Hello, world");<br />//--><br />&lt;/script>' %]</pre>到时候我们输出的话可以这么写：<br /><pre>[% output | html %]<br /># or [% output FILTER html %]</pre>我们还可以使用多个 filters.<br /><pre>[% output | html | truncate(30) %]</pre>以上差不多就是所有 filter 的用法。<p /><ul>另外的一些内置 filter 有<br /><li>format format 与 html 不同，它是一个动态 filter, 可以接受参数。比如：（用途类似 sprintf）<br /><pre>[% pi = 3.1415926536 %]<br />[% pi | format('%0.3f') %]</pre>这样输出的结果为 3.142</li><li>collapse 这个内置的 filter 将所有的所有多于一个空格的大空白过滤为一个空格。如：<br /><pre>[% FILTER collapse %]<br />You'll   love<p />   it,   it's             a    way<p />       of      life.<br />[% END %]</pre>输出的结果为：You'll love it, it's a way of life.</li><li>eval / evaltt 将变量作为 TT 模版来运行。这个变量一般是从外面传进来的。比如：<br /><pre>my $vars  = {<br />    fragment => "The cat sat on the [% place %]",<br />};<br />$tt->process($file, $vars);<br />    || die $tt->error( );</pre><pre>[% fragment | eval %]</pre>能将 [% place %] 用变量 place 代替掉。evaltt 跟 eval 是等同的。</li><li>indent(pad) 用于缩进。比如我们回复信件的时候一般在原来的信件内容前加“> ”，在 TT 中就可以这么写：<br /><pre>[% FILTER indent("> ") -%]<br />Dear Fayland,<p />Would u help me to ..<p />Best Regards,<br />[% END %]</pre>输出的结果为：<br /><pre>> Dear Fayland,<br />> <br />> Would u help me to ..<br />> <br />> Best Regards,</pre></li><li>lcfirst/ucfirst/lower/upper 如字面意思所写的，首字小写/大写/全部小写/大写</li><li>remove(string) 用正则表达式移除一些字符。如：<br /><pre>[% string = "Hello, I must be going.";<br />   string | remove("e") %]</pre>输出：Hllo, I must b going. 我们还有更复杂的正则表达式：<br /><pre>[% string = "Hello, I must be going.";<br />   string | remove("(?x)   # whitespace is not important<br />     (?&lt;=H)                # an 'H'<br />       e                   # strip the 'e'!<br />     (?=ll)                # followed by 'll'<br />") %]</pre>这个表达式用于匹配以 H 开头后接 e 再接 ll 但不移除 H 和 ll 的表达式。</li><li>replace(search, replace) 以 remove 不同的是代替。remove 查不多是将 replace(string, '')<br /><pre>[% string = "Hello, I must be going.";<br />   string | replace("e", "u") %]</pre>输出：Hullo, I must bu going.</li><li>repeat(iterations) 重复几次。<br /><pre>[% FILTER repeat(5) %]<br />I love Perl only less than my girl.<br />[% END %]</pre>将这句重复输出 5 次。</li><li>trim 将前后空格去掉。</li><li>truncate(length) 截取前 length 个字符。我们常见的一个描述然后 Read More.. 就可以这样子：<br /><pre>[% FOREACH result = results %]<br />   * [% result.description | truncate(24) %]<br />    &lt;a href="[% result.link %]">Read more&lt;/a><br />[% END %]</pre><li>uri 将 uri 变为浏览器所喜欢的形式。类似 URI::Escape 的功能。</li><li>还有其他一些，查看 TT 的 documents</li></ul>文章有点长，怎么自定义 filter 明天在另一篇中写。</div>
+<p><&lt;Previous: <a href="CPANPLUS_Tester.html">be a CPANPLUS Tester</a>&nbsp;&nbsp;>>Next: <a href="Template_customized_Filte.html">Template customized Filters</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Template%20builtin%20Filters&url=http://www.fayland.org/journal/Template_builtin_Filters.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Template_Configuration.html'>Template Toolkit 的配置选项</a> < <span class='digit'>2005-10-24 20:23:23</span> ></li><li><a href='template_introduction.html'>Template Toolkit 入门</a> < <span class='digit'>2005-12-03 18:15:26</span> ></li><li><a href='Template_customized_Filte.html'>Template customized Filters</a> < <span class='digit'>2005-12-10 01:10:15</span> ></li><li><a href='Accessing_External_TTFile.html'>导入 Template Toolkit 文件</a> < <span class='digit'>2005-12-10 22:42:16</span> ></li><li><a href='modperl_Filter_part1.html'>modperl Filter Part1</a> < <span class='digit'>2005-12-18 14:47:29</span> ></li></ul>
+Created on <span class="digit">2005-12-09 23:14:04</span>, Last modified on <span class="digit">2005-12-09 23:16:20</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

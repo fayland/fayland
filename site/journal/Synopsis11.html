@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>纲要十一：模块</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="050312.html">给 eclipse 安装 EPIC plug-in</a>&nbsp;&nbsp;>>Next: <a href="050315.html">rt.cpan.org: Bug</a></p>
+<h1>纲要十一：模块</h1>
+<div class='content'>
+<p>Category: <a href='Translation.html'>Translation</a> &nbsp; Keywords: <b>Synopsis Modules</b></p>English version: <a href='http://dev.perl.org/perl6/synopsis/S11.html'>http://dev.perl.org/perl6/synopsis/S11.html</a><br><p>
+
+<ul>
+	<li><a href="#title">TITLE</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#version">VERSION</a></li>
+	<li><a href="#overview">Overview 概述</a></li>
+	<li><a href="#modules">Modules</a></li>
+	<li><a href="#exportation">Exportation 导出</a></li>
+	<li><a href="#importation">Importation 导入</a></li>
+	<li><a href="#versioning">Versioning 版本号</a></li>
+	<li><a href="#forcing_perl_6">Forcing Perl 6 强制使用 Perl 6</a></li>
+</ul>
+
+<h2><a name="title">TITLE</a></h2>
+<p>Synopsis 11: Modules</p>
+<p>纲要 十一：模块</p>
+
+<h2><a name="author">AUTHOR</a></h2>
+<p>Larry Wall <<a href="mailto:larry@wall.org">larry@wall.org</a>></p>
+
+<h2><a name="version">VERSION</a></h2>
+<pre>
+  Maintainer: Larry Wall <larry@wall.org>
+  Date: 27 Oct 2004
+  Last Modified: 2 Dec 2004
+  Number: 11
+  Version: 4</pre>
+
+<h2><a name="overview">Overview 概述</a></h2>
+<p>This synopsis discusses those portions of Apocalypse 12 that ought to have
+been in Apocalypse 11.</p>
+<p>本纲要用以讨论启示录 12 中应该位于启示录 11 的部分。</p>
+
+<h2><a name="modules">Modules</a></h2>
+<p>As in Perl 5, a module is just a kind of package.  Unlike in
+Perl 5, modules and classes are declared with separate keywords,
+but they're still just packages with extra behaviors.</p>
+<p>在 Perl 5 中，一个模块就仅仅是一个包/package. 不同于 Perl 5, 模块与类
+在 Perl 6 中是用不同的关键字声明。不过它们仍然只是带着额外操作的包。</p>
+<p>A module is declared with the <code>module</code> keyword.  There are
+two basic declaration syntaxes:</p>
+<p>一个模块由关键字 <code>module</code> 来声明。这里有两种基本的声明语法：</p>
+<pre>
+    module Foo; # rest of scope is in module Foo
+                # 下面的作用域都在模块 Foo 内
+    ...</pre>
+<pre>
+    module Bar {...}    # block is in module Bar
+                       # 块在模块 Bar 内</pre>
+<p>The first form is allowed only as the first statement in the file.</p>
+<p>第一种形式只允许作为文件的第一个语句。</p>
+<p>Since there are no barewords in Perl 6, module names must be predeclared,
+or use the sigil-like <code>::ModuleName</code> syntax.  The <code>::</code> prefix does not
+imply top-levelness as it does in Perl 5.  (Use <code>::*</code> for that.)</p>
+<p>因为 Perl 6 中将不允许出现 裸字/bareword, 所以模块名必须得预先声明，否则你就得使用
+类似 <code>::ModuleName</code> 这样的标记语法。与 Perl 5 不同，前缀 <code>::</code> 不再意味着这是
+最高阶。（我们使用 <code>::*</code> 来代替。）</p>
+<p>A bare <code>module</code> declarator declares a global module name in <code>::*</code>.
+To declare a module in the current package (or module, or class), use
+<code>our module</code>.  To declare a lexically scoped module, use <code>my module</code>.
+Module names are always searched for from innermost scopes to outermost.
+As with an initial <code>::</code>, the presence of a <code>::</code> within the name
+does not imply globalness (unlike in Perl 5).</p>
+<p>一个单独的 <code>module</code> 声明符是在 <code>::*</code> 中声明一个全局模块名。如果想在当前包（或模块
+或类）中声明一个模块，请使用 <code>our module</code>. 如果想要声明一个词法作用域模块，请使用
+ <code>my module</code>. 模块名总是从最近的作用域搜索到最外层作用域。以 <code>::</code> 开头的名字并不
+意味着这是全局的（这点与 Perl 5 不同）。</p>
+<p>The <code>::*</code> namespace is not ``main''.  The default namespace for the main
+program is <code>::*Main</code>.  (Putting <code>module Main;</code> at the top of your program
+is redundant, except insofar as it tells Perl that the code is Perl 6 code
+and not Perl 5 code.  A bare <code>module;</code> defaults to <code>Main</code>.)</p>
+<p><code>::*</code> 命名空间不是 ``main''. 默认给主程序的命名空间为 <code>::*Main</code>. （在你的程序顶部
+加上 <code>module Main;</code> 是多余的，除了告诉 Perl 下面的代码是 Perl 6 而不是 Perl 5 代码。
+一个单独的 <code>module;</code> 默认为 <code>Main</code>. ）</p>
+<p>Module traits are set using <code>is</code>:</p>
+<p>模块的 traits 是用 <code>is</code> 来设定的：</p>
+<pre>
+    module Foo is bar {...}</pre>
+
+<h2><a name="exportation">Exportation 导出</a></h2>
+<p>Exportation is now done by trait declaration on the exportable item:</p>
+<p>对于可导出项，我们现在用一个特殊声明(is export)来实现导出：</p>
+<pre>
+                                               # Tagset...
+    sub foo is export(:DEFAULT)         {...}  #  :DEFAULT, :ALL
+    sub bar is export(:DEFAULT :others) {...}  #  :DEFAULT, :ALL, :others
+    sub baz is export(:MANDATORY)       {...}  #  (always exported)
+    sub bop is export                   {...}  #  :ALL
+    sub qux is export(:others)          {...}  #  :ALL, :others</pre>
+
+<h2><a name="importation">Importation 导入</a></h2>
+<p>All imports are done by default into the current lexical scope (rather
+than the current package, as in Perl 5).</p>
+<p>所有的导入将默认为到当前的词法作用域（而不像 Perl 5, 是到当前包）。</p>
+<pre>
+    use Sense <common @horse>;</pre>
+<p>You can be explicit about the desired scoping:</p>
+<p>你也可以用你想要的作用域来声明：</p>
+<pre>
+    use Sense :my<common> :our<@horse> :state<$haslearnedsome>;</pre>
+<p>That's pretty much equivalent to:</p>
+<p>这于如下代码等同：</p>
+<pre>
+    use Sense;
+    my &common ::= &Sense::common;
+    our @horse ::= @Sense::horse;
+    state $haslearnedsome ::= $Sense::haslearnedsome;</pre>
+
+<h2><a name="versioning">Versioning 版本号</a></h2>
+<p>When at the top of a file you say something like</p>
+<p>当你在文件顶部这么写时</p>
+<pre>
+    module Cat;</pre>
+<p>or 或</p>
+<pre>
+    class Dog;</pre>
+<p>you're really only giving one part of the name of the module.
+The full name of the module or class includes other metadata,
+in particular, the version, and the author.</p>
+<p>你只是仅仅给出了模块名的一部分。模块或类的全名包括其他数据，
+如版本号和作者。</p>
+<p>Modules posted to CPAN or entered into any standard Perl 6 library
+are required to declare their full name so that installations can know
+where to keep them, such that multiple versions by different authors
+can coexist, all of them available to any installed version of Perl.</p>
+<p>对于要发表到 CPAN 或者成为任何 Perl 6 标准库的模块，必须要声明全名。
+这样安装时才知道保存在哪，由不同作者写就的多版本能共存，所有的这些
+都可以给任何已安装版本的 Perl 获取。</p>
+<p>The syntax of a versioned module or class declaration has three parts
+separated by hyphens.  The three parts are the short name of the
+class/module, its version number, and a URI identifying the author
+(or authorizing authority). For example:</p>
+<p>一个带版本号的模块或类由三个分开的连字符来声明。这三部分分别为类或模块名，
+它的版本号和一个 URI 来识别作者（或者已批准作者名）。例如：</p>
+<pre>
+    class Dog-1.2.1-cpan:JRANDOM;
+    class Dog-1.2.1-<a href="http://www.some.com/~jrandom">http://www.some.com/~jrandom</a>;
+    class Dog-1.2.1-<a href="mailto:jrandom@some.com">mailto:jrandom@some.com</a>;</pre>
+<p>Such a declaration automatically aliases the full name
+of the class (or module) to the short name.  So for the rest of the
+lexical scope, <code>Dog</code> refers to the longer name.</p>
+<p>这样一个声明会自动将这个类（或模块）的全名对应（别名）到一个短名上。
+在下面的词法作用域中， <code>Dog</code> 将引用长名模块。</p>
+<p>If there are extra classes or modules or packages declared within
+the same file, they implicitly have a long name including the file's
+version and author, but you needn't declare them again.</p>
+<p>如果在同一文件中声明了多个类或模块或包，它们隐含地持有包含文件版本和作者的一个长名，
+而你不需要再次声明。</p>
+<p>Since these long names are the actual names of the classes, when you say:</p>
+<p>由于这些长名都是类的真实名，所以当你这么写时：</p>
+<pre>
+    use Dog;</pre>
+<p>you're really wildcarding the unspecified bits:</p>
+<p>你已经使用一个未指定的通配符来调用了：</p>
+<pre>
+    use Dog-(Any)-(Any);</pre>
+<p>And when you say:</p>
+<p>而当你这么写时：</p>
+<pre>
+    use Dog-1.2.1;</pre>
+<p>you're really asking for:</p>
+<p>你是在要求：</p>
+<pre>
+    use Dog-1.2.1-(Any);</pre>
+<p>Saying <code>1.2.1</code> specifies an <em>exact</em> match on the version number,
+not a minimum match.  To match more than one version, put a range
+operator in parens:</p>
+<p>写 <code>1.2.1</code> 说明你要一个已<em>确定</em>的版本号，而不是一个最小版本号。
+要匹配多于一个版本的话，在括号内使用 范围操作符/range operator:</p>
+<pre>
+    use Dog-(1.2.1..1.2.3);
+    use Dog-(1.2.1..^1.3);
+    use Dog-(1.2.1...);</pre>
+<p>Subversions are wildcarded, so <code>1.2</code> really means <code>1.2.0...</code>.  If you
+say:</p>
+<p>子版本可以通过通配获得，所以 <code>1.2</code> 实际上代表 <code>1.2.0...</code>. 如果你这么写：</p>
+<pre>
+    use Perl-6;</pre>
+<p>you're asking for any version of Perl 6.  Say:</p>
+<p>实际上你在要求任何版本的 Perl 6. 这么写：</p>
+<pre>
+    use Perl-6.0;
+    use Perl-6.0.0;
+    use Perl-6.2.7.1;</pre>
+<p>if you want to lock in a particular set of semantics at some greater
+degree of specificity.  And some large company ever forks Perl, you can say</p>
+<p>如果你需要更精确地控制在一个特定范围内，在一些派生 Perl 的大公司里，你可以这么写</p>
+<pre>
+    use Perl-6-cpan:TPF</pre>
+<p>to guarantee that you get the unembraced Perl.  <code>:-)</code></p>
+<p>来保证你获得这个特定 Perl. <code>:-)</code></p>
+<p>For wildcards any valid smartmatch selector works:</p>
+<p>在通配符中任何合法的 轻巧匹配选择符/smartmatch(eg, | ^ $) 都能运行：</p>
+<pre>
+    use Dog-(1.2.1 | 1.3.4)-(/:i jrandom/);
+    use Dog-(Any)-(/^cpan\:/)</pre>
+<p>Parens are optional on a closure smartmatcher.  The preceding may
+also be written:</p>
+<p>对于一个 闭合的轻巧匹配/closure smartmatcher 来说，括号是可选的。前面的
+也可以这么写：</p>
+<pre>
+    use Dog-{$^ver ~~ 1.2.1 | 1.3.4}-{$^auth ~~ /:i jrandom/};
+    use Dog-{$^ver ~~ Any}-{$^auth ~~ /^cpan\:/}</pre>
+<p>In any event, however you select the module, its full name is
+automatically aliased to the short name for the rest of your lexical
+scope.  So you can just say</p>
+<p>在任何情况下，当你使用模块时，在下面的作用域内它的全名会自动对应（别名）
+到一个短名上。所以你这么写时</p>
+<pre>
+    my Dog $spot .= new("woof");</pre>
+<p>and it knows (even if you don't) that you mean</p>
+<p>它知道你的意思（即使你不知道）：</p>
+<pre>
+    my Dog-1.3.4-cpan:JRANDOM $spot .= new("woof");</pre>
+
+<h2><a name="forcing_perl_6">Forcing Perl 6 强制使用 Perl 6</a></h2>
+<p>To get Perl 6 parsing rather than the default Perl 5 parsing,
+we said you could force Perl 6 mode in your main program with:</p>
+<p>要使用 Perl 6 解析而不用默认的 Perl 5 解析时，你可以在你的主程序中
+通过如下方式强制使用 Perl 6:</p>
+<pre>
+    use Perl-6;</pre>
+<p>Actually, you can just start your main program with any of:</p>
+<p>如今，你也可以仅仅在你的主程序中使用如下任意一种：</p>
+<pre>
+    use v6;
+    module;
+    class;</pre>
+<p>Those all specify the latest Perl 6 semantics, and are equivalent to</p>
+<p>这些都指定了使用最新版本的 Perl 6, 等同于：</p>
+<pre>
+    use Perl-(v6.0.0...)-(Any);</pre>
+<p>To lock the semantics to 6.0.0, say:</p>
+<p>要确定使用 6.0.0, 可以这么写：</p>
+<pre>
+    use v6.0.0;</pre>
+<p>In any of those cases, strictures and warnings are the default
+in your main program.  But if you start your program with a bare
+version number or other literal:</p>
+<p>在上述情况下，主程序是默认开启 严格语法/strict 和 警告/warnings.
+但是如果你在你的程序头使用单独的版本号或其他词语：</p>
+<pre>
+    v6.0.0;
+    v6;
+    6;
+    "Coolness, dude!";</pre>
+<p>it runs Perl 6 in ``lax'' mode, without strictures or warnings, since obvously
+a bare literal in a void context <em>ought</em> to have produced a warning.
+(Invoking perl with <code>-e6</code> has the same effect.)</p>
+<p>它将在“宽松”模式下运行 Perl 6, 没有严格语法或警告。（如果带警告的话，）一个
+没上下文语境的一个单独的词汇很明显<em>应该</em>输出一个警告。（用 <code>-e6</code> 调用 Perl 
+也有同样效果。）</p></div>
+<p><&lt;Previous: <a href="050312.html">给 eclipse 安装 EPIC plug-in</a>&nbsp;&nbsp;>>Next: <a href="050315.html">rt.cpan.org: Bug</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E7%BA%B2%E8%A6%81%E5%8D%81%E4%B8%80%EF%BC%9A%E6%A8%A1%E5%9D%97&url=http://www.fayland.org/journal/Synopsis11.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='050307.html'>The project of Synopsis localization</a> < <span class='digit'>2005-03-07 22:55:26</span> ></li><li><a href='Synopsis1.html'>Synopsis 1 / 纲要一</a> < <span class='digit'>2005-03-08 00:11:40</span> ></li><li><a href='Synopsis13.html'>Synopsis 13: 重载</a> < <span class='digit'>2005-03-09 20:53:09</span> ></li><li><a href='Synopsis10.html'>纲要十：包</a> < <span class='digit'>2005-03-12 16:31:57</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li></ul>
+Created on <span class="digit">2005-03-14 15:32:36</span>, Last modified on <span class="digit">2005-03-14 15:33:27</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

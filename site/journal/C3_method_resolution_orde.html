@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>C3 method resolution order</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="modperl_PerlTransHandler.html">modperl 的 PerlTransHandler 应用</a>&nbsp;&nbsp;>>Next: <a href="prototype_FormSubmit.html">用 prototype 来写 Ctrl+Enter 提交表单</a></p>
+<h1>C3 method resolution order</h1>
+<div class='content'>
+<p>Category: <a href='Perl6.html'>Perl6</a> &nbsp; Keywords: <b>C3 method resolution order</b></p>介绍 C3 方案之前，我们先看看 Perl 5 的多重继承方案。<br /><pre>package A;<br />sub hello { 'A::hello' }<p />package B;<br />use base 'A';<p />package C;<br />use base 'A';<br />sub hello { 'C::hello' }<p />package D;<br />use base ('B', 'C');</pre>这是一个经典的多重继承，用图表表示如下：<br /><pre>    &lt;A>(hello)<br />   /   \<br /> &lt;B>   &lt;C>(hello)<br />   \   /<br />    &lt;D></pre>在 Perl 5 中当你调用 D::hello 时会比较奇怪地发现它输出的是 A::hello.<br />这是因为在 Perl 5 中继承的顺序是 D->B->A->C<br />而按照我们一般的思路顺序则应当是 D->B->C->A 输出的应当为 C::hello<p />在 Perl6 中我们就采用了 C3 这种算法，这种算法首先是在 Dylan 语言中实现。而后被应用到 CLOS 还有 Python 2.3。<br />现在我们将它应用到了 Perl6 和 parrot. Perl6 的 Perl6-MetaModel 作者 Stevan Little 用 Perl5 写了个版本，就是 <a href="http://search.cpan.org/perldoc?Class::C3">Class::C3</a><br /><ul>一些参考的资料如下：<br /><li><a href='http://www.webcom.com/~haahr/dylan/linearization-oopsla96.html'>A Monotonic Superclass Linearization for Dylan</a></li><li> <a href="http://search.cpan.org/perldoc?Class::C3">Class::C3</a> </li><li><a href="http://www.python.org/2.2.2/descrintro.html#mro">http://www.python.org/2.2.2/descrintro.html#mro</a></li><li><a href='http://www.python.org/2.3/mro.html'>The Python 2.3 Method Resolution Order</a></li><li><a href="http://use.perl.org/~autrijus/journal/25768">http://use.perl.org/~autrijus/journal/25768</a></li></ul>这种算法的思路就是父类一定在子类后面。<br />比如前面的多重继承可以这么写：D, B, A, C, A<br />在 Perl 5 中去掉后后面重复的，而 C3 算法是把前面的父类去掉。<p />详细的 C3 算法介绍等我看完那篇 <a href='http://www.webcom.com/~haahr/dylan/linearization-oopsla96.html'>Paper</a> 后，如果有不吐不快之言，再写 journal.</div>
+<p><&lt;Previous: <a href="modperl_PerlTransHandler.html">modperl 的 PerlTransHandler 应用</a>&nbsp;&nbsp;>>Next: <a href="prototype_FormSubmit.html">用 prototype 来写 Ctrl+Enter 提交表单</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=C3%20method%20resolution%20order&url=http://www.fayland.org/journal/C3_method_resolution_orde.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='modperl_helloworld.html'>modperl Apache2::HelloWorld</a> < <span class='digit'>2005-11-16 23:24:07</span> ></li><li><a href='modperl_http_cycle.html'>modperl 服务器的运行阶段和句柄</a> < <span class='digit'>2005-11-22 15:33:08</span> ></li><li><a href='modperl_PerlTransHandler.html'>modperl 的 PerlTransHandler 应用</a> < <span class='digit'>2005-11-23 22:24:02</span> ></li><li><a href='modperl_PerlAuthenHandler.html'>modperl 的用户验证</a> < <span class='digit'>2005-11-26 00:08:37</span> ></li><li><a href='modperl_Filter_part1.html'>modperl Filter Part1</a> < <span class='digit'>2005-12-18 14:47:29</span> ></li></ul>
+Created on <span class="digit">2005-11-25 17:36:06</span>, Last modified on <span class="digit">2005-11-25 17:41:35</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

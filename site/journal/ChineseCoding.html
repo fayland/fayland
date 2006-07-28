@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>汉字编码笔记</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Highlight.html">如何将Perl代码着色</a>&nbsp;&nbsp;>>Next: <a href="041123.html">关于购买国外的虚拟主机</a></p>
+<h1>汉字编码笔记</h1>
+<div class='content'>
+<p>Category: <a href='Miscellaneous.html'>Miscellaneous</a> &nbsp; Keywords: <b>汉字 编码 匹配</b></p>坦白说，以下的东西我不是很懂。只是在做实验。这份就类似于实验纪录。
+<h2>ord,unpack("*H",hex,chr</h2>
+<pre>
+my $c = "我";
+
+print unpack("H*",$c); # 输出 ced2, 此为汉字编码\xcede
+print ord("$c")"; # 输出 206
+print hex(substr(unpack("H*",$c),0,2)); # 输出 206, hex("ce") = 206
+print chr(0xce),chr(0xd2); # 输出“我”，chr(0xced2)输出的字为“旎”。原因不可考。
+</pre>
+<h2>汉字编码范围</h2>
+参考文章：<a href="http://www.douzi.org/weblog/archives/2004_03.html">http://www.douzi.org/weblog/archives/2004_03.html</a><br>
+<table border=1>
+<tr>
+<th>编码</th><th>第一字节</th><th>第二字节</th><th>第三字节</th><th>第四字节</th>
+</tr><tr>
+<td>GB2312</td><td>0xB0-0xF7</td><td>0xA0-0xFE</td><td></td><td></td>
+</tr><tr>
+<td>GBK</td><td>0x81-0xFE</td><td>0x40-0xFE</td><td></td><td></td>
+</tr><tr>
+<td>GB18030的双字节</td><td>0x81-0xFE</td><td>0x40-0x7E, 0x80-0xFE</td><td></td><td></td>
+</tr><tr>
+<td>GB18030的四字节</td><td>0x81-0xFE</td><td>0x30-0x39</td><td>0x81-0xFE</td><td>0x30-0x39</td>
+</tr>
+</table>
+一般来说，需要支持的是GBK，而GB18030的双字节与GBK仅差一条线，XX7F。所以一般的汉字匹配为
+<pre>
+$chinese =~ /^[\x8140-\xFEFE]+$/;
+</pre>
+这里所匹配的不是全是汉字，还包括非汉字符号，还有用户自定义字符区。<br>
+这东西真不是一般麻烦。
+<h2>常见的两个空白字的过滤</h2>
+一个字“　”是中文简体输入法在全角格式下的空格，编码为a1a1。<br>
+另一个字“”不知道怎么输入的？可能是繁体输入法的，编码为aba7。<br>
+其实还有一大段区域属于用户自定义区域，此区域内的字在网页上显示都为占两字节的空格。一般用户名的注册是需要过滤这些空格的。这范围我还没找到。<br>
+<pre>
+$text =~ s/　//g;
+$text =~ s///g;
+#或者使用如下的过滤
+$text =~ s/(\xa1\xa1)|(\xab\xa7)//g;
+</pre></div>
+<p><&lt;Previous: <a href="Highlight.html">如何将Perl代码着色</a>&nbsp;&nbsp;>>Next: <a href="041123.html">关于购买国外的虚拟主机</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E6%B1%89%E5%AD%97%E7%BC%96%E7%A0%81%E7%AC%94%E8%AE%B0&url=http://www.fayland.org/journal/ChineseCoding.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Han2PinYin.html'>将汉字转为拼音的模块</a> < <span class='digit'>2004-12-06 22:36:39</span> ></li><li><a href='Lingua-Han-Utils.html'>针对汉字的 Lingua::Han::Utils</a> < <span class='digit'>2005-11-18 18:37:41</span> ></li><li><a href='Lingua-Han-Stroke.html'>汉字比划模块</a> < <span class='digit'>2005-11-18 20:27:49</span> ></li><li><a href='JS_encode.html'>Ajax && encodeURIComponent</a> < <span class='digit'>2005-05-15 15:31:00</span> ></li><li><a href='utf8.html'>utf8与gb2312编码</a> < <span class='digit'>2004-11-09 12:42:33</span> ></li></ul>
+Created on <span class="digit">2004-11-23 13:23:11</span>, Last modified on <span class="digit">2005-05-21 00:17:12</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

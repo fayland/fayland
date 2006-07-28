@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>符号表, local和my, * 与 \$</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="CGI_Untaint.html">用 CGI::Untaint 检测 params</a>&nbsp;&nbsp;>>Next: <a href="lwall-quotes.html">Larry Wall Quotes</a></p>
+<h1>符号表, local和my, * 与 \$</h1>
+<div class='content'>
+<p>Category: <a href='Basic.html'>Basic</a> &nbsp; Keywords: <b>Symbol Table</b></p><h2>Guess the result</h2>
+如果你知道下面这几段代码的结果是什么就不用看本文了。
+<ol>
+<li>
+<pre><code>
+$bar = 'a';
+*foo = *bar;
+{
+    local $bar = 'b';
+    print $foo;
+}
+</code></pre>
+<pre>显示结果/Show result: b</pre>
+<li>
+<pre><code>
+$bar = 'a';
+*foo = \$bar;
+{
+    local $bar = 'b';
+    print $foo;
+}
+</code></pre>
+<pre>显示结果/Show result: a</pre>
+<li><pre><code>
+$bar->{'t'} = 'a';
+*foo = \$bar;
+{
+    local $bar->{'t'} = 'b';
+    print $foo->{'t'};
+}
+</code></pre>
+<pre>显示结果/Show result: b</pre>
+<li>
+<pre><code>
+$bar = a;
+*foo = *bar;
+{
+    my $bar = b;
+    print $foo;
+}
+</code></pre>
+<pre>显示结果/Show result: a</pre>
+</ol>
+<h2>Reference</h2>
+<ul>
+<li>Advanced Perl Programming:Chapter 3 <b>Typeglobs and Symbol Tables</b>
+<li><a href='http://www.perl.com/lpt/a/2002/05/14/mod_perl.html'>http://www.perl.com/lpt/a/2002/05/14/mod_perl.html</a>
+<li><a href='http://perldoc.perl.org/perlmod.html#Symbol-Tables'>http://perldoc.perl.org/perlmod.html#Symbol-Tables</a>
+</ul>
+<h2>详细描述</h2>
+<img src='img/symboltable.gif'><br><br>
+符号表如上图所示，获取符号表里的值必须提供名字和类型两个参数。<p>
+
+首先谈 * 与 $\ 的区别：<br>
+*a = *b 后，你可以用 ($@%&)a 来得到 b 所有的变量，数组，散列，子程序，格式，文件句柄和文件句柄。<br>
+*a = \$b 只允许用 $a 得到 $b,而 @a 是不同于 @b 的。<br>
+举个简单的例子如下：
+<pre>
+$a = 1;@a = qw/a b/;
+*b = *a;
+*c = \$a;
+
+print join('-', $b, scalar @b, $c, scalar @c);
+</pre>
+得到的结果为 1-2-1-0<br>
+这是因为 $c 等同于 ${\$a} 所以与 $a 等价；而 @c 等同于 @{\$a} 而不能等同于 @a.<p>
+
+其次来讲讲 local 与 my 的区别：<br>
+local 能操作 symbol table而 my 不行，这就是代码1与代码4的区别。
+<h2>加了注释的代码</h2>
+<ol>
+<li>
+<pre><code>
+$bar = a; 
+*foo = *bar; # foo 是 bar 的别名
+{
+    local $bar = b; # local 能改变符号表里的名为bar类型为Scalar的值为 2
+    print $foo; # 求符号表中名为foo（对应到bar）类型为Scalar的值
+}
+</code></pre>
+<li>
+<pre><code>
+$bar = 'a';
+*foo = \$bar; # 引用是让 foo 对应 $bar 的值 a，引用的特点是指向$bar变量的值而不是$bar变量的名字(bar)
+{
+    local $bar = 'b'; # local 改变的是 $bar 的值
+    print $foo; # 根据引用对应变量值而非变量名的特点，foo 还是指向 a
+}
+# 将这面这段代码与下面的比较或许会明白一点
+$bar = 'a';
+$foo = \$bar;
+{
+    local $bar = 'b';
+    print $$foo; # 这里输出的就是 a
+}
+</code></pre>
+<img src='img/symboltable2.gif'><p>
+The reference points to the value of $bar, not the variable itself or its name.<br>
+在local前，bar,foo的关系如图，在local后，就是图中的那条红线断了。foo指向的还是a.<br>
+关于引用更详细的资料，参见 Effective Perl - Reference
+<li><pre><code>
+$bar->{'t'} = 'a';
+*foo = \$bar;
+{
+    local $bar->{'t'} = 'b';
+    print $foo->{'t'};
+}
+# 比较下面的代码：
+$bar->{'t'} = 'a';
+$foo = \$bar;
+{
+    local $bar->{'t'} = 'b';
+    print $$foo->{'t'}; # 这里输出的是 b
+}
+</code></pre>
+<li>
+<pre><code>
+$bar = 'a';
+*foo = *bar;
+{
+    my $bar = 'b'; # my 不操作符号表, 符号表里名为bar类型为Scalar 值还是 1
+    print $foo; # 求符号表中名为foo（对应到bar）类型为Scalar的值
+}
+</code></pre>
+</ol>
+这四段代码看起来是考符号表 Symbol Table, 但更大程度是要理解引用。</div>
+<p><&lt;Previous: <a href="CGI_Untaint.html">用 CGI::Untaint 检测 params</a>&nbsp;&nbsp;>>Next: <a href="lwall-quotes.html">Larry Wall Quotes</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E7%AC%A6%E5%8F%B7%E8%A1%A8,%20local%E5%92%8Cmy,%20*%20%E4%B8%8E%20%5C$&url=http://www.fayland.org/journal/SymbolTable.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Class-Data-Inheritable.html'>$Class[1] = 'Class::Data::Inheritable';</a> < <span class='digit'>2005-04-27 17:57:39</span> ></li></ul>
+Created on <span class="digit">2005-04-18 22:11:20</span>, Last modified on <span class="digit">2005-04-19 00:49:11</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

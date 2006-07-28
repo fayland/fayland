@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>购买国外虚拟主机的经历</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="FayGuestBook.html">FayGuestBook</a>&nbsp;&nbsp;>>Next: <a href="UploadModule.html">如何向CPAN上传模块</a></p>
+<h1>购买国外虚拟主机的经历</h1>
+<div class='content'>
+<p>Category: <a href='Diary.html'>Diary</a> &nbsp; Keywords: <b>host</b></p><h2>描述</h2>
+<a href='http://www.powweb.com' alt='host'>PowWeb.com</a>是一家位于California的虚拟主机公司。这段期间正好是Christmas Day, 搞假期促销/Holiday Promotion。<br>
+它的性价比绝对是不能抵抗的。
+<pre>
+2G 空间
+FreeBSD+Perl+PHP+MySQL
+600 Mail
+一天5G流量 = 月150G流量
+买一年以上送域名
+支持https，带log分析的AWStat或Web*
+价格：每月$7.77 美元
+</pre>
+因为目前处于促销期，所以买一年还可以送6个月。500多天只用770元。一天两块钱都不到。<br>
+而我的GA广告收入绝对大于此数。终于可以大叹一声：我的网站实现盈利了。：）
+<h2>购买过程</h2>
+过程其实很简单。<br>
+第一步：因为一个主机只能挂一个域名，如果另要增加挂载域名，一个都要20来美元，绝对不合算。所以我就用了自己目前的1313s.com<br>
+第二步：填写自己的资料，可以用拼音也可以用英文，一般无所谓。这东西到目前为止我没发现啥用途。选择自己的OP用户名和密码。OP是PowWeb虚拟主机的控制面板，在里面可以设置DNS,HTTP,FTP,MySQL.<br>
+第三步：选择租用空间的时间。当然选了一年。后面还有填写ftp用户名和密码。<br>
+最后一步：支付。我是用信用卡支付的，我自己没有，用了姐姐的。写上信用卡的卡号，过期日期/Exp Data（这东西卡上有），卡持有者的名字，卡背后磁条上号码的后三位数（大概是用于验证卡是否有效）。下面是卡的持有者地址邮编电话。<br>
+完成后，如果卡是有效的就会返回成功，然后收到“Welcome To PowWeb Hosting”的Email.到此还不算成功，需要24小时验证完成卡的转账（我一觉醒来12个小时就好了，大概正是他们上班时）。如果通过了，会收到“Credit Card Charge Receipt”的Email.<br>
+大致上就完成了，可以通过临时地址访问网站了。然后通过OP开通MySQL。
+<h2>麻烦</h2>
+完成后我的麻烦还不少。<br>
+首先，访问不了我的临时URL地址。只能通过代理服务器/Proxy访问。PowWeb被中国禁了好几个dns服务器（可能是那几个服务器上有色情反动之类的网站）。它是号称“负载均衡”，为什么出现我访问不了我也不清楚。可能是我被分到了那几个倒霉的dns上。<a href='http://www.chedong.com'>车东</a>的网站也是PowWeb的，可以访问。<br>
+第二，我在校园网内，所以有两个ip，一个是内网的一个是外网的。它的ftp尽然不让我传，说对应的ip错误。最后只好用它的WebFTP上传东西。<br>
+最后值得一提的是速度。我访问的时候是不太稳定的，时快时慢。也不知道为何。等稳定下来发个投票问问访客速度是如何。</div>
+<p><&lt;Previous: <a href="FayGuestBook.html">FayGuestBook</a>&nbsp;&nbsp;>>Next: <a href="UploadModule.html">如何向CPAN上传模块</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E8%B4%AD%E4%B9%B0%E5%9B%BD%E5%A4%96%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA%E7%9A%84%E7%BB%8F%E5%8E%86&url=http://www.fayland.org/journal/041223.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Module_Build.html'>用Module::Build制作CPAN模块包</a> < <span class='digit'>2004-12-16 18:59:50</span> ></li><li><a href='050315.html'>rt.cpan.org: Bug</a> < <span class='digit'>2005-03-15 22:18:50</span> ></li><li><a href='minicpan.html'>如何用 minicpan 映像自己的 CPAN</a> < <span class='digit'>2005-04-07 22:14:38</span> ></li><li><a href='CPAN_update.html'>CPAN RSS updated</a> < <span class='digit'>2005-11-13 20:58:31</span> ></li><li><a href='CPANPLUS_Tester.html'>be a CPANPLUS Tester</a> < <span class='digit'>2005-12-09 16:35:07</span> ></li><li><a href='Date_Holidays_CN.html'>检测中国的假期模块</a> < <span class='digit'>2005-12-20 15:00:51</span> ></li><li><a href='CPAN_Contributor.html'>写模块给 CPAN 要注意的地方</a> < <span class='digit'>2005-12-21 14:14:33</span> ></li></ul>
+Created on <span class="digit">2004-12-23 22:01:51</span>, Last modified on <span class="digit">2005-05-20 23:52:33</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

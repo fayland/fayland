@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>utf8与gb2312编码</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Maypole.html">Maypole</a>&nbsp;&nbsp;>>Next: <a href="wwwsf4.cn.html">WWW Security FAQ: CGI Scripts</a></p>
+<h1>utf8与gb2312编码</h1>
+<div class='content'>
+<p>Category: <a href='Basic.html'>Basic</a> &nbsp; Keywords: <b>utf8 编码 gb2312</b></p><ol>问题：
+<li>将gb2312数据格式的文件转为utf8格式
+<li>在utf8编码下显示gb2312数据文件
+<li>如何直接生成utf8格式的数据文件
+<li><a href='#4'>不涉及文件读取，script文件里print "中文";</a>
+</ol>
+其实最主要的一句为：
+<pre>
+use Encode qw/encode decode/;
+my $utf_data = encode("utf8", decode("gb2312", $data));
+# $data为gb2312格式, $utf_data为utf8格式
+</pre>
+等同的代码还有：
+<pre>
+use Encode qw/from_to/;
+from_to($data, "gb2312", "utf8");
+# $data从gb2312格式转为utf8格式
+</pre>
+相反从utf8转为gb2312也成。encode,decode里的参数互换下。<p>
+例子与代码：<br>
+gb.dat是gb2312数据格式的文件。在-charset=>'utf-8'时显示乱码，gb2312时正常。
+<pre><code>
+#!/usr/bin/perl
+use strict;
+use CGI::Carp qw(fatalsToBrowser);
+use CGI qw/:standard/;
+use Encode qw/encode decode from_to/;
+
+my $cgi = new CGI;
+# charset utf8
+print $cgi->header(-type=>'text/html',-charset=>'utf-8');
+
+# open the gb2312 file
+open(FH, "gb.dat");
+my $data = &lt;FH>;
+close(FH);
+
+# convert gb2312 to utf8
+my $utf_data = encode("utf8", decode("gb2312", $data));
+
+# produce the utf8 file
+open(FH, ">utf8.dat");
+print FH $utf_data;
+close(FH);
+
+my $word = "我是中国人";
+from_to($word, "gb2312", "utf8");
+
+print "$utf_data, $word";
+</code></pre>
+经过转换后，以后在-charset=>'utf-8'下直接读取utf8.dat而不用再次decode/encode.<p>
+
+<h2><a name='4'>不涉及文件读取，script文件里print "中文";</a></h2>
+在script.pl里use encoding "euc-cn", STDOUT => "utf8";
+<pre>
+use CGI qw/:standard/;
+use encoding "euc-cn", STDOUT => "utf8";
+
+my $cgi = new CGI;
+print $cgi->header(-type=>'text/html',-charset=>'utf-8');
+
+print "我是中国人，我爱野文";
+</pre>
+<h2>Refer</h2>
+<ul>
+<li>perldoc <a href='http://search.cpan.org/perldoc?Encode'>Encode</a>
+<li>perldoc <a href='http://search.cpan.org/perldoc?encoding'>encoding</a>
+</ul></div>
+<p><&lt;Previous: <a href="Maypole.html">Maypole</a>&nbsp;&nbsp;>>Next: <a href="wwwsf4.cn.html">WWW Security FAQ: CGI Scripts</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=utf8%E4%B8%8Egb2312%E7%BC%96%E7%A0%81&url=http://www.fayland.org/journal/utf8.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='JS_encode.html'>Ajax && encodeURIComponent</a> < <span class='digit'>2005-05-15 15:31:00</span> ></li><li><a href='ChineseCoding.html'>汉字编码笔记</a> < <span class='digit'>2004-11-23 13:23:11</span> ></li><li><a href='050115.html'>gb2312.enc</a> < <span class='digit'>2005-01-15 22:57:38</span> ></li><li><a href='2utf8.html'>批量转网页编码</a> < <span class='digit'>2005-03-15 23:16:46</span> ></li></ul>
+Created on <span class="digit">2004-11-09 12:42:33</span>, Last modified on <span class="digit">2004-11-10 23:24:17</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>如何安装FastCGI</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="wwwsf4.cn.html">WWW Security FAQ: CGI Scripts</a>&nbsp;&nbsp;>>Next: <a href="mp3_ID3v1Tag.html">如何设置mp3文件的ID3v1Tag</a></p>
+<h1>如何安装FastCGI</h1>
+<div class='content'>
+<p>Category: <a href='InstallNote.html'>InstallNote</a> &nbsp; Keywords: <b>FastCGI</b></p><h2>Intro</h2>
+此文并非介绍FastCGI的好处，只是简单的介绍我的一次安装过程。<br>
+我的Env为 Win2000+SP4, Apache/2.0.50 (Win32) mod_perl/1.99_15-dev Perl/v5.8.4 mod_ssl/2.0.50 OpenSSL/0.9.7d PHP/4.3.7<br>
+$Apache_dir = "C:/Apache2";
+$Perl_dir = "C:/usr";
+
+<h2>Step by step</h2>
+<ol>
+<li>从 <a href="http://www.fastcgi.com/dist/">http://www.fastcgi.com/dist/</a> 下载mod_fastcgi-2.4.2-AP20.dll（如果是Apache版本为1.3，下载mod_fastcgi-2.4.2-AP13.dll）。
+<li>遵从<a href="http://www.fastcgi.com/mod_fastcgi/INSTALL">http://www.fastcgi.com/mod_fastcgi/INSTALL</a>最下面的一段话：
+<pre>
+To install mod_fastcgi (built above or retrieved from 
+http://fastcgi.com/dist/):
+
+  1. Copy the mod_fastcgi.dll to the Apache modules directory 
+     (e.g. C:\Apache\modules)
+
+  2. Edit the httpd configurion file (e.g. C:\Apache\conf\httpd.conf)
+     and add a line like:
+
+     LoadModule fastcgi_module modules/mod_fastcgi.dll
+
+     Note that if there's a ClearModuleList directive after new entry,
+     you'll have to either move the LoadModule after the ClearModuleList
+     or add (have a look at how the other modules are handled):
+
+     AddModule mod_fastcgi.c
+
+  3. Edit the httpd configuration file(s) to enable your FastCGI
+     application(s).  See docs/mod_fastcgi.html for details.
+</pre>
+简单翻译为
+<pre>
+  1. 拷贝 mod_fastcgi.dll（我们下来的mod_fastcgi-2.4.2-AP*.dll，将其改名） 至Apache modules（模块）目录
+     (如 C:\Apache\modules)
+
+  2. 编辑httpd配置文件 (如 C:\Apache\conf\httpd.conf)
+     然后增加如下一行：
+
+     LoadModule fastcgi_module modules/mod_fastcgi.dll
+
+     注意如果在此句以后出现 ClearModuleList 指示/directive，你必须要么移动LoadModule到ClearModuleList下面或增加（参考其他handled模块）：
+
+     AddModule mod_fastcgi.c
+
+  3. 编辑httpd配置文件去启动你的FastCGI程序。更详细的请参考 docs/mod_fastcgi.html
+</pre>
+<li>visit <a href="http://www.fastcgi.com/mod_fastcgi/docs/mod_fastcgi.html">http://www.fastcgi.com/mod_fastcgi/docs/mod_fastcgi.html</a>, 参考此文档在httpd.conf里增加：
+<pre><code>
+&lt;Directory "E:/Fayland/fcgi-bin">
+	SetHandler fastcgi-script
+	AddHandler fastcgi-script fcg fcgi fpl
+	Options +ExecCGI
+&lt;/Directory>
+</code></pre>
+<li>不要下载FCGI.pm-0.64-win32-x86.zip，可以cpan或ppm FCGI安装FCGI.pm和相关文件。
+<li>测试代码：(E:\Fayland\fcgi-bin\test.fpl)
+<pre>
+#!/usr/bin/perl
+use FCGI;
+use strict;
+
+my $count = 0;
+my $request = FCGI::Request();
+
+while($request->Accept() >= 0) {
+	$count++;
+	print "Content-type:text/html\n\n";
+	print "total request $count";
+}
+</pre>
+visit: http://localhost/fcgi-bin/test.fpl.
+</ol>
+<h2>Refer</h2>
+<ul>
+<li>搜索"Fastcgi中文参考手册"，此文档由hoowa所写。
+<li><a href="http://www.fastcgi.com/devkit/doc/fastcgi-prog-guide/ch3perl.htm#3659">http://www.fastcgi.com/devkit/doc/fastcgi-prog-guide/ch3perl.htm#3659</a>
+</ul></div>
+<p><&lt;Previous: <a href="wwwsf4.cn.html">WWW Security FAQ: CGI Scripts</a>&nbsp;&nbsp;>>Next: <a href="mp3_ID3v1Tag.html">如何设置mp3文件的ID3v1Tag</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E5%A6%82%E4%BD%95%E5%AE%89%E8%A3%85FastCGI&url=http://www.fayland.org/journal/FastCGI_i.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='wwwsf4.cn.html'>WWW Security FAQ: CGI Scripts</a> < <span class='digit'>2004-11-10 22:30:44</span> ></li><li><a href='GoogleGroup.html'>WWW::Mechanize && Google Group</a> < <span class='digit'>2005-04-13 18:49:43</span> ></li></ul>
+Created on <span class="digit">2004-11-15 22:04:48</span>, Last modified on <span class="digit">2004-11-15 23:58:34</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

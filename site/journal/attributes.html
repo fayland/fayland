@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>attributes 用法介绍</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="ShareURL0511.html">Share the URLs (November 2005)</a>&nbsp;&nbsp;>>Next: <a href="svk_notes.html">svk 的一些使用纪录</a></p>
+<h1>attributes 用法介绍</h1>
+<div class='content'>
+<p>Category: <a href='Modules.html'>Modules</a> &nbsp; Keywords: <b>attributes</b></p>用过 <a href="http://dev.catalyst.perl.org">Catalyst</a> 的人都知道 Catalyst 的 action 都要用 : Global, : Local, : Path(), : Regex 等等来 register.<br />这种 sub subroutine : attributes 虽然在 perldoc <a href='http://perldoc.perl.org/attributes.html'>attributes</a> 里说还是试验性的，但是看起来不会再有大的改变。<br />不过代码写起来却不是很舒服。我不打算翻译 attributes, 而是写几个简单的例子来试验试验其在 sub 上的功能。<p />一个最最简单的例子是：<br /><pre>use strict;<p />test();<p />sub MODIFY_CODE_ATTRIBUTES {<br />    my ($pkg, $ref, @attrs) = @_;<p />    print "$pkg\n";<br />    print "attrs: $_\n" foreach @attrs;<p />    return;<br />}<p />sub test : attribute {<br />    print "test";<br />}<p />1;</pre>输出的结果：<br /><pre>main<br />attrs: attribute<br />test</pre><ul>简单的解释一下：<br /><li>MODIFY_CODE_ATTRIBUTES 根据 perldoc <a href="http://search.cpan.org/perldoc?attributes">attributes</a> 的介绍，将对每一个拥有 attributes 属性后缀的子程序都执行一次。而且对于子程序的执行时间是在 complie 编译时执行。所以 main attrs: attribute 会出现在 test 前面。</li><li>my ($pkg, $ref, @attrs) = @_; 这三个参数分别对应 包名（这里是 main），$ref 为拥有后缀的子程序的引用（这里的 $ref 差不多是 \&test），而 @attrs 就是那属性后缀名。为什么这里是用 @attrs 是因为属性后缀可以是多个。比如 sub test : attribute kisssherry { 的话我们的输出就会变为<br /><pre>main<br />attrs: attribute<br />attrs: kisssherry<br />test</pre>@attrs 接收了 attribute 和 kisssherry</li><li>另外得注意的是返回。return 1 是绝对不允许的，return 返回的必须是一个属性列表，作用是配合类继承。<br /></ul>这个返回值怎么配合类继承我也不太明白。一般的做法就是类似 Catalyst 的做法。弄一个 Package 专门用于解析 attributes, 然后将它们保存下来：<br /><pre>package Catalyst::AttrContainer;<p />use strict;<br />use base qw/Class::Data::Inheritable Class::Accessor::Fast/;<p />use Catalyst::Exception;<br />use NEXT;<p />__PACKAGE__->mk_classdata($_) for qw/_attr_cache _action_cache/;<br />__PACKAGE__->_attr_cache( {} );<br />__PACKAGE__->_action_cache( [] );<p /># note - see attributes(3pm)<br />sub MODIFY_CODE_ATTRIBUTES {<br />    my ( $class, $code, @attrs ) = @_;<br />    $class->_attr_cache( { %{ $class->_attr_cache }, $code => [@attrs] } );<br />    $class->_action_cache(<br />        [ @{ $class->_action_cache }, [ $code, [@attrs] ] ] );<br />    return ();<br />}<p />sub FETCH_CODE_ATTRIBUTES { $_[0]->_attr_cache->{ $_[1] } || () }</pre>唯一使用了这个类的 Catalyst 模块是 Catalyst::Base;<br /><pre>package Catalyst::Base;<p />use strict;<br />use base qw/Catalyst::Component Catalyst::AttrContainer Class::Accessor::Fast/;<p />...</pre>这样诸位应当知道为什么我们每在一个 Controller 里都要写上 use base 'Catalyst::Base'; 了吧。它的目的就是解析类如 Global/Path/Local 等 attributes. 没写 use base 'Catalyst::Base'; 的话，action 里根本就不会出现你写的 Controller.<br />而即使现在的 Catalyst 将 Catalyst::Base 拆分为 Catalyst::Controller Catalyst::Model Catalyst::View 后， Catalyst::Controller 目前的代码也只是：<br /><pre>package Catalyst::Controller;<p />use strict;<br />use base qw/Catalyst::Base/;<p />1;</pre>另外有个 <a href='http://perldoc.perl.org/Attribute/Handlers.html'>Attribute::Handlers</a> 用于专门处理 attributes, 其实也差不多，看看 perldoc 就 OK 了。</div>
+<p><&lt;Previous: <a href="ShareURL0511.html">Share the URLs (November 2005)</a>&nbsp;&nbsp;>>Next: <a href="svk_notes.html">svk 的一些使用纪录</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=attributes%20%E7%94%A8%E6%B3%95%E4%BB%8B%E7%BB%8D&url=http://www.fayland.org/journal/attributes.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='ShareURL0506.html'>Share the URLs (June 2005)</a> < <span class='digit'>2005-06-01 23:51:11</span> ></li><li><a href='ShareURL0504.html'>Share the URLs with u (Apr. 2005)</a> < <span class='digit'>2005-04-01 10:18:51</span> ></li><li><a href='ShareURL0505.html'>Share the URLs with u (May 2005)</a> < <span class='digit'>2005-05-10 22:16:17</span> ></li><li><a href='ShareURL0509.html'>Share the URLs (September 2005)</a> < <span class='digit'>2005-09-22 12:29:39</span> ></li><li><a href='ShareURL0510.html'>Share the URLs (October 2005)</a> < <span class='digit'>2005-10-08 10:38:10</span> ></li><li><a href='ShareURL0511.html'>Share the URLs (November 2005)</a> < <span class='digit'>2005-11-07 18:55:57</span> ></li><li><a href='ShareURL0512.html'>Share the URLs (December 2005)</a> < <span class='digit'>2005-12-01 00:13:53</span> ></li></ul>
+Created on <span class="digit">2005-12-01 00:03:06</span>, Last modified on <span class="digit">2005-12-01 00:08:55</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

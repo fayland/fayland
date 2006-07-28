@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Tips from Perl Best Practices, Part 2</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Utils.html">Scalar::Util, List::Util, List::MoreUtils</a>&nbsp;&nbsp;>>Next: <a href="ShareURL0509.html">Share the URLs (September 2005)</a></p>
+<h1>Tips from Perl Best Practices, Part 2</h1>
+<div class='content'>
+<p>Category: <a href='BookNotes.html'>BookNotes</a> &nbsp; Keywords: <b>tips Perl Best Practices</b></p><p>没时间看 Perl Best Practices 或不喜欢看英文的可以看看本文。<br />
+我还是推荐看原版书的。因为所有的 practices, Damain Conway 都解释了为什么。而我只是把它们摘录一些出来。</p>
+
+<ul>
+<li>Don't use bareword filehandles, Use indirect filehandles.<br />
+不要使用裸字句柄，而使用间接句柄。
+
+<pre><s>open FILE, '<', $filename
+    or croak "Can't open '$filename': $OS_ERROR";</s>
+open my $FILE, '<', $filename
+    or croak "Can't open '$filename': $OS_ERROR";
+$next_line = <$FILE>;</pre>
+二者的区别在于裸字句柄纪录在符号表中，而间接句柄只定义了一个词法作用域变量。<br />
+裸字句柄你无法知晓是否会构成冲突，而间接句柄却很明显，一旦打开了 warnings ,重复定义就会引发警告：
+<pre>"my" variable $FILE masks earlier declaration in same scope</pre>
+
+<li>Always put filehandles in braces within any print statement.<br />
+在任何 print 语句中用大括号将句柄括起来。
+
+<pre><s>print $file $name, $rank, $serial_num, "\n";</s>
+print {$file} $name, $rank, $serial_num, "\n";</pre>
+<li>关于测试/test<br />
+<ol>
+<li>写长代码之前先写短测试
+<li>使用 Test::Simple 或 Test::More 来写测试 *.t 文件
+<li>使用 Test::Harness/prove 来运行目录下所有 *.t 文件
+</ol>
+这就是一个简单的测试流程。当你添加或修改一个测试文件后，简单的再次运行 prove -r 就可以了。（prove 是使用 Test::Harness 的一个程序，在 bin 目录下）<br />
+它会自动搜索目录和子目录下的 *.t 文件，然后输出测试结果。
+</ul>
+
+<h3>LAST</h3>
+<p>抱歉，实在摘不了什么东西了。其他太复杂，我也是半懂不懂，所以就免摘了。<br />
+Perl Best Practices 我也大致看完了一遍（当然是跳着看的）。<br />
+怎么讲呢，这么多 practices 中让我觉得有可以采纳的地方又有不以为然的地方。<br />
+比如他讲类的时候花了很多篇幅讲他写一个模块 Class::Std, 虽然这模块真的非常棒，但我总感觉使不上力。<br />
+这本书用我的话讲就是不是标准配备书（必备书），更适合于扩展自己对 Perl 某些地方或细节的理解。<br />
+我个人比较敬佩 Damian Conway 先生，如果此书出中文版，我还是很乐意掏钱买一本的。
+</p></div>
+<p><&lt;Previous: <a href="Utils.html">Scalar::Util, List::Util, List::MoreUtils</a>&nbsp;&nbsp;>>Next: <a href="ShareURL0509.html">Share the URLs (September 2005)</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Tips%20from%20Perl%20Best%20Practices,%20Part%202&url=http://www.fayland.org/journal/PBP3.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='PBP2.html'>Tips from Perl Best Practices</a> < <span class='digit'>2005-09-13 16:57:52</span> ></li><li><a href='PerlTidy.html'>PerlTidy</a> < <span class='digit'>2004-10-30 19:23:26</span> ></li><li><a href='Highlight.html'>如何将Perl代码着色</a> < <span class='digit'>2004-11-20 22:13:22</span> ></li><li><a href='ask_tim.html'>Perl 6 什么时候才能完成？</a> < <span class='digit'>2004-12-30 18:42:06</span> ></li><li><a href='Perl6_ES14.html'>has $.Examples14 handles 'Perl6';</a> < <span class='digit'>2005-06-02 01:38:59</span> ></li><li><a href='050312.html'>给 eclipse 安装 EPIC plug-in</a> < <span class='digit'>2005-03-12 20:56:04</span> ></li><li><a href='050401.html'>Win32 下 Apache 和 #!/usr/bin/perl</a> < <span class='digit'>2005-04-01 10:10:59</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li><li><a href='Perl6_ES0.html'>@Examples[0] is Perl6</a> < <span class='digit'>2005-05-19 20:26:08</span> ></li><li><a href='Perl6_ES1.html'>given @Examples[1] when Perl6</a> < <span class='digit'>2005-05-19 22:05:56</span> ></li><li><a href='Perl6_ES2.html'>@Perl6 <== @Examples xx 2</a> < <span class='digit'>2005-05-20 18:53:54</span> ></li><li><a href='Perl6_ES3.html'>my Perl6 @Examples[3]</a> < <span class='digit'>2005-05-21 13:53:16</span> ></li><li><a href='Perl6_ES4.html'>say q:2 '@*Examples.[4] &Perl6()';</a> < <span class='digit'>2005-05-22 12:24:12</span> ></li><li><a href='Perl6_ES5.html'>sub Perl6 (*@Examples[5] is copy)</a> < <span class='digit'>2005-05-22 15:37:26</span> ></li><li><a href='Perl6_ES6.html'>multi sub Examples (6, Perl6) {...}</a> < <span class='digit'>2005-05-23 22:43:33</span> ></li><li><a href='Perl6_ES7.html'>sub infix:<(7)> ($Perl6, @Examples)</a> < <span class='digit'>2005-05-24 02:16:42</span> ></li><li><a href='Perl6_ES8.html'>let @Examples[8] = 'Perl6';</a> < <span class='digit'>2005-05-24 13:05:58</span> ></li><li><a href='050524.html'>The Shanghai PerlMonger meeting</a> < <span class='digit'>2005-05-24 20:41:25</span> ></li><li><a href='Perl6_ES9.html'>Perl6 | Examples & 9 ^ junction</a> < <span class='digit'>2005-05-26 12:35:29</span> ></li><li><a href='Perl6_ES10.html'>%Examples{'IO'} = open('Perl6');</a> < <span class='digit'>2005-05-30 00:24:01</span> ></li><li><a href='Perl6_ES11.html'>class Examples11 is Perl6 { ... }</a> < <span class='digit'>2005-05-30 13:31:31</span> ></li><li><a href='Perl6_ES12.html'>$Perl6 = $class.bless(:Example<12>);</a> < <span class='digit'>2005-05-31 11:38:46</span> ></li><li><a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> < <span class='digit'>2005-05-31 18:22:03</span> ></li><li><a href='Perl6_ES16.html'>my subtype Examples16 of Perl6 where /^kissu$/</a> < <span class='digit'>2005-06-04 23:59:29</span> ></li><li><a href='Perl6_ES17.html'>my enum Example17 <<:Perl(6) Today>></a> < <span class='digit'>2005-06-05 12:14:08</span> ></li><li><a href='Perl6_ES18.html'>my $queen; rule me {Perl6|Examples18}</a> < <span class='digit'>2005-06-06 12:26:32</span> ></li><li><a href='Perl6_ES19.html'>m:nth(19)/Perl6Examples/</a> < <span class='digit'>2005-06-06 22:02:01</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li><li><a href='mod_perl_learning.html'>a schedule of mod_perl learning</a> < <span class='digit'>2005-11-12 21:53:55</span> ></li><li><a href='mod_perl_configuring.html'>mod_perl 配置的一些指令</a> < <span class='digit'>2005-11-13 11:38:05</span> ></li><li><a href='modperl_helloworld.html'>modperl Apache2::HelloWorld</a> < <span class='digit'>2005-11-16 23:24:07</span> ></li><li><a href='pod2cn.html'>Perl 核心模块中文化</a> < <span class='digit'>2005-11-20 21:43:52</span> ></li><li><a href='modperl_http_cycle.html'>modperl 服务器的运行阶段和句柄</a> < <span class='digit'>2005-11-22 15:33:08</span> ></li><li><a href='modperl_PerlTransHandler.html'>modperl 的 PerlTransHandler 应用</a> < <span class='digit'>2005-11-23 22:24:02</span> ></li><li><a href='modperl_PerlAuthenHandler.html'>modperl 的用户验证</a> < <span class='digit'>2005-11-26 00:08:37</span> ></li><li><a href='modperl_Filter_part1.html'>modperl Filter Part1</a> < <span class='digit'>2005-12-18 14:47:29</span> ></li><li><a href='perldoc_ie.html'>用 IE 来浏览 perldoc</a> < <span class='digit'>2005-12-28 13:53:02</span> ></li></ul>
+Created on <span class="digit">2005-09-22 00:29:34</span>, Last modified on <span class="digit">2005-09-22 01:06:00</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

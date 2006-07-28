@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+# convert gb2312 encoding webpage to utf-8 in a directory
+use strict;
+use warnings;
+use Encode qw/from_to/; # load the main func.
+
+# setting
+my $dir = 'E:/Fayland/Emag/0503'; # the directory u want to convert.
+
+# get all .html? files
+opendir(DIR, $dir);
+my @file = readdir(DIR);
+closedir(DIR);
+@file = grep(/\.html?$/, @file);
+
+# convertion
+foreach (@file) {
+	# get the file data;
+	open(FH, "$dir/$_");
+	my @data = <FH>;
+	close(FH);
+	my $data = join("", @data);
+	if ($data =~ /charset\=gb2312/) { # it's not utf-8 yet
+		$data =~ s/charset\=gb2312/charset\=utf-8/s;
+		from_to($data, "gb2312", "utf8");	
+		open(FH, ">$dir/$_");
+		print FH $data;
+		close(FH);
+		print "$_ convert success!\n";
+	} else {
+		print "$_ is already utf-8\n";
+	}
+}

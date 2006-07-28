@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>在 Win32 下安装 Bugzilla</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="glossary.html">常见术语翻译与解释</a>&nbsp;&nbsp;>>Next: <a href="050307.html">The project of Synopsis localization</a></p>
+<h1>在 Win32 下安装 Bugzilla</h1>
+<div class='content'>
+<p>Category: <a href='InstallNote.html'>InstallNote</a> &nbsp; Keywords: <b>Bugzilla</b></p><a href='http://www.bugzilla.org/'>Bugzilla</a> 是由 Perl 编写的 bug tracing 系统。<br>
+我一向对大型 Perl Script 非常着迷，认为读懂它们会让人受益匪浅。所以下了寒假出的版本试着安装了下。<br>
+sf.net 那有 Bugzilla 的汉化版，因为我只是想看源代码所以就下了原版。<br>
+<pre>
+Env: Win2000(SP4)+Apache/2.0.50+Perl/v5.8.4+MySQL/4.1.7
+Bugzilla version: 2.18
+</pre>
+<h2>Step by Step</h2>
+<ol>
+<li><a href='http://www.bugzilla.org/download/'>http://www.bugzilla.org/download/</a> 下载 Stable Release.
+<li>解压缩到安装目录（ eg, E:\Fayland\bugzilla ），阅读 QUICKSTART
+<li>运行 cmd 或用 phpMyAdmin, 来建造数据库 bugs 和用户 bugs/bugs
+<pre>
+C:\mysql\bin>mysql -u root
+mysql>create database bugs;
+mysql>GRANT SELECT,INSERT,UPDATE,DELETE,INDEX,ALTER,CREATE,LOCK TABLES,DROP,REFERENCES ON bugs.* TO bugs@localhost IDENTIFIED BY 'bugs';
+mysql>FLUSH PRIVILEGES;
+</pre>
+<li>运行 cmd
+<pre>E:\Fayland\bugzilla>perl checksetup.pl</pre>
+<ul>
+<li>此脚本第一件要做的是检查依存模块是否存在，版本号是否够新。如果不存在或不够新就需要安装新的。像我就安装了 Date::Format, Chart::Base, PatchReader. 其中 cpan Date::Format 还提示找不到，只好到 <a href='http://search.cpan.org'>http://search.cpan.org</a> 搜索来安装了下。
+<li>第一次运行后安装目录下会生成 localconfig 文件，可用记事本打开。我设置了如下东西：
+<pre>$db_pass = 'bugs';</pre>
+其他可以根据自己需要来设置。
+<li>再一次运行checksetup.pl, 脚本将检测是否可以连接数据库。如果连接成功将建立一些数据表，不成功的话重新改 localconfig 或调试 mysql.
+<li>数据表建立后会让你设置 admin account, 输入 email 和 password, OK.
+</ul>
+<li>perl checksetup.pl 完全成功后，配制 Apache 的 httpd.conf
+<pre><code># bugzilla
+Alias /bugzilla "E:/Fayland/bugzilla/"
+&lt;Directory "E:/Fayland/bugzilla/">
+	Options +ExecCGI
+	AllowOverride Limit 
+	DirectoryIndex index.cgi
+	AddHandler cgi-script .cgi
+&lt;/Directory></code></pre>
+<li>打开 Firefox 或 IE, <a href='http://localhost/bugzilla/'>http://localhost/bugzilla/</a>. 出现界面后，Log in, 然后设置参数/Parameters
+<pre>urlbase = http://localhost/bugzilla/
+cookiepath = /bugzilla/
+sendmailnow = off
+....</pre>
+因为我没 sendmail, 所以把 sendmailnow 设置为 off.<br>
+参数设置的左边都有个 Reset, 是恢复到默认设置的意思。
+</ol>
+
+<h2>Refrence</h2>
+<a href='http://ebugs.org/bugzilla/2.php'>http://ebugs.org/bugzilla/2.php</a></div>
+<p><&lt;Previous: <a href="glossary.html">常见术语翻译与解释</a>&nbsp;&nbsp;>>Next: <a href="050307.html">The project of Synopsis localization</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E5%9C%A8%20Win32%20%E4%B8%8B%E5%AE%89%E8%A3%85%20Bugzilla&url=http://www.fayland.org/journal/bugzilla.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Apocalypse.html'>Perl 6 Apocalypse</a> < <span class='digit'>2005-02-28 12:30:10</span> ></li><li><a href='Apocalypse1.html'>Apocalypse 1 / 启示录一</a> < <span class='digit'>2005-02-28 17:55:10</span> ></li><li><a href='Apocalypse_005.html'>Apocalypse RFC 005</a> < <span class='digit'>2005-03-02 23:58:33</span> ></li></ul>
+Created on <span class="digit">2005-03-03 20:32:01</span>, Last modified on <span class="digit">2005-03-03 20:36:31</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

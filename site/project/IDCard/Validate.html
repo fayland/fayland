@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/CPAN.css" type="text/css" />
+<title>中国身份证验证模块</title>
+</head>
+<body>
+<p align='center'>Back to <a href="http://www.fayland.org/">HomePage</a></a>
+
+<h1>中国身份证验证模块</h1>
+<div class='content'>
+
+<h2>算法/Algorithm</h2>
+18位身份证标准在国家质量技术监督局于1999年7月1日实施的GB11643-1999《公民身份号码》中做了明确的规定。 GB11643-1999《公民身份号码》为GB11643-1989《社会保障号码》的修订版，其中指出将原标准名称"社会保障号码"更名为"公民身份号码"，另外GB11643-1999《公民身份号码》从实施之日起代替GB11643-1989。GB11643-1999《公民身份号码》主要内容如下：
+<p>
+一、范围<BR>
+该标准规定了公民身份号码的编码对象、号码的结构和表现形式，使每个编码对象获得一个唯一的、不变的法定号码。<p>
+二、编码对象<BR>
+公民身份号码的编码对象是具有中华人民共和国国籍的公民。<p>
+三、号码的结构和表示形式<p>
+1、号码的结构<BR>
+公民身份号码是特征组合码，由十七位数字本体码和一位校验码组成。排列顺序从左至右依次为：六位数字地址码，八位数字出生日期码，三位数字顺序码和一位数字校验码。<p>
+2、地址码<BR>
+表示编码对象常住户口所在县(市、旗、区)的行政区划代码，按GB/T2260的规定执行。<p>
+3、出生日期码<BR>
+表示编码对象出生的年、月、日，按GB/T7408的规定执行，年、月、日代码之间不用分隔符。<p>
+4、顺序码<BR>
+表示在同一地址码所标识的区域范围内，对同年、同月、同日出生的人编定的顺序号，顺序码的奇数分配给男性，偶数分配给女性。<p>
+5、校验码<BR>
+（1）十七位数字本体码加权求和公式<BR>
+S = Sum(Ai * Wi), i = 0, ... , 16 ，先对前17位数字的权求和<BR>
+Ai:表示第i位置上的身份证号码数字值<BR>
+Wi:表示第i位置上的加权因子<BR>
+Wi: 7 9 10 5 8 4 2 1 6 3 7 9 10 5 8 4 2 <br>
+（2）计算模<BR>
+Y = mod(S, 11)<br>
+（3）通过模得到对应的校验码<BR>
+Y: 0 1 2 3 4 5 6 7 8 9 10<BR>
+校验码: 1 0 X 9 8 7 6 5 4 3 2<p>
+
+参考资料：
+<ul>
+<li><a href='http://www.weste.net/2004/10-26/0839344562.html'>C#实现的18位身份证格式验证算法</a>
+<li><a href='http://dev.csdn.net/article/63/63451.shtm'>18位身份证号码验证算法代码</a>
+</ul>
+
+<h2>Example</h2>
+安装模块可以从命令行
+<pre>cpan Business::CN::IdentityCard</pre>
+也可以<a href='../CPAN/Business-CN-IdentityCard-0.05.tar.gz'>在此下载</a>。<p>
+<pre><code>
+use Business::CN::IdentityCard;
+
+my $id = '11010519491231002X'; # 你所获得的身份证号码
+my $idv = new Business::CN::IdentityCard;
+if ($idv->validate($id)) { # 调用 validate
+    print 'Pass';
+    print $idv->gender; # 返回性别，默认为中文的“男”或“女”
+    print $idv->gender('EN'); # 返回英文性别： Male|Female
+    print $idv->birthday; # 生日，类如： 1975-10-31
+    print $idv->province; # 省份，用中文表示
+    print $idv->district; # 地区
+} else {
+    print $idv->err; # 错误类型，比如 BIRTHDAY PROVINCE 等
+    print $idv->errstr; # 详细错误信息
+}
+</code></pre>
+
+<h2>CHANGES</h2>
+<ol>
+<li>Adam Kennedy report a bug like this:
+<pre>
+Fayland
+
+I have just filed an RT bug against China::IdentityCard::Validate 
+regarding it's name, which is unusual and quite out of place.
+
+Countries to not have top level CPAN namespaces.
+
+Must number modules like yours currently exist in the Business:: 
+namespace, which you result in your module being better named.
+
+Business::CN::IdentityCard
+
+....
+</pre>
+So I changed the module name from 'China::IdentityCard::Validate' to 'Business::CN::IdentityCard'
+</li>
+<li>Joe Jiang reported me a bug, that the regex for birthday was wrong. I updated the module, thanks for joe's help.</li>
+<li><a href='http://search.cpan.org/~chunzi'>chunzi</a> 提供了一个加强版的原型。此版本是在那基础上修改的。Thanks chunzi.
+</ul></div>
+<p>Copyright 2004-2005 All Rights Reserved.</p>
+</body>
+</html>

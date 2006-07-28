@@ -1,0 +1,498 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Parrot 术语</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="lwall-quotes.html">Larry Wall Quotes</a>&nbsp;&nbsp;>>Next: <a href="050423.html">Day [05.4.23] stay with me</a></p>
+<h1>Parrot 术语</h1>
+<div class='content'>
+<p>Category: <a href='Translation.html'>Translation</a> &nbsp; Keywords: <b>porrot</b></p><p>
+原文位于 <a href="//www.parrotcode.org/glossary.html">http://www.parrotcode.org/glossary.html</a>
+</p>
+
+
+<h2>SUMMARY</h2>
+<p>
+
+Short descriptions of words you might need to know that show up in Parrot development.
+</p>
+
+
+<p>
+一些在 Parrot 开发中出现的您应该要知道的词的简短描述. 
+</p>
+
+
+<h2>GLOSSARY</h2>
+<h3>Continuations</h3>
+<p>
+
+Think of continuations as an execution "context". This context includes everything local to that execution path, not just the stack. It is a snapshot in time (minus global variables). While it is similar to C's setjmp (taking the continuation)/longjmp (invoking the continuation), longjmp'ing only works "down" the stack; jumping "up" the stack (ie, back to a frame that has returned) is bad. Continuations can work either way.
+</p>
+
+
+<p>
+您可以将 continuations 当成一个可以执行的“上下文”。此上下文包括所有局部的东西到那个可执行路径，而不仅仅是堆栈。它是那个时间的一个快照（减去全局变量）。它有点类似 C 语言中的 setjmp（捕获 continuation）/longjmp（调用 continuation）。longjmp只作用于向下的堆栈与jumping只作用于向上的（像后退到一个返回的框架），这很糟糕。而 continuation 能作用于任一情况。 
+</p>
+
+
+<p>
+We can do two important things with continuations:
+</p>
+
+
+<p>
+我们可以用 continuations 做两件重要的事: 
+</p>
+
+
+<p>
+1. Create and pass a continuation object to a subroutine, which may recursively pass that object up the call chain until, at some point, the continuation can be called/executed to handle the final computation or return value. This is pretty much tail recursion.
+</p>
+
+
+<p>
+创建和传递一个 continuation 对象到一个子程序，此子程序可以递归传递此对象到调用链，直到在某一点，continuation 被调用/运行去处理最后的计算或返回值。这几乎是尾部递归。
+</p>
+
+
+<p>
+2. Continuations can be taken at an arbitrary call depth, freezing the call chain (context) at that point in time. If we save that continuation object into a variable, we can later reinstate the complete context by its "handle". This allows neat things like backtracking that aren't easily done in conventional stacked languages, such as C. Since continuations represent "branches" in context, it requires an environment that uses some combination of heap-based stacks, stack trees and/or stack copying.
+</p>
+
+
+<p>
+Continuations 能用于任一调用深度，在某点及时地冻结一个调用链（上下文）。如果你保存了此 continuation 对象到一个变量，那么我们可以通过它的句柄来恢复全部的上下文。这就提供了了某些灵巧的东西如回溯，这在传统的堆栈语言中（如 C )并不容易做到。因为 continuations 类似于上下文的“分支”，它要求一个由堆积的堆栈/heap-based stacks，堆栈树和（或）堆栈复制品联合而成的环境。
+</p>
+
+
+<p>
+It is common in a system that supports continuations to implement co-routines on top of them.
+</p>
+
+
+<p>
+在那些支持 continuations 的系统顶部执行 co-routines 是很寻常的。
+</p>
+
+
+<p>
+A continuation is a sort of super-closure. When you take a continuation, it makes a note of the current call stack and lexical scratchpads, along with the current location in the code. When you invoke a continuation, the system drops what it's doing, puts the call stack and scratchpads back, and jumps to the execution point you were at when the continuation was taken. It is, in effect, like you never left that point in your code.
+</p>
+
+
+<p>
+一个 continuation 是一种高级闭包/super-closure。当你捕获一个 continuation 时，它便记录了当前的调用堆栈和 lexical scratchpads，连同代码的当前位置。当你调用一个 continuation 时，系统便撤消您正在所做的，将调用堆栈和scratchpads（中间结果暂存器）退回来，并跳回你捕获 continuation 时的那个执行点。它实际上非常像你从来没有离开过代码中的那个点。
+</p>
+
+
+<p>
+Note that, like with closures, it only puts the <b>scratchpads</b> back in scope - it doesn't do anything with the values in the variables that are in those scratchpads.
+</p>
+
+
+<p>
+注意：类似闭包，它只将作用域里的 <b>scratchpads</b> 退回来 - 它不对那些在 scratchpads 中变量的值做任何改变。
+</p>
+
+
+<h3>Co-Routines/协同例程</h3>
+<p>
+
+Co-routines are virtually identical to normal subroutines, except while subroutines always execute from their starting instruction to where they return, co-routines may suspend themselves (or be suspended asynchronously if the language permits) and resume at that point later. We can implement things like "factories" with co-routines. If the co-routine never returns, every time we call it, we "resume" the routine.
+</p>
+
+
+<p>
+Co-routines 事实上与一般的子程序没啥区别，除了子程序总是从他们的开始指令一直运行到返回值，而 co-routines 可以悬挂（推迟）自己（或者如果语言允许可以不同时的（异步）被悬挂）和在稍候从那一点继续执行。我们可以用 co-routines 来实现一个类似“工厂”的东西，只要它没有返回值，每次您调用它，我们就继续执行“生产流程”。
+</p>
+
+
+<p>
+A co-routine is a subroutine that can stop in the middle, and start back up later at the point you stopped. For example:
+</p>
+
+
+<p>
+co-routine 是一个可以在中途停止和在稍候在那停止的点上继续运行的子程序。例如： 
+</p>
+
+
+<blockquote><pre>sub sample : coroutine {
+   print "A\n";
+   yield;
+   print "B\n";
+   return;
+}
+
+sample();
+print "Foo!\n";
+sample();
+
+</pre></blockquote>
+<p>
+will print
+</p>
+
+
+<p>
+会输出
+</p>
+
+
+<blockquote><pre>A
+Foo!
+B
+
+</pre></blockquote>
+<p>
+Basically, the yield keyword says, "Stop here, but the next time we're called, pick up at the next statement." If you return from a co-routine, the next invocation starts back at the beginning. Co-routines remember all their state, local variables, and suchlike things.
+</p>
+
+
+<p>
+主要是, 关键词 yield 像是在说, “在这停下，但我们下次叫您的时候，在下一语句继续前进”；假设当一个 co-routine 有返回值，那下次的调用会从程序的头部开始。Co-routines 能记住它所有的 state，本地变量，和类似的东西。
+</p>
+
+
+<h3>COW</h3>
+<p>
+
+COW stands for Copy On Write. This is a pure speed-hack technique that copies strings without actually copying the string data until it's absolutely necessary.
+</p>
+
+
+<p>
+COW 是 Copy On Write 的缩写。这是一个纯粹 加速/speed-hack 技术，它复制字符串但实际上没有复制它的数据，只到它真正有用的时候才复制。
+</p>
+
+
+<p>
+If you have a string A, and make a copy of it to get string B, the two strings should be identical, at least to start. With COW, they are, because string A and string B aren't actually two separate strings - they're the same string, marked COW. If either string A or string B are changed, the system notes it and only at that point does it make a copy of the string and change it.
+</p>
+
+
+<p>
+假设您有一个字符串A，而且将它复制到B，至少在开始，这两个字符串应当是一样的。而用了 COW ，字符串A和B实际上就不是分离的字符串，它们是被 COW 打上标记为相同的字符串。如果字符串A或B改变了，系统会记录下来，而且只在需要的那个点时才对字符串做拷贝并改变它。 
+</p>
+
+
+<p>
+If the program never actually changes the string - something that's fairly common - the program need never make a copy, saving both memory and time.
+</p>
+
+
+<p>
+如果程序一直不改变这个字符串 - 这是一件很寻常的事 - 程序就永不会复制过去，这样就节省了内存和时间。
+</p>
+
+
+<h3>DOD</h3>
+<p>
+
+Dead Object Detection is the process of sweeping through all the objects, variables, and whatnot inside of Parrot, and deciding which ones are in use and which ones aren't. The ones that aren't in use are then freed up for later reuse. (After they're destroyed, if active destruction is warranted.)
+</p>
+
+
+<p>
+Dead Object Detection（废弃对象侦查）是一个扫描所有对象，变量和不是 Parrot 内部的东西，然后决定哪些是正在使用和哪些不是的过程。那些不在用的东西将被释放以等待下次的重新使用。（在它们被销毁之后，如果积极销毁是有担保的。） 
+</p>
+
+
+<p>
+See also: "GC"
+</p>
+
+
+<h3>GC</h3>
+<p>
+
+Garbage Collection is the process of sweeping through all the active objects, variables, and structures, marking the memory they're using as in use, and all other memory is freed up for later reuse.
+</p>
+
+
+<p>
+Garbage Collection（碎片收集）是一个扫描所有有效对象，变量和结构的过程，标记它们使用的内存为正在使用，而释放其他所有的内存，为下一次的重新使用。
+</p>
+
+
+<p>
+Garbage Collection and Dead Object Detection are separate in Parrot, since we generally chew through memory segments faster than we chew through objects. (This is a characteristic peculiar to Perl and other languages that do string processing. Other languages chew through objects faster than memory)
+</p>
+
+
+<p>
+Garbage Collection 和 Dead Object Detection 在 Parrot 中是分离开来的，因为我们通常认为从内存段中读取比从对象中读取要快。（这里有一个 Perl 和其他语言所有的特权是是做字符串处理。其他语言读取对象比内存快。）
+</p>
+
+
+<p>
+See also: "DOD"
+</p>
+
+
+<h3>ICU</h3>
+<p>
+
+International Components for Unicode
+</p>
+
+
+<p>
+Unicode 国际组件
+</p>
+
+
+<p>
+ICU is a C and C++ library that provides support for Unicode on a variety of platforms. It was added to Parrot with the 0.0.8 release to provide future unicode support.
+</p>
+
+
+<p>
+ICU 是一个 C 与 C++ 库，用来支持在不同平台上的 Unicode。它在 0.0.8 版本中被增加到Parrot用来支持未来的Unicode。
+</p>
+
+
+<p>
+<a href="//oss.software.ibm.com/icu/index.html">http://oss.software.ibm.com/icu/index.html</a>
+</p>
+
+
+<h3>IMC</h3>
+<p>
+
+Parrot Intermediate Code. A medium-level assembly language for Parrot that hides messy details like register allocation so language compiler writers who target IMC don't have to roll their own.
+</p>
+
+
+<p>
+Parrot Intermediate Code（Parrot中间码）。一个中等级别的汇编语言用来给Parrot隐藏杂乱的细节如寄存器分配，这样那些以 IMC 为目标的语言编译器作者就不用考虑这些。
+</p>
+
+
+<p>
+See also IMCC, PIR.
+</p>
+
+
+<h3>IMCC</h3>
+<p>
+
+Parrot's Intermediate Code Compiler, which started its life as an improved Parrot assembler, and eventually became so integrated with Parrot that it became the Parrot executable (being able to load and run PBC files, PASM files or IMC files).
+</p>
+
+
+<p>
+Parrot's Intermediate Code Compiler（Parrot中间码编译器），它开始只当自己是一个改良的 Parrot 汇编器，而最后成为 Parrot 的一部分且成为可执行的 Parrot（它能加载和运行 PBC, PASM, IMC 文件）。 
+</p>
+
+
+<h3>Packfile</h3>
+<p>
+
+Another name for a PBC file, due to the names used for data structures in one of the early implementations. You can see the initial commit of the PackFile.pm implementation, with the rationale for the name here:
+</p>
+
+
+<p>
+PBC 文件的另一个名字，因为此名字用于某一早期实现中的数据结构。您可以参见实现 PackFile.pm 的最初提案，取为此名的基本原理在此 
+</p>
+
+
+<p>
+<a href="//cvs.perl.org/cgi/viewcvs.cgi/parrot/lib/Parrot/PackFile.pm?sortby=log">http://cvs.perl.org/cgi/viewcvs.cgi/parrot/lib/Parrot/PackFile.pm?sortby=log</a>
+</p>
+
+
+<h3>PBC</h3>
+<p>
+
+Parrot Byte Code. The name for the "executable" files that can be passed to the Parrot interpreter for immediate execution (although PASM and IMC files can be executed directly, too).
+</p>
+
+
+<p>
+Parrot Byte Code（Parrot二进制代码）. 此名是因为它是一个可执行的文件，可以直接在 Parrot 解释器上运行（ PASM 和 IMC 文件也可以被直接运行）。
+</p>
+
+
+<p>
+See also Packfile.
+</p>
+
+
+<h3>PIR</h3>
+<p>
+
+Parrot Intermediate Representation. The original name for IMC. Since it has become the convention to name input files to IMCC with the extension ".imc", IMC is a more natural name, although PIR is still sighted regularly on the &lt;<a href="mailto:perl-internals@perl.org">perl-internals@perl.org</a>&gt; email list.
+</p>
+
+
+<p>
+Parrot Intermediate Representation（Parrot中间表示）。IMC 最初的名字。因为命名一个输入文件为带 ".imc" 后缀的 IMCC 是一个习惯性的约定。IMC 是个更自然的名字，但是 PIR 仍然经常性的在 &lt;<a href="mailto:perl-internals@perl.org">perl-internals@perl.org</a>&gt; 邮件列表中看见。 
+</p>
+
+
+<p>
+See also IMC.
+</p>
+
+
+<h3>PMC</h3>
+<p>
+
+PMC is an acronym for Parrot Magic Cookie. (Or Cracker, your choice.) PMC classes are the primitives that Parrot-based languages use to represent their fundamental types, such as Perl's scalar values.
+</p>
+
+
+<p>
+PMC 是 Parrot Magic Cookie(Or Cracker, 随您选择.)的缩写。 PMC 类是最原始的，这基于Parrot的语言用来表述最基本的类型，类如Perl的标量值($)。
+</p>
+
+
+<h3>Predereferencing</h3>
+<p>
+
+A bytecode transformation technique which reduces the amount of pointer dereferencing done in the inner loop of the interpreter by pre-converting opcode numbers into pointers to their opfuncs, and also converting the register numbers and constant numbers in the arguments to the ops into pointers.
+</p>
+
+
+<p>
+一种字节码的转换技术，通过预先转换操作代码号到操作函数的指针和转换传递给操作的参数中的寄存器号和常量为指针，它减少了在解释器的内部循环中的指针反引用/pointer dereferencing的次数。
+</p>
+
+
+<p>
+The original implementation by Gregor Purdy was posted on 2001-12-11. On one test system, it resulted in a 22% speed increase on a test program with a tight inner loop.
+</p>
+
+
+<p>
+Gregor Purdy 写的最初的实现发表于 2001-12-11。在一个测试系统上，对一个有紧内部循环的程序，它的执行结果有22%的速度提升。
+</p>
+
+
+<p>
+<a href="//archive.develooper.com/perl6-internals@perl.org/msg06941.html">http://archive.develooper.com/perl6-internals@perl.org/msg06941.html</a>
+</p>
+
+
+<p>
+On 2001-12-18, predereferencing got a speed boost (to about 47% faster than the regular DO_OP inner loop -- without compiler optimizations turned on). This was due to an off-list (actually over lunch) suggestion by John Kennedy that instead of pre-initializing the new copy of the bytecode with NULL pointers, we pre-initialize it with pointers to a pseudo-opfunc that does the predereferencing whenever it is encountered.
+</p>
+
+
+<p>
+在2001-12-18, predereferencing 得到一个速度提升（大约比普通 DO_OP 内部循环快47% --- 没有开启编译器优化）。这归功于一个由 John Kennedy 写的 off-list(actually over lunch) 建议，我们预先初始化一个指针到一个当遇上时才 predereferencing 的假操作函数，来代替旧的通过 NULL 指针预先初始化新的字节码拷贝。
+</p>
+
+
+<p>
+On 2002-04-11, Jason Gloudon suggested combining aspects of the Computed Goto Core and the Prederef[erencing] Core.
+</p>
+
+
+<p>
+在 2002-04-11, Jason Gloudon 建议整合 Computed Goto 核心和 Prederef[erencing] 核心。 
+</p>
+
+
+<p>
+<a href="//archive.develooper.com/perl6-internals@perl.org/msg07064.html">http://archive.develooper.com/perl6-internals@perl.org/msg07064.html</a>
+</p>
+
+
+<p>
+The week of 2003-02-09, Leopold Totsch combined Computed Goto and Predereferencing to produce the CGP core.
+</p>
+
+
+<p>
+2003-02-09 的这周, Leopold Totsch 整合了 Computed Goto 和 Predereferencing 而发布 CGP 核心。 
+</p>
+
+
+<p>
+<a href="//dev.perl.org/perl6/list-summaries/2003/p6summary.2003-02-09.html#Week_of_the_alternative_runloops">http://dev.perl.org/perl6/list-summaries/2003/p6summary.2003-02-09.html#Week_of_the_alternative_runloops</a>
+</p>
+
+
+<p>
+Later, on 2003-02-14, Leopold Totsch and Nicholas Clark combined the JIT and the Computed Goto Prederef cores to great effect.
+</p>
+
+
+<p>
+迟些时间，在 2003-02-14，Leopold Totsch and Nicholas Clark 组合了 JIT(just-in-time)和 Computed Goto Prederef 核心，取得了很大成果。
+</p>
+
+
+<p>
+<a href="//www.perl.com/pub/a/2003/02/p6pdigest/20030216.html">http://www.perl.com/pub/a/2003/02/p6pdigest/20030216.html</a>
+</p>
+
+
+<h3>Vtable</h3>
+<p>
+
+A table of operations attached to some data types, such as PMCs and strings. Vtables are used to avoid using switches or long if chains to handle different data types. They're similar to method calls, except that their names are pre-selected.
+</p>
+
+
+<p>
+一个与某些数据类型相连的操作符表，类如 PMCs 和字符串。Vtables 是用来避免使用 switch 或者极长的 if 链来处理不同的数据类型。它与方法调用有些相似，不同的是他们的名字是预先选定的。
+</p>
+
+
+<h3>Warnock's Dilemma</h3>
+<p>
+
+The dilemma you face when posting a message to a public forum about something and not even getting an acknowledgment of its existence. This leaves you wondering if your problem is unimportant or previously addressed, if everyone's waiting on someone else to answer you, or if maybe your mail never actually made it to anyone else in the forum.
+</p>
+
+
+<p>
+这个您所面对的困难选择是当您发送一个关于什么东西的消息到一个公开的论坛而没有收到关于它存在的承认。如果每个人都在等待其他人来回答他，或者如果您的邮件地址从未给论坛里的任何人知道，这让您猜想是否您的问题是不重要的或者它以前被帖过。 
+</p>
+
+
+<h3>CORRECTIONS / 修正</h3>
+<p>
+
+Please send corrections to the perl6-internals mailing list.
+</p>
+
+
+<p>
+请将您修正后的结果发送至 perl6-internals 邮件列表。
+</p>
+
+
+<h3>译者的话</h3>
+<p>
+
+中文译文中的错误请发到 fayland_at_gmail_dot_com
+</p>
+</div>
+<p><&lt;Previous: <a href="lwall-quotes.html">Larry Wall Quotes</a>&nbsp;&nbsp;>>Next: <a href="050423.html">Day [05.4.23] stay with me</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Parrot%20%E6%9C%AF%E8%AF%AD&url=http://www.fayland.org/journal/parrot_glossary.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='SymbolTable.html'>符号表, local和my, * 与 \$</a> < <span class='digit'>2005-04-18 22:11:20</span> ></li><li><a href='Class-Data-Inheritable.html'>$Class[1] = 'Class::Data::Inheritable';</a> < <span class='digit'>2005-04-27 17:57:39</span> ></li></ul>
+Created on <span class="digit">2005-04-21 22:20:45</span>, Last modified on <span class="digit">2005-04-21 23:55:04</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

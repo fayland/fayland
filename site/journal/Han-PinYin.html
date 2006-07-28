@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>重新写就的 Lingua::Han::PinYin</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="LiveBookmark.html">Live Bookmark</a>&nbsp;&nbsp;>>Next: <a href="mod_perl_learning.html">a schedule of mod_perl learning</a></p>
+<h1>重新写就的 Lingua::Han::PinYin</h1>
+<div class='content'>
+<p>Category: <a href='MyCPAN.html'>MyCPAN</a> &nbsp; Keywords: <b>pinyin Mandarin</b></p>最近有位 Tong Sun 兄给我发邮件说 <a href="http://search.cpan.org/perldoc?Lingua::Han::PinYin">Lingua::Han::PinYin</a> 里有些字的拼音是不对的。比如“小”，旧版本里显示出“shao”。还有类如“幸”等。<p />我原来的拼音对照表是从 <a href="http://search.cpan.org/perldoc?Unicode::Unihan">Unicode::Unihan</a> 那里拿来的。仔细读了读它的代码，发现它采用的是 2002 年的  Unihan.txt<br />比较老。于是从 <a href='http://www.unicode.org'>Unicode.org</a> 下载了比较新的 <a href='http://www.unicode.org/Public/4.1.0/ucd/Unihan.zip'>Unihan</a> 版本。<p />因为拼音只是 Unihan 里的一部分。所以第一件事要做的就是从中获取 kMandarin 字段。Perl 的老本行，一次性代码：<br /><pre>#!/usr/bin/perl<br />use strict;<p />my $unihan_file = 'E:/Downloads/Unihan.txt';<p />my $i;<p />open(FH, $unihan_file) or die $!;<br />open(OUT, '>Mandarin.dat') or die $!;<br />while (&lt;FH>) {<br /> &nbsp; &nbsp;chomp;<br />        my ($u, $type, $value) = split(/\t/);<br /> &nbsp; &nbsp;next if ($type ne 'kMandarin');<br /> &nbsp; &nbsp;$u =~ s/^U\+//isg;<br /> &nbsp; &nbsp;print OUT "$u\t$value\n";<br /> &nbsp; &nbsp;$i++;<br />}<br />close(FH);<br />close(OUT);<p />print "Totally $i is recorded";<p />1;</pre>这样所写就的 Mandarin.dat 第一个字段就是汉字的 Unicode 十六进制。而接下来的字段是汉字的拼音。<br />而这里的汉字的第一字段获取倒把我难了好久。这实在是因为俺水平不太好。<p />比如说“仱”字，在 Perl 中你可以使用<br /><pre>print "\x{4ef1}";</pre>把它在 utf8 编码下显示出来。或者可以直接用 HTML<br /><pre>仱</pre>将它显示出来。而 Mandarin.dat 所对应的第一字段就是这个。<br />如果将一个汉字获取到这个东西？后来在 <a href='http://bbs.chinaunix.net/viewthread.php?tid=515718&fpage=1&highlight=%B1%E0%C2%EB'>ChinaUnix.net</a> 找到了答案。<br /><pre>use Encode;<br />my $hanzi = '仱';<br />my $hanzi = decode ("utf8",$hanzi);<br />print sprintf("%x",unpack ("U*",$hanzi));</pre>接下来的事就简单了。重新写了下这模块。再做了点测试。就发现那几个拼音错误的都修正了。<br />最后增加了多个字处理和音标。Enjoy!<br />Download from <a href="http://fayland.org/CPAN/Lingua-Han-PinYin-0.04.tar.gz">http://fayland.org/CPAN/Lingua-Han-PinYin-0.04.tar.gz</a><h3>POD</h3>head1 NAME<p />Lingua::Han::PinYin - 获取汉字的拼音<p />head1 SYNOPSIS<br /><pre><br />  use Lingua::Han::PinYin;<br />  <br />  my $h2p = new Lingua::Han::PinYin();<br />  print $h2p->han2pinyin("我"); # wo<br />  my @result = $h2p->han2pinyin("爱你"); # @result = ('ai', 'ni');<br />  <br />  # 我需要音标<br />  my $h2p = new Lingua::Han::PinYin(tone => 1);<br />  print $h2p->han2pinyin("我"); #wo3<br />  my @result = $h2p->han2pinyin("爱你"); # @result = ('ai4', 'ni3');<br />  print $h2p->han2pinyin("林道"); #lin2dao4<br /></pre>head1 限制<p />不能处理多音字。<p />head1 返回值<p />正常情况下，返回其拼音。这里总共包括了多于两万个汉字。<p />万一，（很可能这东西不是汉字），返回它原来的东西;<p />head1 选项<p />over 4<p />item tone => 1|0<p />默认为 0，需要音标的话设置为 1。<p />back<h3>Update</h3>修正了一个问题。并且增加了处理中英文混合字。Thank Tong Sun. 已经传到 CPAN 上了。Enjoy!</div>
+<p><&lt;Previous: <a href="LiveBookmark.html">Live Bookmark</a>&nbsp;&nbsp;>>Next: <a href="mod_perl_learning.html">a schedule of mod_perl learning</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E9%87%8D%E6%96%B0%E5%86%99%E5%B0%B1%E7%9A%84%20Lingua::Han::PinYin&url=http://www.fayland.org/journal/Han-PinYin.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='bookmark.html'>BookMark & Favorite</a> < <span class='digit'>2005-01-16 16:14:15</span> ></li><li><a href='LiveBookmark.html'>Live Bookmark</a> < <span class='digit'>2005-11-08 16:45:47</span> ></li></ul>
+Created on <span class="digit">2005-11-09 10:24:43</span>, Last modified on <span class="digit">2005-11-23 23:14:16</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

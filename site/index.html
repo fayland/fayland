@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>Fayland</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script>
+</head>
+<body>
+<img src='images/camel/kiss.jpg' style='float: right' />
+package Fayland;<br>
+use strict;use warnings;<br>
+use vars qw/$VERSION/;
+$VERSION = '0.032';<br>
+<p>@_ = qw/<a href="/blog/">Blog/2006</a> <a href="/journal/">Journal/2005</a> <a href='/talks/'>Talks</a> <a href='/services/'>Services</a>/;</p>
+
+<h2>print &lt;&lt;Introduction;</h2>
+<p>Yup, I'm fayland. Welcome 2 my site. Enjoy!<br>
+	欢迎来访。此为 fayland 的个人站点。
+</p>
+<p>A Chinese guy who love <a href='http://www.perl.org'>Perl</a> only less than his girl.<br>
+	喜欢用 Perl 做所有可能的事。</p>
+
+Inrtoduction
+<h2>my $Summary = <<;</h2>
+<ul> 
+<li>2006-3-11  moving from <a href="/journal/">Journal/2005</a> to  <a href="/doodle/">Doodle/2006</a> </li>
+<li>2005-5-10  I'm the maintainer of <a href='http://china.pm.org'>China.pm</a> for now.</li>
+<li>2005-4-23  Finally I release the <a href='journal/Eplanet.html'>Eplanet-Beta</a>, Enjoy!
+<li>2005-3-28  It's roughly done. Still need more work. See <a href='journal/050328.html'>this journal</a> for more details.
+<li>2005-3-26  I want to use Catalyst to build my new site. It may take several days. God bless me.
+</ul>
+
+<h2>sub directory {</h2>
+<pre>  for (@_) {
+      /^CPAN$/ && $q->redirect('<a href='/CPAN/?C=M;O=D'>CPAN</a>');
+      /books?/i && $q->redirect('<a href='/books/'>Books</a>');
+      /Synopsis/i && $q->redirect('<a href='/Perl6/Synopsis/'>Synopsis</a>');
+      -e $_ && $q->redirect('$_');
+      die 'What are u looking for? my email?';
+  }
+}
+</pre>
+
+<h2># Contact</h2>
+<p>my $email = qr/^fayland\@(fayland\.org|gmail\.com)$/;</p>
+
+1; # let mummy happy
+</body>
+</html>

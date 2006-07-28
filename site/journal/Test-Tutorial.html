@@ -1,0 +1,680 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Test::Tutorial 译文</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="ShareURL0509.html">Share the URLs (September 2005)</a>&nbsp;&nbsp;>>Next: <a href="050925_RSS.html">RSS date</a></p>
+<h1>Test::Tutorial 译文</h1>
+<div class='content'>
+<p>Category: <a href='Modules.html'>Modules</a> &nbsp; Keywords: <b>Test::Tutorial</b></p><h2>NAME</h2>
+<p>
+
+Test::Tutorial - 如何写一个真正意义上的基本测试文件
+</p>
+
+
+<h2>DESCRIPTION</h2>
+<p>
+
+<em>AHHHHHHH!!!!  NOT TESTING!  Anything but testing! Beat me, whip me, send me to Detroit, but don't make me write tests!</em>
+</p>
+
+
+<p>
+<em><b>sob</b></em>
+</p>
+
+
+<p>
+<em>Besides, I don't know how to write the damned things.</em>
+</p>
+
+
+
+<p>
+Is this you?  Is writing tests right up there with writing
+documentation and having your fingernails pulled out?  Did you open up
+a test and read 
+</p>
+
+
+<blockquote><pre>######## We start with some black magic
+</pre></blockquote>
+<p>
+and decide that's quite enough for you?
+</p>
+
+
+<p>
+It's ok.  That's all gone now.  We've done all the black magic for
+you.  And here are the tricks...
+</p>
+
+
+<h2>Nuts and bolts of testing.</h2>
+<p>
+
+这可能是个最基础的测试程序：
+</p>
+
+
+<blockquote><pre>#!/usr/bin/perl -w
+
+print "1..1\n";
+
+print 1 + 1 == 2 ? "ok 1\n" : "not ok 1\n";
+</pre></blockquote>
+<p>
+由于 1+1 等于 2, 所以它输出：
+</p>
+
+
+<blockquote><pre>1..1
+ok 1
+</pre></blockquote>
+<p>
+它的意思为： 1..1 表示“我们将要运行一个测试”，而 ok 1 表示第一个测试已通过。
+这就是有关测试的所有魔法。你的基本测试单元就是 ok. 对于每一个你测试的东西，都有一个 ok 被输出。
+这很简单。Test::Harness 运行你测试的结果，然后告诉你成功或是失败了（更多的期待下文）。
+</p>
+
+
+<p>
+经常写这些 print 语句会让人很快就觉得乏味。幸运的是我们有 <b>Test::Simple</b>. 它有一个函数，ok().
+</p>
+
+
+<blockquote><pre>#!/usr/bin/perl -w
+
+use Test::Simple tests =&gt; 1;
+
+ok( 1 + 1 == 2 );
+</pre></blockquote>
+<p>
+它与上面的代码所做的是一样的。ok() 是 Perl 测试的脊椎，从此时起我们都用它来代替自己手写的部分。
+如果 ok() 获得一个 true 值，测试通过。false, 则失败。
+</p>
+
+
+<blockquote><pre>#!/usr/bin/perl -w
+
+use Test::Simple tests =&gt; 2;
+ok( 1 + 1 == 2 );
+ok( 2 + 2 == 5 );
+</pre></blockquote>
+<p>
+这会输出：
+</p>
+
+
+<blockquote><pre>1..2
+ok 1
+not ok 2
+#     Failed test (test.pl at line 5)
+# Looks like you failed 1 tests of 2.
+</pre></blockquote>
+<p>
+1..2 表示“我们要运行两个测试”。这个数字用以确定你的测试程序运行了所有的测试而没有中途 die 或跳过某些测试。
+ok 1 表示“第一个测试通过”。
+not ok 2 表示“第二个测试失败”。
+Test::Simple 还能输出一些额外的注释。
+</p>
+
+
+<p>
+It's not scary.  Come, hold my hand.  我们将要对一个模块测试给出一个完整的例子。
+在此，我们将测试一个日期库，Date::ICal. 它是 CPAN 的一部分，所以我们可以下载它然后跟着我来做。
+</p>
+
+
+<h2>从哪开始？</h2>
+<p>
+
+这是关于测试最困难的部分，我们从哪开始？
+要测试一个完整的模块，人们通常会被这个任务外表看起来的巨大所压倒。
+最好开始的位置就是开头。Date::ICal 是一个面对对象模块，这就意味着你可以从定义一个对象开始。所以我们先测试new().
+</p>
+
+
+<blockquote><pre>#!/usr/bin/perl -w
+
+use Test::Simple tests =&gt; 2;
+
+use Date::!ICal;
+
+my $ical = Date::ICal-&gt;new;         # create an object
+ok( defined $ical );                # check that we got something
+ok( $ical-&gt;isa('Date::ICal') );     # and it's the right class
+</pre></blockquote>
+<p>
+运行它你就会得到：
+</p>
+
+
+<blockquote><pre>1..2
+ok 1
+ok 2
+
+</pre></blockquote>
+<p>
+祝贺你，你已经完成了你第一个有用的测试。
+</p>
+
+
+<h2>Names</h2>
+<p>
+
+这输出看起来不是很有描述性？当你只有 2 个测试时你能指出哪个是第 2 个，但如果你有 102 个呢？
+</p>
+
+
+<p>
+我们可以给每一个测试一点描述性文字作为 ok() 的第二个参数。
+</p>
+
+
+<blockquote><pre>use Test::Simple tests =&gt; 2;
+
+ok( defined $ical,              'new() returned something' );
+ok( $ical-&gt;isa('Date::ICal'),   "  and it's the right class" );
+</pre></blockquote>
+<p>
+现在你会看到：
+</p>
+
+
+<blockquote><pre>1..2
+ok 1 - new() returned something
+ok 2 -   and it's the right class
+</pre></blockquote>
+<h2>测试说明手册</h2>
+<p>
+
+最简单的创建一个象样的测试工具是只测试那些说明手册上它做的。
+让我们从 Date::ICal/SYNOPSIS 中抽取点什么然后一个片断一个片断的测试它。
+</p>
+
+
+<blockquote><pre>#!/usr/bin/perl -w
+
+use Test::Simple tests =&gt; 8;
+
+use Date::ICal;
+
+$ical = Date::ICal-&gt;new( year =&gt; 1964, month =&gt; 10, day =&gt; 16, 
+                         hour =&gt; 16, min =&gt; 12, sec =&gt; 47, 
+                         tz =&gt; '0530' );
+
+ok( defined $ical,            'new() returned something' );
+ok( $ical-&gt;isa('Date::ICal'), "  and it's the right class" );
+ok( $ical-&gt;sec   == 47,       '  sec()'   );
+ok( $ical-&gt;min   == 12,       '  min()'   );    
+ok( $ical-&gt;hour  == 16,       '  hour()'  );
+ok( $ical-&gt;day   == 17,       '  day()'   );
+ok( $ical-&gt;month == 10,       '  month()' );
+ok( $ical-&gt;year  == 1964,     '  year()'  );
+</pre></blockquote>
+<p>
+运行它你会得到：
+</p>
+
+
+<blockquote><pre>1..8
+ok 1 - new() returned something
+ok 2 -   and it's the right class
+ok 3 -   sec()
+ok 4 -   min()
+ok 5 -   hour()
+not ok 6 -   day()
+#     Failed test (- at line 16)
+ok 7 -   month()
+ok 8 -   year()
+# Looks like you failed 1 tests of 8.
+</pre></blockquote>
+<p>
+Whoops, 一个失败！Test::Simple 有用地指出了错误发生在哪一行，但没有更多的东西。
+我们期望得到 17，但是没得到。那我们得到了什么呢？我不知道。
+我们得在调试器中重新运行此测试或者得依靠 print 语句找出我们所得到的。
+</p>
+
+
+<p>
+我们这里不这么做，这里我们用 <b>Test::More</b> 来替代 <b>Test::Simple</b>.  
+Test::More 能做所有 Test::Simple 能做的，还有它所不能做的。
+事实上， Test::More 与 Test::Simple 所使用的方法是/一模一样的/。
+你可以简单的用 Test::More 替换 Test::Simple 所在的位置。
+这也就是我们接下来要做的。
+</p>
+
+
+<p>
+Test::More 比 Test::Simple 做得更多。在这一点上，一个最重要的区别是它在输出 "ok" 时提供了更多的信息。
+虽然你几乎可以用一般的 ok() 来写任何一个测试，但是它不能告诉你到底哪来出错了。
+相反的，我们将使用函数 is(), 它让我们声明我们期待与另一个是否一样：
+</p>
+
+
+<blockquote><pre>#!/usr/bin/perl -w
+
+use Test::More tests =&gt; 8;
+
+use Date::ICal;
+
+$ical = Date::ICal-&gt;new( year =&gt; 1964, month =&gt; 10, day =&gt; 16, 
+                         hour =&gt; 16, min =&gt; 12, sec =&gt; 47, 
+                         tz =&gt; '0530' );
+
+ok( defined $ical,            'new() returned something' );
+ok( $ical-&gt;isa('Date::ICal'), "  and it's the right class" );
+is( $ical-&gt;sec,     47,       '  sec()'   );
+is( $ical-&gt;min,     12,       '  min()'   );    
+is( $ical-&gt;hour,    16,       '  hour()'  );
+is( $ical-&gt;day,     17,       '  day()'   );
+is( $ical-&gt;month,   10,       '  month()' );
+is( $ical-&gt;year,    1964,     '  year()'  );
+</pre></blockquote>
+<p>
+“$ical-&gt;sec 是否 47?”“$ical-&gt;min 是否 12?”
+适当的使用 is(), 你会得到更多的信息：
+</p>
+
+
+<blockquote><pre>1..8
+ok 1 - new() returned something
+ok 2 -   and it's the right class
+ok 3 -   sec()
+ok 4 -   min()
+ok 5 -   hour()
+not ok 6 -   day()
+#     Failed test (- at line 16)
+#          got: '16'
+#     expected: '17'
+ok 7 -   month()
+ok 8 -   year()
+# Looks like you failed 1 tests of 8.
+</pre></blockquote>
+<p>
+这样我们知道了 $ical-&gt;day 返回了 16, 而我们期待的是 17。一个快速检查让我们发现代码运行是正常的，我们在写测试的时候犯了个小错误。所以我们将测试改一下：
+</p>
+
+
+<blockquote><pre>is( $ical-&gt;day,     16,       '  day()'   );
+</pre></blockquote>
+<p>
+这样所有的都运行通过了。
+</p>
+
+
+<p>
+总之，当你在做这些“这个等于那个”类的测试时，使用 is() 会比较好。
+它还能在数组上使用。测试总是在标量上下文下，所以你可以用这种方法来测试列表中包含了多少个元素。
+</p>
+
+
+<blockquote><pre>is( @foo, 5, 'foo has 5 elements' );
+</pre></blockquote>
+<h2>有时候测试是错误的</h2>
+<p>
+
+上面我们有了一个重大的教训。代码是有 bugs 的，而测试也是代码。因此，测试也可能有 bugs 的。一个失败的测试意味着代码中有一个 bug, 但是小心考虑有可能是测试写错了。
+</p>
+
+
+<p>
+另一方面，不要冲动地过早宣称某一测试是错误的，而原因只是你找不到 bug. 
+不要轻易的让某一测试无效，也不要让它作为你逃避工作的借口。
+</p>
+
+
+<h2>测试大量的值</h2>
+<p>
+
+接下来我们将要测试大量的数据，在许多不同的边缘情况下试图对代码做一些测试。测试它是否在 1970 年前也是可行的？2038 年后呢，或者 1904？10,000 年会不会出错？闰年正确吗？我们可以重复上述的代码，或者更好的建立一个 try/expect 循环。
+</p>
+
+
+<blockquote><pre>use Test::More tests =&gt; 32;
+use Date::ICal;
+
+my %ICal_Dates = (
+        # An ICal string     And the year, month, date
+        #                    hour, minute and second we expect.
+        '19971024T120000' =&gt;    # from the docs.
+                            [ 1997, 10, 24, 12,  0,  0 ],
+        '20390123T232832' =&gt;    # after the Unix epoch
+                            [ 2039,  1, 23, 23, 28, 32 ],
+        '19671225T000000' =&gt;    # before the Unix epoch
+                            [ 1967, 12, 25,  0,  0,  0 ],
+        '18990505T232323' =&gt;    # before the MacOS epoch
+                            [ 1899,  5,  5, 23, 23, 23 ],
+);
+
+
+while( my($ical_str, $expect) = each %ICal_Dates ) {
+    my $ical = Date::ICal-&gt;new( ical =&gt; $ical_str );
+
+    ok( defined $ical,            "new(ical =&gt; '$ical_str')" );
+    ok( $ical-&gt;isa('Date::ICal'), "  and it's the right class" );
+
+    is( $ical-&gt;year,    $expect-&gt;[0],     '  year()'  );
+    is( $ical-&gt;month,   $expect-&gt;[1],     '  month()' );
+    is( $ical-&gt;day,     $expect-&gt;[2],     '  day()'   );
+    is( $ical-&gt;hour,    $expect-&gt;[3],     '  hour()'  );
+    is( $ical-&gt;min,     $expect-&gt;[4],     '  min()'   );    
+    is( $ical-&gt;sec,     $expect-&gt;[5],     '  sec()'   );
+}
+</pre></blockquote>
+<p>
+所以现在我们想测试更多的数据时只需要将它们加入 %ICal_Dates 就可以了。
+既然测试更多的数据是个很轻松的工作，那你将更倾向于测试比你所想的更多的数据。
+唯一的问题是，每一次我们加入数据都需要更改 use Test::More tests =&gt; ##&gt; 行。
+这很快就让人厌烦。但我们有两种办法让生活更美好。
+</p>
+
+
+<p>
+第一种，我们可以通过 plan() 函数动态地计算运行的项目。
+</p>
+
+
+<blockquote><pre>use Test::More;
+use Date::ICal;
+
+my %ICal_Dates = (
+    ...same as before...
+);
+
+# For each key in the hash we're running 8 tests.
+plan tests =&gt; keys %ICal_Dates * 8;
+
+</pre></blockquote>
+<p>
+或者更灵活的，我们使用 no_plan. 这意味着我们要运行很多测试，但不知道到底有多少。
+</p>
+
+
+<blockquote><pre>use Test::More 'no_plan';   # instead of tests =&gt; 32
+
+</pre></blockquote>
+<p>
+现在我们就能直接加进测试而不需要数出我们到底要运行多少项了。
+</p>
+
+
+<h2>Informative names</h2>
+<p>
+
+看一下下面这行：
+</p>
+
+
+<blockquote><pre>ok( defined $ical,            "new(ical =&gt; '$ical_str')" );
+</pre></blockquote>
+<p>
+我们已经对我们所要进行的测试加进了更多的细节， and the ICal string
+itself we're trying out to the name.  所以你得到类如下面的结果：
+</p>
+
+
+<blockquote><pre>ok 25 - new(ical =&gt; '19971024T120000')
+ok 26 -   and it's the right class
+ok 27 -   year()
+ok 28 -   month()
+ok 29 -   day()
+ok 30 -   hour()
+ok 31 -   min()
+ok 32 -   sec()
+</pre></blockquote>
+<p>
+如果这里的某个测试失败了，那么我们就知道到底是哪一个，这样使跟踪问题变得简单。
+所以请试着在测试名称中加入更多的调试信息。
+</p>
+
+
+<p>
+描述我们在进行什么测试，这让调试一个失败的测试变得容易，不论是对于你或是任何运行你测试的人来说。
+</p>
+
+
+<h2>跳过测试</h2>
+<p>
+
+在已有的 Date::ICal 测试文件中找寻，我们会在 t/01sanity.t 中发现：
+</p>
+
+
+<blockquote><pre>#!/usr/bin/perl -w
+
+use Test::More tests =&gt; 7;
+use Date::ICal;
+
+# Make sure epoch time is being handled sanely.
+my $t1 = Date::ICal-&gt;new( epoch =&gt; 0 );
+is( $t1-&gt;epoch, 0,          "Epoch time of 0" );
+
+# XXX This will only work on unix systems.
+is( $t1-&gt;ical, '19700101Z', "  epoch to ical" );
+
+is( $t1-&gt;year,  1970,       "  year()"  );
+is( $t1-&gt;month, 1,          "  month()" );
+is( $t1-&gt;day,   1,          "  day()"   );
+
+# like the tests above, but starting with ical instead of epoch
+my $t2 = Date::ICal-&gt;new( ical =&gt; '19700101Z' );
+is( $t2-&gt;ical, '19700101Z', "Start of epoch in ICal notation" );
+
+is( $t2-&gt;epoch, 0,          "  and back to ICal" );
+</pre></blockquote>
+<p>
+新纪元的开头部分在大多数非 Unix 系统中是不一样的。
+即使 Perl 对大部分差异进行了处理，但还是有某些地方仍然是不一样的。
+MacPerl 是让我头疼的其中一种。我们知道上面的代码在 MacOS 中是不能运行的。
+所以与其在每个测试前注释掉，我们还不如直接说这不能运行然后跳过这个测试。
+</p>
+
+
+<blockquote><pre>use Test::More tests =&gt; 7;
+use Date::ICal;
+
+# Make sure epoch time is being handled sanely.
+my $t1 = Date::ICal-&gt;new( epoch =&gt; 0 );
+is( $t1-&gt;epoch, 0,          "Epoch time of 0" );
+
+SKIP: {
+    skip('epoch to ICal not working on MacOS', 6) 
+        if $^O eq 'MacOS';
+
+    is( $t1-&gt;ical, '19700101Z', "  epoch to ical" );
+
+    is( $t1-&gt;year,  1970,       "  year()"  );
+    is( $t1-&gt;month, 1,          "  month()" );
+    is( $t1-&gt;day,   1,          "  day()"   );
+
+    # like the tests above, but starting with ical instead of epoch
+    my $t2 = Date::ICal-&gt;new( ical =&gt; '19700101Z' );
+    is( $t2-&gt;ical, '19700101Z', "Start of epoch in ICal notation" );
+
+    is( $t2-&gt;epoch, 0,          "  and back to ICal" );
+}
+</pre></blockquote>
+<p>
+这里有一点点小魔术。当我们不是运行在 MacOS 时，所有的测试项都会正常运行。但是在 MacOS 时， skip() 将跳过整个 SKIP 块的内容，它将不会被运行。还有，它将输出一些特定的东西告诉 Test::Harness 这些测试项已经被跳过。
+</p>
+
+
+<blockquote><pre>1..7
+ok 1 - Epoch time of 0
+ok 2 # skip epoch to ICal not working on MacOS
+ok 3 # skip epoch to ICal not working on MacOS
+ok 4 # skip epoch to ICal not working on MacOS
+ok 5 # skip epoch to ICal not working on MacOS
+ok 6 # skip epoch to ICal not working on MacOS
+ok 7 # skip epoch to ICal not working on MacOS
+</pre></blockquote>
+<p>
+这就意味着你的测试项在 MacOS 中并非是失败的。这也意味着更少的 MacPerl 用户会发 emails 告诉你这些测试项失败了，而你知道这些是不可运行的。但是你需要对跳过的测试项加以注意。运行不正常和/不可运行/是不同的。它不是用于跳过真正的 bugs （我们马上就要讲了）。
+</p>
+
+
+<p>
+这些所有的测试项将被完整的跳过。下面这样是可行的。
+</p>
+
+
+<blockquote><pre>SKIP: {
+    skip("I don't wanna die!");
+
+    die, die, die, die, die;
+}
+</pre></blockquote>
+<h2>Todo 测试项</h2>
+<p>
+
+翻译 Date::ICal 用户手册，我看到了：
+</p>
+
+
+<blockquote><pre>ical
+
+    $ical_string = $ical-&gt;ical;
+
+Retrieves, or sets, the date on the object, using any
+valid ICal date/time string.
+</pre></blockquote>
+<p>
+“找回或设置”。Hmmm, 没有看见这个测试项：在 Date::ICal 测试套中用 ical() 来设置日期。所以我写了一个：
+</p>
+
+
+<blockquote><pre>use Test::More tests =&gt; 1;
+use Date::ICal;
+
+my $ical = Date::ICal-&gt;new;
+$ical-&gt;ical('20201231Z');
+is( $ical-&gt;ical, '20201231Z',   'Setting via ical()' );
+</pre></blockquote>
+<p>
+运行，然后得到：
+</p>
+
+
+<blockquote><pre>1..1
+not ok 1 - Setting via ical()
+#     Failed test (- at line 6)
+#          got: '20010814T233649Z'
+#     expected: '20201231Z'
+# Looks like you failed 1 tests of 1.
+</pre></blockquote>
+<p>
+Whoops! 看起来这个是还没被实现的。让我们假设我们没有时间来修复它。
+一般情况下，你可能直接将其注释掉或者在 todo 列表或其他地方加以说明。
+这里，我们将直接通过将其放在 TODO 块中来声明“这个测试项将会失败”。
+</p>
+
+
+<blockquote><pre>use Test::More tests =&gt; 1;
+
+TODO: {
+    local $TODO = 'ical($ical) not yet implemented';
+
+    my $ical = Date::ICal-&gt;new;
+    $ical-&gt;ical('20201231Z');
+
+    is( $ical-&gt;ical, '20201231Z',   'Setting via ical()' );
+}
+</pre></blockquote>
+<p>
+现在当你运行的时候，会有一点点不同：
+</p>
+
+
+<blockquote><pre>1..1
+not ok 1 - Setting via ical() # TODO ical($ical) not yet implemented
+#          got: '20010822T201551Z'
+#     expected: '20201231Z'
+</pre></blockquote>
+<p>
+Test::More 不再说“看起来你在 1 个测试中失败了 1 个”/"Looks like you failed 1 tests of 1"。
+'# TODO' 告诉了 Test::Harness “这本就该是失败的”，然后它会将这个失败认为是正常的。
+这样你就可以在你修复代码前写下测试。
+</p>
+
+
+<p>
+如果一个 TODO 测试项通过了，Test::Harness 会报告 “未预料的成功”/"UNEXPECTEDLY
+SUCCEEDED".  当这个发生时，你只需要将 TODO 块和 local $TODO 删除掉。剩下来的就是一个真正的测试项了。
+</p>
+
+
+<p>
+=head2 在污染 taint 模式下测试
+</p>
+
+
+<p>
+Taint 污染模式是一件有趣的事。It's the globalest of all global
+features. 当你打开它时，它会影响你程序中/所有的/代码和/所有的/模块（和它们使用的模块）。
+只要某一单独的代码片断不是 taint clean, 所有的事情都会被激发。在此观念下，保证你的模块在 taint 模式下运行是非常重要的。
+</p>
+
+
+<p>
+设置在 taint 模式下运行代码是非常简单的。只要在 #! 行中增加一个 -T. Test::Harness 会读取此开关然后在你的测试中使用它。
+</p>
+
+
+<blockquote><pre>#!/usr/bin/perl -Tw
+
+...test normally here...
+</pre></blockquote>
+<p>
+当 make test 时，它会运行在 taint 和 warnings 模式下。
+</p>
+
+
+<h2>AUTHORS</h2>
+<p>
+
+Michael G Schwern (schwern at pobox.com) and the perl-qa dancers!
+</p>
+
+
+<p>
+本文由 Fayland (fayland at gmail.com) 翻译。
+</p>
+
+
+<h2>COPYRIGHT</h2>
+<p>
+
+Copyright 2001 by Michael G Schwern (schwern at pobox.com).
+</p>
+
+
+<p>
+This documentation is free; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+</p>
+</div>
+<p><&lt;Previous: <a href="ShareURL0509.html">Share the URLs (September 2005)</a>&nbsp;&nbsp;>>Next: <a href="050925_RSS.html">RSS date</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Test::Tutorial%20%E8%AF%91%E6%96%87&url=http://www.fayland.org/journal/Test-Tutorial.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='ShareURL0506.html'>Share the URLs (June 2005)</a> < <span class='digit'>2005-06-01 23:51:11</span> ></li><li><a href='ShareURL0504.html'>Share the URLs with u (Apr. 2005)</a> < <span class='digit'>2005-04-01 10:18:51</span> ></li><li><a href='ShareURL0505.html'>Share the URLs with u (May 2005)</a> < <span class='digit'>2005-05-10 22:16:17</span> ></li><li><a href='ShareURL0509.html'>Share the URLs (September 2005)</a> < <span class='digit'>2005-09-22 12:29:39</span> ></li><li><a href='ShareURL0510.html'>Share the URLs (October 2005)</a> < <span class='digit'>2005-10-08 10:38:10</span> ></li><li><a href='ShareURL0512.html'>Share the URLs (December 2005)</a> < <span class='digit'>2005-12-01 00:13:53</span> ></li></ul>
+Created on <span class="digit">2005-09-22 13:36:40</span>, Last modified on <span class="digit">2005-09-22 16:48:46</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

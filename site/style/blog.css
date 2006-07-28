@@ -1,0 +1,18 @@
+IMG { border:0px }
+BODY { font-family: geneva, verdana, arial, sans-serif; }
+pre {
+	line-height: 100%;
+	margin-left: 2%;
+	margin-right: 2%;
+	background: #eeeeee;
+	border: 1px solid #888888;
+	color: black;
+	padding: 1em;
+	white-space: pre;
+	white-space: -moz-pre-wrap;  /* Mozilla, supported since 1999 */
+	white-space: -pre-wrap;      /* Opera 4 - 6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	white-space: pre-wrap;       /* CSS3 - Text module (Candidate Recommendation)
+                                 http://www.w3.org/TR/css3-text/#white-space */
+	word-wrap: break-word;       /* IE 5.5+ */
+}

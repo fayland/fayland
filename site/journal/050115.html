@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>gb2312.enc</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="POD.html">怎么写POD</a>&nbsp;&nbsp;>>Next: <a href="bookmark.html">BookMark & Favorite</a></p>
+<h1>gb2312.enc</h1>
+<div class='content'>
+<p>Category: <a href='Miscellaneous.html'>Miscellaneous</a> &nbsp; Keywords: <b>gb2312.enc</b></p>我用<a href='RSS.html'>XML::RSS创建rss文件</a>是没问题，更新的时候却总是乱码。<br />
+原因可能是创建rss时我是提取mysql数据库里的资料(utf8编码的), 而更新的时候是直接使用表单里的数据，不是utf8编码的。<br />
+我试了use Encode qw/encode decode/;可没结果，将表单数据转换后，在网页编码为utf8时正确显示，写入的时候却成了乱码。<br />
+实在想不到啥好办法，只好想指定XML::RSS的encoding为gb2312试试，读取时却发现少了gb2312.enc<p />
+
+Google了一下，下过来的都不是encmap文件，虽然名字也是gb2312.enc, 而很多Blog所提起的http://atzone.fatb.org却失效了。<br />
+下不到然后去求助朋友，在perl交流QQ群中发了个消息，没反应。找bloves要，他说Rob有，可他不在线。晕。<br />
+看看Google搜索来的东西，里面有个post在ASPN提起如何制作gb2312.enc, <a href='http://aspn.activestate.com/ASPN/Mail/Message/perl-xml/1341040'>http://aspn.activestate.com/ASPN/Mail/Message/perl-xml/1341040</a><br />
+<pre>1. Download GB2312.TXT from ftp.unicode.org
+2. Download the XML::Encoding 1.01 and get two binaries:
+   make_encmap and compile_encoding
+3. run make_encmap as follows:
+   make_encmap GB2312 GB2312.TXT >  GB2312.encmap
+4. Add expat='yes' to the first line of GB2312.encmap
+5. run compile_encoding:
+   compile_encoding -o GB2312.enc GB2312.encmap
+6. copy GB2312.enc to 
+   /usr/lib/perl5/site_perl/5.005/i386-linux/XML/Parser/Encodings
+</pre>
+cpan XML::Encoding后，却在<a herf='http://www.unicode.org'>unicode.org</a>上找不到GB2312.txt, 有这连接，又是失效了。Google "GB2312.txt"找到的都是错的。我faint! <br />
+后来换<a href='http://www.baidu.com/'>Baidu</a>搜索了好一阵子才在 <a href='http://eaa13.dns0755.net/~atzone/source/gb2312.enc'>http://eaa13.dns0755.net/~atzone/source/gb2312.enc</a> 找到。<br />
+在自己站点做一个备份吧。给需要的人。<a href='../misc/backup/gb2312.enc'>按此下载</a>。<br />
+Have fun!
+<p />
+
+记于 2005/01/15</div>
+<p><&lt;Previous: <a href="POD.html">怎么写POD</a>&nbsp;&nbsp;>>Next: <a href="bookmark.html">BookMark & Favorite</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=gb2312.enc&url=http://www.fayland.org/journal/050115.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='POD.html'>怎么写POD</a> < <span class='digit'>2005-01-14 00:40:37</span> ></li><li><a href='050329.html'>Day [05.3.29] POD && Pugs</a> < <span class='digit'>2005-03-29 16:04:20</span> ></li><li><a href='pod2cn.html'>Perl 核心模块中文化</a> < <span class='digit'>2005-11-20 21:43:52</span> ></li></ul>
+Created on <span class="digit">2005-01-15 22:57:38</span>, Last modified on <span class="digit">2005-06-02 01:57:10</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

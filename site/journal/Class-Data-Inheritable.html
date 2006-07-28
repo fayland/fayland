@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>$Class[1] = 'Class::Data::Inheritable';</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="ShareURL0504.html">Share the URLs with u (Apr. 2005)</a>&nbsp;&nbsp;>>Next: <a href="Class-Trigger.html">$Class[2] = 'Class::Trigger';</a></p>
+<h1>$Class[1] = 'Class::Data::Inheritable';</h1>
+<div class='content'>
+<p>Category: <a href='Modules.html'>Modules</a> &nbsp; Keywords: <b>Class::Data::Inheritable</b></p><h2>Verbiage</h2>
+It's the second <b>Class</b>. ;)<br>
+本来打算要讲的是 <a href='http://search.cpan.org/perldoc?Class::Trigger'>Class::Trigger</a>，可得先介绍下 <a href='http://search.cpan.org/perldoc?Class::Data::Inheritable'>Class::Data::Inheritable</a><br>
+本来打算简单介绍的，可一写就收不了手了。:)<p>
+Class::Data::Inheritable - Inheritable, overridable class data - 类数据继承与覆盖。<br>
+该模块能将类数据做为一个整体来保存，并且可以被子类继承和覆盖。<br>
+该模块里就一个函数：mk_classdata<br>
+
+<h2>例子</h2>
+我们先举个例子（源代码里的例子），然后再分析源代码。<br>
+<pre><code>package Pere::Ubu;
+use base qw(Class::Data::Inheritable);
+
+Pere::Ubu->mk_classdata('Suitcase');
+
+Pere::Ubu->Suitcase('Red');
+my $suitcase = Pere::Ubu->Suitcase;</code></pre>
+mk_classdata 能生成 Suitcase 函数并能存取，这点于 <a href='Class-Accessor.html'>Class-Accessor</a> 有点像，但 Class::Data::Inheritable 最主要的功能不在这，在于继承和覆盖。
+<pre><code>package Raygun;
+use base qw(Pere::Ubu);
+  
+# Raygun's suitcase is Red.
+my $suitcase = Raygun->Suitcase;</code></pre>
+这样 Raygun 继承了类 Pere::Ubu 的数据，一旦修改 Pere::Ubu 的数据，Raygun 就会自动改变。
+<pre><code># Both Raygun's and Pere::Ubu's suitcases are now Blue
+Pere::Ubu->Suitcase('Blue');</code></pre>
+如果 Raygun 想自己控制数据而不随着 Pere::Ubu 的改变而改变的话可以覆盖数据（设置自己的数据）。
+<pre><code># Raygun has an orange suitcase, Pere::Ubu's is still Blue.
+Raygun->Suitcase('Orange');</code></pre>
+这样以后 Pere::Ubu 改变数据也不会影响 Raygun 了。
+
+<h2>源码分析</h2>
+<pre><code> =1= sub mk_classdata {
+ =2=    my ($declaredclass, $attribute, $data) = @_;
+
+ =3=    my $accessor = sub {
+ =4=        my $wantclass = ref($_[0]) || $_[0];
+
+ =5=        return $wantclass->mk_classdata($attribute)->(@_)
+                if @_>1 && $wantclass ne $declaredclass;
+
+ =6=        $data = $_[1] if @_>1;
+ =7=        return $data;
+ =8=    };
+
+ =9=    my $alias = "_${attribute}_accessor";
+ =10=   *{$declaredclass.'::'.$attribute} = $accessor;
+ =11=   *{$declaredclass.'::'.$alias}     = $accessor;
+ =12= }</code></pre>
+=2= 中 $declaredclass 是声明 mk_classdata 的包名，比如 Pere::Ubu->mk_classdata('Suitcase'); 时该变量就为 Pere::Ubu, $attribute 是 Suitcase, 而这里的 $data 是给 =5= 行准备的。<br>
+=3= 是声明一个匿名函数，并引用给 $accessor<br>
+=4= ref($_[0]) || $_[0] 是为了得到所调用该函数的包名。比如 Pere::Ubu->Suitcase('Red'); 时为 Pere::Ubu; 而 Raygun->Suitcase('Orange'); 时为 Raygun。注意这里的 $_[0] 是调用该匿名函数所传递进来的，所以 $wantclass 是该函数所调用的对象。<br>
+=5= 注意这里的 @_ 是调用匿名函数的参数，不是 mk_classdata 的参数。 如果参数大于1，就是是Raygun->Suitcase('Orange'); 而不是 my $suitcase = Raygun->Suitcase;，而且 $wantclass 和 $declaredclass 不同时（Raygun->Suitcase('Orange');时 $declaredclass 是 Pere::Ubu, 而调用的是 Raygun），重新调用 mk_classdata 并把 @_ 传递过去（$Raygun->mk_classdata，这里就传递了 $data）<br>
+=6= 这句是给 Pere::Ubu->Suitcase('Red'); 准备的。<br>
+=7= 这样不管是新建立的（=5=）还是单单读取（=6=）都有值返回。<br>
+=10= 这句是最紧要的，就是在声明包的符号表里建立 $attribute 到匿名函数的关系。这样就能使用 Pere::Ubu->Suitcase 了<br>
+=9= 和 =11= 是另外在符号表里声明了 _${attribute}_accessor（这里是_Suitcase_accessor）。这个的用途是你在继承包里定义 Suitcase 时又想调用原来的 Suitcase, 这时就可以调用 _Suitcase_accessor（这个其实可以用NEXT模块实现）<p>
+
+希望我讲得够明白。慢慢读懂它，你的 Perl 水平就提高上去了。一起进步。:)<br>
+Class::* 模块都用了很多技巧，魔法/magic 一样。</div>
+<p><&lt;Previous: <a href="ShareURL0504.html">Share the URLs with u (Apr. 2005)</a>&nbsp;&nbsp;>>Next: <a href="Class-Trigger.html">$Class[2] = 'Class::Trigger';</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=$Class%5B1%5D%20=%20'Class::Data::Inheritable';&url=http://www.fayland.org/journal/Class-Data-Inheritable.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='ShareURL0506.html'>Share the URLs (June 2005)</a> < <span class='digit'>2005-06-01 23:51:11</span> ></li><li><a href='ShareURL0504.html'>Share the URLs with u (Apr. 2005)</a> < <span class='digit'>2005-04-01 10:18:51</span> ></li><li><a href='ShareURL0505.html'>Share the URLs with u (May 2005)</a> < <span class='digit'>2005-05-10 22:16:17</span> ></li><li><a href='ShareURL0509.html'>Share the URLs (September 2005)</a> < <span class='digit'>2005-09-22 12:29:39</span> ></li><li><a href='ShareURL0510.html'>Share the URLs (October 2005)</a> < <span class='digit'>2005-10-08 10:38:10</span> ></li><li><a href='ShareURL0512.html'>Share the URLs (December 2005)</a> < <span class='digit'>2005-12-01 00:13:53</span> ></li></ul>
+Created on <span class="digit">2005-04-27 17:57:39</span>, Last modified on <span class="digit">2005-04-27 23:18:34</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>PPM</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Parrot_in_a_Nutshell.en.html">Parrot in a Nutshell(English)</a>&nbsp;&nbsp;>>Next: <a href="ReadRSS.html">RSS阅读设置</a></p>
+<h1>PPM</h1>
+<div class='content'>
+<p>Category: <a href='Basic.html'>Basic</a> &nbsp; Keywords: <b>PPM</b></p><ol>
+<li>When online, 可在联机状态下调用PPM<br>
+	<ol>
+	<li>Run 'cmd', 然后 cd 到你的Perl安装目录下，它可能为C:/Perl，然后 cd bin
+	<li>在此我们安装PDF模块，此模块不为ActivePerl自带。Type:
+	<pre>
+ppm install PDF</pre>
+	</ol>
+<li>When offline, 但也想安装，Follow me:
+	<ol>
+	<li>Visit <a href="http://ppm.activestate.com/PPMPackages/zips/">http://ppm.activestate.com/PPMPackages/zips/</a>, Download PDF.zip，用U盘或软盘载到自己的电脑，然后unzip至Perl安装目录下的bin目录里，目录里应该多了一个文件夹和两个文件：MSWin32-x86-multi-thread-5.8文件夹, PDF.ppd, README
+	<li>运行 cmd ,cd Perl安装目录/bin。Type:
+	<pre>
+ppm install PDF.ppd</pre>
+	<li>安装完毕，可以删除那文件夹和那两文件了。
+	</ol>
+<li>在安装过程中如果碰见问题，如
+	<pre>
+Failed to load PPM_DAT file</pre>
+那问题很可能是Config.pm的路径不对，打开lib/Config.pm，搜索"installprivlib"，然后<font color="red">全文替换</font>将后面的路径改为你的Perl路径。这个问题很大程序上是我将C:/Perl目录直接改为C:/usr，而忘了改Config.pm<br />
+如果您碰到的是其他问题，根据具体情况自行解决。
+</ol></div>
+<p><&lt;Previous: <a href="Parrot_in_a_Nutshell.en.html">Parrot in a Nutshell(English)</a>&nbsp;&nbsp;>>Next: <a href="ReadRSS.html">RSS阅读设置</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=PPM&url=http://www.fayland.org/journal/PPM.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Parrot_in_a_Nutshell.cn.html'>Parrot_in_a_Nutshell(中文翻译版)</a> < <span class='digit'>2004-10-30 19:19:10</span> ></li><li><a href='Parrot_in_a_Nutshell.en.html'>Parrot in a Nutshell(English)</a> < <span class='digit'>2004-10-30 19:20:36</span> ></li><li><a href='050604.html'>fail to embed parrot in pugs(Resolved)</a> < <span class='digit'>2005-06-04 19:09:35</span> ></li></ul>
+Created on <span class="digit">2004-10-30 19:25:23</span>, Last modified on <span class="digit">2004-11-11 00:24:22</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

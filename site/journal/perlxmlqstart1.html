@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>快速开始Perl XML：接口篇</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="UploadModule.html">如何向CPAN上传模块</a>&nbsp;&nbsp;>>Next: <a href="ask_tim.html">Perl 6 什么时候才能完成？</a></p>
+<h1>快速开始Perl XML：接口篇</h1>
+<div class='content'>
+<p>Category: <a href='Translation.html'>Translation</a> &nbsp; Keywords: <b>XML</b></p>原文URL: <a href='http://www.xml.com/pub/a/2001/04/18/perlxmlqstart1.html'>http://www.xml.com/pub/a/2001/04/18/perlxmlqstart1.html</a><br>
+by <a href="http://www.xml.com/pub/au/83">Kip Hampton</a><br />
+April 18, 2001
+<h2>入门简介</h2>
+最近在<a href='http://www.activestate.com/ASPN/Mail/browse/perl-xml'>Perl-XML邮件组</a>经常问起的问题是如何给不熟悉的用户一个对大量 Perl XML 模块的快速指引性概述文档。在接下来的几个月里我将单独对此问题写几篇专栏文章。<p>
+CPAN上的XML模块可以分成三大类：对 XML 数据提供独特的接口（通常有关在XML实例和Perl数据之间的转换），实现某一标准XML API的模块，和对一些特定的XML相关任务进行简化的特殊用途模块。这个月我们先关注第一个，XML Perl专用接口。<p>
+
+<h2>use Disclaimer qw(:standard);</h2>
+此文档不是为了对模块性能进行基准测试，我的目的也不是暗示某一模块比另一个模块更有用。为你的项目选择正确的 XML 模块更多依赖于项目本身和你积累的经验。不同的接口适应于不同的任务和不同的人。我的唯一目的是通过定义两个简单的任务，然后提供不同借口的可运行例子来显示如何获得同样的最终结果。
+
+<h2>任务</h2>
+虽然XML的用途非常多，但大部分XML相关任务可分成两组：一是从已有的XML文档提取数据，另一个是使用其他资源的数据创建一个新的XML文档。既然如此，我们所用来介绍不同模块的例子将由“从一个XML文件中提取某一特定数据集”和“将一Perl数据结构转为某一特定XML格式”组成。
+
+<h2>任务一：提取数据</h2>
+首先，假设有如下XML片断：
+<pre><code>
+&lt;?xml version="1.0"?>
+&lt;camelids>
+  &lt;species name="Camelus dromedarius">
+    &lt;common-name>Dromedary, or Arabian Camel&lt;/common-name>
+    &lt;physical-characteristics>
+      &lt;mass>300 to 690 kg.&lt;/mass>
+      &lt;appearance>
+        The dromedary camel is characterized by a long-curved 
+        neck, deep-narrow chest, and a single hump.
+        ...
+      &lt;/appearance>
+    &lt;/physical-characteristics>
+    &lt;natural-history>
+       &lt;food-habits>
+         The dromedary camel is an herbivore.
+         ...
+       &lt;/food-habits>
+       &lt;reproduction>
+         The dromedary camel has a lifespan of about 40-50 years
+         ...
+       &lt;/reproduction>
+       &lt;behavior>
+         With the exception of rutting males, dromedaries show
+         very little aggressive behavior.
+         ...
+       &lt;/behavior>
+       &lt;habitat>
+         The camels prefer desert conditions characterized by a
+         long dry season and a short rainy season.
+         ...
+       &lt;/habitat>
+    &lt;/natural-history>
+    &lt;conservation status="no special status">
+      &lt;detail>
+        Since the dromedary camel is domesticated, the camel has
+        no special status in conservation.
+      &lt;/detail>
+    &lt;/conservation>
+  &lt;/species>
+  ...
+&lt;/camelids>
+</code></pre>
+现在我们假设此完整文档（可从本月例子代码中获取）包含骆驼家族所有成员的全部信息，而不仅仅是上面的单峰骆驼信息。为了举例说明每一模块是如何从此文件中提取某一数据子集，我们将写一个很简短的脚本来处理camelids.xml文档和在STDOUT上输出我们找到的每一种类的普通名（common-name），拉丁名（用括号包起来），和当前保存状况。因此，处理完整个文档，每一个脚本的输出应该为如下结果：
+<pre>
+Bactrian Camel (Camelus bactrianus) endangered 
+Dromedary, or Arabian Camel (Camelus dromedarius) no special status 
+Llama (Lama glama) no special status 
+Guanaco (Lama guanicoe) special concern
+Vicuna (Vicugna vicugna) endangered
+</pre>
+
+<h2>任务二：创建一个XML文档</h2>
+为了示范每一模块是如何从其他数据源中创建新的XML文档，我们将写一个小脚本将一个简单的Perl hash转换为一个简单的XHTML文档。hash里包含一些指向很cool的特定相关骆驼的网页的URLs。<p>
+
+Hash 如下：
+<pre>
+my %camelid_links = (
+    one   => { url         => '
+    http://www.online.discovery.com/news/picture/may99/photo20.html',
+               description => 'Bactrian Camel in front of Great ' .
+                              'Pyramids in Giza, Egypt.'},
+    two   => { url         => 'http://www.fotos-online.de/english/m/09/9532.htm',
+               description => 'Dromedary Camel illustrates the ' . 
+                              'importance of accessorizing.'},
+    three => { url         => 'http://www.eskimo.com/~wallama/funny.htm',
+               description => 'Charlie - biography of a narcissistic llama.'},
+    four  => { url         => 'http://arrow.colorado.edu/travels/other/turkey.html',
+               description => 'A visual metaphor for the perl5-porters ' .
+                              'list?'},
+    five  => { url         => 'http://www.galaonline.org/pics.htm',
+               description => 'Many cool alpacas.'},
+    six   => { url         => 'http://www.thpf.de/suedamerikareise/galerie/vicunas.htm',
+               description => 'Wild Vicunas in a scenic landscape.'}
+);
+</pre>
+而我们所期望从hash中创建的文档例子为：
+<pre><code>
+&lt;?xml version="1.0">
+&lt;html>
+  &lt;body>
+    &lt;a href="http://www.eskimo.com/~wallama/funny.htm">Charlie - 
+      biography of a narcissistic llama.&lt;/a>
+    &lt;a href="http://www.online.discovery.com/news/picture/may99/photo20.html">Bactrian
+      Camel in front of Great Pyramids in Giza, Egypt.&lt;/a>
+    &lt;a href="http://www.fotos-online.de/english/m/09/9532.htm">Dromedary
+      Camel illustrates the importance of accessorizing.&lt;/a>
+    &lt;a href="http://www.galaonline.org/pics.htm">Many cool alpacas.&lt;/a>
+    &lt;a href="http://arrow.colorado.edu/travels/other/turkey.html">A visual 
+      metaphor for the perl5-porters list?&lt;/a>
+    &lt;a href="http://www.thpf.de/suedamerikareise/galerie/vicunas.htm">Wild
+      Vicunas in a scenic landscape.&lt;/a>
+  &lt;/body>
+&lt;/html>
+</code></pre>
+良好缩进的XML结果文件（如上面所显示的）对于阅读很重要，但这种良好的空格处理不是我们案例所要求的。我们所关心的是结果文档是结构良好的/well-formed和它正确地表现了hash里的数据。<p>
+
+任务定义完毕，接下来该是代码例子的时候了。<p>
+
+<h2>XML Perl专用接口例子</h2>
+<h3>XML::Simple</h3>
+最初创建用来简化读写XML格式配置文件的XML::Simple, 在转换XML文档和Perl数据结构之间没有另外的抽象接口。所有的元素和属性都可以通过嵌套的引用直接读取。<p>
+
+<h4>Reading</h4>
+<pre>
+use XML::Simple;
+
+my $file = 'files/camelids.xml';
+my $xs1 = XML::Simple->new();
+
+my $doc = $xs1->XMLin($file);
+
+foreach my $key (keys (%{$doc->{species}})){
+   print $doc->{species}->{$key}->{'common-name'} . ' (' . $key . ') ';
+   print $doc->{species}->{$key}->{conservation}->final . "\n";
+}
+</pre>
+<h4>Writing</h4>
+<pre>
+use XML::Simple;
+
+require "files/camelid_links.pl";
+my %camelid_links = get_camelid_data();
+
+my $xsimple = XML::Simple->new();
+
+print $xsimple->XMLout(\%camelid_links,
+                       noattr => 1,
+                       xmldecl => '<?xml version="1.0">');
+</pre>
+这数据到文档的任务的条件要求暴露了XML::Simple的一个弱点：它没有允许我们决定hash里的哪个key应该作为元素返回和哪个key该作为属性返回。上面例子的输出虽然接近我们的输出要求但还远远不够。对于那些更喜欢将XML文档内容直接作为Perl数据结构操作，而且需要在输出方面做更细微控制的案例，XML::Simple和XML::Writer配合得很好。<p>
+如下例子说明了如何使用XML::Write来符合我们的输出要求。
+<pre>
+use XML::Writer;
+
+require "files/camelid_links.pl";
+my %camelid_links = get_camelid_data();
+
+my $writer = XML::Writer->new();
+
+$writer->xmlDecl();
+$writer->startTag('html');
+$writer->startTag('body');
+
+foreach my $item ( keys (%camelid_links) ) {
+    $writer->startTag('a', 'href' => $camelid_links{$item}->{url});
+    $writer->characters($camelid_links{$item}->{description});
+    $writer->endTag('a');
+}
+
+$writer->endTag('body');
+$writer->endTag('html');
+
+$writer->end();
+</pre>
+<h3>XML::SimpleObject</h3>
+XML::SimpleObject 对XML数据使用回想文档对象模型（Document Object Model）的存取器/accessor来提供一个面对对象接口。
+
+<h4>Reading</h4>
+<pre>
+use XML::Parser;
+use XML::SimpleObject;
+
+my $file = 'files/camelids.xml';
+
+my $parser = XML::Parser->new(ErrorContext => 2, Style => "Tree");
+my $xso = XML::SimpleObject->new( $parser->parsefile($file) );
+
+foreach my $species ($xso->child('camelids')->children('species')) {
+    print $species->child('common-name')->{VALUE};
+    print ' (' . $species->attribute('name') . ') ';
+    print $species->child('conservation')->attribute('status');
+    print "\n";
+}
+</pre>
+<h4>Writing</h4>
+XML::SimpleObject 没有通过抓取来创建XML文档的功能。但是与上面的XML::Simple例子一样，可以通过与XML::Writer配合简单的完成任务。
+<h3>XML::TreeBuilder</h3>
+XML::TreeBuilder 包由两模块组成：XML::Element用来创建和获得XML元素点的内容和XML::TreeBuilder作为一个工厂包从已有XML文件中简化文档树的创建。对于那些已有值得尊敬的 HTML::Element 和 HTML::Tree 模块使用经验的人来说，使用 XML::TreeBuilder 是非常容易的，因为除了XML特有的方法外其他都是一样的。
+<h4>Reading</h4>
+<pre>
+use XML::TreeBuilder;
+
+my $file = 'files/camelids.xml';
+my $tree = XML::TreeBuilder->new();
+
+$tree->parse_file($file);
+
+foreach my $species ($tree->find_by_tag_name('species')){
+    print $species->find_by_tag_name('common-name')->as_text;
+    print ' (' . $species->attr_get_i('name') . ') ';
+    print $species->find_by_tag_name('conservation')->attr_get_i('status');
+    print "\n";
+}
+</pre>
+<h4>Writing</h4>
+<pre>
+use XML::Element;
+
+require "files/camelid_links.pl";
+my %camelid_links = get_camelid_data();
+
+
+my $root = XML::Element->new('html');
+my $body = XML::Element->new('body');
+my $xml_pi = XML::Element->new('~pi', text => 'xml version="1.0"');
+$root->push_content($body);
+
+foreach my $item ( keys (%camelid_links) ) {
+    my $link = XML::Element->new('a', 'href' => $camelid_links{$item}->{url});
+    $link->push_content($camelid_links{$item}->{description});
+    $body->push_content($link);
+}
+
+print $xml_pi->as_XML;
+print $root->as_XML();
+</pre>
+<h3>XML::Twig</h3>
+XML::Twig 与其他只有Perl的XML接口不同，它是一个除了标准的XML APIs外还有其它富有创造性特点的Perlish接口。需要更多更详细的介绍请查看<a href='http://www.xml.com/pub/a/2001/03/21/xmltwig.html'>XML.com 文章</a>
+<h4>Reading</h4>
+<pre>
+use XML::Twig;
+
+my $file = 'files/camelids.xml';
+my $twig = XML::Twig->new();
+
+$twig->parsefile($file);
+
+my $root = $twig->root;
+
+foreach my $species ($root->children('species')){
+    print $species->first_child_text('common-name');
+    print ' (' . $species->att('name') . ') ';
+    print $species->first_child('conservation')->att('status');
+    print "\n";
+}
+</pre>
+<h4>Writing</h4>
+<pre><code>
+use XML::Twig;
+
+require "files/camelid_links.pl";
+my %camelid_links = get_camelid_data();
+
+my $root = XML::Twig::Elt->new('html');
+my $body = XML::Twig::Elt->new('body');
+$body->paste($root);
+
+foreach my $item ( keys (%camelid_links) ) {
+    my $link = XML::Twig::Elt->new('a');
+    $link->set_att('href', $camelid_links{$item}->{url});
+    $link->set_text($camelid_links{$item}->{description});
+    $link->paste('last_child', $body);
+}
+
+print qq|&lt;?xml version="1.0"?>|;
+$root->print;
+</code></pre>
+这些例子举例说明了这些普通XML Perl模块的基本使用方法。我的目标是提供足够多的例子让你感受怎么用每个模块写代码。下个月我们将关注“实现某一标准XML API的模块”，特别说明的，XML::DOM, XML::XPath 和其他大量的 SAX 和类SAX模块。
+
+<h2>Resources</h2>
+<ul>
+  <li><a href="http://www.xml.com/2001/04/18/files/perl-xml-quickstart.zip">下载案例代码</a></li>
+  <li><a href="http://search.cpan.org/search?mode=module&query=xml">CPAN上XML模块的完整列表</a></li>
+  <li><a href="http://www.activestate.com/ASPN/Mail/browse/perl-xml">Perl-XML
+    邮件组档案</a></li>
+  <li><a href="http://www.xml.com/pub/a/2001/03/21/xmltwig.html">使用
+    XML::Twig</a></li>
+  <li><a href='http://www.xml.com/pub/a/2001/05/16/perlxml.html'>Second Part: Perl XML Quickstart: The Standard XML Interfaces</a>
+</ul></div>
+<p><&lt;Previous: <a href="UploadModule.html">如何向CPAN上传模块</a>&nbsp;&nbsp;>>Next: <a href="ask_tim.html">Perl 6 什么时候才能完成？</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8BPerl%20XML%EF%BC%9A%E6%8E%A5%E5%8F%A3%E7%AF%87&url=http://www.fayland.org/journal/perlxmlqstart1.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='RSS.html'>给网页增加RSS</a> < <span class='digit'>2005-01-12 18:22:53</span> ></li><li><a href='xml-rpc-client.html'>XML-PRC Client 客户端编写</a> < <span class='digit'>2005-03-02 00:04:31</span> ></li><li><a href='Catalyst_XMLRPC.html'>Catalyst && XML-RPC</a> < <span class='digit'>2005-10-11 21:50:30</span> ></li></ul>
+Created on <span class="digit">2004-12-27 22:17:54</span>, Last modified on <span class="digit">2005-01-07 18:01:08</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>用 IE 来浏览 perldoc</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="ShareURL0512.html">Share the URLs (December 2005)</a>&nbsp;&nbsp;>>Next: <a href="HTML_Parser_part1.html">HTML::Parser 简单解释</a></p>
+<h1>用 IE 来浏览 perldoc</h1>
+<div class='content'>
+<p>Category: <a href='Script.html'>Script</a> &nbsp; Keywords: <b>perldoc</b></p>perldoc 黑忽忽的界面浏览起来不是很方便。我一向习惯用浏览器来浏览 perldoc, 但当我安装了很多模块的时候，perldoc 的 TOC/Table Of Content 将变得很长，找一个想要的模块将要拉很长的浏览器，比较不方便。<br />于是写了一个简单的文件用 IE 浏览器打开模块 html 文件。<br /><pre>#!/usr/bin/perl<br />use strict;<br />use Config;<br />use File::Spec;<p />my ($module) = @ARGV;<p />die 'not a module' unless ($module =~ /^[\w\:]+$/);<p /># determine it weather it is in /lib or /site/lib<br />my $file = File::Spec->catfile($Config{installhtmldir}, 'lib', split(/\:+/, $module)) . '.html';<br />$file = File::Spec->catfile($Config{installhtmldir}, 'site', 'lib', split(/\:+/, $module)) . '.html' unless (-e $file);<br /># if not in /lib and site/lib, check the lib/Pod, for such as perlfunc<br />$file = File::Spec->catfile($Config{installhtmldir}, 'lib', 'Pod', split(/\:+/, $module)) . '.html' unless (-e $file);<br /># and /bin<br />$file = File::Spec->catfile($Config{installhtmldir}, 'bin', split(/\:+/, $module)) . '.html' unless (-e $file);<br />die 'no such html' unless (-e $file);<p />`"C:/Program Files/Internet Explorer/IEXPLORE.EXE" $file`;</pre>再用 pl2bat 将其转化为 bat 文件<br /><pre>pl2bat pd.pl</pre>最后将这个 bat 文件拖进某 PATH 目录下就可以了。<br />这下我们可以用<br /><pre>pd Module::Build</pre>来打开 Module::Build 的 html 文件。</div>
+<p><&lt;Previous: <a href="ShareURL0512.html">Share the URLs (December 2005)</a>&nbsp;&nbsp;>>Next: <a href="HTML_Parser_part1.html">HTML::Parser 简单解释</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E7%94%A8%20IE%20%E6%9D%A5%E6%B5%8F%E8%A7%88%20perldoc&url=http://www.fayland.org/journal/perldoc_ie.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='pod2cn.html'>Perl 核心模块中文化</a> < <span class='digit'>2005-11-20 21:43:52</span> ></li></ul>
+Created on <span class="digit">2005-12-28 13:53:02</span>, Last modified on <span class="digit">2005-12-28 13:54:00</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

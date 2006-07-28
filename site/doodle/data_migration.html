@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" /><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>数据迁移</title>
+</head>
+<body>
+<a href="index.html">Doodle</a>(2006) | <a href="../journal/">Journal</a>(2005) | <a href="../journal/AboutFayland.html">WhoAmI</a> | <a href="../journal/LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p>>>Next: <a href="doodle.html">Doodle</a></p>
+<h1>数据迁移</h1>
+<div class='content'>
+<p>Category: <a href='Miscellaneous.html'>Miscellaneous</a> &nbsp; Keywords: <b>data migration</b></p>既然新买了笔记本，就将台式机退休掉。不过里面的数据可一个也丢不得。有时候仅仅用 copy+paste 是行不通的，有些软件还是有其内在的迁移方法。<p /><h4>Subversion</h4>根据中文版 <a href='http://freebsd.sinica.edu.tw/~plasma/svnbook/book.html'>SVN 指南</a>，首先将老电脑里的 svn 数据导出，比如说我自己的 svn repos 在 E:/repos<br /><pre>e:<br />svnadmin dump repos > dumpfile</pre>然后将 e:/dumpfile 拷贝到新的电脑中。我还是想在 E:/repos 里放自己的 svn repos.<br />于是在新的电脑里执行：<br /><pre>e:<br />svnadmin create repos<br />svnadmin load repos < dumpfile</pre><h4>Firefox</h4>因为 Firefox 保存了我好的网页密码，有些网页密码我自己都不太记得起了。还有呢，n 多插件如果重新安装那不得累死呀。还好在 <a href='http://www.mozilla.org/support/firefox/profile'>Mozilla Firefox Support</a> 里找到自己想要的东西。<br />首先在老的电脑里，找到 C:\Documents and Settings\Administrator\Application Data\Mozilla\Firefox\Profiles （找不到就搜索） 里找到一个 kg06lpn3.default 文件夹，将这文件夹里的所有资料都拷贝到新的电脑里，比如说我就把它拷贝到 E:\Profiles\Firefox\kg06lpn3.default<br />然后在新的电脑里，找到 C:\Documents and Settings\fayland lam\Application Data\Mozilla\Firefox （找不到就搜索）下面的 profiles.ini, 编辑将两行改为：<br /><pre>IsRelative=0<br />Path=E:\Profiles\Firefox\kg06lpn3.default</pre><h4>MySQL and Thunderbird</h4>MySQL 类似于 Subversion 的做法，或者用 phpMyAdmin 来搞。<br />不过我老电脑里用的是 4.x 而新的用的是 5.x 似乎转过来 utf8 的中文显示部分是乱码部分是正常的，弄得我也搞不清了。<br />而 Thunderbird 则类似于 Firefox, 参见：<a href='http://www.mozilla.org/support/thunderbird/profile'>http://www.mozilla.org/support/thunderbird/profile</a><br />这样能将 Thunderbird 的所有邮件和新闻组，还有 filters 都会拷贝过来，啥都不会丢。</div>
+<p>>>Next: <a href="doodle.html">Doodle</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB&url=http://www.fayland.org/doodle/data_migration.html'>+Del.icio.us</a></p>
+
+Created on <span class="digit">2006-03-11 21:48:36</span>, Last modified on <span class="digit">2006-03-11 22:05:00</span><br />
+Copyright 2004-2006 All Rights Reserved. Powered by <a href="../journal/Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.66.
+</body>
+</html>

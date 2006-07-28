@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>m:nth(19)/Perl6Examples/</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Perl6_ES18.html">my $queen; rule me {Perl6|Examples18}</a>&nbsp;&nbsp;>>Next: <a href="ShareURL0506.html">Share the URLs (June 2005)</a></p>
+<h1>m:nth(19)/Perl6Examples/</h1>
+<div class='content'>
+<p>Category: <a href='Perl6.html'>Perl6</a> &nbsp; Keywords: <b>modifier Perl6</b></p><ol>
+<li>本来修饰符是放后面的，现在都要放前面了。且每个修饰符都是前面加冒号。
+<li>/x 没有了，默认就包含了。需要空格相关的话见下面的操作符 :w(:word)
+<li>/m /s 也没了，我们用 $$ 等元字符来操作。
+<li>/e 也没了。用 { ... } 来执行代码。
+<li>每一个修饰符都有它的长名字，我们可以高兴写长名就长名高兴写短的就短的。如 :i 的长名字为 :ignorecase 而 :g 的长名字为 :global
+<li>我们可以用 :p5 :perl5 来写 Perl5 的正则表达式。唯一的限制是不能在后面放修饰符。
+<pre>if ('22' ~~ m:p5/^\d+$/) { say 'OK'; }</pre>
+<li>新修饰符 :c(:countinue), 表示从当前位置 .pos 后开始匹配
+<pre># Perl5
+while $str =~ m/\G(w+)/gc;
+# 等同与 Perl 6
+while $str =~ m:c/ (\w+) /;</pre>
+<li>:p(:pos) 修饰符表示只在当前位置 .pos 处匹配。它的作用跟以前的 \G 相同（\G 也没了)<br />
+<li>:once 只匹配第一次
+<li>:w(:words) 将空白字符用 <?ws> 定义的规则代替。
+<pre><code>m:w/ next cmd =   &lt;condition>/
+# 等同于
+m/ &lt;ws> next &lt;ws> cmd &lt;ws> = &lt;ws> &lt;condition>/</code></pre>
+<code>而其中 &lt;ws> 到底是 \s+ 还是 \s*, 由 &lt;?ws> 规则定义。你可以定义你自己的 &lt;?ws></code>
+<li>Unicode 级别的修饰符：
+<ol>
+<li>m:bytes / .**{2} / # 匹配两个字节
+<li>m:codes / .**{2} / # 匹配两个编码点/codepoint
+<li>m:graphs/ .**{2} /  # 匹配两个字形/graphemes
+<li>m:langs / .**{2} / # 匹配由不同语言定义的两个字符
+</ol>
+<li>前面是数字的修饰符（以数字 3 为例）：
+<ol>
+<li>如果后面跟x，这种形式表示匹配的次数。它也可以这么写：x(3)。下面三种是等义的：
+<pre><code>s:3x { (&lt;ident>) = (\N+) $$}{$1 => $2}; # 将 = 转为 =>, $$ 在这里的作用等同于 /m
+s:x(3) { (&lt;ident>) = (\N+) $$}{$1 => $2}
+# 也等同于
+$_.pos = 0;
+s:c{ (&lt;ident>) = (\N+) $$}{$1 => $2} for 1..3;</code></pre>
+上面两种跟最下面那种的区别在于上面是要匹配四次以上才会发生四次（不足四次一次也不发生）。<br />
+如果需要范围，可以使用 :x(1..4)
+<li>如果后面跟的是st, nd, rd 或 th, 则表示只处理第几次。它也可以写作：nth(3)。下面在三种也是等义的：
+<pre>s:3rd/(\d+)/@data[$1]/; # 将第三次匹配的数字转为 @data[$1], $1 为匹配的数字
+s:nth(3)/(\d+)/@data[$1]/;
+# 也等同于
+m/(\d+)/ && m:c/(\d+)/ && s:c/(\d+)/@data[$1]/;</pre>
+nth() 是接受列表和 junction 的。如要第 1, 4, 6 次可以写为 nth(1|4|6）<br />
+它还可以接受闭包：nth{ something() }
+</ol>
+<li>:ov(:overlap) 修饰符，它表示匹配结果的位置都是不一样的（就是说每一个位置最多只能有一个结果）。<br />
+在列表上下文返回所有匹配结果，在标量上下文返回匹配结果的反结/disjunction.
+<pre>$str = "abracadabra";
+@substrings = $str ~~ m:overlap/ a (.*) a /;
+# bracadabr cadabr dabr br</pre>
+<li>:ex(:exhaustive) 修饰符，它将匹配所有可能的结果。其返回值在不同的上下文与 :ov 返回做同样处理。
+<pre>$str = "abracadabra";
+@substrings = $str ~~ m:exhaustive/ a (.*) a /;
+# br brac bracad bracadabr c cad cadabr d dabr br</pre>
+</ol>
+
+<h3>Unfinished</h3>
+To be continued.</div>
+<p><&lt;Previous: <a href="Perl6_ES18.html">my $queen; rule me {Perl6|Examples18}</a>&nbsp;&nbsp;>>Next: <a href="ShareURL0506.html">Share the URLs (June 2005)</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=m:nth(19)/Perl6Examples/&url=http://www.fayland.org/journal/Perl6_ES19.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Perl6_ES14.html'>has $.Examples14 handles 'Perl6';</a> < <span class='digit'>2005-06-02 01:38:59</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li><li><a href='Perl6_ES0.html'>@Examples[0] is Perl6</a> < <span class='digit'>2005-05-19 20:26:08</span> ></li><li><a href='Perl6_ES1.html'>given @Examples[1] when Perl6</a> < <span class='digit'>2005-05-19 22:05:56</span> ></li><li><a href='Perl6_ES2.html'>@Perl6 <== @Examples xx 2</a> < <span class='digit'>2005-05-20 18:53:54</span> ></li><li><a href='Perl6_ES3.html'>my Perl6 @Examples[3]</a> < <span class='digit'>2005-05-21 13:53:16</span> ></li><li><a href='Perl6_ES4.html'>say q:2 '@*Examples.[4] &Perl6()';</a> < <span class='digit'>2005-05-22 12:24:12</span> ></li><li><a href='Perl6_ES5.html'>sub Perl6 (*@Examples[5] is copy)</a> < <span class='digit'>2005-05-22 15:37:26</span> ></li><li><a href='Perl6_ES6.html'>multi sub Examples (6, Perl6) {...}</a> < <span class='digit'>2005-05-23 22:43:33</span> ></li><li><a href='Perl6_ES7.html'>sub infix:<(7)> ($Perl6, @Examples)</a> < <span class='digit'>2005-05-24 02:16:42</span> ></li><li><a href='Perl6_ES8.html'>let @Examples[8] = 'Perl6';</a> < <span class='digit'>2005-05-24 13:05:58</span> ></li><li><a href='Perl6_ES9.html'>Perl6 | Examples & 9 ^ junction</a> < <span class='digit'>2005-05-26 12:35:29</span> ></li><li><a href='Perl6_ES10.html'>%Examples{'IO'} = open('Perl6');</a> < <span class='digit'>2005-05-30 00:24:01</span> ></li><li><a href='Perl6_ES11.html'>class Examples11 is Perl6 { ... }</a> < <span class='digit'>2005-05-30 13:31:31</span> ></li><li><a href='Perl6_ES12.html'>$Perl6 = $class.bless(:Example<12>);</a> < <span class='digit'>2005-05-31 11:38:46</span> ></li><li><a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> < <span class='digit'>2005-05-31 18:22:03</span> ></li><li><a href='Perl6_ES16.html'>my subtype Examples16 of Perl6 where /^kissu$/</a> < <span class='digit'>2005-06-04 23:59:29</span> ></li><li><a href='Perl6_ES17.html'>my enum Example17 <<:Perl(6) Today>></a> < <span class='digit'>2005-06-05 12:14:08</span> ></li><li><a href='Perl6_ES18.html'>my $queen; rule me {Perl6|Examples18}</a> < <span class='digit'>2005-06-06 12:26:32</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li></ul>
+Created on <span class="digit">2005-06-06 22:02:01</span>, Last modified on <span class="digit">2005-06-06 23:22:42</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

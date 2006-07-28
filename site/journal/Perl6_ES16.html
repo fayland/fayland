@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>my subtype Examples16 of Perl6 where /^kissu$/</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="google_sitemap.html">Google Sitemap</a>&nbsp;&nbsp;>>Next: <a href="Perl6_ES17.html">my enum Example17 <<:Perl(6) Today>></a></p>
+<h1>my subtype Examples16 of Perl6 where /^kissu$/</h1>
+<div class='content'>
+<p>Category: <a href='Perl6.html'>Perl6</a> &nbsp; Keywords: <b>subtype perl6</b></p><p>应该说类与类型是不一样的，类的英文为 class, 而类型的英文为 type. <br />
+虽然在 Perl6 中类和角色（role）通常表现得与类并无不同。可以说 Perl6 中的类型/Type 由类/class, 角色/role, 和子类型/subtype 组成。<br />
+通常我们通过子类（subclass）来继承类并添加一些新的属性或方法（增加能力），而我们将通过子类型来限制一些特性（可理解为去掉能力）。</p>
+
+<p>最简单的比如我们要一个只能是偶数的子类型。我们就可以这么定义：</p>
+<pre>subtype EvenNum of Num where { $^n % 2 == 0 }</pre>
+首先它继承了类型 Num 然后通过 where 来限定它为偶数（$^n 为前面讲过的占位符参数）。<br />
+<pre>my EvenNum $n;
+$n = 2;             # Okay
+$n = -2;            # Okay
+$n = 0;             # Okay
+$n = 3;             # 出错</pre>
+另一个例子：
+<pre>subtype Str_not2b of Str where /^[isnt|arent|amnot|aint]$/;
+                                                                            
+my Str_not2b $hamlet;
+$hamlet = 'isnt';   # Okay because 'isnt' ~~ /^[isnt|arent|amnot|aint]$/
+$hamlet = 'amnt';   # Bzzzzzzzt!   'amnt' !~ /^[isnt|arent|amnot|aint]$/</pre>
+
+<h3>detailed</h3>
+<ul>
+<li>通常定义子类型的方法：
+<pre>my subtype Str_not2b of Str where /^[isnt|arent|amnot|aint]$/;
+# or
+my Str subtype Str_not2b where /^[isnt|arent|amnot|aint]$/;</pre>
+<li>匿名的子类型定义为：
+<pre>Str where /^[isnt|arent|amnot|aint]$/;</pre>
+由此可以看出子类型定义的关键字不是 subtype 而是 where. where 在此的作用大致可以写为：
+<pre>{ $_.does(Str) and $_ ~~ /^[isnt|arent|amnot|aint]$/; }</pre>
+<li>子类型最主要用于限制参数类型。比如某子程序只接受奇数作为参数：
+<pre>sub check_even (Num where { $^n % 2 == 0 } $even) {...}</pre>
+如果觉得这样看起来很不顺，有很英语化的写法：
+<pre>sub check_even ($even of Num where { $^n % 2 == 0 }) {...}</pre>
+<li>子类型最主要的作用为多种分派（multiple dispatch）的参数提供类型限制。
+<pre><code>multi sub mesg ($mesg of Str where /&lt;profanity>/ is copy) { ... }
+
+multi sub mesg (($mesg of Num where { $^n % 2 == 0 }) { ... }
+
+multi sub mesg ($mesg of Str) { ... }</code></pre>
+默认带有限制子类型的 sub 比不带的优先级要高。也就是如果匹配 rule <code>&lt;profanity></code> 的话就调用该 sub, 都不匹配才调用不带限制的 sub
+</ul></div>
+<p><&lt;Previous: <a href="google_sitemap.html">Google Sitemap</a>&nbsp;&nbsp;>>Next: <a href="Perl6_ES17.html">my enum Example17 <<:Perl(6) Today>></a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=my%20subtype%20Examples16%20of%20Perl6%20where%20/%5Ekissu$/&url=http://www.fayland.org/journal/Perl6_ES16.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Perl6_ES14.html'>has $.Examples14 handles 'Perl6';</a> < <span class='digit'>2005-06-02 01:38:59</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li><li><a href='Perl6_ES0.html'>@Examples[0] is Perl6</a> < <span class='digit'>2005-05-19 20:26:08</span> ></li><li><a href='Perl6_ES1.html'>given @Examples[1] when Perl6</a> < <span class='digit'>2005-05-19 22:05:56</span> ></li><li><a href='Perl6_ES2.html'>@Perl6 <== @Examples xx 2</a> < <span class='digit'>2005-05-20 18:53:54</span> ></li><li><a href='Perl6_ES3.html'>my Perl6 @Examples[3]</a> < <span class='digit'>2005-05-21 13:53:16</span> ></li><li><a href='Perl6_ES4.html'>say q:2 '@*Examples.[4] &Perl6()';</a> < <span class='digit'>2005-05-22 12:24:12</span> ></li><li><a href='Perl6_ES5.html'>sub Perl6 (*@Examples[5] is copy)</a> < <span class='digit'>2005-05-22 15:37:26</span> ></li><li><a href='Perl6_ES6.html'>multi sub Examples (6, Perl6) {...}</a> < <span class='digit'>2005-05-23 22:43:33</span> ></li><li><a href='Perl6_ES7.html'>sub infix:<(7)> ($Perl6, @Examples)</a> < <span class='digit'>2005-05-24 02:16:42</span> ></li><li><a href='Perl6_ES8.html'>let @Examples[8] = 'Perl6';</a> < <span class='digit'>2005-05-24 13:05:58</span> ></li><li><a href='Perl6_ES9.html'>Perl6 | Examples & 9 ^ junction</a> < <span class='digit'>2005-05-26 12:35:29</span> ></li><li><a href='Perl6_ES10.html'>%Examples{'IO'} = open('Perl6');</a> < <span class='digit'>2005-05-30 00:24:01</span> ></li><li><a href='Perl6_ES11.html'>class Examples11 is Perl6 { ... }</a> < <span class='digit'>2005-05-30 13:31:31</span> ></li><li><a href='Perl6_ES12.html'>$Perl6 = $class.bless(:Example<12>);</a> < <span class='digit'>2005-05-31 11:38:46</span> ></li><li><a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> < <span class='digit'>2005-05-31 18:22:03</span> ></li><li><a href='Perl6_ES17.html'>my enum Example17 <<:Perl(6) Today>></a> < <span class='digit'>2005-06-05 12:14:08</span> ></li><li><a href='Perl6_ES18.html'>my $queen; rule me {Perl6|Examples18}</a> < <span class='digit'>2005-06-06 12:26:32</span> ></li><li><a href='Perl6_ES19.html'>m:nth(19)/Perl6Examples/</a> < <span class='digit'>2005-06-06 22:02:01</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li></ul>
+Created on <span class="digit">2005-06-04 23:59:29</span>, Last modified on <span class="digit">2005-06-05 00:02:56</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Perl Tips</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="ShareURL0601.html">Share the URLs (January 2006)</a>&nbsp;&nbsp;>>Next: <a href="060115.html">Guys, it's over</a></p>
+<h1>Perl Tips</h1>
+<div class='content'>
+<p>Category: <a href='Basic.html'>Basic</a> &nbsp; Keywords: <b>tips</b></p><h4>查找所用模块的路径</h4><pre>use Data::Dumper;<br />print $INC{'Data/Dumper.pm'};</pre>C:/usr/lib/Data/Dumper.pm<br />use %INC;<h4>制作 ppm 专用的 ppd 文件</h4><pre>E:\Fayland\CPAN> perl Build.PL<br />E:\Fayland\CPAN> perl Build<br />E:\Fayland\CPAN> perl Build test<br />E:\Fayland\CPAN> perl Build ppmdist</pre>会升成一个类如 Lingua-Han-Stroke.ppd 和 PPM-Lingua-Han-Stroke-0.04.tar.gz 文件。<br />他人安装的话使用 ppm install Lingua-Han-Stroke.ppd 就可以了，把这两个文件给他传过去。<br />这对 Win32 下没有 nmake 的人有点用。</div>
+<p><&lt;Previous: <a href="ShareURL0601.html">Share the URLs (January 2006)</a>&nbsp;&nbsp;>>Next: <a href="060115.html">Guys, it's over</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Perl%20Tips&url=http://www.fayland.org/journal/perl_tips.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='PBP2.html'>Tips from Perl Best Practices</a> < <span class='digit'>2005-09-13 16:57:52</span> ></li><li><a href='PBP3.html'>Tips from Perl Best Practices, Part 2</a> < <span class='digit'>2005-09-22 00:29:34</span> ></li></ul>
+Created on <span class="digit">2006-01-13 18:04:40</span>, Last modified on <span class="digit">2006-01-13 18:16:30</span><br />
+Copyright 2004-2006 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

@@ -1,0 +1,60 @@
+#!/usr/bin/perl
+# cbl.pl for Check Bad Links. v1.00
+@ARGV or die "Usage:perl cbl.pl [E:\directory|/usr/html]";
+
+my $dir = $ARGV[0];
+(-e "$dir" && -d "$dir") or die "$dir doesn't exist or not a directory!";
+$dir .= "/" if ($dir !~ /(\/|\\)$/);
+
+#define
+my @file;
+my %Err;
+
+&GetDir("$dir", \@file);
+
+foreach (@file) {
+	&cbl("$dir$_");
+}
+if (keys %Err) {
+	print "Errors are\n";
+	foreach (keys %Err) {
+		print "$_ has\n\t$Err{$_}\n";
+	}
+} else {
+	print "All is OK!"
+}
+
+sub cbl {
+	my ($file) = @_;
+	return if ($file !~ /\.html?$/);
+	my $dir = $file;
+	$dir =~ s/([^(\/|\\)]*)$//;
+	local $/;
+	open(FH,"$file");
+	my $html = <FH>;
+	close(FH);
+	while ($html =~ s/href\=(\S+?)(\>|\s)//i) {
+		my $tmp = $1;
+		$tmp =~ s/(\"|\')?(\S+?)(\"|\')?/$2/;
+		next if ($tmp =~ /^(https?\:\/\/|mailto\:|\#)/);
+		unless (-e "$dir$tmp") {
+			$Err{"$file"} .= "$tmp\n\t";
+		}
+	}
+}
+
+sub GetDir {
+	my ($dir, $file_ref, $subdir) = @_;
+	if (($subdir ne "") && ($subdir !~ /\/$/)) { $subdir = "$subdir/"; }
+	opendir(DIRS, "$dir");
+	my @dirdata = readdir(DIRS);
+	closedir(DIRS);
+	foreach (@dirdata) {
+		next if (/^\.+$/);
+		if (-d "$dir/$_") {
+			&GetDir("$dir/$_", $file_ref, "$subdir$_");
+		} else {
+			push (@$file_ref, "$subdir$_");
+		}
+	}
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>split</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="JS_event.html">Javascript: Events</a>&nbsp;&nbsp;>>Next: <a href="SVK.html">SVK 安装</a></p>
+<h1>split</h1>
+<div class='content'>
+<p>Category: <a href='Basic.html'>Basic</a> &nbsp; Keywords: <b>split</b></p><p>今天在 <a href='http://groups-beta.google.com/group/perl.perl6.language'>perl6.language</a> 里看到一个 <a href='http://groups-beta.google.com/group/perl.perl6.language/browse_thread/thread/ad8f212972168670'>split /(..)*/, 1234567890</a> 帖子。发现自己对 split 还是不太熟悉，真是晕一下。</p>
+
+做几道简单的测试题，看看你是否真的懂 split?<br>
+<ol>
+<li>print join ",", split /(..)/, 123456;</li>
+<li>print join ",", split /(..)/, 12345;</li>
+<li>print join ",", split /(..)+/, 123456;</li>
+<li>@fields = split /(A)|B/, "1A2B3";</li>
+</ol>
+答案分别为：<br>
+<ol>
+<li>,12,,34,,56</li>
+<li>,12,,34,5</li>
+<li>,56</li>
+<li># @fields is (1, 'A', 2, undef, 3)</li>
+</ol>
+
+<p>翻译下 perlfunc 里的 <a href='http://perldoc.perl.org/functions/split.html'>split</a> 那一段并且加点代码佐料，Enjoy.</p>
+
+<h2>Translation of "perldoc -f split"</h2>
+
+<pre>split /PATTERN/,EXPR,LIMIT
+split /PATTERN/,EXPR
+split /PATTERN/
+split</pre>
+<p>Splits the string EXPR into a list of strings and returns that list. By default, empty leading fields are preserved, and empty trailing ones are deleted. (If all fields are empty, they are considered to be trailing.) </p>
+<p>分割字符串 EXPR 为字符串列表并且返回这个列表。默认我们会保留前面的空字段而删除后面的空字段。（如果所有的字段都为空，它们都被认为是后面的空字段。）</p>
+<p>In scalar context, returns the number of fields found and splits into the @_ array. Use of split in scalar context is deprecated, however, because it clobbers your subroutine arguments.</p>
+<p>在标量上下文，返回字段的个数并且将列表放到默认数组 @_. 但是这是不可取的，因为它可能会影响子程序的参数。</p>
+<pre>my $count = split /A/, 'BACAD';
+print $count, join(",", @_); # 在标量上下文，返回字段个数 $count = 3, @_ = ('B', 'C', 'D')</pre>
+<p>If EXPR is omitted, splits the $_ string. If PATTERN is also omitted, splits on whitespace (after skipping any leading whitespace). Anything matching PATTERN is taken to be a delimiter separating the fields. (Note that the delimiter may be longer than one character.)</p>
+<p>如果没有提供 EXPR ，将使用默认标量 $_. 如果也没有提供 PATTERN, 默认使用空白（所有 EXPR 前面的空白都会被跳过）。任何匹配 PATTERN 的将被作为定界符来分割字段。（注意定界符可能长于一个字符。）</p>
+<pre># 这段话代码解释就是
+$_ = "  A  B";
+print join ',', split;
+# 首先将 $_ 作为 EXPR, 空白作为 PATTERN, EXPR 前面的空白都被跳过。所以结果为：A,B
+print join ',', split /AA/, 'CCAABBAADD';
+# AA 被匹配，所以 AA 是定界符（长于一个字符）。结果为：CC,BB,DD</pre>
+
+<p>If LIMIT is specified and positive, it represents the maximum number of fields the EXPR will be split into, though the actual number of fields returned depends on the number of times PATTERN matches within EXPR. If LIMIT is unspecified or zero, trailing null fields are stripped (which potential users of pop would do well to remember). If LIMIT is negative, it is treated as if an arbitrarily large LIMIT had been specified. Note that splitting an EXPR that evaluates to the empty string always returns the empty list, regardless of the LIMIT specified.</p>
+
+<p>如果我们指定了正的 LIMIT, 它表示我们最多分割 EXPR 为 LIMIT 个字段，即使实际上返回的字段个数取决于 EXPR 匹配 PATTERN 的次数。如果没有指定 LIMIT 或者为零，去掉最后的 null 字段。如果 LIMIT 是负的，我们当作指定了个任意大的 LIMIT. 注意分割一个空的 EXPR 字符串时总返回空白列，而不管指定了什么 LIMIT.</p>
+
+<pre>print join ',', split /A/, 'BACADAF', 2;
+# 因为指定了 LIMIT 为 2，所以即使它可能用 A 分割成四个字段，但它还是就分割了两个字段。
+# 输出为：B,CADAF</pre>
+
+<p>....</p>
+
+<p>Empty leading (or trailing) fields are produced when there are positive width matches at the beginning (or end) of the string; a zero-width match at the beginning (or end) of the string does not produce an empty field.</p>
+
+<p>如果在字符串的头部或尾部有一次正宽度（界定符长度）的匹配，那么会产生一个头部或尾部的空字段。零宽度的匹配不会产生空字段</p>
+
+<pre>print join ',', split /A/, 'ABAC';
+# 因为字符串头部匹配了，所以列表的第一个字段为空字段，结果为：,B,C
+print join ',', split //, 'BACA';
+# 因为匹配的为零宽度，所以没有空字段，结果为：B,A,C,A</pre>
+
+<p> .... </p>
+
+<p>If the PATTERN contains parentheses, additional list elements are created from each matching substring in the delimiter.</p>
+
+<p>如果 PATTERN 里包含括号，那么每一个匹配的定界符子字符串都会作为元素加到列表中去。</p>
+
+<pre>print join ',', split /(A)/, 'BACAD';
+# 因为有括号，所以 A 也成了列表的元素。结果为：B,A,C,A,D</pre>
+
+<p> .... </p>
+
+<p>As with regular pattern matching, any capturing parentheses that are not matched in a split() will be set to undef when returned:</p>
+
+<p>当括号与其他正则模式匹配一起时，如果匹配的不是任何捕获的括号而是其他时，那字段将设置为 undef 返回：</p>
+
+<pre>@fields = split /(A)|B/, "1A2B3";
+# @fields is (1, 'A', 2, undef, 3)</pre>
+
+<h2>Explaination</h2>
+这东西挺难解释的，姑且知道结果就好吧。最起码我是不太解释的了每一条。
+<pre>my @_ = split /(A)/, 'A'; # @_ = ('', 'A');
+
+print join ",", split /(A)/, 'AAAA', 2; # ,A,AAA
+print join ",", split /(A)/, 'AAAA', 3; # ,A,,A,AA
+print join ",", split /(A)/, 'AAAA';    # ,A,,A,,A,,A
+
+print join ",", split /A/, 'AACAA'; # ,,C
+print join ",", split /(A)/, 'AACAA'; # ,A,,A,C,A,,A</pre>
+
+<h2>The last word</h2>
+如翻译有误，敬请指正。另外欢迎交流。Have fun!</div>
+<p><&lt;Previous: <a href="JS_event.html">Javascript: Events</a>&nbsp;&nbsp;>>Next: <a href="SVK.html">SVK 安装</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=split&url=http://www.fayland.org/journal/split.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='JS_encode.html'>Ajax && encodeURIComponent</a> < <span class='digit'>2005-05-15 15:31:00</span> ></li><li><a href='JS_event.html'>Javascript: Events</a> < <span class='digit'>2005-05-10 23:36:36</span> ></li><li><a href='AutoSave.html'>AutoSave / 自动存储</a> < <span class='digit'>2005-10-14 01:26:10</span> ></li></ul>
+Created on <span class="digit">2005-05-13 21:08:58</span>, Last modified on <span class="digit">2005-05-14 00:06:06</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

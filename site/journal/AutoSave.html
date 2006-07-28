@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>AutoSave / 自动存储</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="LunarCalendar.html">DateTime::Calendar::Chinese</a>&nbsp;&nbsp;>>Next: <a href="051019_CreditCard.html">My first credit card - Young Card</a></p>
+<h1>AutoSave / 自动存储</h1>
+<div class='content'>
+<p>Category: <a href='Javascript.html'>Javascript</a> &nbsp; Keywords: <b>AutoSave javascript</b></p>这个功能很常见。是为了防止浏览器崩溃或提交不成功而导致自己辛辛苦苦写就的东西消失掉。Gmail 里也这个东西。<br />它的原理是将该文本框的东西存储进一个 Cookie. 如果没提交成功（原因可能是浏览器崩溃），下次访问该页面时询问是否导入上次存储的东西。<p /><pre>function AutoSave(it) { // it 指调用的文本框<p /> &nbsp; &nbsp;var _value = it.value; &nbsp; &nbsp;// 获得文本框的值<br /> &nbsp; &nbsp;if (!_value) {<br /> &nbsp; &nbsp; &nbsp; &nbsp;var _LastContent = GetCookie('AutoSaveContent'); // 获得 cookie 的值，这里的 GetCookie 是个自定义函数，参见源代码<br /> &nbsp; &nbsp; &nbsp; &nbsp;<br /> &nbsp; &nbsp; &nbsp; &nbsp;if (!_LastContent) return; // 如果该 cookie 没有值，说明是新的开始<br /> &nbsp; &nbsp; &nbsp; &nbsp;<br /> &nbsp; &nbsp; &nbsp; &nbsp;if (confirm("Load Last AutoSave Content?")) { // 否则询问是否导入<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;it.value = _LastContent;<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return true;<br /> &nbsp; &nbsp; &nbsp; &nbsp;} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br /> &nbsp; &nbsp;} else {<br /> &nbsp; &nbsp; &nbsp; &nbsp;<br /> &nbsp; &nbsp; &nbsp; &nbsp;var expDays = 30;<br /> &nbsp; &nbsp; &nbsp; &nbsp;var exp = new Date();<br /> &nbsp; &nbsp; &nbsp; &nbsp;exp.setTime( exp.getTime() + (expDays * 86400000) ); // 24*60*60*1000 = 86400000<br /> &nbsp; &nbsp; &nbsp; &nbsp;var expires='; expires=' + exp.toGMTString();<p /> &nbsp; &nbsp; &nbsp; &nbsp;// SetCookie 这里就是设置该 cookie<br /> &nbsp; &nbsp; &nbsp; &nbsp;document.cookie = "AutoSaveContent=" + escape (_value) + expires;<br /> &nbsp; &nbsp;}<br />}</pre>而这 HTML 中应当如此：<br /><pre><br />&lt;script language=JavaScript src='/javascript/AutoSave.js'>&lt;/script><br />&lt;form action="submit" method="POST" onSubmit="DeleteCookie('AutoSaveContent')"><br />&lt;textarea rows="5" cols="70" wrap="virtual" onkeyup="AutoSave(this);" onselect="AutoSave(this);" onclick="AutoSave(this);">&lt;/textarea><br />&lt;input type="submit">&lt;/form><br /></pre>第一句导入 js, 第二句的 onSubmit 指如果提交了就删除该 cookie, 而 DeleteCookie 也是自定义的一个函数。参见<a href='http://www.fayland.org/javascript/AutoSave.js'>源代码</a>。<br />textarea 里的 onkeyup 是指当按键时访问 AutoSave, 用以存储新写入的文字。<br />而 onselect 和 onclick 用以新访问时确定导入自动保存的文字。<p />大致就是如此。 Enjoy!<p />源代码：<a href="http://www.fayland.org/javascript/AutoSave.js">http://www.fayland.org/javascript/AutoSave.js</a></div>
+<p><&lt;Previous: <a href="LunarCalendar.html">DateTime::Calendar::Chinese</a>&nbsp;&nbsp;>>Next: <a href="051019_CreditCard.html">My first credit card - Young Card</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=AutoSave%20/%20%E8%87%AA%E5%8A%A8%E5%AD%98%E5%82%A8&url=http://www.fayland.org/journal/AutoSave.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='JS_encode.html'>Ajax && encodeURIComponent</a> < <span class='digit'>2005-05-15 15:31:00</span> ></li><li><a href='JS_event.html'>Javascript: Events</a> < <span class='digit'>2005-05-10 23:36:36</span> ></li></ul>
+Created on <span class="digit">2005-10-14 01:26:10</span>, Last modified on <span class="digit">2005-10-14 21:31:25</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

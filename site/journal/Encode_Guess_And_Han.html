@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Lingua::Han::Utils 和 Encode::Guess</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="CatalystAdventCalendar_CN.html">Catalyst Advent Calendar 中文版</a>&nbsp;&nbsp;>>Next: <a href="modperl_Filter_part1.html">modperl Filter Part1</a></p>
+<h1>Lingua::Han::Utils 和 Encode::Guess</h1>
+<div class='content'>
+<p>Category: <a href='MyCPAN.html'>MyCPAN</a> &nbsp; Keywords: <b>Encode::Guess Lingua::Han::Utils</b></p>首先介绍下 <a href="http://search.cpan.org/perldoc?Encode::Guess">Encode::Guess</a> 的用途。<br />我们知道一个文件有很多种编码，最常见的就是 ASCII 和 utf8<br />如果你从外面读入一个文件，想把它 decode 时却不知道该指定何种编码时非常有用。<br />一般的代码是：<br /><pre>use Encode;<br />use Encode::Guess qw/euc-cn/;<p />my $word = "直到";<br />my $enc = Encode::Guess->guess($word);<br />die $! unless ref($enc);<br />print $enc->name;</pre>如果该代码文件是 utf8 模式下编辑时，它输出的是 utf8; 不在 Unicode Editing 模式下很可能输出 euc-cn<br />然后你要解码的话就可以指定它的编码了：<br /><pre>$word = decode($enc->name, $word);</pre>可是今天发现 <a href="http://search.cpan.org/perldoc?Encode::Guess">Encode::Guess</a> 不太美好的地方。<br />当我测试 $word = "直到" 时，在 utf8 和非 Unicode Editing 时都解码正常。<br />但测试 $word = "直" 时，在非 Unicode Editing 时却出错，它没有猜测成功。<p />我本来在 <a href="http://search.cpan.org/perldoc?Lingua::Han::Utils">Lingua::Han::Utils</a> 里就是用 die $! unless ref($enc); 的，所以测试 Unihan_value("直") 时会出错。<br />后来想想，把它改成了：<br /><pre>my $encoding;<br />unless (ref($enc)) {<br /> &nbsp; &nbsp;$encoding = 'euc-cn'; # use 'enc-cn' by default<br />} else {<br /> &nbsp; &nbsp;$encoding = $enc->name;<br />}<br />$word = decode($encoding, $word);</pre>默认没有猜测成功的话就指定该编码为 enc-cn.<br />因为我认为猜测 utf8 总是会成功的，不成功的话就应该是 enc-cn.<br />试了下 Unihan_value("直") 一切 OK!<p />:-)</div>
+<p><&lt;Previous: <a href="CatalystAdventCalendar_CN.html">Catalyst Advent Calendar 中文版</a>&nbsp;&nbsp;>>Next: <a href="modperl_Filter_part1.html">modperl Filter Part1</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Lingua::Han::Utils%20%E5%92%8C%20Encode::Guess&url=http://www.fayland.org/journal/Encode_Guess_And_Han.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='050328.html'>Catalyst & Eplanet</a> < <span class='digit'>2005-03-28 13:19:19</span> ></li><li><a href='050423.html'>Day [05.4.23] stay with me</a> < <span class='digit'>2005-04-23 16:17:02</span> ></li><li><a href='Catalyst_Authenticate.html'>Catalyst Authenticate</a> < <span class='digit'>2005-09-26 12:50:39</span> ></li><li><a href='Catalyst_Flaw.html'>Catalyst 的一个不足（一个已去掉）</a> < <span class='digit'>2005-09-27 13:44:31</span> ></li><li><a href='Catalyst_Session_Win32.html'>Catalyst 在 Win32 下的 Session</a> < <span class='digit'>2005-09-29 11:08:04</span> ></li><li><a href='Catalyst_NoFavIcon.html'>Catalyst && favicon.ico</a> < <span class='digit'>2005-09-30 00:57:57</span> ></li><li><a href='Catalyst_Overview.html'>我对 Catalyst 的理解和介绍</a> < <span class='digit'>2005-10-08 01:39:40</span> ></li><li><a href='Catalyst_XMLRPC.html'>Catalyst && XML-RPC</a> < <span class='digit'>2005-10-11 21:50:30</span> ></li><li><a href='Catalyst_YAML.html'>Catalyst config YAML</a> < <span class='digit'>2005-12-10 12:50:39</span> ></li><li><a href='CatalystAdventCalendar_CN.html'>Catalyst Advent Calendar 中文版</a> < <span class='digit'>2005-12-15 23:28:40</span> ></li></ul>
+Created on <span class="digit">2005-12-17 02:00:23</span>, Last modified on <span class="digit">2005-12-17 02:00:43</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

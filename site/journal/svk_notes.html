@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>svk 的一些使用纪录</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="attributes.html">attributes 用法介绍</a>&nbsp;&nbsp;>>Next: <a href="template_introduction.html">Template Toolkit 入门</a></p>
+<h1>svk 的一些使用纪录</h1>
+<div class='content'>
+<p>Category: <a href='InstallNote.html'>InstallNote</a> &nbsp; Keywords: <b>svk subversion svn</b></p>因为 <a href='http://subversion.tigris.org/'>Subversion/svn</a> 你要查看 log 或者 diff 的时候必须要上网，所以我就转用 <a href='http://svk.elixus.org'>svk</a> 了。而且 <a href="http://search.cpan.org/perldoc?SVK">SVK</a> 还是我们的台湾同仁用 Perl 写的，有心想学习一下。<br />它有 Win32 的安装包，或者可以用 CPAN 搞定。我是下了 svn 的 pl 文件，然后 cpan SVK 搞定的。安装过程挺顺利的。<p />SVK 的本地 log diff 等功能据我所知应当是在本地建立建立一个和远程服务器上类似的镜像，这样我们查看 log 或 diff 等就不需要访问远程服务器而直接到本地镜像上索取。<p />下面只是一些使用纪录和介绍，svk 官方网站上有中文的入门介绍：<a href="http://svk.elixus.org/?ZHSVKTutorial">http://svk.elixus.org/?ZHSVKTutorial</a><br /><ul>run cmd<br /><li>svk depotmap<br />这里是初始化的过程，设置建立的本地镜像地址。弹出的东西如下：<br />档案库 X:\xxx\.svk\local 不存在。要建立吗？(y/n)<br />我选了 n, 然后它会弹出一个文本编辑器让你修改你要设置的镜像路径。我输入了 E:/svk/local<br />它还会在类如 C:\Documents and Settings\Administrator\.svk 里建立一个 cache 文件夹和一个 config 配置文件以方便下次识别你所输入的 local 地址。</li><li>svk cp http://dev.catalyst.perl.org/repos/<a href="http://dev.catalyst.perl.org">Catalyst</a>/trunk catalyst<br />我们以 Catalyst 为例子。SVK 都有中文提示的。我也就按两下 Enter（或者档案库路径为 catalyst）然后再选个 h 再按个 Enter. 一般采用 svk 的默认值就可以了。</li><li>我想把 catalyst 文件夹弄到 E:/svk 目录下的话，就可以使用<br />E:\svk>svk co //catalyst Catalyst<br /><li>如果你要修改文件然后提交到远程服务器的话，先用文本编辑器把文件修改掉。然后<br />cd E:/svk/Catalyst<br />svk ci<br />svk push<br />这样就可以了</li><li>查看 log 的话可以调用 svk log -v</li><li>diff 的话可以调用 svk diff -r 8 什么的。详细的用 svk help diff 来获取资料</li><li>弄回远程最新的话可以用 svk pull 类似的还有 svk sync //mirror/catalyst 我还得慢慢玩。</li></ul>还在学习中。如有错误请指正，Thanks.<p />参考：<br /><a href='http://www.onlamp.com/lpt/a/5128'>Collaborative Document Editing with svk</a></div>
+<p><&lt;Previous: <a href="attributes.html">attributes 用法介绍</a>&nbsp;&nbsp;>>Next: <a href="template_introduction.html">Template Toolkit 入门</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=svk%20%E7%9A%84%E4%B8%80%E4%BA%9B%E4%BD%BF%E7%94%A8%E7%BA%AA%E5%BD%95&url=http://www.fayland.org/journal/svk_notes.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='SVK.html'>SVK 安装</a> < <span class='digit'>2005-05-14 14:52:25</span> ></li><li><a href='SVN_Web.html'>SVN::Web</a> < <span class='digit'>2005-10-22 14:21:00</span> ></li></ul>
+Created on <span class="digit">2005-12-03 00:45:11</span>, Last modified on <span class="digit">2005-12-03 12:47:45</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

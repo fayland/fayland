@@ -1,0 +1,371 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" /><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Javascript 日期选择器</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="ShareURL0603.html">Share the URLs (March 2006)</a>&nbsp;&nbsp;>>Next: <a href="laptop.html">my laptop</a></p>
+<h1>Javascript 日期选择器</h1>
+<div class='content'>
+<p>Category: <a href='Javascript.html'>Javascript</a> &nbsp; Keywords: <b>javascript date selector</b></p>最近在做的一个项目是显示搜索字段的数据。不同的人在这个站点用不同的关键词做搜索，可能有些关键词没有找到任何结果。我所做的就是显示某段时间内所搜索的关键词和结果数。重点显示没有结果的关键词，这样可以进一步改进站点。<br />
+<br />
+我们最常用的某段时间可能就是“今天”，“昨天”，“最近一个礼拜”，“最近一个月”，“最近三个月”等。<br />
+<br />
+这该死的 javascript 尽然整整花了我 2 个小时。
+<ul>
+<li>下面这段在 IE 中可运行，在 Firefox 中不行。
+<pre><code>NewOption = new Option(DaysObject.options.length + 1);
+DaysObject.add(NewOption);</code></pre>
+这里的 DaysObject 是个 select<br />
+最后将 DaysObject.add(NewOption); 改成 DaysObject.options.add(NewOption); 才过关。
+<li>然后在 Firefox 能运行，在 IE 中不能运行的东西。
+<pre><code>$('to_day').value   = d.getDate();</code></pre>
+这是一个 prototype.js 的东西。$('to_day') 就是上面插入的那个 select. 奇怪的就是 prototype.js 在这里的 .value = d.getDate(); 能在 Firefox 中运行但不能在 IE 中运行。最后改为：
+<pre><code>$('to_day').options[d.getDate() - 1].selected = true;</code></pre>
+才过关。
+</ul>
+javascript 真是很烦，不同的浏览器都不太兼容。我还仅仅只是测试了 IE 6 和 Firefox.
+
+<h3>最后的案例</h3>
+<script type="text/javascript" src="http://fayland.org/javascript/prototype.js"></script>
+<script type="text/javascript">
+
+	function DaysInMonth(WhichMonth, WhichYear) {
+		var DaysInMonth = 31;
+		if (WhichMonth == 4 || WhichMonth == 6 || WhichMonth == 9 || WhichMonth == 11) DaysInMonth = 30;
+		if (WhichMonth == 2 && (WhichYear/4) != Math.floor(WhichYear/4))	DaysInMonth = 28;
+		if (WhichMonth == 2 && (WhichYear/4) == Math.floor(WhichYear/4))	DaysInMonth = 29;
+		return DaysInMonth;
+	}
+	function ChangeOptionDays(Which) {
+		var obj;
+		if (Which == "from") {
+			DaysObject = $('from_day');
+			DaysForThisSelection = DaysInMonth($('from_month').value, $('from_year').value);
+		} else {
+			DaysObject = $('to_day');
+			DaysForThisSelection = DaysInMonth($('to_month').value, $('to_year').value);
+		}
+			
+		CurrentDaysInSelection = DaysObject.length;
+		if (CurrentDaysInSelection > DaysForThisSelection) {
+			for (i=0; i<(CurrentDaysInSelection-DaysForThisSelection); i++) {
+				DaysObject.options[DaysObject.options.length - 1] = null
+			}
+		}
+		if (DaysForThisSelection > CurrentDaysInSelection) {
+			for (i=0; i<(DaysForThisSelection-CurrentDaysInSelection); i++) {
+				NewOption = new Option(DaysObject.options.length + 1);
+				DaysObject.options.add(NewOption);
+			}
+		}
+		if (DaysObject.selectedIndex < 0) DaysObject.selectedIndex == 0;
+	}
+
+	d = new Date();
+	function Today() {
+		$('from_year').value  = d.getFullYear();
+		$('from_month').value = d.getMonth() + 1;
+		ChangeOptionDays('from');
+		$('from_day').options[d.getDate() - 1].selected = true;
+		$('to_year').value  = d.getFullYear();
+		$('to_month').value = d.getMonth() + 1;
+		ChangeOptionDays('to');
+		$('to_day').options[d.getDate() - 1].selected = true;
+	}
+	function LastWeek() {
+		$('to_year').value  = d.getFullYear();
+		$('to_month').value = d.getMonth() + 1;
+		ChangeOptionDays('to');
+		$('to_day').options[d.getDate() - 1].selected = true;
+		
+		d2 = new Date();
+		d2.setDate(d2.getDate()-7);
+		$('from_year').value  = d2.getFullYear();
+		$('from_month').value = d2.getMonth() + 1;
+		ChangeOptionDays('from');
+		$('from_day').options[d2.getDate() - 1].selected = true;
+	}
+	function ThisMonth() {
+		$('from_year').value  = d.getFullYear();
+		$('from_month').value = d.getMonth() + 1;
+		ChangeOptionDays('from');
+		$('from_day').options[0].selected = true;
+		$('to_year').value  = d.getFullYear();
+		$('to_month').value = d.getMonth() + 1;
+		ChangeOptionDays('to');
+		i = $('to_day').length - 1;
+		$('to_day').options[i].selected = true;
+	}
+	function LastMonth() {
+		if (d.getMonth() == 0) {
+			$('from_year').value  = d.getFullYear() - 1;
+			$('from_month').value = 12;
+			$('to_year').value    = d.getFullYear() - 1;
+			$('to_month').value   = 12;
+		} else {
+			$('from_year').value  = d.getFullYear();
+			$('from_month').value = d.getMonth();
+			$('to_year').value    = d.getFullYear();
+			$('to_month').value   = d.getMonth();
+		}
+		ChangeOptionDays('from');
+		$('from_day').options[0].selected = true;
+		ChangeOptionDays('to');
+		i = $('to_day').length - 1;
+		$('to_day').options[i].selected = true;
+	}
+	function ThreeMonth() {
+
+		if (d.getMonth() < 2) {
+			$('from_year').value  = d.getFullYear() - 1;
+			$('from_month').value = 11 + d.getMonth();
+		} else {
+			$('from_year').value  = d.getFullYear();
+			$('from_month').value = d.getMonth() - 1;
+		}
+		$('to_year').value    = d.getFullYear();
+		$('to_month').value   = d.getMonth() + 1;
+		ChangeOptionDays('from');
+		$('from_day').options[d.getDate() - 1].selected = true;
+		ChangeOptionDays('to');
+		$('to_day').options[d.getDate() - 1].selected = true;
+	}
+	function ThisYear() {
+		$('from_year').value  = d.getFullYear();
+		$('from_month').value = 1;
+		ChangeOptionDays('from');
+		$('from_day').options[0].selected = true;
+		$('to_year').value  = d.getFullYear();
+		$('to_month').value = 12;
+		ChangeOptionDays('to');
+		i = $('to_day').length - 1;
+		$('to_day').options[i].selected = true;
+	}
+	window.onload = Today;
+</script>
+<div><p><a href='javascript:Today()'>Today</a> - <a href='javascript:LastWeek()'>Last Week</a> - <a href='javascript:ThisMonth()'>This Month</a> - <a href='javascript:LastMonth()'>Last Month</a> - <a href='javascript:ThreeMonth()'>Last 3 Month</a> - <a href='javascript:ThisYear()'>This Year</a></p></div>
+
+From: 
+<select name='from_year' id='from_year' onchange="ChangeOptionDays('from')">
+<option value='2005'>2005</option>
+<option value='2006'>2006</option>
+<option value='2007'>2007</option>
+</select>
+<select name='from_month' id='from_month' onchange="ChangeOptionDays('from')">
+<option value='1'>1</option>
+<option value='2'>2</option>
+<option value='3'>3</option>
+<option value='4'>4</option>
+<option value='5'>5</option>
+<option value='6'>6</option>
+<option value='7'>7</option>
+<option value='8'>8</option>
+<option value='9'>9</option>
+<option value='10'>10</option>
+<option value='11'>11</option>
+<option value='12'>12</option>
+</select>
+<select name='from_day' id='from_day'></select>
+To:
+<select name='to_year' id='to_year' onchange="ChangeOptionDays('to')">
+<option value='2005'>2005</option>
+<option value='2006'>2006</option>
+<option value='2007'>2007</option>
+</select>
+<select name='to_month' id='to_month' onchange="ChangeOptionDays('to')">
+<option value='1'>1</option>
+<option value='2'>2</option>
+<option value='3'>3</option>
+<option value='4'>4</option>
+<option value='5'>5</option>
+<option value='6'>6</option>
+<option value='7'>7</option>
+<option value='8'>8</option>
+<option value='9'>9</option>
+<option value='10'>10</option>
+<option value='11'>11</option>
+<option value='12'>12</option>
+</select>
+<select name='to_day' id='to_day'></select>
+
+<pre><code>
+&lt;script type="text/javascript" src="http://fayland.org/javascript/prototype.js">&lt;/script>
+
+&lt;script type="text/javascript">
+
+	function DaysInMonth(WhichMonth, WhichYear) {
+		var DaysInMonth = 31;
+		if (WhichMonth == 4 || WhichMonth == 6 || WhichMonth == 9 || WhichMonth == 11) DaysInMonth = 30;
+		if (WhichMonth == 2 && (WhichYear/4) != Math.floor(WhichYear/4))	DaysInMonth = 28;
+		if (WhichMonth == 2 && (WhichYear/4) == Math.floor(WhichYear/4))	DaysInMonth = 29;
+		return DaysInMonth;
+	}
+	function ChangeOptionDays(Which) {
+		var obj;
+		if (Which == "from") {
+			DaysObject = $('from_day');
+			DaysForThisSelection = DaysInMonth($('from_month').value, $('from_year').value);
+		} else {
+			DaysObject = $('to_day');
+			DaysForThisSelection = DaysInMonth($('to_month').value, $('to_year').value);
+		}
+			
+		CurrentDaysInSelection = DaysObject.length;
+		if (CurrentDaysInSelection > DaysForThisSelection) {
+			for (i=0; i&lt;(CurrentDaysInSelection-DaysForThisSelection); i++) {
+				DaysObject.options[DaysObject.options.length - 1] = null
+			}
+		}
+		if (DaysForThisSelection > CurrentDaysInSelection) {
+			for (i=0; i&lt;(DaysForThisSelection-CurrentDaysInSelection); i++) {
+				NewOption = new Option(DaysObject.options.length + 1);
+				DaysObject.options.add(NewOption);
+			}
+		}
+		if (DaysObject.selectedIndex &lt; 0) DaysObject.selectedIndex == 0;
+	}
+
+	d = new Date();
+	function Today() {
+		$('from_year').value  = d.getFullYear();
+		$('from_month').value = d.getMonth() + 1;
+		ChangeOptionDays('from');
+		$('from_day').options[d.getDate() - 1].selected = true;
+		$('to_year').value  = d.getFullYear();
+		$('to_month').value = d.getMonth() + 1;
+		ChangeOptionDays('to');
+		$('to_day').options[d.getDate() - 1].selected = true;
+	}
+	function LastWeek() {
+		$('to_year').value  = d.getFullYear();
+		$('to_month').value = d.getMonth() + 1;
+		ChangeOptionDays('to');
+		$('to_day').options[d.getDate() - 1].selected = true;
+		
+		d2 = new Date();
+		d2.setDate(d2.getDate()-7);
+		$('from_year').value  = d2.getFullYear();
+		$('from_month').value = d2.getMonth() + 1;
+		ChangeOptionDays('from');
+		$('from_day').options[d2.getDate() - 1].selected = true;
+	}
+	function ThisMonth() {
+		$('from_year').value  = d.getFullYear();
+		$('from_month').value = d.getMonth() + 1;
+		ChangeOptionDays('from');
+		$('from_day').options[0].selected = true;
+		$('to_year').value  = d.getFullYear();
+		$('to_month').value = d.getMonth() + 1;
+		ChangeOptionDays('to');
+		i = $('to_day').length - 1;
+		$('to_day').options[i].selected = true;
+	}
+	function LastMonth() {
+		if (d.getMonth() == 0) {
+			$('from_year').value  = d.getFullYear() - 1;
+			$('from_month').value = 12;
+			$('to_year').value    = d.getFullYear() - 1;
+			$('to_month').value   = 12;
+		} else {
+			$('from_year').value  = d.getFullYear();
+			$('from_month').value = d.getMonth();
+			$('to_year').value    = d.getFullYear();
+			$('to_month').value   = d.getMonth();
+		}
+		ChangeOptionDays('from');
+		$('from_day').options[0].selected = true;
+		ChangeOptionDays('to');
+		i = $('to_day').length - 1;
+		$('to_day').options[i].selected = true;
+	}
+	function ThreeMonth() {
+
+		if (d.getMonth() &lt; 2) {
+			$('from_year').value  = d.getFullYear() - 1;
+			$('from_month').value = 11 + d.getMonth();
+		} else {
+			$('from_year').value  = d.getFullYear();
+			$('from_month').value = d.getMonth() - 1;
+		}
+		$('to_year').value    = d.getFullYear();
+		$('to_month').value   = d.getMonth() + 1;
+		ChangeOptionDays('from');
+		$('from_day').options[d.getDate() - 1].selected = true;
+		ChangeOptionDays('to');
+		$('to_day').options[d.getDate() - 1].selected = true;
+	}
+	function ThisYear() {
+		$('from_year').value  = d.getFullYear();
+		$('from_month').value = 1;
+		ChangeOptionDays('from');
+		$('from_day').options[0].selected = true;
+		$('to_year').value  = d.getFullYear();
+		$('to_month').value = 12;
+		ChangeOptionDays('to');
+		i = $('to_day').length - 1;
+		$('to_day').options[i].selected = true;
+	}
+	window.onload = Today;
+&lt;/script>
+&lt;div>&lt;p>&lt;a href='javascript:Today()'>Today&lt;/a> - &lt;a href='javascript:LastWeek()'>Last Week&lt;/a> - &lt;a href='javascript:ThisMonth()'>This Month&lt;/a> - &lt;a href='javascript:LastMonth()'>Last Month&lt;/a> - &lt;a href='javascript:ThreeMonth()'>Last 3 Month&lt;/a> - &lt;a href='javascript:ThisYear()'>This Year&lt;/a>&lt;/p>&lt;/div>
+
+From: 
+&lt;select name='from_year' id='from_year' onchange="ChangeOptionDays('from')">
+&lt;option value='2005'>2005&lt;/option>
+&lt;option value='2006'>2006&lt;/option>
+&lt;option value='2007'>2007&lt;/option>
+&lt;/select>
+&lt;select name='from_month' id='from_month' onchange="ChangeOptionDays('from')">
+&lt;option value='1'>1&lt;/option>
+&lt;option value='2'>2&lt;/option>
+&lt;option value='3'>3&lt;/option>
+&lt;option value='4'>4&lt;/option>
+&lt;option value='5'>5&lt;/option>
+&lt;option value='6'>6&lt;/option>
+&lt;option value='7'>7&lt;/option>
+&lt;option value='8'>8&lt;/option>
+&lt;option value='9'>9&lt;/option>
+&lt;option value='10'>10&lt;/option>
+&lt;option value='11'>11&lt;/option>
+&lt;option value='12'>12&lt;/option>
+&lt;/select>
+&lt;select name='from_day' id='from_day'>&lt;/select>
+To:
+&lt;select name='to_year' id='to_year' onchange="ChangeOptionDays('to')">
+&lt;option value='2005'>2005&lt;/option>
+&lt;option value='2006'>2006&lt;/option>
+&lt;option value='2007'>2007&lt;/option>
+&lt;/select>
+&lt;select name='to_month' id='to_month' onchange="ChangeOptionDays('to')">
+&lt;option value='1'>1&lt;/option>
+&lt;option value='2'>2&lt;/option>
+&lt;option value='3'>3&lt;/option>
+&lt;option value='4'>4&lt;/option>
+&lt;option value='5'>5&lt;/option>
+&lt;option value='6'>6&lt;/option>
+&lt;option value='7'>7&lt;/option>
+&lt;option value='8'>8&lt;/option>
+&lt;option value='9'>9&lt;/option>
+&lt;option value='10'>10&lt;/option>
+&lt;option value='11'>11&lt;/option>
+&lt;option value='12'>12&lt;/option>
+&lt;/select>
+&lt;select name='to_day' id='to_day'>&lt;/select>
+</code></pre></div>
+<p><&lt;Previous: <a href="ShareURL0603.html">Share the URLs (March 2006)</a>&nbsp;&nbsp;>>Next: <a href="laptop.html">my laptop</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Javascript%20%E6%97%A5%E6%9C%9F%E9%80%89%E6%8B%A9%E5%99%A8&url=http://www.fayland.org/journal/Date_Selector.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='JS_encode.html'>Ajax && encodeURIComponent</a> < <span class='digit'>2005-05-15 15:31:00</span> ></li><li><a href='JS_event.html'>Javascript: Events</a> < <span class='digit'>2005-05-10 23:36:36</span> ></li><li><a href='AutoSave.html'>AutoSave / 自动存储</a> < <span class='digit'>2005-10-14 01:26:10</span> ></li><li><a href='Class_Date.html'>Class::Date 的两个常见用途</a> < <span class='digit'>2005-06-01 15:02:47</span> ></li><li><a href='DateTime.html'>[DRAFT]如何处理 Perl 中的时间</a> < <span class='digit'>2005-12-13 22:59:37</span> ></li><li><a href='Date_Holidays_CN.html'>检测中国的假期模块</a> < <span class='digit'>2005-12-20 15:00:51</span> ></li></ul>
+Created on <span class="digit">2006-03-01 21:42:40</span>, Last modified on <span class="digit">2006-03-01 21:51:23</span><br />
+Copyright 2004-2006 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.66.
+</body>
+</html>

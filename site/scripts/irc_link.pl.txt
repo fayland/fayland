@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI::Carp qw(fatalsToBrowser);
+use LWP;
+use vars '@ISA'; # for get_basic_credentials
+@ISA = 'LWP::UserAgent';
+use HTML::Parser;
+use DateTime; # for the special url
+use CGI qw/:cgi/; # because it's a link, so I think cgi mode is better
+
+my $cgi = CGI->new;
+print $cgi->header(-charset=>'utf-8');
+
+my $dt = DateTime->now;
+my $url = 'http://koala.ilog.fr/twikiirc/bin/irclogger_log/perlchina?date=' . $dt->ymd . ',' . $dt->day_abbr; # like 2005-05-18,Wed
+
+my $agent = __PACKAGE__->new;
+my $request = HTTP::Request->new(GET => $url);
+
+my $response = $agent->request($request);
+$response->is_success or die $response->message;
+
+print 'Parse links ....<br />'; #$response->content;
+
+my $parser = HTML::Parser->new(api_version => 3);
+$parser->handler(start => \&got_links, 'tagname, attr');
+$parser->parse($response->content);
+$parser->eof;
+
+sub got_links {
+	my ($tagname, $attr) = @_;
+	if ($tagname eq 'a' && $attr->{href} && $attr->{href} !~ /^[\/\?]/) {
+		print '<a href=\'', $attr->{href}, '\'>', $attr->{href}, '</a><br />';
+	}
+}
+
+sub get_basic_credentials {
+	#my ($self, $realm, $url) = @_;
+	return ('perlchina', 'perlchina'); # the perlchina irc log site's username&password
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Google Sitemap</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="050604.html">fail to embed parrot in pugs(Resolved)</a>&nbsp;&nbsp;>>Next: <a href="Perl6_ES16.html">my subtype Examples16 of Perl6 where /^kissu$/</a></p>
+<h1>Google Sitemap</h1>
+<div class='content'>
+<p>Category: <a href='Script.html'>Script</a> &nbsp; Keywords: <b>google sitemap</b></p><p>Google 最近推出了新业务，<a href='https://www.google.com/webmasters/sitemaps'>Google Sitemap</a>.<br />
+主要是给 webmaster 在自己的网站上建一个 XML 文档，然后 Google Sprider 来抓取这个文档查看网站更新了什么。<br />
+我不明白为什么不直接抓取 RSS/Atom, 这样就可以省去重新写一个文档了。</p>
+
+<p>或许 RSS/Atom 的冗长资料太多了，Google Sitemap 所要求的 XML 标签很少。详细的要求请参阅 <a href='https://www.google.com/webmasters/sitemaps/docs/en/protocol.html'>https://www.google.com/webmasters/sitemaps/docs/en/protocol.html</a><br />
+我在自己的 <a href='Eplanet.html'>Eplanet</a> 上简单 hack 了下。<br />
+因为我自己的要求很少（比如不用过滤 XML 的特殊标签），所以代码很简单（没有使用任何 XML:: 模块）。<br />
+代码很简单，看完所要求的格式就可以了。
+
+<pre><code># declare the vars
+my $data; # the data to save in
+
+# normal settings
+my $file = $c->config->{build_root} . "/sitemaps.xml";
+my $site_prefix = 'http://www.fayland.org/journal';
+    
+# got the data from database
+my @topics = Eplanet::M::CDBI::Cms->retrieve_from_sql(qq{
+    1=1 ORDER BY cms_id DESC LIMIT 0, 20
+});
+    
+# the data format see https://www.google.com/webmasters/sitemaps/docs/en/protocol.html
+$data = '&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;urlset xmlns="http://www.google.com/schemas/sitemap/0.84">'."\n";
+
+# for every topic
+foreach my $topic (@topics) {
+    my $topic_name = $topic->get('cms_file');
+    my $date = $topic->{'cms_mod_data'} || $topic->{'cms_cre_data'};
+    # format the date
+    $date = &format_date($date);
+    
+    # add to the data
+    $data .= "&lt;url>
+    &lt;loc>$site_prefix/${topic_name}.html&lt;/loc>
+    &lt;lastmod>$date&lt;/lastmod>
+&lt;/url>\n";
+}
+    
+# finish the data format
+$data .= '&lt;/urlset>';
+
+# save to the file
+open(FH, ">$file");
+flock(FH, 2);
+print FH $data;
+close(FH);</code></pre>
+
+<p>完毕后就<a href='https://www.google.com/webmasters/sitemaps/showaddsitemap?hl=en_US'>提交 URL</a>. Done!</p></div>
+<p><&lt;Previous: <a href="050604.html">fail to embed parrot in pugs(Resolved)</a>&nbsp;&nbsp;>>Next: <a href="Perl6_ES16.html">my subtype Examples16 of Perl6 where /^kissu$/</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Google%20Sitemap&url=http://www.fayland.org/journal/google_sitemap.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='GoogleGroup.html'>WWW::Mechanize && Google Group</a> < <span class='digit'>2005-04-13 18:49:43</span> ></li><li><a href='050528.html'>Google Print</a> < <span class='digit'>2005-05-28 14:50:57</span> ></li></ul>
+Created on <span class="digit">2005-06-04 22:52:44</span>, Last modified on <span class="digit">2005-06-04 22:53:45</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

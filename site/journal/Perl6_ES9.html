@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Perl6 | Examples & 9 ^ junction</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="050526.html">ppt for PM Shanghai meeting</a>&nbsp;&nbsp;>>Next: <a href="050528.html">Google Print</a></p>
+<h1>Perl6 | Examples & 9 ^ junction</h1>
+<div class='content'>
+<p>Category: <a href='Perl6.html'>Perl6</a> &nbsp; Keywords: <b>junction Perl6</b></p><h3>Preface</h3>
+junction, 中文可以翻译成结。强大得你会立刻爱上它。
+
+<h3>Examples</h3>
+先举几个例子：
+<ul>
+<li>判断 $a 要么等于 1 要么等于 2 要么等于 3 ....
+<pre># Perl 5
+if ($a == 1 || $a == 2 || $a == 3 || ....) {</pre>
+<pre># Perl 6
+if $a = 1|2|3|.. {</pre>
+<li>判断 $a $b 都不等于 $c $d （两个用 Perl 5 写还不算麻烦，但十个呢？）
+<pre># Perl 5
+if ($a != $c) && ($a != $d) && ($b != $c) && ($b != $d) {</pre>
+<pre># Perl 6
+if all($a, $b) == none($c, $d) {</pre>
+<li>判断一个文件存在，然后大小不为零，可读可写（这个不是 junction）
+<pre># Perl 5
+if (-e $_ && -s $_ && -r $_ && -w $_) {</pre>
+<pre># Perl 6
+if -e -s -r -w $_ {</pre>
+<li>判断数组 @a 中的任意元素都不在 @b 中（不是说 Perl 5 中无法实现，要用 %hash 来曲线救国），Perl 6 中用 junction 就很简单：
+<pre>if any(@a) ne any(@b) {</pre>
+<li>判断数组 @a 中只有一个元素在 @b 中：（听起来非常像集合的运算，并，交，补，包含等）
+<pre>if one(@a) eq one(@b) {</pre>
+<li>一个变量不是对象 A 也不是对象 B 也不是对象 C，或定义一个变量不是 Dog 就是 Cat.
+<pre>if $a ~~ none(A|B|C) {
+my Dog|Cat $pet;</pre>
+</ul>
+
+<h3>详细描述</h3>
+<p>junction 其实是将一些数据值叠加，表现为一个数据值。junction 有四种形式：</p>
+<table border='1'>
+<tr><td>列表操作符</td><td>中缀(infix)操作符</td><td>关系</td><td>简单解释</td></tr>
+<tr><td>all</td><td>&</td><td>AND</td><td>所有的值必须都为 true</td></tr>
+<tr><td>any</td><td>|</td><td>OR</td><td>至少有一个值为 true</td></tr>
+<tr><td>one</td><td>^</td><td>XOR</td><td>有且仅有一个值为 true</td></tr>
+<tr><td>none</td><td></td><td>NOT</td><td>所有的值都得为 flase</td></tr>
+</table>
+<p>注意中缀操作符是列表相关("list-associative")的：</p>
+<pre>$a | $b | $c 与 any($a,$b,$c) 同，而不是 any(any($a,$b),$c)
+$a & $b & $c 与 all($a,$b,$c) 同，而不是 all(all($a,$b),$c)
+$a ^ $b ^ $c 与 one($a,$b,$c) 同，而不是 one(one($a,$b),$c)</pre>
+<p>junction 与 <a href='Perl6_ES2.html#O9'>向量操作符</a> 有点类似。不同的是 junction 大多运行在判断正确与否里。</p>
+
+我们还是用例子来说明 junction 的运算：
+<pre>$junc = any(1, 2);
+$junc += 5; # $junc is now any(6, 7)</pre>
+
+<ul>junction 方法：
+<li>我们用 .values 将 junction 展平为列表：（这种情况下或许向量操作符看起来更清晰点）
+<pre>my $junc = all(1, 2, 3);    # create a junction
+my $sums = $junc + 3;       # add 3
+my @set  = $sums.values();  # (4, 5, 6)</pre>
+<li>我们用 dump 来输出某一 junction 的结构：
+<pre>$string = $sums.dump( ); # $string = "all(4,5,6)"</pre>
+<li>pick 只能从 any 或只有一个值的 one 里取得随机值，对于 all, none 和多于一个值的 one, 返回 undef
+<pre>my $junc = any(1, 2, 3);
+say $junc.pick();  # may be 1, 2, or 3
+
+my $junc = all(1, 2, 3); # none is the same as all
+say $junc.pick();  # undef
+
+my $junc = one(1, 2, 3);
+say $junc.pick();  # undef
+
+my $junc = one(1);
+say $junc.pick();  # 1</pre>
+</ul>
+
+<h3>use junction;</h3>
+have fun, guys.</div>
+<p><&lt;Previous: <a href="050526.html">ppt for PM Shanghai meeting</a>&nbsp;&nbsp;>>Next: <a href="050528.html">Google Print</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Perl6%20%7C%20Examples%20&%209%20%5E%20junction&url=http://www.fayland.org/journal/Perl6_ES9.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Perl6_ES14.html'>has $.Examples14 handles 'Perl6';</a> < <span class='digit'>2005-06-02 01:38:59</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li><li><a href='Perl6_ES0.html'>@Examples[0] is Perl6</a> < <span class='digit'>2005-05-19 20:26:08</span> ></li><li><a href='Perl6_ES1.html'>given @Examples[1] when Perl6</a> < <span class='digit'>2005-05-19 22:05:56</span> ></li><li><a href='Perl6_ES2.html'>@Perl6 <== @Examples xx 2</a> < <span class='digit'>2005-05-20 18:53:54</span> ></li><li><a href='Perl6_ES3.html'>my Perl6 @Examples[3]</a> < <span class='digit'>2005-05-21 13:53:16</span> ></li><li><a href='Perl6_ES4.html'>say q:2 '@*Examples.[4] &Perl6()';</a> < <span class='digit'>2005-05-22 12:24:12</span> ></li><li><a href='Perl6_ES5.html'>sub Perl6 (*@Examples[5] is copy)</a> < <span class='digit'>2005-05-22 15:37:26</span> ></li><li><a href='Perl6_ES6.html'>multi sub Examples (6, Perl6) {...}</a> < <span class='digit'>2005-05-23 22:43:33</span> ></li><li><a href='Perl6_ES7.html'>sub infix:<(7)> ($Perl6, @Examples)</a> < <span class='digit'>2005-05-24 02:16:42</span> ></li><li><a href='Perl6_ES8.html'>let @Examples[8] = 'Perl6';</a> < <span class='digit'>2005-05-24 13:05:58</span> ></li><li><a href='Perl6_ES10.html'>%Examples{'IO'} = open('Perl6');</a> < <span class='digit'>2005-05-30 00:24:01</span> ></li><li><a href='Perl6_ES11.html'>class Examples11 is Perl6 { ... }</a> < <span class='digit'>2005-05-30 13:31:31</span> ></li><li><a href='Perl6_ES12.html'>$Perl6 = $class.bless(:Example<12>);</a> < <span class='digit'>2005-05-31 11:38:46</span> ></li><li><a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> < <span class='digit'>2005-05-31 18:22:03</span> ></li><li><a href='Perl6_ES16.html'>my subtype Examples16 of Perl6 where /^kissu$/</a> < <span class='digit'>2005-06-04 23:59:29</span> ></li><li><a href='Perl6_ES17.html'>my enum Example17 <<:Perl(6) Today>></a> < <span class='digit'>2005-06-05 12:14:08</span> ></li><li><a href='Perl6_ES18.html'>my $queen; rule me {Perl6|Examples18}</a> < <span class='digit'>2005-06-06 12:26:32</span> ></li><li><a href='Perl6_ES19.html'>m:nth(19)/Perl6Examples/</a> < <span class='digit'>2005-06-06 22:02:01</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li></ul>
+Created on <span class="digit">2005-05-26 12:35:29</span>, Last modified on <span class="digit">2005-05-26 12:59:33</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

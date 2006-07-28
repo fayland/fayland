@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Tar</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="ask_tim.html">Perl 6 什么时候才能完成？</a>&nbsp;&nbsp;>>Next: <a href="h2xs.html">使用h2xs打包模块</a></p>
+<h1>Tar</h1>
+<div class='content'>
+<p>Category: <a href='Modules.html'>Modules</a> &nbsp; Keywords: <b>Archive::Tar</b></p><h2>用Tar压缩文件</h2>
+<ol>
+<li>一个简单的Archive::Tar例子：<br>
+<pre>
+my $tar = Archive::Tar->new();
+my @file = ("1.cgi", "2.txt");
+$tar->add_files(@file);
+$tar->write("$dir/$name.tar");<span class="comment"># $dir 为要保存的目录路径，$name 为文件名</span>
+</pre>
+<li>如果1.cgi,2.txt不在程序目录下那必须增加如下代码与$tar->add_files前
+<pre>
+chdir "$targetdir";<span class="comment">#转到文件所在目录，在此之前须在程序最前面增加 use Cwd;</span>
+</pre>
+<li>关于<font color="red">@file</font><br>
+如果@file中的元素包含了路径，那生成的$name.tar文件解压缩后根据路径生成文件夹来包含该元素的文件。<p>
+<li>我写的获得某一目录下所有文件，和子目录加文件
+<pre>
+sub GetDir {
+	my ($dir, $file_ref, $subdir) = @_;
+	if (($subdir ne "") && ($subdir !~ /\/$/)) { $subdir = "$subdir/"; }
+	opendir (DIRS, "$dir");
+	my @dirdata = readdir(DIRS);
+	closedir (DIRS);
+	foreach (@dirdata) {
+		next if (/^\.+$/);
+		if (-d "$dir/$_") {
+			&GetDir("$dir/$_", $file_ref, "$subdir$_");
+		} else {
+			push (@$file_ref, "$subdir$_");
+		}
+	}
+}
+</pre>
+<li>一个完整例子
+<pre>
+#!/usr/bin/perl
+<span class="comment"># By 非四(Fayland) @ http://www.1313s.com/</span>
+use CGI::Carp qw(fatalsToBrowser);
+use Archive::Tar;
+use Cwd;
+$|++;
+<span class="comment">#两个参数，第一个为打包的目录绝对路径，第二为tar文件的保存绝对路径</span>
+my $tar = Archive::Tar->new();
+my ($target, $savefile) =@_;
+my @file;
+GetDir("$target", \@file);
+chdir "$target";
+$tar->add_files(@file);
+$tar->write("$savefile");
+</pre>
+</ol>
+<h2>用Tar解压缩</h2>
+<pre>
+use Archive::Tar;
+use Cwd;
+my $tar = Archive::Tar->new();
+$tar->read("$from_dir/$target.tar"); # tar 文件的绝对路径地址
+my @files = $tar->list_files();
+#&createdir("$to_dir"); # 如果目标文件夹不存在，则创建
+chdir $to_dir;
+$tar->extract(@files, $to_dir);
+</pre>
+<h2>个人经历</h2>
+因为是虚拟空间，所以经常要搬来搬去的。如果一个个文件弄回本地机子再传上去感觉速度很慢。<br>
+就我目前的空间就占用了大概700多M，万把个文件。而且Linux虚拟主机传上去还要chmod为666才能被程序修改。<br>
+没办法，唯一的好选择就是用Tar然后unTar。速度很快而且不用chmod。<br>
+更详细的应用代码可以在<a href='NiBoard.html'>NiBoard</a>的cgi-bin/admin/tar.pl和untar.pl里找到。<br></div>
+<p><&lt;Previous: <a href="ask_tim.html">Perl 6 什么时候才能完成？</a>&nbsp;&nbsp;>>Next: <a href="h2xs.html">使用h2xs打包模块</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Tar&url=http://www.fayland.org/journal/Tar.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='PerlTidy.html'>PerlTidy</a> < <span class='digit'>2004-10-30 19:23:26</span> ></li><li><a href='Highlight.html'>如何将Perl代码着色</a> < <span class='digit'>2004-11-20 22:13:22</span> ></li><li><a href='ask_tim.html'>Perl 6 什么时候才能完成？</a> < <span class='digit'>2004-12-30 18:42:06</span> ></li><li><a href='Perl6_ES14.html'>has $.Examples14 handles 'Perl6';</a> < <span class='digit'>2005-06-02 01:38:59</span> ></li><li><a href='050312.html'>给 eclipse 安装 EPIC plug-in</a> < <span class='digit'>2005-03-12 20:56:04</span> ></li><li><a href='050401.html'>Win32 下 Apache 和 #!/usr/bin/perl</a> < <span class='digit'>2005-04-01 10:10:59</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li><li><a href='Perl6_ES0.html'>@Examples[0] is Perl6</a> < <span class='digit'>2005-05-19 20:26:08</span> ></li><li><a href='Perl6_ES1.html'>given @Examples[1] when Perl6</a> < <span class='digit'>2005-05-19 22:05:56</span> ></li><li><a href='Perl6_ES2.html'>@Perl6 <== @Examples xx 2</a> < <span class='digit'>2005-05-20 18:53:54</span> ></li><li><a href='Perl6_ES3.html'>my Perl6 @Examples[3]</a> < <span class='digit'>2005-05-21 13:53:16</span> ></li><li><a href='Perl6_ES4.html'>say q:2 '@*Examples.[4] &Perl6()';</a> < <span class='digit'>2005-05-22 12:24:12</span> ></li><li><a href='Perl6_ES5.html'>sub Perl6 (*@Examples[5] is copy)</a> < <span class='digit'>2005-05-22 15:37:26</span> ></li><li><a href='Perl6_ES6.html'>multi sub Examples (6, Perl6) {...}</a> < <span class='digit'>2005-05-23 22:43:33</span> ></li><li><a href='Perl6_ES7.html'>sub infix:<(7)> ($Perl6, @Examples)</a> < <span class='digit'>2005-05-24 02:16:42</span> ></li><li><a href='Perl6_ES8.html'>let @Examples[8] = 'Perl6';</a> < <span class='digit'>2005-05-24 13:05:58</span> ></li><li><a href='050524.html'>The Shanghai PerlMonger meeting</a> < <span class='digit'>2005-05-24 20:41:25</span> ></li><li><a href='Perl6_ES9.html'>Perl6 | Examples & 9 ^ junction</a> < <span class='digit'>2005-05-26 12:35:29</span> ></li><li><a href='Perl6_ES10.html'>%Examples{'IO'} = open('Perl6');</a> < <span class='digit'>2005-05-30 00:24:01</span> ></li><li><a href='Perl6_ES11.html'>class Examples11 is Perl6 { ... }</a> < <span class='digit'>2005-05-30 13:31:31</span> ></li><li><a href='Perl6_ES12.html'>$Perl6 = $class.bless(:Example<12>);</a> < <span class='digit'>2005-05-31 11:38:46</span> ></li><li><a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> < <span class='digit'>2005-05-31 18:22:03</span> ></li><li><a href='Perl6_ES16.html'>my subtype Examples16 of Perl6 where /^kissu$/</a> < <span class='digit'>2005-06-04 23:59:29</span> ></li><li><a href='Perl6_ES17.html'>my enum Example17 <<:Perl(6) Today>></a> < <span class='digit'>2005-06-05 12:14:08</span> ></li><li><a href='Perl6_ES18.html'>my $queen; rule me {Perl6|Examples18}</a> < <span class='digit'>2005-06-06 12:26:32</span> ></li><li><a href='Perl6_ES19.html'>m:nth(19)/Perl6Examples/</a> < <span class='digit'>2005-06-06 22:02:01</span> ></li><li><a href='PBP3.html'>Tips from Perl Best Practices, Part 2</a> < <span class='digit'>2005-09-22 00:29:34</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li><li><a href='mod_perl_learning.html'>a schedule of mod_perl learning</a> < <span class='digit'>2005-11-12 21:53:55</span> ></li><li><a href='mod_perl_configuring.html'>mod_perl 配置的一些指令</a> < <span class='digit'>2005-11-13 11:38:05</span> ></li><li><a href='modperl_helloworld.html'>modperl Apache2::HelloWorld</a> < <span class='digit'>2005-11-16 23:24:07</span> ></li><li><a href='pod2cn.html'>Perl 核心模块中文化</a> < <span class='digit'>2005-11-20 21:43:52</span> ></li><li><a href='modperl_http_cycle.html'>modperl 服务器的运行阶段和句柄</a> < <span class='digit'>2005-11-22 15:33:08</span> ></li><li><a href='modperl_PerlTransHandler.html'>modperl 的 PerlTransHandler 应用</a> < <span class='digit'>2005-11-23 22:24:02</span> ></li><li><a href='modperl_PerlAuthenHandler.html'>modperl 的用户验证</a> < <span class='digit'>2005-11-26 00:08:37</span> ></li><li><a href='modperl_Filter_part1.html'>modperl Filter Part1</a> < <span class='digit'>2005-12-18 14:47:29</span> ></li><li><a href='perldoc_ie.html'>用 IE 来浏览 perldoc</a> < <span class='digit'>2005-12-28 13:53:02</span> ></li></ul>
+Created on <span class="digit">2004-10-30 19:27:32</span>, Last modified on <span class="digit">2005-01-06 21:41:44</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

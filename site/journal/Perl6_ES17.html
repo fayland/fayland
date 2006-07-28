@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>my enum Example17 <<:Perl(6) Today>></title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Perl6_ES16.html">my subtype Examples16 of Perl6 where /^kissu$/</a>&nbsp;&nbsp;>>Next: <a href="Perl6_ES18.html">my $queen; rule me {Perl6|Examples18}</a></p>
+<h1>my enum Example17 <<:Perl(6) Today>></h1>
+<div class='content'>
+<p>Category: <a href='Perl6.html'>Perl6</a> &nbsp; Keywords: <b>enum Perl6</b></p><p>Enum, enumerate 的缩写，可翻译为枚举。<br />
+在 Larry Wall's A12 中，Enum 用于简化类似下面这样的声明：
+<pre>my subtype DayOfWeek of Int where 0..6;
+my subtype DayOfWeek::Sunday    of DayOfWeek where 0;
+my subtype DayOfWeek::Monday    of DayOfWeek where 1;
+my subtype DayOfWeek::Tuesday   of DayOfWeek where 2;
+my subtype DayOfWeek::Wednesday of DayOfWeek where 3;
+my subtype DayOfWeek::Thursday  of DayOfWeek where 4;
+my subtype DayOfWeek::Friday    of DayOfWeek where 5;
+my subtype DayOfWeek::Saturday  of DayOfWeek where 6;</pre>
+这是一种很常见的结构。一个类只允许几个已知的值，这就是枚举的大概意思。上面的代码可以简化为：
+<pre>my enum DayOfWeek of int 
+        «Sunday Monday Tuesday Wednesday Thursday Friday Saturday»;</pre>
+如果你想把 Sunday 为 7，且采用缩写的话，可以这么做：
+<pre>my enum DayOfWeek <<:Mon(1) Tue Wed Thu Fri Sat Sun>>;</pre>
+<p>枚举这种结构是很常见的，比如罗马数字或十六进制等：</p>
+<pre>my enum roman [i => 1,   v => 5,
+                x => 10,  l => 50,
+                c => 100, d => 500,
+                m => 1000];</pre>
+<pre>my Scalar hex «:zero(0) one two three four five six seven eight nine
+                   :ten<a> eleven twelve thirteen fourteen fifteen»;</pre>
+
+<h3>Usage</h3>
+enum 可以表现为一个 role 或 property, 而 enum 的值可以表现为一个子类型，方法或者一个普通值（不带参数的 sub）。<br />
+我们以 enum day <code>&lt;Sun Mon Tue Wed Thu Fri Sat></code> 为例：
+<pre><code>my $x does Tue; # Tue 做为 role
+$x does day&lt;Tue>; # 上一句其实等同于这一句
+say $x.day; # 3， enum 定义了 day::Tue 为 3
+$x ~~ day; $x ~~ Tue; $x ~~ day::Tue; # 都返回 ture
+$x ~~ Wed; # 返回 false</code></pre>
+前面的 <a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> 里补充的 but 是 enum 最好的使用方法。
+<pre><code>$x = "Today" but Tue; ＃ 等同与 $x = "Today" but day::Tue; 或 $x = "Today" but day&lt;Tue>;</code></pre>
+用前面 but 的解释就是：
+<pre>$x = "Today";
+$x does day;
+$x.day = &day::('Tue');</pre>
+下面这些都将返回 true
+<pre>$x.does(Tue)
+$x.does(day)
+$x.day == Tue
+day($x) == Tue
+Tue($x)
+$x.Tue</pre>
+
+<p>我们有两个内建的 enum:</p>
+<pre><code>our bit enum *bool &lt;false true>;
+our bit enum *taint &lt;untainted tainted>;</code></pre>
+
+<h3>Others</h3>
+关于冲突与覆盖，请参考 <a href='http://search.cpan.org/perldoc?Perl6::Bible::A12'>Perl6::Bible::A12</a> 和 <a href='http://search.cpan.org/perldoc?Perl6::Bile::S12'>Perl6::Bile::S12</a>.</div>
+<p><&lt;Previous: <a href="Perl6_ES16.html">my subtype Examples16 of Perl6 where /^kissu$/</a>&nbsp;&nbsp;>>Next: <a href="Perl6_ES18.html">my $queen; rule me {Perl6|Examples18}</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=my%20enum%20Example17%20%3C%3C:Perl(6)%20Today%3E%3E&url=http://www.fayland.org/journal/Perl6_ES17.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Perl6_ES14.html'>has $.Examples14 handles 'Perl6';</a> < <span class='digit'>2005-06-02 01:38:59</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li><li><a href='Perl6_ES0.html'>@Examples[0] is Perl6</a> < <span class='digit'>2005-05-19 20:26:08</span> ></li><li><a href='Perl6_ES1.html'>given @Examples[1] when Perl6</a> < <span class='digit'>2005-05-19 22:05:56</span> ></li><li><a href='Perl6_ES2.html'>@Perl6 <== @Examples xx 2</a> < <span class='digit'>2005-05-20 18:53:54</span> ></li><li><a href='Perl6_ES3.html'>my Perl6 @Examples[3]</a> < <span class='digit'>2005-05-21 13:53:16</span> ></li><li><a href='Perl6_ES4.html'>say q:2 '@*Examples.[4] &Perl6()';</a> < <span class='digit'>2005-05-22 12:24:12</span> ></li><li><a href='Perl6_ES5.html'>sub Perl6 (*@Examples[5] is copy)</a> < <span class='digit'>2005-05-22 15:37:26</span> ></li><li><a href='Perl6_ES6.html'>multi sub Examples (6, Perl6) {...}</a> < <span class='digit'>2005-05-23 22:43:33</span> ></li><li><a href='Perl6_ES7.html'>sub infix:<(7)> ($Perl6, @Examples)</a> < <span class='digit'>2005-05-24 02:16:42</span> ></li><li><a href='Perl6_ES8.html'>let @Examples[8] = 'Perl6';</a> < <span class='digit'>2005-05-24 13:05:58</span> ></li><li><a href='Perl6_ES9.html'>Perl6 | Examples & 9 ^ junction</a> < <span class='digit'>2005-05-26 12:35:29</span> ></li><li><a href='Perl6_ES10.html'>%Examples{'IO'} = open('Perl6');</a> < <span class='digit'>2005-05-30 00:24:01</span> ></li><li><a href='Perl6_ES11.html'>class Examples11 is Perl6 { ... }</a> < <span class='digit'>2005-05-30 13:31:31</span> ></li><li><a href='Perl6_ES12.html'>$Perl6 = $class.bless(:Example<12>);</a> < <span class='digit'>2005-05-31 11:38:46</span> ></li><li><a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> < <span class='digit'>2005-05-31 18:22:03</span> ></li><li><a href='Perl6_ES16.html'>my subtype Examples16 of Perl6 where /^kissu$/</a> < <span class='digit'>2005-06-04 23:59:29</span> ></li><li><a href='Perl6_ES18.html'>my $queen; rule me {Perl6|Examples18}</a> < <span class='digit'>2005-06-06 12:26:32</span> ></li><li><a href='Perl6_ES19.html'>m:nth(19)/Perl6Examples/</a> < <span class='digit'>2005-06-06 22:02:01</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li></ul>
+Created on <span class="digit">2005-06-05 12:14:08</span>, Last modified on <span class="digit">2005-06-05 12:37:56</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

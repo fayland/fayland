@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Apocalypse RFC 005</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="xml-rpc-client.html">XML-PRC Client 客户端编写</a>&nbsp;&nbsp;>>Next: <a href="glossary.html">常见术语翻译与解释</a></p>
+<h1>Apocalypse RFC 005</h1>
+<div class='content'>
+<p>Category: <a href='Translation.html'>Translation</a> &nbsp; Keywords: <b>Apocalypse</b></p><pre>    RFC  PSA  Title
+    ---  ---  -----
+      Textual
+    005  cdr  Multiline Comments for Perl（为 Perl 增加多行注释）</pre>
+<h2>RFC 005 ： 为 Perl 增加多行注释 / Multiline Comments for Perl</h2>
+I admit to being prejudiced on this one -- I was unduly influenced at a tender age by the rationale for the design of Ada, which made a good case, I thought, for leaving multiline comments out of the language.<p>
+我承认我对此怀有偏见——在幼年时 Ada 设计的基本原理过度地影响了我，不过我认为这是件好事，语言中就不该有多行注释。<p>
+
+But even if I weren't blindly prejudiced, I suspect I'd look at the psychology of the thing, and notice that much of the time, even in languages that have multiline comments, people nevertheless tend to use them like this:<p>
+但是我不认为自己是盲目偏见，我怀疑我发现了这事的心理状态，我注意到，即使在有多行注释的语言里，在大多数时间里人们仍然倾向于这么使用：
+
+<pre>    /*
+     *  Natter, natter, natter.
+     *  Gromish, gromish, gromish.
+     */</pre>
+
+The counterargument to that is, of course, that people don't always do that in C, so why should they have to do it in Perl? And if there were no other way to do multiline comments in Perl, they'd have a stronger case. But there already is another way, albeit one rejected by this RFC as "a workaround."<p>
+当然，相反的意见认为人们在 C 中并非<i>总是</i>这么做的，为何在 Perl 里必须得这么做？ 如果 Perl 中没有其他方式进行多行注释，那这是个问题。但是我们已经有一个了，虽然有人在这个 RFC 中以它是个“工作区/a workaround”而抵制它。<p>
+
+But it seems to me that, rather than adding another kind of comment or trying to make something that looks like code behave like a comment, the solution is simply to fix whatever is wrong with POD so that its use for commenting can no longer be considered a workaround. Actual design of POD can be put off till Apocalypse 26, but we can speculate at this point that the rules for switching back and forth between POD and Perl are suboptimal for use in comments. If so, then it's likely that in Perl 6 we'll have a rule like this: If a =begin MUMBLE transitions from Perl to POD mode then the corresponding =end MUMBLE should transition back (without a =cut directive).<p>
+但是我个人以为，与其加入另一种注释方式或是搞些表现得象注释的代码，还不如修复 POD 的任何错误，让它可以注释且又不会被人认为是个工作区。对 POD 的真正设计将知道启示录 26 时才会出现，但我们可以在此推测出，在 POD 和 Perl 中换来换去对于注释并不是很理想。假如这样的话，在 Perl 6 中我们或许会这么做：=begin MUMBLE 表示 Perl 转为 POD 模式，而相对应的 =end MUMBLE 则转回来。（不使用指令符 =cut ）<p>
+
+Note that we haven't defined our MUMBLEs yet, but they can be set up to let our program have any sort of programmatic access to the data that we desire. For instance, it is likely that comments of this kind could be tied in with some sort of literate (or at least, semiliterate) programming framework.<p>
+注意，我们还没有定义 MUMBLE ，但是它们应当设置成允许我们的程序毫无困难地使用我们想要的数据。例如，这种注释也或许能够和某种文字（至少半文盲）程序框架结合。<p></div>
+<p><&lt;Previous: <a href="xml-rpc-client.html">XML-PRC Client 客户端编写</a>&nbsp;&nbsp;>>Next: <a href="glossary.html">常见术语翻译与解释</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Apocalypse%20RFC%20005&url=http://www.fayland.org/journal/Apocalypse_005.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Apocalypse.html'>Perl 6 Apocalypse</a> < <span class='digit'>2005-02-28 12:30:10</span> ></li><li><a href='Apocalypse1.html'>Apocalypse 1 / 启示录一</a> < <span class='digit'>2005-02-28 17:55:10</span> ></li></ul>
+Created on <span class="digit">2005-03-02 23:58:33</span>, Last modified on <span class="digit">2005-03-03 00:05:28</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

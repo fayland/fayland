@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Parrot in a Nutshell(English)</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Parrot_in_a_Nutshell.cn.html">Parrot_in_a_Nutshell(中文翻译版)</a>&nbsp;&nbsp;>>Next: <a href="PPM.html">PPM</a></p>
+<h1>Parrot in a Nutshell(English)</h1>
+<div class='content'>
+<p>Category: <a href='Translation.html'>Translation</a> &nbsp; Keywords: <b>Parrot Dan Sugalski</b></p><p>By Dan Sugalski, <a href="mailto:dan@sidhe.org">dan@sidhe.org</a></p>
+
+<p><a href="Parrot_in_a_Nutshell.cn.html">中文/Chinese Simp</a>, <a href="http://www.zenspider.com/dl/rubyconf2002/Parrot_in_a_ns_for_ruby.pdf">PDF format</a></p>
+
+<h3>What is Parrot</h3>
+<ul>
+<li>The interpreter for perl 6</li>
+<li>A multi-language virtual machine</li>
+<li>An April Fools joke gotten out of hand</li>
+</ul>
+
+<h3>The official point of Parrot</h3>
+<ul>
+<li>Build something to support perl 6</li>
+<li>Build a faster perl</li>
+<li>Build a cleaner perl</li>
+</ul>
+
+<h3>The Unofficial point of Parrot</h3>
+<ul>
+<li>Generic fast interpreter engine</li>
+<li>Annoy the Mono folks</li>
+<li>Really annoy the python people</li>
+<li>Try and take over the world</li>
+</ul>
+
+<h3>Parrot’s guiding goals</h3>
+<ul>
+<li><a href="#Speed">Speed</a></li>
+<li><a href="#Maintainability">Maintainability</a></li>
+<li><a href="#Longevity">Longevity</a></li>
+<li><a href="#Extensibility">Extensibility</a></li>
+<li><a href="#Flexibility">Flexibility</a></li>
+</ul>
+
+<h3><a name="Speed">Speed</a></h3>
+<ul>
+<li>Faster is good</li>
+<li>A slow interpreter is of little use</li>
+<li>Things almost never get any faster</li>
+<li>Parrot sets the maximum speed</li>
+</ul>
+
+<h3><a name="Maintainability">Maintainability</a></h3>
+<ul>
+<li>Try and keep things black-box</li>
+<li>Try and enforce a coding standard </li>
+<li>Open Source projects have limited engineering resources </li>
+<li>Things rarely get more maintainable </li>
+<li>Maintenance always consumes the most resources for projects that actually finish</li>
+</ul>
+
+<h3><a name="Longevity">Longevity</a></h3>
+<ul>
+<li>Software always lives on well past the point you think it should </li>
+<li>Designing for long-term expandability puts off the inevitable rewrites</li> 
+<li>We’re going to be looking at this code for the better part of a decade, so we’d best make sure we want to look at it</li>
+</ul>
+
+<h3><a name="Extensibility">Extensibility</a></h3>
+<ul>
+<li>Everyone wants to add on with C </li>
+<li>Things are never quite fast enough </li>
+<li>There are lots of external libraries worth using </li>
+<li>A good extension mechanism is a great thing </li>
+<li>A bad one really hurts</li>
+</ul>
+
+<h3><a name="Flexibility">Flexibility</a></h3>
+<ul>
+<li>General solutions have more long-term potential than specific ones </li>
+<li>People always do things you don’t expect </li>
+<li>If you plan for it now, it doesn’t cost more later </li>
+<li>Even if it costs a little more now</li>
+</ul>
+
+<h3>Multi-language capabilities </h3>
+<ul>
+<li><a href="#Support perl">Support perl</a></li>
+<li><a href="#Support Dynamic Languages in general">Support Dynamic Languages in general</a></li>
+<li><a href="#Nice target for language designers">Nice target for language designers</a></li>
+</ul>
+
+<h3><a name="Support perl">Support perl</a></h3>
+<ul>
+<li>Perl 6 was the reason this all started </li>
+<li>Perl has the most complex semantics of all the dynamic languages in common use </li>
+<li>Perl is a major pain to implement, as languages go</li>
+</ul>
+
+<h3><a name="Support Dynamic Languages in general">Support Dynamic Languages in general</a></h3>
+<ul>
+<li>Includes Ruby and Python, for example </li>
+<li>Languages that have some compile-time uncertainty </li>
+<li>Actually trivial, just a matter of thinking about it</li>
+</ul>
+
+<h3><a name="Nice Target">Nice Target</a></h3>
+<ul>
+<li>If we express all the semantics, it makes it easier for language designers </li>
+<li>Many now target C, or GCC </li>
+<li>Impedance mismatch lower for many languages</li>
+</ul>
+
+<h3>Play Zork natively </h3>
+<ul>
+<li>Yep, that’s right </li>
+<li>parrot -b:zmachine zork.dat </li>
+<li>Doing this right is harder than doing Java, Python, or .NET bytecode </li>
+<li>If we can do this, we can do anyone’s bytecode </li>
+<li>Plus it’s really cool</li>
+</ul>
+
+<h3>Interpreter basics </h3>
+<ul>
+<li>Chunk of software that executes other software</a></li>
+<li><a href="#CPU in software">A CPU in software</a></li>
+<li><a href="#Generally flexible">Generally flexible</a></li>
+<li><a href="#Generally slow">Generally slow</a></li>
+<li><a href="#Easy to write for">Easy to write for</a></li>
+<li><a href="#Easy to write">Easy to write</a></li>
+<li><a href="#Portable">Portable</a></li>
+</ul>
+
+<h3><a name="CPU in software">CPU in software</a></h3>
+<ul>
+<li>It’s the “V” in VM </li>
+<li>The compiler writer can treat the interpreter as a form of CPU chip </li>
+<li>Allows much easier customization of ‘core’ behavior </li>
+<li>Sometimes software does become hardware </li>
+<li>But often it shouldn’t</li>
+</ul>
+
+<h3><a name="Generally flexible">Generally flexible</a></h3>
+<ul>
+<li>Since the core functionality is in software, it’s changeable </li>
+<li>Software generally has fewer limits to it than hardware </li>
+<li>It’s easier to think about software than hardware, so more people can </li>
+<li>Incremental cost of changes much lower</li>
+</ul>
+
+<h3><a name="Generally slow">Generally slow</a></h3>
+<ul>
+<li>It’s a layer of indirection between the user’s program and the hardware that executes it </li>
+<li>It’s very easy to have impedance mismatch problems </li>
+<li>It’s also very easy to let speed dribble away</li>
+</ul>
+
+<h3><a name="Easy to write for">Easy to write for</a></h3>
+<ul>
+<li>It’s easy to gloss over the tough parts </li>
+<li>The interpreter should express itself in ways that are easy to use </li>
+<li>You built it as the target, so if it isn’t, you’ve done something wrong</li>
+</ul>
+
+<h3><a name="Easy to write">Easy to write</a></h3>
+<ul>
+<li>Interpreters are pure semantics, and semantics aren’t that difficult to express </li>
+<li>Though defining the semantics can take much longer </li>
+<li>A simple interpreter can be put together in a week </li>
+<li>(Though parrot is far from simple) </li>
+<li>Just a SMOP, even for the fancy ones</li>
+</ul>
+
+<h3><a name="Portable">Portable</a></h3>
+<ul>
+<li>Generally the expressed semantics are mostly platform-neutral </li>
+<li>Means the platform-specific stuff can be isolated </li>
+<li>Platform specific but unimplemented things can be emulated </li>
+<li>Normally just a small cluster of really nasty code to deal with</li>
+</ul>
+
+<h3>Core Parrot Concepts </h3>
+<ul>
+<li><a href="#Register Based">Register based</a></li>
+<li><a href="#Language Neutral">Language Neutral</a></li>
+<li><a href="#Very high level">Very high level</a></li>
+<li><a href="#Introspective">Introspective</a></li>
+<li><a href="#Mutable">Mutable</a></li>
+<li><a href="#Threaded">Threaded</a></li>
+<li><a href="#With continuations">With continuations</a></li>
+</ul>
+
+<h3><a name="Register Based">Register Based</a></h3>
+<ul>
+<li>32 each Integer, String, Float, and PMC </li>
+<li>Registers are a kind of named temporary slot for the interpreter </li>
+<li>Modeled on hardware CPUs </li>
+<li>Generally more efficient than a pure stackbased model</li>
+</ul>
+
+<h3><a name="Language Neutral">Language Neutral</a></h3>
+<ul>
+<li>In the <i>human</i> sense </li>
+<li>We don’t force ASCII, Unicode, Latin-1, or EBCDIC on the user </li>
+<li>The engine has facilities to deal with data regardless of its encoding </li>
+<li>Important when dealing with nativelanguage text, which is most text</li>
+</ul>
+
+<h3><a name="Very high level">Very high level</a></h3>
+<ul>
+<li>Threads, closures, continuations, aggregate operations, multimethod dispatch all core elements </li>
+<li>Don’t relegate the hard stuff to libraries </li>
+<li>Easier on compiler writers </li>
+<li>Bit more of a pain for the interpreter implementers</li>
+</ul>
+
+<h3><a name="Introspective">Introspective</a></h3>
+<ul>
+<li>Code can inspect the current state of the interpreter </li>
+<li>Most, if not all, the core data structures are accessible </li>
+<li>Includes stack entries, symbol tables, lexical variables </li>
+<li>Also variable arenas, memory pools, and interpreter statistics</li>
+</ul>
+
+<h3><a name="Mutable">Mutable</a></h3>
+<ul>
+<li>Code can be created on the fly </li>
+<li>Libraries can be dynamically loaded </li>
+<li>Opcodes can be redefined on the fly </li>
+<li>Base variable methods can be overridden at runtime</li>
+</ul>
+
+<h3><a name="Threaded">Threaded</a></h3>
+<ul>
+<li>Threads are a core element of Parrot </li>
+<li>Threading interpreters is an interesting task </li>
+<li>For nasty values of “interesting” </li>
+<li>They must be designed in from the start</li>
+</ul>
+
+<h3><a name="With Continuations">With Continuations</a></h3>
+<ul>
+<li>Really odd Lisp thing </li>
+<li>Sort of like a closure for control flow </li>
+<li>For reference, exceptions are a simplified kind of continuation </li>
+<li>They <i>will</i> rot your brain </li>
+<li>If your brain’s already gone, though, they let you do some Terribly Clever Things</li>
+</ul>
+
+<h3>Quick benchmark numbers </h3>
+<pre>
+Simple MOPS benchmark 
+Ruby 1.6.6: 207 Sec 
+Perl 5.6.0: 165 Sec 
+Python 2.2: 136 Sec 
+Parrot: 18.75 Sec 
+Parrot (faster): 9 Sec 
+Parrot (fastest): 4.9 Sec
+</pre>
+
+<h3>Fetching Parrot </h3>
+<ul>
+<li><a href="http://dev.perl.org">http://dev.perl.org</a></li>
+<li>Anon CVS 
+:pserver:anonymous@cvs.perl.org:/cvs/public </li>
+<li><a href="http://www.parrotcode.org">http://www.parrotcode.org</a></li>
+</ul></div>
+<p><&lt;Previous: <a href="Parrot_in_a_Nutshell.cn.html">Parrot_in_a_Nutshell(中文翻译版)</a>&nbsp;&nbsp;>>Next: <a href="PPM.html">PPM</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Parrot%20in%20a%20Nutshell(English)&url=http://www.fayland.org/journal/Parrot_in_a_Nutshell.en.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Parrot_in_a_Nutshell.cn.html'>Parrot_in_a_Nutshell(中文翻译版)</a> < <span class='digit'>2004-10-30 19:19:10</span> ></li><li><a href='050604.html'>fail to embed parrot in pugs(Resolved)</a> < <span class='digit'>2005-06-04 19:09:35</span> ></li></ul>
+Created on <span class="digit">2004-10-30 19:20:36</span>, Last modified on <span class="digit">2004-11-11 00:24:11</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

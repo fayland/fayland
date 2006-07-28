@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>let @Examples[8] = 'Perl6';</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Perl6_ES7.html">sub infix:<(7)> ($Perl6, @Examples)</a>&nbsp;&nbsp;>>Next: <a href="050524.html">The Shanghai PerlMonger meeting</a></p>
+<h1>let @Examples[8] = 'Perl6';</h1>
+<div class='content'>
+<p>Category: <a href='Perl6.html'>Perl6</a> &nbsp; Keywords: <b>state temp let Perl6</b></p><h3>let's go</h3>
+my 是在当前词汇作用域里声明一个变量。
+
+<h3>state</h3>
+state 与 my 有点相似，它也是声明一个词汇作用域变量。所不同的是：my 对每次运行子程序块时都初始化变量，而 state 只在第一次运行时初始化。
+<pre>sub count {
+    state $x = 2;
+    $x++;
+    return $x
+}
+say &count(); # 3
+say &count(); # 4
+say &count(); # 5
+</pre>
+你可以理解为它能记住上一次运行后的结果。
+
+<h3>let && temp</h3>
+temp 和 let 都不是声明符，它们是运行时的命令。temp 与 let 不同的是：temp 当退出当前词法作用域时恢复变量的值，而 let 只在当前作用域返回一个错误时（比如 undef, 空列表，或者异常等），才恢复变量的值。
+<pre>my $a = 42;
+my $get_a = { $a };
+{
+    temp $a = 23;
+    say $a; # 23
+    say $get_a(); # 23
+}
+say $a; # 42
+say $get_a(); # 42</pre>
+<pre>my $a = 42;
+my $get_a = { $a };
+{
+    let $a = 23;
+    say $a; # 23
+    say $get_a(); # 23
+    1;
+}
+say $a; # 23
+say $get_a(); # 23</pre>
+<pre>my $a = 42;
+my $get_a = { $a };
+{
+    let $a = 23;
+    say $a; # 23
+    say $get_a(); # 23
+    0;
+}
+say $a; # 42
+say $get_a(); # 42</pre>
+
+<h3>It's easy but powerful</h3>
+God bless us.</div>
+<p><&lt;Previous: <a href="Perl6_ES7.html">sub infix:<(7)> ($Perl6, @Examples)</a>&nbsp;&nbsp;>>Next: <a href="050524.html">The Shanghai PerlMonger meeting</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=let%20@Examples%5B8%5D%20=%20'Perl6';&url=http://www.fayland.org/journal/Perl6_ES8.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Template_random_quotes.html'>Template Toolkit && random</a> < <span class='digit'>2005-11-07 16:16:46</span> ></li><li><a href='Template_Configuration.html'>Template Toolkit 的配置选项</a> < <span class='digit'>2005-10-24 20:23:23</span> ></li><li><a href='template_introduction.html'>Template Toolkit 入门</a> < <span class='digit'>2005-12-03 18:15:26</span> ></li><li><a href='Template_builtin_Filters.html'>Template builtin Filters</a> < <span class='digit'>2005-12-09 23:14:04</span> ></li><li><a href='Template_customized_Filte.html'>Template customized Filters</a> < <span class='digit'>2005-12-10 01:10:15</span> ></li><li><a href='Accessing_External_TTFile.html'>导入 Template Toolkit 文件</a> < <span class='digit'>2005-12-10 22:42:16</span> ></li></ul>
+Created on <span class="digit">2005-05-24 13:05:58</span>, Last modified on <span class="digit">2005-05-24 13:10:34</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

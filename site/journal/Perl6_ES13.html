@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>role Example13 { # Perl6 }</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Perl6_ES12.html">$Perl6 = $class.bless(:Example<12>);</a>&nbsp;&nbsp;>>Next: <a href="Class_Date.html">Class::Date 的两个常见用途</a></p>
+<h1>role Example13 { # Perl6 }</h1>
+<div class='content'>
+<p>Category: <a href='Perl6.html'>Perl6</a> &nbsp; Keywords: <b>role Perl6</b></p><h3>Intro.</h3>
+role 是类代码的复用。有点类似模块可以将子程序导出到某一程序或另一模块，一个 role 能将它的属性和方法导出到另一个类。注意，它与继承不同。<br />
+很多语言都有这个功能：比如 Ruby 有 mixins, Java 有 interfaces, 和某些版本的 Smalltalk 有 traits. Perl6 的 role 比它们略好一点。
+
+<h3>easy example</h3>
+<pre><code>class Dog {
+    does bark;
+    ...
+}
+class Wolf does bark {
+    ...
+}
+role bark {
+    method barking {
+        say 'Wooo!';
+    }
+}
+my $dog = Dog.new();
+$dog.barking(); # Wooo!
+my $wolf = Wolf.new();
+$wolf.barking(); # Wooo!</code></pre>
+这就是 role, 一种没有什么继承关系的代码复用。:)<br />
+如果 role 里定义了私有方法，注意此方法不是对 role 是私有的，而是对使用的类。<br />
+role 里可以调用 role 也可以继承 class.最简单的讲 role 和 class 就是关键字不同。
+
+<h3>mixins</h3>
+如果在一个类后面加 does role 的话，那是在编译时就加进去了。<br />
+而在一个对象后面加 does role 的话，那是在运行时才加进去的。<br />
+<pre># 上面的例子我们不在 class 后面或里面加  does bark
+if $pet ~~ Dog|Wolf { $pet does bark; $pet.barking(); }</pre>
+
+<h3>方法冲突</h3>
+假设我们有 class Dog, role Pet 和 role Sentry. role 中都定义了方法 shake.
+<ul>
+<li>如果 class 中定义了 shake, 那么隐藏 role 中定义的 shake.
+<li>如果是 role Pet 继承 class Dog 的话（role Pet is Dog），那么该 role 隐藏 class 里定义的 shake.
+<li>class 定义 shake 后，隐藏的 role 中的 shake 可以通过 ./Sentry::shake() 或 ./Pet::shake() 调用。
+<li>第二种情况是 class 中没有定义 shake, 那么又分为两种。编译时（在 class 后面加的）会报错，而运行时（在 $object 后面加的）会用后一个自动覆盖。
+<pre># 假设 Dog 里没有定义 shake
+my $animal is Dog does Pet does Sentry;
+# 这里后面的 Sentry 里的 shake 会隐藏 Pet 的 shake</pre>
+</ul>
+所以一般而言，碰到冲突的解决方案有：
+<ol>
+<li>在 class 中定义 shake 来覆盖。或者该 shake 方法通过指定不同调用不同 role 的方法。
+<li>用 multi 通过类型来避免冲突
+</ol>
+
+<h3>property 和 but</h3>
+如果你需要一个 role, 而这个 role 只有一个与它名字一样的属性的话，Perl6 中提供了关键字 property 来简化操作。<br />
+比如下面的代码就可以简化为一行：
+<pre>my role answer {
+    has int $.answer is rw;
+}</pre>
+<pre> # 用 property 简化
+my int property answer;</pre>
+but 与 does 不同的是 but 在一个副本上作变动。
+<pre>$a = 0 but answer(42);</pre>
+<pre>＃ 等同于
+$tmp = 0;  # $tmp 为 0 的一个副本
+$tmp does answer; ＃ answer 是前面定义的一个属性 role
+$tmp.answer = 42;
+$a = $tmp;</pre>
+<pre>＃ 或者我们可以怎么写:
+(($anonymous = 0) does answer).answer = 42;
+$a = $anonymous;</pre>
+这么定义后  $a 本身还是为 0, 只是它有一个 answer 属性。由于是 is rw 的，所以可以这么设置：
+<pre>$a.answer = 44;</pre>
+but 最大的用途是后面跟一个 Enum 枚举类型。Enum 稍后再说，或请参考 <a href='http://search.cpan.org/perldoc?Perl6::Bible::A12'>Perl6::Bible::A12</a> 和 <a href='http://search.cpan.org/perldoc?Perl6::Bible::S12'>Perl6::Bible::S12</a>.</div>
+<p><&lt;Previous: <a href="Perl6_ES12.html">$Perl6 = $class.bless(:Example<12>);</a>&nbsp;&nbsp;>>Next: <a href="Class_Date.html">Class::Date 的两个常见用途</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=role%20Example13%20%7B%20%23%20Perl6%20%7D&url=http://www.fayland.org/journal/Perl6_ES13.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Perl6_ES14.html'>has $.Examples14 handles 'Perl6';</a> < <span class='digit'>2005-06-02 01:38:59</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li><li><a href='Perl6_ES0.html'>@Examples[0] is Perl6</a> < <span class='digit'>2005-05-19 20:26:08</span> ></li><li><a href='Perl6_ES1.html'>given @Examples[1] when Perl6</a> < <span class='digit'>2005-05-19 22:05:56</span> ></li><li><a href='Perl6_ES2.html'>@Perl6 <== @Examples xx 2</a> < <span class='digit'>2005-05-20 18:53:54</span> ></li><li><a href='Perl6_ES3.html'>my Perl6 @Examples[3]</a> < <span class='digit'>2005-05-21 13:53:16</span> ></li><li><a href='Perl6_ES4.html'>say q:2 '@*Examples.[4] &Perl6()';</a> < <span class='digit'>2005-05-22 12:24:12</span> ></li><li><a href='Perl6_ES5.html'>sub Perl6 (*@Examples[5] is copy)</a> < <span class='digit'>2005-05-22 15:37:26</span> ></li><li><a href='Perl6_ES6.html'>multi sub Examples (6, Perl6) {...}</a> < <span class='digit'>2005-05-23 22:43:33</span> ></li><li><a href='Perl6_ES7.html'>sub infix:<(7)> ($Perl6, @Examples)</a> < <span class='digit'>2005-05-24 02:16:42</span> ></li><li><a href='Perl6_ES8.html'>let @Examples[8] = 'Perl6';</a> < <span class='digit'>2005-05-24 13:05:58</span> ></li><li><a href='Perl6_ES9.html'>Perl6 | Examples & 9 ^ junction</a> < <span class='digit'>2005-05-26 12:35:29</span> ></li><li><a href='Perl6_ES10.html'>%Examples{'IO'} = open('Perl6');</a> < <span class='digit'>2005-05-30 00:24:01</span> ></li><li><a href='Perl6_ES11.html'>class Examples11 is Perl6 { ... }</a> < <span class='digit'>2005-05-30 13:31:31</span> ></li><li><a href='Perl6_ES12.html'>$Perl6 = $class.bless(:Example<12>);</a> < <span class='digit'>2005-05-31 11:38:46</span> ></li><li><a href='Perl6_ES16.html'>my subtype Examples16 of Perl6 where /^kissu$/</a> < <span class='digit'>2005-06-04 23:59:29</span> ></li><li><a href='Perl6_ES17.html'>my enum Example17 <<:Perl(6) Today>></a> < <span class='digit'>2005-06-05 12:14:08</span> ></li><li><a href='Perl6_ES18.html'>my $queen; rule me {Perl6|Examples18}</a> < <span class='digit'>2005-06-06 12:26:32</span> ></li><li><a href='Perl6_ES19.html'>m:nth(19)/Perl6Examples/</a> < <span class='digit'>2005-06-06 22:02:01</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li></ul>
+Created on <span class="digit">2005-05-31 18:22:03</span>, Last modified on <span class="digit">2005-06-04 18:36:56</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

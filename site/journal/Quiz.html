@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Perl Quiz/小测试</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Perl6_ES3.html">my Perl6 @Examples[3]</a>&nbsp;&nbsp;>>Next: <a href="Perl6_ES4.html">say q:2 '@*Examples.[4] &Perl6()';</a></p>
+<h1>Perl Quiz/小测试</h1>
+<div class='content'>
+<p>Category: <a href='Basic.html'>Basic</a> &nbsp; Keywords: <b>quiz</b></p><h2>Perl Quiz/小测试</h2>
+下面的题目大多摘抄自网上（一点点自己想的），还没完成。不定时增加中。<br>
+如果你有好的题目，发 Email 到 fayland_at_gmail_com<p>
+
+<a href='http://www.jimandkoka.com/display.cgi/quiz/quiz.tpl?quiz=28'>http://www.jimandkoka.com/display.cgi/quiz/quiz.tpl?quiz=28</a><br>
+这是个非常好的 Quiz, Enjoy!
+
+<h2>Let's start</h2>
+<ol>
+<li>已知如下代码：
+<pre><code>
+@array = qw/a b c d/;
+@array{ @array } = ( [ @array ] ) x @array ;
+</code></pre>
+求@array与%array<br>
+（<a href='#A1'>答案</a>）
+<li><pre><code>
+$foo = 'a';
+$bar = \$foo;
+{
+    my $foo = 'b';
+    print $$bar;
+}
+{
+    local $foo = 'c';
+    print $$bar;
+}
+{
+    $foo = 'd';
+    print $$bar;
+}
+</code></pre>
+（<a href='#A2'>输出结果</a>）
+<li><pre><code>
+sub val { return 1..3 }; 
+$ref1 = \(&val); 
+print ref $ref1, "\n"; 
+$ref2 = \(val()); 
+print ref $ref2, " $$ref2\n"; 
+($ref3) = \(val()); 
+print ref $ref3, " $$ref3\n";
+</code></pre>
+（<a href='#A3'>输出结果</a>）
+<li><pre>print print print print print;</pre>
+（<a href='#A4'>输出结果</a>）
+<li><pre>
+$x = 'fuzz';
+$x++;
+print $x;</pre>
+（<a href='#A5'>输出结果</a>）
+<li><pre>
+$i = 1;
+print $i++, ++$i;
+$i = 1;
+print ++$i, $i++;
+</pre>
+（<a href='#A6'>输出结果</a>）
+<li><pre><code>
+sub Foo::show { print 'Foo::show' };
+my %class = ( name => 'Foo' );
+print qq{$class{name}->show; #};
+</code></pre>
+（<a href='#A7'>输出结果</a>）
+<li><pre><code>
+print "Mary Ann Summers" =~ /(Ann?)/;
+print "Mary Ann Summers" =~ /(Ann??)/;
+print "Mary Ann Summers" =~ /(Ann?? Summers)/;
+</code></pre>
+（<a href='#A8'>输出结果</a>）
+<li><pre><code>
+# slice #1
+$x = "skipper"; { my $x = "gilligan"; $y = "x"; print $$y; }
+# slice #2
+$x = "skipper"; { local $x = "gilligan"; $y = "x"; print $$y; }
+</code></pre>
+（<a href='#A9'>输出结果</a>）
+<li><pre>print join ",", split /(A)/, 'AAAA', 3;</pre>
+（<a href='#A10'>输出结果</a>）
+<li><pre>my @x = ('a', 'b', 'c');
+my $y = scalar ('a', 'b', 'c');
+my $z = scalar @x;
+
+print $y,',',$z;</pre>
+（<a href='#A11'>输出结果</a>）
+<li><pre>print  (1 + 4) + 7;
+print +(1 + 4) + 7;</pre>
+（<a href='#A12'>输出结果</a>）
+<li><pre>$x = (sort => (4, 8, 6));
+$y =  sort => (4, 8, 6) ;</pre>
+（<a href='#A13'>求 $x 和 $y 为多少</a>）
+</ol>
+
+<h2>Answer/答案</h2>
+<ol>
+<li><a name='A1'>题一答案</a>
+<pre><code>
+@array = qw/a b c d/;
+%array = (
+    'a' => [ 'a', 'b', 'c', 'd' ],    
+    'b' => [ 'a', 'b', 'c', 'd' ],    
+    'c' => [ 'a', 'b', 'c', 'd' ],    
+    'd' => [ 'a', 'b', 'c', 'd' ],    
+);
+</code></pre>
+如果不明白，请参考 <a href='http://www.sysarch.com/perl/hash_slice.txt'>http://www.sysarch.com/perl/hash_slice.txt</a>
+<li><a name='A2'>结果为：</a>aad<br>
+如果您错了，建议您再去学习下引用。
+<li><a name='A3'>结果为：</a>
+<pre>CODE
+SCALAR 3
+SCALAR 1</pre>
+如果您错了，建议您再去学习下引用。Effective Perl Programming by Addison Wesley 是本很好的书。
+<li><a name='A4'>结果为：</a>1111<br>
+print 成功输出时返回1
+<li><a name='A5'>结果为：</a>fvaa<br>
+字母也可以用++, a++ 为 b，z++ 为 aa，所以 fuzz++ 为 fvaa
+<li><a name='A6'>结果为：</a>1332<br>
+details: <a href='http://groups-beta.google.com/group/perl.perl6.compiler/browse_thread/thread/6aabbd159cd813d9/f5a4ed7a1b18b451#f5a4ed7a1b18b451'>weird thing with say ++$</a>
+<li><a name='A7'>结果为：</a>Foo->show; #<br>
+因为qq{}里是不允许函数调用的，需要函数调用的话得用qq{},Foo->show,qq{}
+<li><a name='A8'>结果为：</a>
+<pre><code>
+print "Mary Ann Summers" =~ /(Ann?)/; # print Ann
+print "Mary Ann Summers" =~ /(Ann??)/; # print An
+print "Mary Ann Summers" =~ /(Ann?? Summers)/; # print Ann Summers
+</code></pre>
+考的是 ? ，不贪婪匹配（最短匹配）
+<li><a name='A9'>结果为：</a>slice #1输出skipper，slice #2输出gilligan<br>
+Soft references cannot access my() variables, only variables in a package<br>
+软引用不能访问 my 变量，只能访问包变量。
+<li><a name='A10'>结果为：</a>,A,,A,AA<br />
+很莫名奇妙？<a href='split.html'>参考此文</a>
+<li><a name='A11'>结果为：</a>c,3<br />
+首先参看perldoc -f scalar<br />
+<pre>scalar EXPR
+Forces EXPR to be interpreted in scalar context and returns the value of EXPR. 
+
+强制 EXPR 运行在标量上下文下并返回 EXPR 的值。
+
+Because scalar is unary operator, if you accidentally use for EXPR a parenthesized list, this behaves as a scalar comma expression, evaluating all but the last element in void context and returning the final element evaluated in scalar context. 
+
+因为 scalar 是一元算符，所以如果你不小心用于一个 EXPR 括号列表，那么它将表现为标量逗号表达式，在空上下文中运行除了最后一个外的所有元素，并返回在标量上下文下最后元素的结果。</pre>
+<pre>Comma Operator / 逗号操作符 （来自 perlop）
+
+Binary ``,'' is the comma operator. In scalar context it evaluates its left argument, throws that value away, then evaluates its right argument and returns that value. 
+
+二元 ',' 为逗号操作符。在标量上下文中，它运行左边的参数，然后舍弃结果，运行右边的参数然后返回值。
+</pre>
+所以，例如：<pre>my @x = ('a', 'b', 'c');
+print scalar (1, 2, @x);</pre>
+它首先将后面的括号列表表现为逗号表达式，在标量上下文中舍弃 1,2 结果，而后在标量上下文中返回 scalar @x 的结果。
+<li><a name='A12'>结果为：</a>
+<pre>print  (1 + 4) + 7; # 5
+print +(1 + 4) + 7; # 12</pre>
+第一句中的 print 只接收参数(1+4); 如果令 $a = print  (1 + 4) + 7; 这时候的 $a 为 8，因为 print 返回 1（运行成功） + 7 = 8<br />
+第二句在括号前加 + 就将括号转为数学运算的括号而不是 print 参数的括号。
+<li><a name='A13'>结果为：</a>$x 为 6， $y 为 sort<br />
+首先说明一点，这里的 sort 你可以随便用 xxx 什么的代替。<br />
+其次解释这里 => 的作用， => 称为逗点算符，与 ',' 的作用相同，唯一不一样为 => 强制左边为字符串（参看 perlop)。所以我们就把代码转换为：
+<pre>$x = ('sort', (4, 8, 6));
+$y =  'sort', (4, 8, 6);</pre>
+本页稍微上面点讲过 scalar. 这里的 $x = 就需要将后面的看做 scalar 上下文。同样的(4, 8, 6)也是 scalar 上下文。<br />
+(4, 8, 6) 在 scalar 上下文中返回的值为 6 （最后一个值在标量上下文的返回）<br />
+$x = ('sort', 6) 将后面强制为标量上下文返回 6<br />
+$y = 'sort', 6 里逗号算符首先将左边计算，所以 $y 为 'sort'; 如果有 $z = ($y =  'sort', (4, 8, 6)); 丢弃左边运算结果，返回 $z = 6;<br />
+这里所有的运算都为标量上下文。请结合 <a href='#A11'>11</a> 一起看。<br />
+同理我们得到下面的结果：
+<pre>@a = (0 => 0);
+print $a[0], "-", $a[1]; # 0-0</pre>
+</ol>
+
+<h2>Reference</h2>
+<ul>
+<li><a href='http://www.foo.be/docs/tpj/issues/vol3_4/tpj0304-0012.html'>http://www.foo.be/docs/tpj/issues/vol3_4/tpj0304-0012.html</a>
+<li><a href='http://www.mathdogs.com/people/mkc/perl-puzzles-key.html'>http://www.mathdogs.com/people/mkc/perl-puzzles-key.html</a>
+</ul></div>
+<p><&lt;Previous: <a href="Perl6_ES3.html">my Perl6 @Examples[3]</a>&nbsp;&nbsp;>>Next: <a href="Perl6_ES4.html">say q:2 '@*Examples.[4] &Perl6()';</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Perl%20Quiz/%E5%B0%8F%E6%B5%8B%E8%AF%95&url=http://www.fayland.org/journal/Quiz.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Perl6_ES3.html'>my Perl6 @Examples[3]</a> < <span class='digit'>2005-05-21 13:53:16</span> ></li><li><a href='Perl6_ES16.html'>my subtype Examples16 of Perl6 where /^kissu$/</a> < <span class='digit'>2005-06-04 23:59:29</span> ></li><li><a href='050928_tapl.html'>Types and Programming Languages</a> < <span class='digit'>2005-09-28 16:37:09</span> ></li><li><a href='prototype_FormSubmit.html'>用 prototype 来写 Ctrl+Enter 提交表单</a> < <span class='digit'>2005-11-25 21:44:37</span> ></li><li><a href='Perl6_ES14.html'>has $.Examples14 handles 'Perl6';</a> < <span class='digit'>2005-06-02 01:38:59</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li><li><a href='Perl6_ES0.html'>@Examples[0] is Perl6</a> < <span class='digit'>2005-05-19 20:26:08</span> ></li><li><a href='Perl6_ES1.html'>given @Examples[1] when Perl6</a> < <span class='digit'>2005-05-19 22:05:56</span> ></li><li><a href='Perl6_ES2.html'>@Perl6 <== @Examples xx 2</a> < <span class='digit'>2005-05-20 18:53:54</span> ></li><li><a href='Perl6_ES4.html'>say q:2 '@*Examples.[4] &Perl6()';</a> < <span class='digit'>2005-05-22 12:24:12</span> ></li><li><a href='Perl6_ES5.html'>sub Perl6 (*@Examples[5] is copy)</a> < <span class='digit'>2005-05-22 15:37:26</span> ></li><li><a href='Perl6_ES6.html'>multi sub Examples (6, Perl6) {...}</a> < <span class='digit'>2005-05-23 22:43:33</span> ></li><li><a href='Perl6_ES7.html'>sub infix:<(7)> ($Perl6, @Examples)</a> < <span class='digit'>2005-05-24 02:16:42</span> ></li><li><a href='Perl6_ES8.html'>let @Examples[8] = 'Perl6';</a> < <span class='digit'>2005-05-24 13:05:58</span> ></li><li><a href='Perl6_ES9.html'>Perl6 | Examples & 9 ^ junction</a> < <span class='digit'>2005-05-26 12:35:29</span> ></li><li><a href='Perl6_ES10.html'>%Examples{'IO'} = open('Perl6');</a> < <span class='digit'>2005-05-30 00:24:01</span> ></li><li><a href='Perl6_ES11.html'>class Examples11 is Perl6 { ... }</a> < <span class='digit'>2005-05-30 13:31:31</span> ></li><li><a href='Perl6_ES12.html'>$Perl6 = $class.bless(:Example<12>);</a> < <span class='digit'>2005-05-31 11:38:46</span> ></li><li><a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> < <span class='digit'>2005-05-31 18:22:03</span> ></li><li><a href='Perl6_ES17.html'>my enum Example17 <<:Perl(6) Today>></a> < <span class='digit'>2005-06-05 12:14:08</span> ></li><li><a href='Perl6_ES18.html'>my $queen; rule me {Perl6|Examples18}</a> < <span class='digit'>2005-06-06 12:26:32</span> ></li><li><a href='Perl6_ES19.html'>m:nth(19)/Perl6Examples/</a> < <span class='digit'>2005-06-06 22:02:01</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li></ul>
+Created on <span class="digit">2005-04-19 13:44:56</span>, Last modified on <span class="digit">2005-05-21 16:12:40</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

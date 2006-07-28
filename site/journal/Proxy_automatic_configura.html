@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>自动代理配置</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Lingua-Han-Stroke.html">汉字比划模块</a>&nbsp;&nbsp;>>Next: <a href="pod2cn.html">Perl 核心模块中文化</a></p>
+<h1>自动代理配置</h1>
+<div class='content'>
+<p>Category: <a href='Miscellaneous.html'>Miscellaneous</a> &nbsp; Keywords: <b>proxy automatic configuration</b></p>因为中国 block 了好几个我经常访问的地址，比如 blogspot.com 中英文维基等。所以要使用到代理。<br />而一般的代理设置都是不管什么网址，要么都使用代理要么都不使用。<br />不过浏览器也提供了自动代理配置，不管是 <a href='http://www.mozilla.org/projects/firefox/'>Mozilla Firefox</a> 还是 IE.<p />Mozilla Firefox 的配置在 Tools-> Options... -> General -> Connection Settings... -> automatic configuration proxy URL<br />（抱歉我使用英文版，不清楚中文该是如何，大致的翻译可能为：工具 -> 选项 -> 常规 -> 连接设置 -> 自动代理配置地址）<p />而 IE 的配置选项在 工具 -> Internet 选项 -> 连接 -> 局域网设置 -> 使用自动配置脚本<p />而这脚本怎么写，这里有详细介绍：<a href="http://wp.netscape.com/eng/mozilla/2.0/relnotes/demo/proxy-live.html">http://wp.netscape.com/eng/mozilla/2.0/relnotes/demo/proxy-live.html</a><br />我的脚本（是个 javascript 脚本）为（注意得保存为 pac 后缀）：<br /><pre>function FindProxyForURL(url, host) {<br /> &nbsp; &nbsp;var proxy_yes = "PROXY 209.253.4.131:80; PROXY 203.199.178.78:80";<br /> &nbsp; &nbsp;var proxy_no = "DIRECT";<br /> &nbsp; &nbsp;if (shExpMatch(url, "*.blogspot.com*")) { return proxy_yes; }<br /> &nbsp; &nbsp;if (shExpMatch(url, "*.wikipedia.org*")) { return proxy_yes; }<br /> &nbsp; &nbsp;<br /> &nbsp; &nbsp;if (isResolvable(host))<br /> &nbsp; &nbsp; &nbsp; &nbsp;return proxy_no;<br /> &nbsp; &nbsp;else<br /> &nbsp; &nbsp; &nbsp; &nbsp;return proxy_yes;<br />}</pre>Mozilla Firefox 比较复杂，要 URL 地址，还好的 Apache 常开着，就填了 http://localhost/proxy.pac<br />而 IE 的话可以是本地地址，可以填写 file://E:/Fayland/proxy.pac<p />这样你就能用代理访问类如 <a href="http://adsensemaster.blogspot.com/">http://adsensemaster.blogspot.com/</a> 这样的网站了。<br />而直接访问你本来可以访问的地址，不能访问的交给代理。很完美的组合。:)<br />Thanks, enjoy!</div>
+<p><&lt;Previous: <a href="Lingua-Han-Stroke.html">汉字比划模块</a>&nbsp;&nbsp;>>Next: <a href="pod2cn.html">Perl 核心模块中文化</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E8%87%AA%E5%8A%A8%E4%BB%A3%E7%90%86%E9%85%8D%E7%BD%AE&url=http://www.fayland.org/journal/Proxy_automatic_configura.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Template_Configuration.html'>Template Toolkit 的配置选项</a> < <span class='digit'>2005-10-24 20:23:23</span> ></li></ul>
+Created on <span class="digit">2005-11-20 14:26:15</span>, Last modified on <span class="digit">2005-11-25 11:46:20</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

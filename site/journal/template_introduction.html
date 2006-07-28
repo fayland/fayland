@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Template Toolkit 入门</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="svk_notes.html">svk 的一些使用纪录</a>&nbsp;&nbsp;>>Next: <a href="Graph_Easy.html">Graph::Easy</a></p>
+<h1>Template Toolkit 入门</h1>
+<div class='content'>
+<p>Category: <a href='Catalyst.html'>Catalyst</a> &nbsp; Keywords: <b>template TT</b></p><h4>PRE/POST_CHOMP</h4>我在 <a href='Template_Configuration.html'>Template Toolkit 的配置选项</a> 写过可以设置 POST_CHOMP 和 PRE_CHOMP 为 1 来去掉 <a href="http://www.template-toolkit.org">TT</a> 代码所带来的前后空行。不过如果你不想设置这个的话也是可以去掉前后空行的。比如这样：<br /><pre>Hello [% a = 3 %]<br />World [% a %]</pre>这个输出的话为“Hello \nWorld 3\n”。而这么写可以把里面的 \n 去掉：<br /><pre>Hello [% a = 3 -%]<br />World [% a -%]</pre>输出为“Hello World 3”。这个在 <a href="http://www.stonehenge.com/merlyn/LinuxMag/col60.html">http://www.stonehenge.com/merlyn/LinuxMag/col60.html</a> 里提到过。<h4>合并两个 TT 代码</h4><pre>[% user.name %][% END %]</pre>可以写成<br /><pre>[% user.name; END %]</pre><h4>INSERT 和 INCLUDE 的区别</h4>INSERT 只是插入文件的内容而不管你是不是另一个 .tt 文件。而 INCLUDE 的话如果是另一个 .tt 文件的话会执行它。<br />比如你有一个文件叫 footer.tt, 内容为：<br /><pre>Copyright 2004-2005 All Rights Reserved. Powered by &lt;a href="Eplanet.html">Eplanet&lt;/a> &amp;&amp; &lt;a href='http://catalyst.perl.org'><a href="http://dev.catalyst.perl.org">Catalyst</a>&lt;/a> [% CatalystVersion %].</pre>当在另一个文件中调用 [% INSERT footer.tt %] 时输出的结果跟上面的会一样。里面的 [% CatalystVersion %] 是原封不动。而如果是用 [% INCLUDE footer.tt %] 的话里面的 [% CatalystVersion %] 会被执行为这个变量的值。<h4>BLOCK</h4>比如你有段代码要执行两次。比如我有一个导航栏，需要上面放一个下面放一个。那我可以这么写：<br /><pre>[% show_guidebar = BLOCK %]<br />&lt;p><br />[% IF prev_topic %]&lt;&lt;Previous: &lt;a href="[% prev_topic.cms_file %].html">[% prev_topic.cms_title %]&lt;/a>[% END %]<br />[% IF prev_topic and next_topic %]  [% END %]<br />[% IF next_topic %]>>Next: &lt;a href="[% next_topic.cms_file %].html">[% next_topic.cms_title %]&lt;/a>[% END %]<br />&lt;/p><br />[% END %]<p />[% show_guidebar %]<p />...<p />[% show_guidebar %]</pre><h4>注释</h4>注释很简单，在 [% 后加上 # 那这一行就被注释掉了。唯一值得注意的是下面这两种是不一样的：<br /><pre>[%# a = 77<br />   b = 88<br />%]<br />a: [% a %] b: [% b %]</pre>输出 a: b:<br />而[% 和 # 中间空了一格后就只有注释一行而不是整个 [% %], 如：<br /><pre>[% # a = 77<br />   b = 88<br />%]<br />a: [% a %] b: [% b %]</pre>输出 a: b: 88<h3>参考</h3><ul><li><a href='http://www.stonehenge.com/merlyn/LinuxMag/col60.html'>Introduction to Template Toolkit (part 1)</a></li><li><a href='http://www.stonehenge.com/merlyn/LinuxMag/col61.html'>Introduction to Template Toolkit (part 2)</a></li><li><a href='http://www.stonehenge.com/merlyn/LinuxMag/col62.html'>Introduction to Template Toolkit (part 3)</a></li></ul></div>
+<p><&lt;Previous: <a href="svk_notes.html">svk 的一些使用纪录</a>&nbsp;&nbsp;>>Next: <a href="Graph_Easy.html">Graph::Easy</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Template%20Toolkit%20%E5%85%A5%E9%97%A8&url=http://www.fayland.org/journal/template_introduction.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Template_Configuration.html'>Template Toolkit 的配置选项</a> < <span class='digit'>2005-10-24 20:23:23</span> ></li><li><a href='Template_builtin_Filters.html'>Template builtin Filters</a> < <span class='digit'>2005-12-09 23:14:04</span> ></li><li><a href='Template_customized_Filte.html'>Template customized Filters</a> < <span class='digit'>2005-12-10 01:10:15</span> ></li><li><a href='Accessing_External_TTFile.html'>导入 Template Toolkit 文件</a> < <span class='digit'>2005-12-10 22:42:16</span> ></li><li><a href='EmailWithAttachment.html'>发送邮件附件</a> < <span class='digit'>2005-03-23 22:18:40</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li><li><a href='modperl_http_cycle.html'>modperl 服务器的运行阶段和句柄</a> < <span class='digit'>2005-11-22 15:33:08</span> ></li><li><a href='attributes.html'>attributes 用法介绍</a> < <span class='digit'>2005-12-01 00:03:06</span> ></li></ul>
+Created on <span class="digit">2005-12-03 18:15:26</span>, Last modified on <span class="digit">2005-12-03 18:30:42</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

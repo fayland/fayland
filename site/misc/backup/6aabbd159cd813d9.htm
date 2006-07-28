@@ -1,0 +1,1275 @@
+<html><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="SHORTCUT ICON" href="http://groups-beta.google.com/img/favicon.ico"><title>Google Groups : perl.perl6.compiler</title>
+  
+<style type="text/css"><!--
+.scripthide { display:none; }
+.script12hide { display:inline; }
+.noscripthide { display:inline; }
+--></style>
+<script language="javascript1.2"><!--
+document.write('<style type="text/css">.script12hide { display: none; }</style>');
+--></script><style type="text/css">.script12hide { display: none; }</style><style type="text/css"><!-- 
+
+
+
+  
+  a:link,.w,a.w:link,.w a:link{color:#0000cc}
+  a:visited,.fl:visited{color:#551a8b}
+  a:active,.fl:active{color:#f00}
+  .f,.fl:link{color:#6f6f6f}
+  .f:visited{color:#6f6f6f}
+  .z{display:none}
+
+
+  .sniplink:visited, .sniplink:link, .sniplink:active, .sniplink {
+    color:#676767;
+  }
+
+  .on, .on:visited, .on:link {
+    color:#0000cc;
+  }
+  .on:active {
+    color:#f00000;
+  }
+
+  .q a:visited,.q a:link,.q a:active,.q {
+     color: #0000cc;
+   }
+  .qo a:visited,.qo a:link,.qo a:active,.qo {
+     color: #0000cc;
+   }
+
+   
+   .vlnk a:visited,.vlnk a:link,.vlnk a:active,.vlnk {
+     color: #840284;
+   }
+
+
+  .mbody {
+  
+   margin-top:4px;
+  }
+  .ar {
+    padding-bottom:6px;
+  }
+
+
+
+
+
+
+
+
+body, td {
+  font-family: arial, sans-serif;
+  font-size: 83%;
+}
+
+.fixed_width {
+  font-family: fixed-width, monospace;
+  font-size: 90%;
+}
+
+form {  margin:0; }
+
+.tick {
+ font-family: webdings;
+ text-decoration:none !important;
+}
+
+.qr { width: 100%;padding:4px; font-family: arial, sans-serif; }
+
+table.content td {  padding: 2px 4px 2px 0px; }
+input.ck { margin-left:-2px; }
+
+
+
+
+
+
+.gl,.gl:link,.gl:active,.gl:visited { color: #008000 }  
+a.grouplnk:link { color:#008000; }
+a.grouplnk:visited { color:#008000; }
+a.grouplnk:active { color:#008000; }
+a.grouplnk:hover { color:#008000 }
+.groupname:link { color:#008000 }
+.groupname:visited { color:#008000 }
+.groupname:active { color:#008000 }
+.groupname:hover { color:#008000 }
+
+
+
+
+.b:link,.b:visited { color:#000; }
+
+.nu { text-decoration:none; }
+
+.gt { border-collapse:collapse; }
+.gt td { padding: .3em 4px; border-right:1px solid #ffcc33; }
+.gm td { padding: .3em 1em .3em 0px;}
+
+.bnk { border: 1px solid #ffcc33;}
+.bnk td { border-right-width:0px !important; white-space:nowrap;}
+
+.sel td { 
+background-color: #FFF4C2;
+padding: 4px 4px .4em .4em;
+border:1px solid #ffcc33;
+border-right:none;
+font-weight: bold;
+}
+
+.adb {  border-left: 1px solid  #fff4c2; }
+
+
+
+
+
+
+p.b { margin-bottom: 1.5em; margin-top:.3em;}
+.r { width:45em; }
+.msgdate { color: #676767; }
+.md { color: #555555; }
+.st { margin-left:-1px; }
+.nb { white-space:nowrap;}
+.np { padding:0px; }
+
+.p { font-weight:bold; }
+
+.mc { table-layout:fixed; }
+.mo { margin: .5em 0 0 0 ;  }
+.mt { overflow:hidden; text-overflow:ellipsis; cursor:pointer; white-space:nowrap;}
+.oa { padding: 2px .5em; }
+.qt:link, .qt:visited, .qt { color: #5050b0; text-decoration:none; } 
+
+
+
+.rtdiv { margin-bottom:2px; margin-left:1em; }
+.rtspan { margin-left:-1em; }
+
+.sbox { margin-top:1em; margin-bottom:1em; }
+button a:link {text-decoration:none;color:black;}
+button a:hover {text-decoration:none;color:black;}
+-->
+</style><script language="javascript"><!--
+
+// ----------------------------------
+// used for dynamic function generation on event handlers
+
+var loaddef = "";
+var resizedef = "";
+
+// ----------------------------------
+// cross-browser functions
+
+var IE_all_cache = new Object();
+function IE_getElementById(id) {
+  if (IE_all_cache[id] == null) {
+    IE_all_cache[id] = document.all[id];
+  }
+  return IE_all_cache[id];
+}
+
+if (document.all) {
+  if (!document.getElementById) {
+    document.getElementById = IE_getElementById;
+  }
+  IS_IE = 1;
+} else {
+  IS_IE = 0;
+}
+
+// ---------------------------------
+// shelled functions for old javascript
+function tog() {}
+
+//--></script><script language="javascript1.2"><!--
+
+// ----------------------------------
+// visibility functions
+
+function tog() {
+  // tog: toggle the visibility of html elements (arguments[1..]) from none to
+  // arguments[0].  Return what should be returned in a javascript onevent().
+  display = arguments[0];
+  for( var i=1; i<arguments.length; i++ ) {    
+    var x = document.getElementById(arguments[i]);
+    if (x.style.display == "none" || x.style.display == "") {
+      x.style.display = display;
+    } else {
+      x.style.display = "none";
+    }
+  } 
+
+  var e = IS_IE ? window.event : this;
+  if (e) {
+    if (IS_IE) {
+      e.cancelBubble = true;
+      e.returnValue = false;
+      return false;
+    } else {
+      return false;
+    }
+  }
+}
+
+//--></script><script language="javascript1.2"><!--
+
+//--></script><script language="javascript"><!--
+function sf() {}
+function ad_resize() {}
+function qs() {}
+//--></script><script language="javascript1.2"><!--
+function sf() {
+    document.gs.q.focus();
+}
+function ad_resize(w, h) {
+  if (document.getElementById){  
+    document.getElementById("google_ads_frame").style.height = h;
+    document.getElementById("google_ads_frame").style.width = w; 
+  }
+}
+
+//--></script></head>
+<noscript><style type="text/css"><!--
+.scripthide { display:inline; }
+.noscripthide { display:none; }
+--></style></noscript>
+
+
+
+
+
+
+
+<body onresize="" onload="" topmargin="3" bgcolor="white" marginheight="3">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tbody><tr>
+<td nowrap="nowrap" width="1%">
+</td>
+<td align="right">
+	 <font size="-1">
+	 <b>fayland@gmail.com</b> |
+  <a href="http://groups-beta.google.com/">My Groups</a> |
+	 <a target="_blank" href="http://groups-beta.google.com/groups/nosupport">Help</a> |
+	 <a target="_top" href="http://groups-beta.google.com/groups/signout?q=1&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9">Sign out</a>
+	</font>
+	</td>
+  </tr>
+  <tr height="4"><td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" alt="" height="1" width="1"></td></tr>
+</tbody></table>
+<table border="0" cellpadding="0" cellspacing="0">
+<tbody><tr>
+  <td valign="top"> <a href="http://groups-beta.google.com/"><img src="6aabbd159cd813d9_files/groups_medium.gif" alt="Go to Google Groups Home" border="0" height="58" vspace="3" width="150"></a>
+  </td>
+<td>&nbsp;&nbsp;</td>
+<td valign="top">
+<table border="0" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td height="14" valign="bottom">
+<script><!--
+function qs(el) {if (window.RegExp && window.encodeURIComponent) {var qe=encodeURIComponent(document.gs.q.value);if (el.href.indexOf("q=")!=-1) {el.href=el.href.replace(new RegExp("q=[^&$]*"),"q="+qe);} else {el.href+="&q="+qe;}}return 1;}
+// -->
+</script><table border="0" cellpadding="4" cellspacing="0"><tbody><tr><td class="q"><font size="-1"><a id="t0a" class="q" href="http://www.google.com/search?lr=&amp;sa=N&amp;tab=gw" onclick="return qs(this);">Web</a>&nbsp;&nbsp;&nbsp;&nbsp;<a id="t1a" class="q" href="http://images.google.com/images?lr=&amp;sa=N&amp;tab=gi" onclick="return qs(this);">Images</a>&nbsp;&nbsp;&nbsp;&nbsp;<a id="t2a" class="q" href="http://news.google.com/news?lr=&amp;sa=N&amp;tab=gn" onclick="return qs(this);">News</a>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000"><b>Groups</b></font>&nbsp;&nbsp;&nbsp;&nbsp;<a id="t4a" class="q" href="http://www.google.com/search?lr=&amp;cat=gwd/Top&amp;sa=N&amp;tab=gd" onclick="return qs(this);">Directory</a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="-1"><a class="q" onclick="return window.qs?qs(this):1" href="http://127.0.0.1:4664/search&amp;s=b_tydbBGfTaS1cBrPiHY74kwIqI?q=">桌面</a></font>&nbsp;&nbsp;&nbsp;&nbsp;</font></td></tr></tbody></table>
+</td>
+</tr>
+<tr>
+<td>
+<table border="0" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td nowrap="nowrap">
+<form name="gs" method="get" action="/groups">
+<input name="q" size="41" maxlength="2048" value="" type="text"><font size="-1">
+<input name="qt_s" value="Search" type="submit"></font></form></td>
+<td nowrap="nowrap"><font size="-2">&nbsp;&nbsp;<a href="http://groups-beta.google.com/advanced_search?q=&amp;"><nobr>Advanced Groups Search</nobr></a><br>&nbsp;&nbsp;<a href="http://www.google.com/preferences?hl=zh-CN&amp;prev=http://groups-beta.google.com%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9">Preferences</a></font>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+
+</tbody></table>
+<script language="javascript"><!--
+// Make functions exist for older browsers
+function toggle_watch() {}
+//--></script>
+<script language="javascript1.2"><!--
+
+function toggle_watch(idstr) {
+  var tog = document.getElementsByName(idstr)
+  var img = document.getElementsByName(idstr + "_img")
+
+  if (tog.length < 1) {
+    
+    return; // bad!
+  }
+  try {
+    state = parseInt(tog[0].getAttribute("value"));
+  } catch (e) {
+    state = 1
+  }
+  for (var x=0;x<tog.length;x++) {
+    if (state == 1) {
+      tog[x].setAttribute("value", 0)
+      img[x].src = '/img/watched_n.gif'
+    } else {
+      tog[x].setAttribute("value", 1)
+      img[x].src = '/img/watched_y.gif'
+    }
+    tog[x].blur();
+  }
+
+  if (state == 1) {
+    send_data(idstr + ":off");
+  } else {
+    send_data(idstr + ":on");
+  }
+
+  var e = IS_IE ? window.event : this;
+  if (e) {
+    if (IS_IE) {
+      e.cancelBubble = true;
+      e.returnValue = false;
+      return false;
+    } else {
+      return false;
+    }
+  }
+  return false;
+}
+
+function isIE() {
+  if (navigator.userAgent.indexOf('MSIE') >= 0) {
+  return 1;
+  }
+  return 0;
+}
+function isNetscape() {
+  if (navigator.userAgent.indexOf('Netscape') >= 0) {
+  return 1;
+  }
+  return 0;
+}
+var is_ie = isIE();
+var is_ie5 = 1;
+var is_netscape = isNetscape();
+function send_data(data) {
+  SendServerRequest("/groups/passive?Action.watch=1&q=" + data);
+}
+function CreateXmlHttpReq(handler) {
+  var xmlhttp = null;
+  if (is_ie) {
+  // Guaranteed to be ie5 or ie6
+  var control = (is_ie5) ? "Microsoft.XMLHTTP" : "Msxml2.XMLHTTP";
+  try {
+  xmlhttp = new ActiveXObject(control);
+  xmlhttp.onreadystatechange = handler;
+  } catch(e) {
+  // TODO: better help message
+  alert("You need to enable active scripting and activeX controls");
+  DumpException(e);
+  }
+  } else {
+  // Mozilla
+  xmlhttp = new XMLHttpRequest();
+  xmlhttp.onload = handler;
+  xmlhttp.onerror = handler;
+  }
+  return xmlhttp;
+}
+// Empty XmlHttpReq handler function
+function DummyHandler() { }
+var uniqnum_counter = (new Date).getTime();
+function UniqueNum() {
+  ++uniqnum_counter;
+  return uniqnum_counter;
+}
+// Send a (hidden, non blocking) update message to the server
+// by sending a xmlhttp request
+function SendServerRequest(url) {
+  var xmlhttp = CreateXmlHttpReq(DummyHandler);
+  XmlHttpGET(xmlhttp, url + "&rand=" + UniqueNum());
+}
+// XMLHttp send GET request
+function XmlHttpGET(xmlhttp, url) {
+  xmlhttp.open('GET', url, true);
+  xmlhttp.send(null);
+}
+//--></script>
+<script language="javascript"><!--
+// Shelled functions for javascript compatibility
+function c() {}
+function op() {}
+function rl() {}
+function tog_quote() {}
+//--></script>
+<script language="javascript1.2"><!--
+
+function c( idnum ) {	//cancel a message -- clear text and toggle the reply box. slight delay gives user time to perceive that text is being cleared.
+  document.getElementById( 't'+idnum ).value="";
+  func = "rl( '" + idnum + "' )";
+  window.setTimeout( func, 300 );
+}
+
+function op( idnum )  // hide/show headers
+{
+  optionLink = document.getElementById( 'o'+idnum );
+  x = tog('block', 'h'+idnum );
+  
+    sizeLeftNav();
+  
+  if( optionLink.innerHTML.indexOf( "show options" ) != -1 ) 
+  {
+    optionLink.innerHTML = "hide options";
+  } else {
+    optionLink.innerHTML = "show options";
+  }
+  optionLink.blur();
+  return x;
+}
+
+function rl( idnum ) {  //function to toggle "reply" link; gets rid of annoying linkfocus & toggles ticks
+  replyblockid = 'r' + idnum;
+  textareaObj = document.getElementById( 't'+idnum );
+  linkobj = document.getElementById( 'lo'+idnum );
+  x = tog('block', replyblockid);
+  
+    sizeLeftNav();
+  
+  visible = document.getElementById( replyblockid ).style.display;
+  tick = document.getElementById( 'ti'+idnum );
+  if( visible == "none" ) {
+    linkobj.blur();
+    tick.src = "/img/r.gif";
+  } else {
+    textareaObj.focus();
+    tick.src = "/img/d.gif";
+  }
+  return x;
+}
+
+function tog_quote( idnum ) {
+  x = tog( 'block', 'qheader_shown_' + idnum, 'qheader_hidden_' + idnum,
+	   'qhide_' + idnum );
+  
+    sizeLeftNav();
+  
+
+  return x;
+}
+
+//--></script>
+  <table id="ln" style="margin-right: -3px;" align="left" border="0" cellpadding="0" cellspacing="0">
+  <tbody><tr valign="top"><td width="158">
+  <table class="gt" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr><td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" alt="" border="0" height="2" width="1"></td></tr>
+  <tr>
+  <td><a class="on" href="http://groups-beta.google.com/">My Groups</a></td>
+  </tr>
+  <tr><td nowrap="nowrap"><a href="http://groups-beta.google.com/groups/starred" class="on">My starred <img id="mystar" src="6aabbd159cd813d9_files/watched_y.gif" alt="starred topics" align="middle" border="0"> topics</a></td></tr>
+  <tr><td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" alt="" border="0" height="2" width="1"></td></tr>
+  <tr><td><b>My recent groups</b></td></tr>
+  <tr>
+  <td><a class="gl" href="http://groups-beta.google.com/group/fayland">
+fayland</a>&nbsp;
+  </td>
+</tr>
+  <tr>
+  <td><a class="gl" href="http://groups-beta.google.com/group/perlchina">
+perlchina</a>&nbsp;
+  </td>
+</tr>
+  <tr class="sel" bgcolor="#ffcc33">
+  <td><b><a class="gl" href="http://groups-beta.google.com/group/perl.perl6.compiler">
+perl.perl6.compiler</a></b>&nbsp;</td>
+</tr>
+  <tr>
+  <td><a class="gl" href="http://groups-beta.google.com/group/perl.perl6.language">
+perl.perl6.language</a>&nbsp;<font color="#6f6f6f">(59)</font>
+  </td>
+</tr>
+  <tr>
+  <td><a class="gl" href="http://groups-beta.google.com/group/cn.bbs.comp.lang.perl">
+cn.bbs.comp.lang.perl</a>&nbsp;
+  </td>
+</tr>
+  <tr>
+  <td><a class="gl" href="http://groups-beta.google.com/group/comp.lang.perl.misc">
+comp.lang.perl.misc</a>&nbsp;<font color="#6f6f6f">(1249)</font>
+  </td>
+</tr>
+  <tr>
+  <td><a class="gl" href="http://groups-beta.google.com/group/google-friends">
+Google Friends</a>&nbsp;</td>
+  </tr>
+  <tr><td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" alt="" border="0" height="2" width="1"></td></tr>
+  <tr><td><b>Recently visited</b> <a href="http://groups-beta.google.com/groups/clearrecent?Action.ClearRecent&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9">[clear]</a></td></tr>
+  <tr><td><a class="gl" href="http://groups-beta.google.com/group/perl.perl6.announce">
+perl.perl6.announce</a></td></tr>
+  <tr><td><a class="gl" href="http://groups-beta.google.com/group/perl.modules">
+perl.modules</a></td></tr>
+  <tr><td><a class="gl" href="http://groups-beta.google.com/group/Perlcn">
+Perl.cn</a></td></tr>
+  <tr><td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" alt="" border="0" height="2" width="1"></td></tr>
+  <tr><td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" alt="" border="0" height="2" width="1"></td></tr>
+  <tr><td><a class="on" href="http://groups-beta.google.com/groups/create">Create a new group</a></td></tr>
+  <tr><td nowrap="nowrap"><a href="http://groups-beta.google.com/googlegroups/about.html">About Google Groups</a></td></tr>
+  <tr><td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" alt="" id="ln_2" border="0" height="3351" width="1"></td> </tr>
+  </tbody></table>
+  </td>
+  <td style="border-top: 1px solid rgb(255, 204, 51); border-bottom: 1px solid rgb(255, 204, 51);" bgcolor="#fff4c2" width="8"><img id="ln_image" src="6aabbd159cd813d9_files/dot_clear_002.gif" alt="" border="0" height="3797" width="1"></td>
+		</tr>
+  </tbody></table>
+<script language="javascript1.2"><!--
+
+function sizeLeftNav() {
+  var marker = document.getElementById('bottom_marker');
+  var im = document.getElementById( 'ln_image' );
+  var table = document.getElementById('ln');
+  if (marker != null) {
+    var tries = 0;
+    while (tries < 30) {
+      tries++;
+      
+      var oldMarkerPos = marker.offsetTop;
+    
+      var oldIMHeight = im.height;
+      im.height = (marker.offsetTop +  marker.offsetHeight )-(table.offsetTop+2);
+
+      var verticalStretch = document.getElementById('ln_2');
+      var oldVerticleStretchHeight = verticalStretch.height;
+      verticalStretch.height = im.height - (verticalStretch.offsetParent.offsetTop +
+        verticalStretch.offsetTop +2);
+
+      var oldWhitespaceHeight;
+      var whitespace = document.getElementById('whitespace');
+      if (whitespace != null) {
+        oldWhitespaceHeight = whitespace.height;
+        whitespace.height = table.offsetHeight - (whitespace.offsetParent.offsetParent.offsetTop -
+          table.offsetTop + (document.getElementById('forkbottom').offsetHeight));
+      }
+
+      var oldRightnavHeight;
+      var rightnav = document.getElementById('rn_image');
+      if (rightnav != null) {
+        oldRightnavHeight = rightnav.height;
+        rightnav.height = whitespace.height + rightnav.offsetTop - whitespace.offsetTop;
+      }
+
+      var deltaMarkerPos = marker.offsetTop - oldMarkerPos;
+      var deltaIMHeight = im.height - oldIMHeight;
+
+      if (deltaMarkerPos == deltaIMHeight) {
+        if (deltaMarkerPos > 0) {
+  // Take back what we did, it didn't help
+  im.height = oldIMHeight;
+  verticalStretch.height = oldVerticleStretchHeight;
+  if (whitespace != null) {
+  whitespace.height = oldWhitespaceHeight;
+  }
+  if (rightnav != null) {
+  rightnav.height = oldRightnavHeight;
+  }
+  }
+  break;
+  }
+  }
+  }
+}
+resizedef += "sizeLeftNav(); ";
+loaddef += "sizeLeftNav(); ";
+//--></script>
+<table bgcolor="#ffcc33" border="0" cellpadding="0" cellspacing="0">
+<tbody><tr><td width="100%"><img alt="" height="1" width="1"></td><td width="10"><img alt="" height="1" width="1"></td></tr>
+</tbody></table>
+<table bgcolor="#fff4c2" border="0" cellpadding="2" cellspacing="0">
+  <tbody><tr><td class="gl" nowrap="nowrap" width="50%"><font size="+1"><b>
+  Topic in
+  <a href="http://groups-beta.google.com/group/perl.perl6.compiler" class="gl">perl.perl6.compiler</a>
+</b></font></td>
+  <td width="10">&nbsp;</td>
+  <td align="right" nowrap="nowrap" valign="middle" width="50%"><form name="gs2" method="get" action="/group/perl.perl6.compiler/search" style="margin: 2px;"><input name="group" value="perl.perl6.compiler" type="hidden"><input name="q" size="20" maxlength="2048" value="" type="text"><input name="qt_g" value="1" type="hidden">&nbsp;<input name="searchnow" value="Search this group" style="" type="submit">&nbsp;</form></td>
+  </tr>
+  <tr>
+  <td colspan="3" style="padding: 0px 2px 4px;" nowrap="nowrap">
+<b><a class="on" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;"><img src="6aabbd159cd813d9_files/st.gif" align="middle" border="0" height="16" width="21">Start a new topic</a></b>
+  &nbsp;-&nbsp;
+	 <a href="http://groups-beta.google.com/group/perl.perl6.compiler/subscribe" class="on">Unsubscribe or change membership</a>
+  &nbsp;-&nbsp; <a href="http://groups-beta.google.com/group/perl.perl6.compiler/about">About this group</a>
+  </td>
+  </tr>
+</tbody></table>
+<table align="left" border="0" cellpadding="0" cellspacing="0"><tbody><tr><td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" alt="" id="whitespace" align="top" border="0" height="3732" width="18"></td></tr>
+<tr><td id="forkbottom">&nbsp;</td></tr></tbody></table>
+<table id="rn" align="right" border="0" cellpadding="0" cellspacing="0" width="25%">
+<tbody><tr valign="top">
+<td width="8%"><img id="rn_image" src="6aabbd159cd813d9_files/dot_clear_002.gif" alt="" border="0" height="3732" width="1"></td>
+<td>
+  <table border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td align="right">
+  <a class="fixed_width" href="http://groups-beta.google.com/group/perl.perl6.compiler/browse_thread/thread/6aabbd159cd813d9?fwc=1">Fixed font</a> - <b>Proportional font</b>
+  </td>
+  </tr>
+  </tbody></table>
+<br>
+<iframe style="height: 826px; width: 230px;" name="google_ads_frame" id="google_ads_frame" src="6aabbd159cd813d9_files/adfetch.htm" allowtransparency="true" frameborder="0" scrolling="no">
+</iframe>
+</td></tr>
+</tbody></table>
+<h1 style="margin: 6px 0pt 0pt; font-size: 150%;"><a class="st" id="watch2076573_6aabbd159cd813d9" name="watch2076573_6aabbd159cd813d9" value="1" href="http://groups-beta.google.com/group/perl.perl6.compiler/watch_topic?tid=6aabbd159cd813d9&amp;oldstate=1" onclick="return toggle_watch('watch2076573_6aabbd159cd813d9');"><img class="stimg" id="watch2076573_6aabbd159cd813d9_img" name="watch2076573_6aabbd159cd813d9_img" src="6aabbd159cd813d9_files/watched_y.gif" align="middle" border="0" height="18" width="18"></a> weird thing with say ++$</h1>
+<table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td style="padding: 0pt 2px 8px;" valign="baseline">
+  All <b>7</b> messages in topic
+  - <a href="http://groups-beta.google.com/group/perl.perl6.compiler/browse_frm/thread/6aabbd159cd813d9?tvc=1">view as tree</a>
+</td></tr></tbody></table>
+<script language="javascript1.2"><!--
+function mm( txtarea ) {
+  txtarea.rows = 10;
+  sizeLeftNav();
+}
+
+//--></script>
+  <!-- <a name="df5a4ed7a1b18b451"></a> -->
+  <table border="0" cellpadding="0" cellspacing="0">
+  <tbody><tr>
+  <td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" height="1" width="2"></td>
+  <td width="100%">
+  <table class="mo" id="hdropenedf5a4ed7a1b18b451" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td title="Fayland &lt;fayl...@gmail.com&gt;" class="oa" bgcolor="#b71c0c" nowrap="nowrap" width="1%"><b><font color="#ffffff">Fayland</font></b></td>
+  <td>&nbsp; Apr 21, 1:32&nbsp;am &nbsp; &nbsp; <span class="noscripthide"><a href="#" id="of5a4ed7a1b18b451" onclick="return op('f5a4ed7a1b18b451');" class="f">show options</a></span></td>
+  </tr>
+  </tbody></table>
+  <div id="hf5a4ed7a1b18b451" class="scripthide">
+  <table bgcolor="#e8e8e8" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr><td>Newsgroups: <b>perl.perl6.compiler</b></td></tr>
+  <tr><td>From: <b>fayl...@gmail.com (Fayland)</b> - <a href="http://groups-beta.google.com/groups?enc_author=Pn_JeBEAAADn9dz_72r-44j22YSc7ri4kdEasx1kiYTQavV7mdW13Q" target="_top">Find messages by this author</a> </td></tr>
+  <tr><td>Date: <b>Thu, 21 Apr 2005 16:32:41 +0800</b></td></tr>
+  <tr><td>Local: <b>Thurs,Apr 21 2005 1:32&nbsp;am
+</b> </td></tr>
+  <tr><td>Subject: <b>[pugs]weird thing with say ++$</b></td></tr>
+  <tr>
+  <td class="ar"><font size="-1">
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=f5a4ed7a1b18b451&amp;reply_to=group&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply</a> |
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=f5a4ed7a1b18b451&amp;reply_to=author&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply to Author</a>
+  | <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=f5a4ed7a1b18b451&amp;forward=1&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Forward</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/f5a4ed7a1b18b451?dmode=print">Print</a>
+  | <a href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/f5a4ed7a1b18b451" target="_parent">Individual Message</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/f5a4ed7a1b18b451?dmode=source">Show original</a>
+  | <a href="http://groups-beta.google.com/group/perl.perl6.compiler/msg_delete?docid=f5a4ed7a1b18b451" target="_top">Remove</a>
+  | <a target="_blank" href="http://groups-beta.google.com/groups/abuse?group=perl.perl6.compiler&amp;url=http:%2F%2Fgroups-beta.google.com%2Fgroup%2Fperl.perl6.compiler%2Fmsg%2Ff5a4ed7a1b18b451">Report Abuse</a>
+  </font></td>
+  </tr>
+  </tbody></table>
+  </div>
+  <div class="mbody" id="mbodyf5a4ed7a1b18b451">
+  <p>
+  <a name="msg_f5a4ed7a1b18b451"></a>It has been published at perl6.language, but have no reply. <br> </p><p>In perl v5.8.6 built for MSWin32-x86-multi-thread: <br> </p><p>my $i = 1; <br> print $i++, ++$i; # 1 3 <br> my $i = 1; <br> print ++$i, $i++; # 3 2 <br> </p><p>in pugs: <br> </p><p>my $i = 1; <br> say $i++, ++$i; # 1 3 <br> </p><p>my $i = 1; <br> say ++$i, $i++; # 2 2 <br> </p><p>which is right?(I think perl5 is) or it's different between Perl5 and Perl6? <br> </p><p>thanks. <br> </p><p>/Fayland Lam/ <br> -------------- <br> <a target="_blank" href="http://www.fayland.org/">http://www.fayland.org</a> <br>
+  </p><p>
+  <a class="on" href="#" onclick="return rl('f5a4ed7a1b18b451');" id="lof5a4ed7a1b18b451"><script language="javascript1.2">
+  <!--
+    document.write("<img id=tif5a4ed7a1b18b451 border=0 src=\"/img/r.gif\" height=11 width=11 alt=\"\">");
+  //-->
+</script><img id="tif5a4ed7a1b18b451" src="6aabbd159cd813d9_files/r.gif" alt="" border="0" height="11" width="11">Reply</a>
+  </p><form action="/group/perl.perl6.compiler/post" name="postform" method="post">
+  <table style="display: none;" id="rf5a4ed7a1b18b451" border="0" cellpadding="1" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td colspan="2">
+  <input name="WebToken" value="f63d00826b8519edd39f30dd71536ad7" type="hidden">
+  <input name="_done" value="/group/perl.perl6.compiler/browse_thread/thread/6aabbd159cd813d9" type="hidden">
+  <input name="quickreply" value="1" type="hidden">
+  <input name="_doneTitle" value="Back to thread" type="hidden">
+  <input name="minreplyto" value="20050421083227.27464.qmail@lists.develooper.com" type="hidden">
+  <input name="inreplyto" value="f5a4ed7a1b18b451" type="hidden">
+  <input name="noheader" value="" type="hidden">
+  <input name="subject" value="Re: weird thing with say ++$" type="hidden">
+  <input name="orig_charset" value="" type="hidden">
+  <input name="about_docid" value="" type="hidden">
+  <input name="usenet_groups_to" value="perl.perl6.compiler" type="hidden">
+  <textarea cols="80" name="body" id="tf5a4ed7a1b18b451" rows="10" class="qr"></textarea>
+  </td>
+  </tr>
+  <tr>
+  <td>
+  <input name="rst" value="Cancel" onclick="c('f5a4ed7a1b18b451');" type="reset"></td><td align="right">
+  <input name="Action.Preview" value="Preview" type="submit"> &nbsp;
+  <input class="p" name="Action.Post" value="&nbsp; Post &nbsp;" title="Post without previewing" type="submit">
+  </td>
+  </tr>
+  </tbody></table>
+  </form>
+  </div>
+  </td>
+  </tr>
+  </tbody></table>
+  <a name="71bb1d76f6558fd9" id="anchor_71bb1d76f6558fd9"></a>
+  <br>
+  <!-- <a name="d71bb1d76f6558fd9"></a> -->
+  <table border="0" cellpadding="0" cellspacing="0">
+  <tbody><tr>
+  <td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" height="1" width="2"></td>
+  <td width="100%">
+  <table class="mo" id="hdropened71bb1d76f6558fd9" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td title="Paul Johnson &lt;p...@pjcj.net&gt;" class="oa" bgcolor="#005a9b" nowrap="nowrap" width="1%"><b><font color="#ffffff">Paul Johnson</font></b></td>
+  <td>&nbsp; Apr 21, 2:45&nbsp;am &nbsp; &nbsp; <span class="noscripthide"><a href="#" id="o71bb1d76f6558fd9" onclick="return op('71bb1d76f6558fd9');" class="f">show options</a></span></td>
+  </tr>
+  </tbody></table>
+  <div id="h71bb1d76f6558fd9" class="scripthide">
+  <table bgcolor="#e8e8e8" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr><td>Newsgroups: <b>perl.perl6.compiler</b></td></tr>
+  <tr><td>From: <b>p...@pjcj.net (Paul Johnson)</b> - <a href="http://groups-beta.google.com/groups?enc_author=GYYPNA0AAACADj2OiKr09s0fc3F4-u6w" target="_top">Find messages by this author</a> </td></tr>
+  <tr><td>Date: <b>Thu, 21 Apr 2005 11:45:27 +0200</b></td></tr>
+  <tr><td>Local: <b>Thurs,Apr 21 2005 2:45&nbsp;am
+</b> </td></tr>
+  <tr><td>Subject: <b>Re: [pugs]weird thing with say ++$</b></td></tr>
+  <tr>
+  <td class="ar"><font size="-1">
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=71bb1d76f6558fd9&amp;reply_to=group&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply</a> |
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=71bb1d76f6558fd9&amp;reply_to=author&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply to Author</a>
+  | <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=71bb1d76f6558fd9&amp;forward=1&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Forward</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/71bb1d76f6558fd9?dmode=print">Print</a>
+  | <a href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/71bb1d76f6558fd9" target="_parent">Individual Message</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/71bb1d76f6558fd9?dmode=source">Show original</a>
+  | <a target="_blank" href="http://groups-beta.google.com/groups/abuse?group=perl.perl6.compiler&amp;url=http:%2F%2Fgroups-beta.google.com%2Fgroup%2Fperl.perl6.compiler%2Fmsg%2F71bb1d76f6558fd9">Report Abuse</a>
+  </font></td>
+  </tr>
+  </tbody></table>
+  </div>
+  <div class="mbody" id="mbody71bb1d76f6558fd9">
+  <p>
+  <a name="msg_71bb1d76f6558fd9"></a></p><p></p><p><a class="qt" href="http://groups-beta.google.com/group/perl.perl6.compiler/browse_thread/thread/6aabbd159cd813d9?hide_quotes=no#msg_71bb1d76f6558fd9" onclick="return tog_quote(32385); "><div id="qheader_shown_32385" style="display: none;">- Hide quoted text -</div><div id="qheader_hidden_32385" style="display: block;">- Show quoted text -</div></a></p><div id="qhide_32385" style="display: none;" class="qt">On Thu, Apr 21, 2005 at 04:32:41PM +0800, fayland wrote: <br> &gt; It has been published at perl6.language, but have no reply. <br> <p>&gt; In perl v5.8.6 built for MSWin32-x86-multi-thread: <br> </p><p>&gt; my $i = 1; <br> &gt; print $i++, ++$i; # 1 3 <br> &gt; my $i = 1; <br> &gt; print ++$i, $i++; # 3 2 <br> </p><p>&gt; in pugs: <br> </p><p>&gt; my $i = 1; <br> &gt; say $i++, ++$i; # 1 3 <br> </p><p>&gt; my $i = 1; <br> &gt; say ++$i, $i++; # 2 2 <br> </p><p>&gt; which is right?(I think perl5 is) or it's different between Perl5 and Perl6? <br> <br></p></div>I think I understand the implementation details leading to each <br> behaviour, but rather than saying which was "right", I think I'd be <br> quite happy to see Perl6 copy (the ideas behind) C's rules regarding <br> sequence points and undefined behaviour. &nbsp;I'm not so sure about <br> implementation defined and unspecified behaviour. <br> <p>When I see code such as this, I usually encourage people to program Perl <br> as if it had sequence points and undefined behaviour. &nbsp;This often <br> results in explaining what they are, but maybe that's not such a great <br> problem. <br> </p><p>See <a target="_blank" href="http://www.eskimo.com/%7Escs/C-faq/faq.html">http://www.eskimo.com/~scs/C-f<wbr>aq/faq.html</a>, especially sections 3.8 <br> and 11.33 for details. <br> </p><p>-- <br> Paul Johnson - p...@pjcj.net <br> <a target="_blank" href="http://www.pjcj.net/">http://www.pjcj.net</a> <br>
+  </p><p>
+  <a class="on" href="#" onclick="return rl('71bb1d76f6558fd9');" id="lo71bb1d76f6558fd9"><script language="javascript1.2">
+  <!--
+    document.write("<img id=ti71bb1d76f6558fd9 border=0 src=\"/img/r.gif\" height=11 width=11 alt=\"\">");
+  //-->
+</script><img id="ti71bb1d76f6558fd9" src="6aabbd159cd813d9_files/r.gif" alt="" border="0" height="11" width="11">Reply</a>
+  </p><form action="/group/perl.perl6.compiler/post" name="postform" method="post">
+  <table style="display: none;" id="r71bb1d76f6558fd9" border="0" cellpadding="1" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td colspan="2">
+  <input name="WebToken" value="f63d00826b8519edd39f30dd71536ad7" type="hidden">
+  <input name="_done" value="/group/perl.perl6.compiler/browse_thread/thread/6aabbd159cd813d9" type="hidden">
+  <input name="quickreply" value="1" type="hidden">
+  <input name="_doneTitle" value="Back to thread" type="hidden">
+  <input name="minreplyto" value="20050421094527.GD23088@pjcj.net" type="hidden">
+  <input name="inreplyto" value="71bb1d76f6558fd9" type="hidden">
+  <input name="noheader" value="" type="hidden">
+  <input name="subject" value="Re: weird thing with say ++$" type="hidden">
+  <input name="orig_charset" value="" type="hidden">
+  <input name="about_docid" value="" type="hidden">
+  <input name="usenet_groups_to" value="perl.perl6.compiler" type="hidden">
+  <textarea cols="80" name="body" id="t71bb1d76f6558fd9" rows="10" class="qr"></textarea>
+  </td>
+  </tr>
+  <tr>
+  <td>
+  <input name="rst" value="Cancel" onclick="c('71bb1d76f6558fd9');" type="reset"></td><td align="right">
+  <input name="Action.Preview" value="Preview" type="submit"> &nbsp;
+  <input class="p" name="Action.Post" value="&nbsp; Post &nbsp;" title="Post without previewing" type="submit">
+  </td>
+  </tr>
+  </tbody></table>
+  </form>
+  </div>
+  </td>
+  </tr>
+  </tbody></table>
+  <a name="48eb422e65981883" id="anchor_48eb422e65981883"></a>
+  <br>
+  <!-- <a name="d48eb422e65981883"></a> -->
+  <table border="0" cellpadding="0" cellspacing="0">
+  <tbody><tr>
+  <td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" height="1" width="2"></td>
+  <td width="100%">
+  <table class="mo" id="hdropened48eb422e65981883" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td title="Johan Vromans &lt;jvrom...@squirrel.nl&gt;" class="oa" bgcolor="#cc8600" nowrap="nowrap" width="1%"><b><font color="#ffffff">Johan Vromans</font></b></td>
+  <td>&nbsp; Apr 21, 4:46&nbsp;am &nbsp; &nbsp; <span class="noscripthide"><a href="#" id="o48eb422e65981883" onclick="return op('48eb422e65981883');" class="f">show options</a></span></td>
+  </tr>
+  </tbody></table>
+  <div id="h48eb422e65981883" class="scripthide">
+  <table bgcolor="#e8e8e8" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr><td>Newsgroups: <b>perl.perl6.compiler</b></td></tr>
+  <tr><td>From: <b>jvrom...@squirrel.nl (Johan Vromans)</b> - <a href="http://groups-beta.google.com/groups?enc_author=5fYtvBQAAAAF6DdVtg15B0l6sE4q5Z3IE3N-nqs2WTqLPOYvynhwaA" target="_top">Find messages by this author</a> </td></tr>
+  <tr><td>Date: <b>Thu, 21 Apr 2005 13:46:09 +0200</b></td></tr>
+  <tr><td>Local: <b>Thurs,Apr 21 2005 4:46&nbsp;am
+</b> </td></tr>
+  <tr><td>Subject: <b>Re: [pugs]weird thing with say ++$</b></td></tr>
+  <tr>
+  <td class="ar"><font size="-1">
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=48eb422e65981883&amp;reply_to=group&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply</a> |
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=48eb422e65981883&amp;reply_to=author&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply to Author</a>
+  | <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=48eb422e65981883&amp;forward=1&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Forward</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/48eb422e65981883?dmode=print">Print</a>
+  | <a href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/48eb422e65981883" target="_parent">Individual Message</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/48eb422e65981883?dmode=source">Show original</a>
+  | <a target="_blank" href="http://groups-beta.google.com/groups/abuse?group=perl.perl6.compiler&amp;url=http:%2F%2Fgroups-beta.google.com%2Fgroup%2Fperl.perl6.compiler%2Fmsg%2F48eb422e65981883">Report Abuse</a>
+  </font></td>
+  </tr>
+  </tbody></table>
+  </div>
+  <div class="mbody" id="mbody48eb422e65981883">
+  <p>
+  <a name="msg_48eb422e65981883"></a></p><p></p><div id="qhide_32386" style="display: block;" class="qt">Paul Johnson &lt;p...@pjcj.net&gt; writes: <br> &gt; I think I understand the implementation details leading to each <br> &gt; behaviour, but rather than saying which was "right", I think I'd be <br> &gt; quite happy to see Perl6 copy (the ideas behind) C's rules regarding <br> &gt; sequence points and undefined behaviour. &nbsp;I'm not so sure about <br> &gt; implementation defined and unspecified behaviour. <br> <br></div>Isn't this the old prefix-++ problem: <br> <p>&nbsp; @a = (++$i,++$i,++$i); <br> &nbsp; print "@a"; &nbsp; &nbsp;# prints 3 3 3 <br> </p><p>-- Johan <br>
+  </p><p>
+  <a class="on" href="#" onclick="return rl('48eb422e65981883');" id="lo48eb422e65981883"><script language="javascript1.2">
+  <!--
+    document.write("<img id=ti48eb422e65981883 border=0 src=\"/img/r.gif\" height=11 width=11 alt=\"\">");
+  //-->
+</script><img id="ti48eb422e65981883" src="6aabbd159cd813d9_files/r.gif" alt="" border="0" height="11" width="11">Reply</a>
+  </p><form action="/group/perl.perl6.compiler/post" name="postform" method="post">
+  <table style="display: none;" id="r48eb422e65981883" border="0" cellpadding="1" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td colspan="2">
+  <input name="WebToken" value="f63d00826b8519edd39f30dd71536ad7" type="hidden">
+  <input name="_done" value="/group/perl.perl6.compiler/browse_thread/thread/6aabbd159cd813d9" type="hidden">
+  <input name="quickreply" value="1" type="hidden">
+  <input name="_doneTitle" value="Back to thread" type="hidden">
+  <input name="minreplyto" value="m2fyxkmjy6.fsf@phoenix.squirrel.nl" type="hidden">
+  <input name="inreplyto" value="48eb422e65981883" type="hidden">
+  <input name="noheader" value="" type="hidden">
+  <input name="subject" value="Re: weird thing with say ++$" type="hidden">
+  <input name="orig_charset" value="" type="hidden">
+  <input name="about_docid" value="" type="hidden">
+  <input name="usenet_groups_to" value="perl.perl6.compiler" type="hidden">
+  <textarea cols="80" name="body" id="t48eb422e65981883" rows="10" class="qr"></textarea>
+  </td>
+  </tr>
+  <tr>
+  <td>
+  <input name="rst" value="Cancel" onclick="c('48eb422e65981883');" type="reset"></td><td align="right">
+  <input name="Action.Preview" value="Preview" type="submit"> &nbsp;
+  <input class="p" name="Action.Post" value="&nbsp; Post &nbsp;" title="Post without previewing" type="submit">
+  </td>
+  </tr>
+  </tbody></table>
+  </form>
+  </div>
+  </td>
+  </tr>
+  </tbody></table>
+  <a name="2667e367c553a291" id="anchor_2667e367c553a291"></a>
+  <br>
+  <!-- <a name="d2667e367c553a291"></a> -->
+  <table border="0" cellpadding="0" cellspacing="0">
+  <tbody><tr>
+  <td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" height="1" width="2"></td>
+  <td width="100%">
+  <table class="mo" id="hdropened2667e367c553a291" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td title="Nathan Gray &lt;kolib...@graystudios.org&gt;" class="oa" bgcolor="#802f97" nowrap="nowrap" width="1%"><b><font color="#ffffff">Nathan Gray</font></b></td>
+  <td>&nbsp; Apr 21, 6:02&nbsp;am &nbsp; &nbsp; <span class="noscripthide"><a href="#" id="o2667e367c553a291" onclick="return op('2667e367c553a291');" class="f">show options</a></span></td>
+  </tr>
+  </tbody></table>
+  <div id="h2667e367c553a291" class="scripthide">
+  <table bgcolor="#e8e8e8" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr><td>Newsgroups: <b>perl.perl6.compiler</b></td></tr>
+  <tr><td>From: <b>kolib...@graystudios.org (Nathan Gray)</b> - <a href="http://groups-beta.google.com/groups?enc_author=RLcBhhgAAAAOd9rlXLWMrqQB77ybzsrJ-bFLIwnJMdeQ_4V59OJbYg" target="_top">Find messages by this author</a> </td></tr>
+  <tr><td>Date: <b>Thu, 21 Apr 2005 09:02:42 -0400</b></td></tr>
+  <tr><td>Local: <b>Thurs,Apr 21 2005 6:02&nbsp;am
+</b> </td></tr>
+  <tr><td>Subject: <b>Re: [pugs]weird thing with say ++$</b></td></tr>
+  <tr>
+  <td class="ar"><font size="-1">
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=2667e367c553a291&amp;reply_to=group&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply</a> |
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=2667e367c553a291&amp;reply_to=author&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply to Author</a>
+  | <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=2667e367c553a291&amp;forward=1&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Forward</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/2667e367c553a291?dmode=print">Print</a>
+  | <a href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/2667e367c553a291" target="_parent">Individual Message</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/2667e367c553a291?dmode=source">Show original</a>
+  | <a target="_blank" href="http://groups-beta.google.com/groups/abuse?group=perl.perl6.compiler&amp;url=http:%2F%2Fgroups-beta.google.com%2Fgroup%2Fperl.perl6.compiler%2Fmsg%2F2667e367c553a291">Report Abuse</a>
+  </font></td>
+  </tr>
+  </tbody></table>
+  </div>
+  <div class="mbody" id="mbody2667e367c553a291">
+  <p>
+  <a name="msg_2667e367c553a291"></a></p><p></p><p><a class="qt" href="http://groups-beta.google.com/group/perl.perl6.compiler/browse_thread/thread/6aabbd159cd813d9?hide_quotes=no#msg_2667e367c553a291" onclick="return tog_quote(32387); "><div id="qheader_shown_32387" style="display: none;">- Hide quoted text -</div><div id="qheader_hidden_32387" style="display: block;">- Show quoted text -</div></a></p><div id="qhide_32387" style="display: none;" class="qt">On Thu, Apr 21, 2005 at 11:45:27AM +0200, Paul Johnson wrote: <br> &gt; On Thu, Apr 21, 2005 at 04:32:41PM +0800, fayland wrote: <br> <p>&gt; &gt; It has been published at perl6.language, but have no reply. <br> </p><p>&gt; &gt; In perl v5.8.6 built for MSWin32-x86-multi-thread: <br> </p><p>&gt; &gt; my $i = 1; <br> &gt; &gt; print $i++, ++$i; # 1 3 <br> &gt; &gt; my $i = 1; <br> &gt; &gt; print ++$i, $i++; # 3 2 <br> </p><p>&gt; &gt; in pugs: <br> </p><p>&gt; &gt; my $i = 1; <br> &gt; &gt; say $i++, ++$i; # 1 3 <br> </p><p>&gt; &gt; my $i = 1; <br> &gt; &gt; say ++$i, $i++; # 2 2 <br> </p><p>&gt; &gt; which is right?(I think perl5 is) or it's different between Perl5 and Perl6? <br> </p><p>&gt; I think I understand the implementation details leading to each <br> &gt; behaviour, but rather than saying which was "right", I think I'd be <br> &gt; quite happy to see Perl6 copy (the ideas behind) C's rules regarding <br> &gt; sequence points and undefined behaviour. &nbsp;I'm not so sure about <br> &gt; implementation defined and unspecified behaviour. <br> <br></p></div>It certainly makes more sense to me that the answer would be 2 2. &nbsp;But <br> however it ends up, so long as we know what the answer will be, we can <br> utilize it effectively in our programs. <br> <p>-kolibrie <br>
+  </p><p>
+  <a class="on" href="#" onclick="return rl('2667e367c553a291');" id="lo2667e367c553a291"><script language="javascript1.2">
+  <!--
+    document.write("<img id=ti2667e367c553a291 border=0 src=\"/img/r.gif\" height=11 width=11 alt=\"\">");
+  //-->
+</script><img id="ti2667e367c553a291" src="6aabbd159cd813d9_files/r.gif" alt="" border="0" height="11" width="11">Reply</a>
+  </p><form action="/group/perl.perl6.compiler/post" name="postform" method="post">
+  <table style="display: none;" id="r2667e367c553a291" border="0" cellpadding="1" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td colspan="2">
+  <input name="WebToken" value="f63d00826b8519edd39f30dd71536ad7" type="hidden">
+  <input name="_done" value="/group/perl.perl6.compiler/browse_thread/thread/6aabbd159cd813d9" type="hidden">
+  <input name="quickreply" value="1" type="hidden">
+  <input name="_doneTitle" value="Back to thread" type="hidden">
+  <input name="minreplyto" value="20050421130242.GC1293@vs2.capwiz.com" type="hidden">
+  <input name="inreplyto" value="2667e367c553a291" type="hidden">
+  <input name="noheader" value="" type="hidden">
+  <input name="subject" value="Re: weird thing with say ++$" type="hidden">
+  <input name="orig_charset" value="" type="hidden">
+  <input name="about_docid" value="" type="hidden">
+  <input name="usenet_groups_to" value="perl.perl6.compiler" type="hidden">
+  <textarea cols="80" name="body" id="t2667e367c553a291" rows="10" class="qr"></textarea>
+  </td>
+  </tr>
+  <tr>
+  <td>
+  <input name="rst" value="Cancel" onclick="c('2667e367c553a291');" type="reset"></td><td align="right">
+  <input name="Action.Preview" value="Preview" type="submit"> &nbsp;
+  <input class="p" name="Action.Post" value="&nbsp; Post &nbsp;" title="Post without previewing" type="submit">
+  </td>
+  </tr>
+  </tbody></table>
+  </form>
+  </div>
+  </td>
+  </tr>
+  </tbody></table>
+  <a name="3861d4ac46a0cc8f" id="anchor_3861d4ac46a0cc8f"></a>
+  <br>
+  <!-- <a name="d3861d4ac46a0cc8f"></a> -->
+  <table border="0" cellpadding="0" cellspacing="0">
+  <tbody><tr>
+  <td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" height="1" width="2"></td>
+  <td width="100%">
+  <table class="mo" id="hdropened3861d4ac46a0cc8f" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td title="Matthew Walton &lt;matt...@alledora.co.uk&gt;" class="oa" bgcolor="#2e7044" nowrap="nowrap" width="1%"><b><font color="#ffffff">Matthew Walton</font></b></td>
+  <td>&nbsp; Apr 21, 6:28&nbsp;am &nbsp; &nbsp; <span class="noscripthide"><a href="#" id="o3861d4ac46a0cc8f" onclick="return op('3861d4ac46a0cc8f');" class="f">show options</a></span></td>
+  </tr>
+  </tbody></table>
+  <div id="h3861d4ac46a0cc8f" class="scripthide">
+  <table bgcolor="#e8e8e8" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr><td>Newsgroups: <b>perl.perl6.compiler</b></td></tr>
+  <tr><td>From: <b>matt...@alledora.co.uk (Matthew Walton)</b> - <a href="http://groups-beta.google.com/groups?enc_author=FrDzVBYAAAArRGHwBC3Fqm596fzM9N9CnwEf4JDN8RlQbuZXAVrhxA" target="_top">Find messages by this author</a> </td></tr>
+  <tr><td>Date: <b>Thu, 21 Apr 2005 14:28:52 +0100 (BST)</b></td></tr>
+  <tr><td>Local: <b>Thurs,Apr 21 2005 6:28&nbsp;am
+</b> </td></tr>
+  <tr><td>Subject: <b>Re: [pugs]weird thing with say ++$</b></td></tr>
+  <tr>
+  <td class="ar"><font size="-1">
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=3861d4ac46a0cc8f&amp;reply_to=group&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply</a> |
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=3861d4ac46a0cc8f&amp;reply_to=author&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply to Author</a>
+  | <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=3861d4ac46a0cc8f&amp;forward=1&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Forward</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/3861d4ac46a0cc8f?dmode=print">Print</a>
+  | <a href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/3861d4ac46a0cc8f" target="_parent">Individual Message</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/3861d4ac46a0cc8f?dmode=source">Show original</a>
+  | <a target="_blank" href="http://groups-beta.google.com/groups/abuse?group=perl.perl6.compiler&amp;url=http:%2F%2Fgroups-beta.google.com%2Fgroup%2Fperl.perl6.compiler%2Fmsg%2F3861d4ac46a0cc8f">Report Abuse</a>
+  </font></td>
+  </tr>
+  </tbody></table>
+  </div>
+  <div class="mbody" id="mbody3861d4ac46a0cc8f">
+  <p>
+  <a name="msg_3861d4ac46a0cc8f"></a></p><p></p><div id="qhide_32388" style="display: block;" class="qt">&gt; On Thu, Apr 21, 2005 at 11:45:27AM +0200, Paul Johnson wrote: <br> &gt; It certainly makes more sense to me that the answer would be 2 2. &nbsp;But <br> &gt; however it ends up, so long as we know what the answer will be, we can <br> &gt; utilize it effectively in our programs. <br> <br></div>The trick with this construct usually in C is that the C standard doesn't <br> specify the order of evaluation of function arguments, so you can never be <br> sure if you'll get the same result if you compile it other than on your <br> development system (different compilers may evaluate them in a different <br> order). The Pugs example given in the original post seems to me to be <br> fairly sane, as it shows left-to-right evaluation. The Perl 5 example, as <br> far as I can tell, shows left-to-right for the first case and <br> right-to-left for the second case, which is just odd... please correct me <br> if I'm wrong, but that seems the only way those answers could have been <br> arrived at. <br> So really, what needs to be said is how Perl 6 is supposed to evaluate the <br> arguments to function calls, then we can know if the current behaviour in <br> Pugs is correct. <br>
+  <p>
+  <a class="on" href="#" onclick="return rl('3861d4ac46a0cc8f');" id="lo3861d4ac46a0cc8f"><script language="javascript1.2">
+  <!--
+    document.write("<img id=ti3861d4ac46a0cc8f border=0 src=\"/img/r.gif\" height=11 width=11 alt=\"\">");
+  //-->
+</script><img id="ti3861d4ac46a0cc8f" src="6aabbd159cd813d9_files/r.gif" alt="" border="0" height="11" width="11">Reply</a>
+  </p><form action="/group/perl.perl6.compiler/post" name="postform" method="post">
+  <table style="display: none;" id="r3861d4ac46a0cc8f" border="0" cellpadding="1" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td colspan="2">
+  <input name="WebToken" value="f63d00826b8519edd39f30dd71536ad7" type="hidden">
+  <input name="_done" value="/group/perl.perl6.compiler/browse_thread/thread/6aabbd159cd813d9" type="hidden">
+  <input name="quickreply" value="1" type="hidden">
+  <input name="_doneTitle" value="Back to thread" type="hidden">
+  <input name="minreplyto" value="38546.212.44.43.80.1114090132.squirrel@www.wonky.org.uk" type="hidden">
+  <input name="inreplyto" value="3861d4ac46a0cc8f" type="hidden">
+  <input name="noheader" value="" type="hidden">
+  <input name="subject" value="Re: weird thing with say ++$" type="hidden">
+  <input name="orig_charset" value="" type="hidden">
+  <input name="about_docid" value="" type="hidden">
+  <input name="usenet_groups_to" value="perl.perl6.compiler" type="hidden">
+  <textarea cols="80" name="body" id="t3861d4ac46a0cc8f" rows="10" class="qr"></textarea>
+  </td>
+  </tr>
+  <tr>
+  <td>
+  <input name="rst" value="Cancel" onclick="c('3861d4ac46a0cc8f');" type="reset"></td><td align="right">
+  <input name="Action.Preview" value="Preview" type="submit"> &nbsp;
+  <input class="p" name="Action.Post" value="&nbsp; Post &nbsp;" title="Post without previewing" type="submit">
+  </td>
+  </tr>
+  </tbody></table>
+  </form>
+  </div>
+  </td>
+  </tr>
+  </tbody></table>
+  <a name="279794d7671e87e9" id="anchor_279794d7671e87e9"></a>
+  <br>
+  <!-- <a name="d279794d7671e87e9"></a> -->
+  <table border="0" cellpadding="0" cellspacing="0">
+  <tbody><tr>
+  <td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" height="1" width="2"></td>
+  <td width="100%">
+  <table class="mo" id="hdropened279794d7671e87e9" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td title="John Macdonald &lt;j...@perlwolf.com&gt;" class="oa" bgcolor="#d66103" nowrap="nowrap" width="1%"><b><font color="#ffffff">John Macdonald</font></b></td>
+  <td>&nbsp; Apr 21, 7:12&nbsp;am &nbsp; &nbsp; <span class="noscripthide"><a href="#" id="o279794d7671e87e9" onclick="return op('279794d7671e87e9');" class="f">show options</a></span></td>
+  </tr>
+  </tbody></table>
+  <div id="h279794d7671e87e9" class="scripthide">
+  <table bgcolor="#e8e8e8" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr><td>Newsgroups: <b>perl.perl6.compiler</b></td></tr>
+  <tr><td>From: <b>j...@perlwolf.com (John Macdonald)</b> - <a href="http://groups-beta.google.com/groups?enc_author=WLrphBEAAADxs2um7nwokhU4pm7I7K9AkdEasx1kiYTQavV7mdW13Q" target="_top">Find messages by this author</a> </td></tr>
+  <tr><td>Date: <b>Thu, 21 Apr 2005 10:12:51 -0400</b></td></tr>
+  <tr><td>Local: <b>Thurs,Apr 21 2005 7:12&nbsp;am
+</b> </td></tr>
+  <tr><td>Subject: <b>Re: [pugs]weird thing with say ++$</b></td></tr>
+  <tr>
+  <td class="ar"><font size="-1">
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=279794d7671e87e9&amp;reply_to=group&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply</a> |
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=279794d7671e87e9&amp;reply_to=author&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply to Author</a>
+  | <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=279794d7671e87e9&amp;forward=1&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Forward</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/279794d7671e87e9?dmode=print">Print</a>
+  | <a href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/279794d7671e87e9" target="_parent">Individual Message</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/279794d7671e87e9?dmode=source">Show original</a>
+  | <a target="_blank" href="http://groups-beta.google.com/groups/abuse?group=perl.perl6.compiler&amp;url=http:%2F%2Fgroups-beta.google.com%2Fgroup%2Fperl.perl6.compiler%2Fmsg%2F279794d7671e87e9">Report Abuse</a>
+  </font></td>
+  </tr>
+  </tbody></table>
+  </div>
+  <div class="mbody" id="mbody279794d7671e87e9">
+  <p>
+  <a name="msg_279794d7671e87e9"></a></p><p></p><p><a class="qt" href="http://groups-beta.google.com/group/perl.perl6.compiler/browse_thread/thread/6aabbd159cd813d9?hide_quotes=no#msg_279794d7671e87e9" onclick="return tog_quote(32389); "><div id="qheader_shown_32389" style="display: none;">- Hide quoted text -</div><div id="qheader_hidden_32389" style="display: block;">- Show quoted text -</div></a></p><div id="qhide_32389" style="display: none;" class="qt">On Thu, Apr 21, 2005 at 02:28:52PM +0100, Matthew Walton wrote: <br> &gt; &gt; On Thu, Apr 21, 2005 at 11:45:27AM +0200, Paul Johnson wrote: <br> <p>&gt; &gt; It certainly makes more sense to me that the answer would be 2 2. &nbsp;But <br> &gt; &gt; however it ends up, so long as we know what the answer will be, we can <br> &gt; &gt; utilize it effectively in our programs. <br> </p><p>&gt; The trick with this construct usually in C is that the C standard doesn't <br> &gt; specify the order of evaluation of function arguments, so you can never be <br> &gt; sure if you'll get the same result if you compile it other than on your <br> &gt; development system (different compilers may evaluate them in a different <br> &gt; order). The Pugs example given in the original post seems to me to be <br> &gt; fairly sane, as it shows left-to-right evaluation. The Perl 5 example, as <br> &gt; far as I can tell, shows left-to-right for the first case and <br> &gt; right-to-left for the second case, which is just odd... please correct me <br> &gt; if I'm wrong, but that seems the only way those answers could have been <br> &gt; arrived at. <br> &gt; So really, what needs to be said is how Perl 6 is supposed to evaluate the <br> &gt; arguments to function calls, then we can know if the current behaviour in <br> &gt; Pugs is correct. <br> <br></p></div>That "trick" in the C language is not an accident, but <br> deliberate. &nbsp;Leaving the result undefined allows compiler <br> writers to choose the definition that fits best for that <br> compiler's internal structure and/or the target hardware <br> architechture. &nbsp;Thus, when people write code that doesn't <br> happen to care about the abiguity in the spec, it is processed <br> (run/compiled) in the best way the compiler writer can provide. <br> <p>In C, at least, you can't always tell whether a particular <br> statement is ambiguous (e.g. "i = *p1++ + *p2++" - do p1 and p2 <br> always point to different memory locations?) and the cost of <br> treating it in an ambiguity-safe manner might be significant, <br> since C tends to get used for low level critical operations. <br> </p><p>The approach is: make the programmer handle the rare tough cases <br> himself and let the compiler do the common job really well. <br> That is similar to "easy things should be easy, hard things <br> should be possible" but C puts more emphasis on run time speed <br> than programmer utility in how it applies its philosophy. <br> </p><p>-- <br>
+  </p><p>
+  <a class="on" href="#" onclick="return rl('279794d7671e87e9');" id="lo279794d7671e87e9"><script language="javascript1.2">
+  <!--
+    document.write("<img id=ti279794d7671e87e9 border=0 src=\"/img/r.gif\" height=11 width=11 alt=\"\">");
+  //-->
+</script><img id="ti279794d7671e87e9" src="6aabbd159cd813d9_files/r.gif" alt="" border="0" height="11" width="11">Reply</a>
+  </p><form action="/group/perl.perl6.compiler/post" name="postform" method="post">
+  <table style="display: none;" id="r279794d7671e87e9" border="0" cellpadding="1" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td colspan="2">
+  <input name="WebToken" value="f63d00826b8519edd39f30dd71536ad7" type="hidden">
+  <input name="_done" value="/group/perl.perl6.compiler/browse_thread/thread/6aabbd159cd813d9" type="hidden">
+  <input name="quickreply" value="1" type="hidden">
+  <input name="_doneTitle" value="Back to thread" type="hidden">
+  <input name="minreplyto" value="20050421141251.GA11278@lupus.perlwolf.com" type="hidden">
+  <input name="inreplyto" value="279794d7671e87e9" type="hidden">
+  <input name="noheader" value="" type="hidden">
+  <input name="subject" value="Re: weird thing with say ++$" type="hidden">
+  <input name="orig_charset" value="" type="hidden">
+  <input name="about_docid" value="" type="hidden">
+  <input name="usenet_groups_to" value="perl.perl6.compiler" type="hidden">
+  <textarea cols="80" name="body" id="t279794d7671e87e9" rows="10" class="qr"></textarea>
+  </td>
+  </tr>
+  <tr>
+  <td>
+  <input name="rst" value="Cancel" onclick="c('279794d7671e87e9');" type="reset"></td><td align="right">
+  <input name="Action.Preview" value="Preview" type="submit"> &nbsp;
+  <input class="p" name="Action.Post" value="&nbsp; Post &nbsp;" title="Post without previewing" type="submit">
+  </td>
+  </tr>
+  </tbody></table>
+  </form>
+  </div>
+  </td>
+  </tr>
+  </tbody></table>
+  <a name="caa845150642f987" id="anchor_caa845150642f987"></a>
+  <br>
+  <!-- <a name="dcaa845150642f987"></a> -->
+  <table border="0" cellpadding="0" cellspacing="0">
+  <tbody><tr>
+  <td><img src="6aabbd159cd813d9_files/dot_clear_002.gif" height="1" width="2"></td>
+  <td width="100%">
+  <table class="mo" id="hdropenedcaa845150642f987" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td title="Steven Philip Schubiger &lt;ste...@accognoscere.org&gt;" class="oa" bgcolor="#512dbd" nowrap="nowrap" width="1%"><b><font color="#ffffff">Steven Philip Schubiger</font></b></td>
+  <td>&nbsp; Apr 23, 10:03&nbsp;pm &nbsp; &nbsp; <span class="noscripthide"><a href="#" id="ocaa845150642f987" onclick="return op('caa845150642f987');" class="f">show options</a></span></td>
+  </tr>
+  </tbody></table>
+  <div id="hcaa845150642f987" class="scripthide">
+  <table bgcolor="#e8e8e8" border="0" cellpadding="2" cellspacing="0" width="100%">
+  <tbody><tr><td>Newsgroups: <b>perl.perl6.compiler</b></td></tr>
+  <tr><td>From: <b>ste...@accognoscere.org (Steven Philip Schubiger)</b> - <a href="http://groups-beta.google.com/groups?enc_author=cglgNRcAAADahZMidK39s50G6-ZEgsv-MpjDDXOogeXwC9kdqX4YwQ" target="_top">Find messages by this author</a> </td></tr>
+  <tr><td>Date: <b>Sun, 24 Apr 2005 07:03:14 +0200 (CEST)</b></td></tr>
+  <tr><td>Local: <b>Sat,Apr 23 2005 10:03&nbsp;pm
+</b> </td></tr>
+  <tr><td>Subject: <b>Re: [pugs]weird thing with say ++$</b></td></tr>
+  <tr>
+  <td class="ar"><font size="-1">
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=caa845150642f987&amp;reply_to=group&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply</a> |
+  <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=caa845150642f987&amp;reply_to=author&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Reply to Author</a>
+  | <a target="_top" href="http://groups-beta.google.com/group/perl.perl6.compiler/post?inreplyto=caa845150642f987&amp;forward=1&amp;_done=%2Fgroup%2Fperl.perl6.compiler%2Fbrowse_thread%2Fthread%2F6aabbd159cd813d9%3F&amp;">Forward</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/caa845150642f987?dmode=print">Print</a>
+  | <a href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/caa845150642f987" target="_parent">Individual Message</a>
+  | <a target="_blank" href="http://groups-beta.google.com/group/perl.perl6.compiler/msg/caa845150642f987?dmode=source">Show original</a>
+  | <a target="_blank" href="http://groups-beta.google.com/groups/abuse?group=perl.perl6.compiler&amp;url=http:%2F%2Fgroups-beta.google.com%2Fgroup%2Fperl.perl6.compiler%2Fmsg%2Fcaa845150642f987">Report Abuse</a>
+  </font></td>
+  </tr>
+  </tbody></table>
+  </div>
+  <div class="mbody" id="mbodycaa845150642f987">
+  <p>
+  <a name="msg_caa845150642f987"></a>On 21 Apr, <br> </p><p></p><div id="qhide_32390" style="display: block;" class="qt">fayland wrote: <br> : It has been published at perl6.language, but have no reply <br> <br></div>. <br> <p>That was to be expected, as it's no language-design specific issue, <br> and therefore, unsuitable for p6l. <br> </p><p>: <br> </p><p></p><div id="qhide_32391" style="display: block;" class="qt">In perl v5.8.6 built for MSWin32-x86-multi-thread: <br> : <br> : my $i = 1; <br> : print $i++, ++$i; # 1 3 <br> : my $i = 1; <br> : print ++$i, $i++; # 3 2 <br> <br></div>You're misleaded here, by thinking, scalar context is being enforced, <br> which is not the case; the results of the increment operator operations (ops) <br> on the scalar are being passed in (implicit) array context to the print builtin. <br> <p>Every Perl program, that gets compiled and interpreted, will be <br> converted to a syntax tree initially. The following is a selected excerpt <br> from the output of the core module B::Terse, which displays, what syntax <br> tree we actually got hold of. <br> </p><p>&nbsp; &nbsp; LISTOP (0x3c013760) print <br> &nbsp; &nbsp; &nbsp; &nbsp; OP (0x3c013780) pushmark <br> &nbsp; &nbsp; &nbsp; &nbsp; UNOP (0x3c013700) postinc [2] <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OP (0x3c0136e0) padsv [1] <br> &nbsp; &nbsp; &nbsp; &nbsp; UNOP (0x3c013740) preinc <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OP (0x3c013720) padsv [1] <br> </p><p>So, LISTOP indicates, that a list context is being encountered, which is <br> not, what we actually want. The syntax trees for the two examples, <br> provided above, don't differ that much, except, as you'd assume, in case <br> of the ordering of the UNOPs. I don't see any way to explain, what's <br> going wrong *exactly* by examining the syntax tree; that'd require <br> digging into the internals, I'd assume. <br> </p><p>&nbsp; &nbsp; &nbsp; &nbsp; my $i = 1; <br> </p><p>and either <br> </p><p>&nbsp; &nbsp; &nbsp; &nbsp; print $i++; print ++$i; <br> or <br> &nbsp; &nbsp; &nbsp; &nbsp; print ++$i; print $i++; <br> </p><p>does what you assumed, it was supposed to do, but without <br> having the compiler struggling against implicit assumptions. <br> </p><p>: <br> </p><p></p><div id="qhide_32392" style="display: block;" class="qt">in pugs: <br> : <br> : my $i = 1; <br> : say $i++, ++$i; # 1 3 <br> : <br> : my $i = 1; <br> : say ++$i, $i++; # 2 2 <br> <br></div>This leads me to think, Pugs has implemented the behaviour, that has <br> been outlayed in Apocalypse 03: Operators, RFC 082 - Arrays: Apply <br> operators element-wise in a list context, <br> <a target="_blank" href="http://dev.perl.org/perl6/doc/design/apo/A03.html">http://dev.perl.org/perl6/doc/<wbr>design/apo/A03.html</a> <br> <p>: <br> </p><div id="qhide_32393" style="display: block;" class="qt">which is right?(I think perl5 is) or it's different between Perl5 and <br> Perl6 <br> <br></div>? <br> <p>I'm not inclined to think, that Perl 5 is wrong here, as letting it <br> assume array context, is in this context, like assuming, filling your <br> fridge with food, it consists of, by randomly throwing some of it in, <br> will come out sorted again; Perl 6 does, what the specifications urge <br> upon it to do. <br> </p><p>: /Fayland Lam/ <br> </p><p>Steven <br>
+  </p><p>
+  <a class="on" href="#" onclick="return rl('caa845150642f987');" id="locaa845150642f987"><script language="javascript1.2">
+  <!--
+    document.write("<img id=ticaa845150642f987 border=0 src=\"/img/r.gif\" height=11 width=11 alt=\"\">");
+  //-->
+</script><img id="ticaa845150642f987" src="6aabbd159cd813d9_files/r.gif" alt="" border="0" height="11" width="11">Reply</a>
+  </p><form action="/group/perl.perl6.compiler/post" name="postform" method="post">
+  <table style="display: none;" id="rcaa845150642f987" border="0" cellpadding="1" cellspacing="0" width="100%">
+  <tbody><tr>
+  <td colspan="2">
+  <input name="WebToken" value="f63d00826b8519edd39f30dd71536ad7" type="hidden">
+  <input name="_done" value="/group/perl.perl6.compiler/browse_thread/thread/6aabbd159cd813d9" type="hidden">
+  <input name="quickreply" value="1" type="hidden">
+  <input name="_doneTitle" value="Back to thread" type="hidden">
+  <input name="minreplyto" value="200504240503.j3O53E3C019942@accognoscere.homeunix.org" type="hidden">
+  <input name="inreplyto" value="caa845150642f987" type="hidden">
+  <input name="noheader" value="" type="hidden">
+  <input name="subject" value="Re: weird thing with say ++$" type="hidden">
+  <input name="orig_charset" value="" type="hidden">
+  <input name="about_docid" value="" type="hidden">
+  <input name="usenet_groups_to" value="perl.perl6.compiler" type="hidden">
+  <textarea cols="80" name="body" id="tcaa845150642f987" rows="10" class="qr"></textarea>
+  </td>
+  </tr>
+  <tr>
+  <td>
+  <input name="rst" value="Cancel" onclick="c('caa845150642f987');" type="reset"></td><td align="right">
+  <input name="Action.Preview" value="Preview" type="submit"> &nbsp;
+  <input class="p" name="Action.Post" value="&nbsp; Post &nbsp;" title="Post without previewing" type="submit">
+  </td>
+  </tr>
+  </tbody></table>
+  </form>
+  </div>
+  </td>
+  </tr>
+  </tbody></table>
+<br>
+<table style="border-top: 1px solid rgb(254, 231, 153);" border="0" cellpadding="2" cellspacing="0">
+  <tbody><tr>
+  <td style="padding: 6px 2px;" width="100%">
+  <b>End of messages</b>
+  </td>
+  <td width="1">&nbsp;</td>
+  </tr>
+  <tr><td colspan="2">
+<a class="st" id="watch2076573_6aabbd159cd813d9" name="watch2076573_6aabbd159cd813d9" value="1" href="http://groups-beta.google.com/group/perl.perl6.compiler/watch_topic?tid=6aabbd159cd813d9&amp;oldstate=1" onclick="return toggle_watch('watch2076573_6aabbd159cd813d9');"><img class="stimg" id="watch2076573_6aabbd159cd813d9_img" name="watch2076573_6aabbd159cd813d9_img" src="6aabbd159cd813d9_files/watched_y.gif" align="middle" border="0" height="18" width="18"></a> <a href="http://groups-beta.google.com/group/perl.perl6.compiler/watch_topic?tid=6aabbd159cd813d9" class="q" onclick="return toggle_watch('watch2076573_6aabbd159cd813d9');">watch this topic</a>
+</td></tr>
+</tbody></table>
+
+<br>
+<table id="bottom_marker" border="0" cellpadding="2" cellspacing="0">
+<tbody><tr>
+<td class="f">
+<a class="fl" href="http://groups-beta.google.com/group/perl.perl6.compiler/browse_thread/thread/a5bcc32e98f43523">« Newer &nbsp;-&nbsp; Pugs 6.2.1 released</a>
+</td>
+<td width="15">&nbsp;</td>
+<td class="f">
+<a class="fl" href="http://groups-beta.google.com/group/perl.perl6.compiler/browse_thread/thread/fd1d660f04daa434">Test.pm &amp; t/force_todo refactoring idea &nbsp;-&nbsp; Older »</a>
+</td>
+</tr>
+</tbody></table>
+<br clear="all">
+<script language="javascript1.2"><!--
+var d = "";	//declare d as a global variable
+var t = 80;
+var p = 0;
+
+function getObjects() {
+  d = document.getElementById( 'topicfloat' );
+  t = document.getElementById( 'ln' ).offsetTop + 20;
+}
+loaddef += "getObjects(); ";
+
+
+if( !is_ie ) {
+	loaddef += "window.setInterval( 'mozFloat()', 100 ); ";
+} else {
+    loaddef += "document.body.onscroll = ieFloat; ";
+    loaddef += "ieFloat(); ";
+}
+
+function ieFloat() {
+	g = window.document.body.scrollTop;
+	d.style.top = g;
+	if( g > t ) {
+		d.style.display="block";
+	} else {
+		d.style.display = "none";
+	}
+}
+function mozFloat() {
+  g = window.pageYOffset;
+  if( g!=p ) {
+	 d.style.top = g;
+		if( g > t ) {
+		d.style.display="block";
+		} else {
+		d.style.display = "none";
+		}
+	 p = g;
+	}
+}
+if( is_ie == true ) {
+	resizedef += "ieFloat();";
+} else {
+	resizedef += "mozFloat(); ";
+}
+//-->
+</script>
+<div style="border-left: 1px solid rgb(255, 204, 51); border-bottom: 1px solid rgb(255, 204, 51); padding: 3px; background: rgb(255, 244, 194) none repeat scroll 0%; position: absolute; right: 0pt; z-index: 3; float: right; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial; cursor: pointer; top: 0pt; display: none;" id="topicfloat" onclick="window.scrollTo(0,0);"><strong>&nbsp;Topic:&nbsp;weird thing with say ++$</strong> - <a href="javascript:;" style="color: rgb(0, 0, 204);">go to top</a></div>
+<br clear="all">
+<table style="margin-right: -5px;" bgcolor="#fff4c2" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tbody><tr><td bgcolor="#ffcc33"><img src="6aabbd159cd813d9_files/dot_clear_002.gif" height="1"></td></tr>
+<tr><td>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+</table>
+<table align="center" width="80%">
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tbody><tr valign="top">
+<td colspan="2" align="center" valign="bottom">
+<table class="sbox" cellpadding="0" cellspacing="0">
+<form action="/groups"></form>
+<tbody><tr><td>
+<input name="q" value="" size="31" type="text">&nbsp;<input name="Submit3" value="Search" type="submit"></td>
+</tr>
+<tr><td></td>
+<td colspan="2">
+</td></tr>
+</tbody></table>
+</td>
+
+</tr>
+</tbody></table>
+</td></tr>
+</tbody></table>
+<table cellpadding="0" cellspacing="0" width="100%">
+<tbody><tr><td bgcolor="#ffcc33"><img src="6aabbd159cd813d9_files/dot_clear.gif" height="1"></td></tr>
+</tbody></table>
+<table border="0" cellpadding="4" cellspacing="0" width="100%">
+  <tbody><tr valign="center">
+  <td style="padding-right: 1em;" align="center">
+  <a href="http://www.google.com/">Google Home</a> -
+  <a href="http://groups-beta.google.com/googlegroups/terms_of_service.html">Terms of Use</a> -
+  <a href="http://www.google.com/privacy.html">Privacy Policy</a> -
+  <a href="http://www.google.com/about.html">Jobs, Press, &amp; Help</a></td>
+  </tr>
+</tbody></table>
+<p align="center"><font size="-2">©2005 Google</font></p>
+<script language="javascript"><!--
+
+if( loaddef != "" ) {
+  window.onload=new Function( loaddef );
+}
+if( resizedef != "" ) {
+  window.onresize = new Function( resizedef );
+}
+//--></script>
+</body></html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>检测中国的假期模块</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="birthday_18.html">Happy 18th birthday, Perl</a>&nbsp;&nbsp;>>Next: <a href="CPAN_Contributor.html">写模块给 CPAN 要注意的地方</a></p>
+<h1>检测中国的假期模块</h1>
+<div class='content'>
+<p>Category: <a href='MyCPAN.html'>MyCPAN</a> &nbsp; Keywords: <b>CPAN holiday date</b></p>前几天看 use.perl 的时候看到 <a href='http://use.perl.org/~jonasbn/'>jonasbn</a> 写了个 journal: <a href='http://use.perl.org/~jonasbn/journal/28046'>Date::Holidays::* - coming to your country?</a>.<br />觉得我也可以参加，就琢磨着写了个 <a href="http://search.cpan.org/perldoc?Date::Holidays::CN">Date::Holidays::CN</a><h3>perldoc</h3>目前应该可以在 CPAN 上找到。找不到的话可以访问 <a href="http://www.fayland.org/CPAN/">http://www.fayland.org/CPAN/</a><br /><pre>use Date::Holidays::CN;<p />my ($year, $month, $day) = (localtime)[ 5, 4, 3 ];<br />$year  += 1900;<br />$month += 1;<br />if (my $holidayname = is_cn_holiday( $year, $month, $day )) {<br />    print "这是个 $holidayname";<br />}<br />    <br />my $h = cn_holidays($year);<br />printf "10 月 1 日是 '%s'\n", $h->{'1001'};<br /></pre>上面这一段代码是为了符合 <a href="http://search.cpan.org/perldoc?Date::Holidays">Date::Holidays</a> 的 API 而写的。<br /><pre># suggested<br />use Date::Holidays::CN qw/is_cn_solar_holiday is_cn_lunar_holiday/;<br />my $holidayname = is_cn_solar_holiday( 2005, 10, 1 ); # $day = '国庆节'<br />my $is_holiday = is_cn_lunar_holiday( 2005, 9, 18 ); # $day = '中秋节'</pre>这一段我比较推荐。因为中国的特殊国情。:-)<h3>瑕疵</h3>目前 cn_holidays 里没有阴历的日子。打算下一版本加进去。<br />另外因为采用了 <a href="http://search.cpan.org/perldoc?DateTime::Calendar::Chinese">DateTime::Calendar::Chinese</a> 所以这速度实在是有点不可忍受。不过我找不到另外的处理阴历的模块，只好忍忍了。<h3>过程</h3>在写的过程中碰到了很奇怪的问题。这问题我发到了 <a href="http://www.perlchina.org">PerlChina</a>/BBS 和 PerlChina/Maillist 上了。<br />后来用 from_object 代替了 from_epoch, 没想到就搞定了。<br /><pre>my $dt2 = DateTime->new(<br /> &nbsp; &nbsp;year   => $year,<br /> &nbsp; &nbsp;month  => $month,<br /> &nbsp; &nbsp;day    => $day,<br /> &nbsp; &nbsp;hour   => 0,<br /> &nbsp; &nbsp;minute => 0,<br /> &nbsp; &nbsp;second => 0,<br /> &nbsp; &nbsp;nanosecond => 500000000,<br /> &nbsp; &nbsp;time_zone => 'Asia/Shanghai',<br />);<br /># ouch! the DateTime::Calendar::Chinese is a bit too slow!<br />my $dt = DateTime::Calendar::Chinese->from_object(object => $dt2);<br />return $LUNAR->{sprintf "%02d%02d", $dt->month, $dt->day};</pre>如果诸位以后有机会用到这 <a href="http://search.cpan.org/perldoc?DateTime::Calendar::Chinese">DateTime::Calendar::Chinese</a> 模块的话，小心用 from_object 可能比较好。<h3>Enjoy!</h3>如果有任何问题，可以联系我。比如说要增加某一节日。:-><br />my mail: fayland at gmail.com</div>
+<p><&lt;Previous: <a href="birthday_18.html">Happy 18th birthday, Perl</a>&nbsp;&nbsp;>>Next: <a href="CPAN_Contributor.html">写模块给 CPAN 要注意的地方</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E6%A3%80%E6%B5%8B%E4%B8%AD%E5%9B%BD%E7%9A%84%E5%81%87%E6%9C%9F%E6%A8%A1%E5%9D%97&url=http://www.fayland.org/journal/Date_Holidays_CN.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Module_Build.html'>用Module::Build制作CPAN模块包</a> < <span class='digit'>2004-12-16 18:59:50</span> ></li><li><a href='050315.html'>rt.cpan.org: Bug</a> < <span class='digit'>2005-03-15 22:18:50</span> ></li><li><a href='minicpan.html'>如何用 minicpan 映像自己的 CPAN</a> < <span class='digit'>2005-04-07 22:14:38</span> ></li><li><a href='CPAN_update.html'>CPAN RSS updated</a> < <span class='digit'>2005-11-13 20:58:31</span> ></li><li><a href='CPANPLUS_Tester.html'>be a CPANPLUS Tester</a> < <span class='digit'>2005-12-09 16:35:07</span> ></li><li><a href='CPAN_Contributor.html'>写模块给 CPAN 要注意的地方</a> < <span class='digit'>2005-12-21 14:14:33</span> ></li></ul>
+Created on <span class="digit">2005-12-20 15:00:51</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

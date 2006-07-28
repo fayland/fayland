@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Synopsis 1 / 纲要一</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="050307.html">The project of Synopsis localization</a>&nbsp;&nbsp;>>Next: <a href="050308.html">weird thing with nmake pugs</a></p>
+<h1>Synopsis 1 / 纲要一</h1>
+<div class='content'>
+<p>Category: <a href='Translation.html'>Translation</a> &nbsp; Keywords: <b>Synopsis</b></p>English version: <a href='http://dev.perl.org/perl6/synopsis/S01.html'>http://dev.perl.org/perl6/synopsis/S01.html</a><br>
+繁体版本：<a href='http://svn.openfoundry.org/p6l10n/zh_tw/S01.pod'>http://svn.openfoundry.org/p6l10n/zh_tw/S01.pod</a><br>
+本简体版本参考了 plasma 翻译的繁体版本。它将列于 <a href='http://svn.openfoundry.org/p6l10n/zh_cn/S01.pod'>http://svn.openfoundry.org/p6l10n/zh_cn/S01.pod</a><p>
+
+<h2><a name="title">TITLE</a></h2>
+<p>纲要一：概述</p>
+<p>
+</p>
+
+<h2><a name="author">AUTHOR</a></h2>
+<p>Larry Wall <<a href="mailto:larry@wall.org">larry@wall.org</a>></p>
+<p>
+</p>
+
+<h2><a name="version">VERSION</a></h2>
+<pre>
+  Maintainer: Luke Palmer <luke@luqui.org>
+  Date: 10 Aug 2004
+  Last Modified: 18 Aug 2004
+  Number: 1
+  Version: 0</pre>
+<p>This document summarizes Apocalypse 1, which covers the initial
+design concept.  (These Synopses also contain updates to reflect
+the evolving design of Perl 6 over time, unlike the Apocalypses,
+which are frozen in time as ``historical documents''.  These updates are
+not marked--if a Synopsis disagrees with its Apocalypse, assume the
+Synopsis is correct.)</p>
+<p>这份文档是对涵盖了最初设计概念的启示录一的总结。（这些纲要还会更新，以
+反映随着时间而演变的 Perl 6 设计，这不同与做为“历史文献”的启示录，它们
+已被冻结而不再更新。这些更新不会被标出来——如果纲要与启示录有所抵触，请
+以纲要为准。）</p>
+<p>The other basic assumption is that if we don't talk about something in these
+Synopses, it's the same as it was in Perl 5.</p>
+<p>另一个基本假设为，如果某样东西没有在这些纲要中提起，那就跟 Perl 5 中是一样的。</p>
+
+<h2>Random Thoughts / 随想</h2>
+<ul>
+<li></li>
+The word ``apocalypse'' historically meant merely ``a revealing'',
+and we're using it in that unexciting sense.
+<p>“启示录”的原来意思仅为“揭示”，而我们用的就是这个不让人激动的意思。</p>
+<p></p>
+<li></li>
+If you ask for RFCs from the general public, you get a lot of
+interesting but contradictory ideas, because people tend to stake
+out polar positions, and none of the ideas can build on each other.
+<p>如果你向一般公众请求 RFCs, 你会得到一堆有趣却相互抵触的主意，这是因为
+每个人的立足点都不相同，而且这些主意都没办法互为基石。</p>
+<p></p>
+<li></li>
+Larry's First Law of Language Redesign: Everyone wants the colon.
+<p>Larry 语言重设计第一定律：人人都要冒号。</p>
+<p></p>
+<li></li>
+RFCs are rated on ``PSA'': whether they point out a real Problem,
+whether they present a viable Solution, and whether that solution is
+likely to be Accepted as part of Perl 6.
+<p>``PSA'' 是用来评价 RFCs 的工具：他们是否找出了实际存在的问题（Problem），
+他们是否给出了可行性解答方案（Solution），还有这个方案能不能被接受为
+Perl 6 的一部分。</p>
+<p></p>
+<li></li>
+Languages should be redesigned in roughly the same order as you would
+present the language to a new user.
+<p>语言重设计的顺序大致上应当与将该语言介绍给新用户的顺序一样。</p>
+<p></p>
+<li></li>
+Perl 6 should be malleable enough that it can evolve into the imaginary
+perfect language, Perl 7.  This darwinian imperative implies support
+for multiple syntaxes above and and multiple platforms below.
+<p>Perl 6 应当有足够的可延展性，这样它可以进一步进化成想像中的完美语言， Perl 7.
+这种达尔文天命暗示着对上要支持多语法，对下要支持多平台。</p>
+<p></p>
+<li></li>
+Many details may change, but the essence of Perl will remain unchanged.
+Perl will continue to be a multiparadigmatic, context-sensitive
+language.  We are not turning Perl into any other existing language.
+<p>许多细节或许会改变，但 Perl 的本质不会有任何变化。Perl 仍然是多例证的，
+上下文相关的语言。我们不会把 Perl 变成现有的其他语言。</p>
+<p></p>
+<li></li>
+Migration is important.  The perl interpreter will assume that it
+is being fed Perl 5 code unless the code starts with a ``class'' or
+``module'' keyword, or you specifically tell it you're running Perl 6
+code in some other way, such as by:
+<p>移植是非常重要的。perl 解释器会假设它所收到的是 Perl 5 代码，除非代码以
+``class'' 或 ``module'' 关键字开始，或者你用其它方式明确地告诉它你要运行
+Perl 6 代码：</p>
+<pre>
+    #!/usr/bin/perl6
+    use v6.0;
+    v6;</pre>
+<p></p>
+<li></li>
+Scaling is one of those areas where Perl needs to be multiparadigmatic
+and context sensitive.  Perl 5 code is not strict by default, while
+Perl 6 code is.   But it should be easy to relax with <code>-e</code> or maybe
+even a bare version number:
+<p>延展性是另一个 Perl 为什么要是多例证和上下文相关的地方。Perl 5 代码默认并非
+语法严格的，不过 Perl 6 是。但是你可以很简单地用 <code>-e</code> 来关闭它，或者仅仅用
+一个单纯的版本号：</p>
+<pre>
+    perl -e '$x = 1'</pre>
+<pre>
+    #!/usr/bin/perl -e
+    $x = 1;</pre>
+<pre>
+    #!/usr/bin/perl
+    v6; $x = 1;</pre>
+<p></p>
+<li></li>
+It must be possible to write policy metamodules that invoke other
+modules on the user's behalf.
+<p>应该可以写策略超模块，它可以根据用户的需求调用其它模块。</p>
+<p></p>
+<li></li>
+If you want to treat everything as objects in Perl 6, Perl will help
+you do that.  If you don't want to treat everything as objects, Perl
+will help you with that viewpoint as well.
+<p>如果你想要将 Perl 6 的每样东西都视为对象，Perl 会帮你做到。如果你不想
+如此，Perl 也会依你。</p>
+<p></p>
+<li></li>
+Operators are just functions with funny names and syntax.
+<p>操作符只是有着有趣名字和语法的函数。</p>
+<p></p>
+<li></li>
+Language designers are still necessary to synthesize unrelated ideas
+into a coherent whole.
+<p>语言设计者还是需要将一些没有关联的主意综合成一个一致的整体。</p>
+</ul></div>
+<p><&lt;Previous: <a href="050307.html">The project of Synopsis localization</a>&nbsp;&nbsp;>>Next: <a href="050308.html">weird thing with nmake pugs</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Synopsis%201%20/%20%E7%BA%B2%E8%A6%81%E4%B8%80&url=http://www.fayland.org/journal/Synopsis1.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='050307.html'>The project of Synopsis localization</a> < <span class='digit'>2005-03-07 22:55:26</span> ></li><li><a href='Synopsis13.html'>Synopsis 13: 重载</a> < <span class='digit'>2005-03-09 20:53:09</span> ></li><li><a href='Synopsis10.html'>纲要十：包</a> < <span class='digit'>2005-03-12 16:31:57</span> ></li><li><a href='Synopsis11.html'>纲要十一：模块</a> < <span class='digit'>2005-03-14 15:32:36</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li></ul>
+Created on <span class="digit">2005-03-08 00:11:40</span>, Last modified on <span class="digit">2005-03-08 10:38:54</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

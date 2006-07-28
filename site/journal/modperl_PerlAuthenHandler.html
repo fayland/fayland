@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>modperl 的用户验证</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="prototype_FormSubmit.html">用 prototype 来写 Ctrl+Enter 提交表单</a>&nbsp;&nbsp;>>Next: <a href="ShareURL0511.html">Share the URLs (November 2005)</a></p>
+<h1>modperl 的用户验证</h1>
+<div class='content'>
+<p>Category: <a href='mod_perl.html'>mod_perl</a> &nbsp; Keywords: <b>PerlAuthenHandler apache modperl</b></p><ul>如果不用 <a href="http://perl.apache.org">modperl</a> 的话，我们也可以这么做：<br /><li>修改 httpd.conf<br /><pre>Alias /t/ "E:/Fayland/t/"<br />&lt;Directory "E:/Fayland/t"><br />    AllowOverride AuthConfig<br />    Options Indexes MultiViews<br />    Order allow,deny<br />    Allow from all<br />&lt;/Directory></pre><li>在 E:/Fayland/t 目录下创建 .htaccess 文件<br /><pre>AuthName "Fayland's Test WebSite"<br />AuthType Basic<br />AuthUserFile E:/Fayland/t/.htpasswd<br />require valid-user</pre><li>用 Apache 的 htpasswd 命令创建用户名和密码（第一次需要 -c 开关）<br /><pre>$> htpasswd -c E:/Fayland/t/.htpasswd fayland<br />$> htpasswd E:/Fayland/t/.htpasswd hi</pre>这样就可以了，访问 http://localhost/t 时会弹出这样的窗口：<br /><img src='img/modperl_Authen.jpg' /><br /></ul>这种形式创建的用户名和密码必须要用 htpasswd<br />而一般我们都把用户名和密码存在数据库里，这样比较方便增加和修改用户密码等。<br />在 modperl 中这一块是使用 PerlAuthenHandler 来处理的。<p />一个事例代码如下：<br /><pre>package MyApache2::MyAuth;<p />use strict;<br />use warnings;<p />use Apache2::Access ();<br />use Apache2::RequestRec ();<br />use Apache2::Const -compile => qw(OK DECLINED HTTP_UNAUTHORIZED);<p />use DBI;<br />my $dbh = DBI->connect("DBI:mysql:auth:localhost", <br /> &nbsp; &nbsp; &nbsp; &nbsp;'root', undef, { RaiseError => 1, PrintError => 1 }) or die "cann't connect";<p />sub handler {<br /> &nbsp; &nbsp;my $r = shift;<p /> &nbsp; &nbsp;my ($status, $password) = $r->get_basic_auth_pw;<br /> &nbsp; &nbsp;return $status unless $status == Apache2::Const::OK;<p /> &nbsp; &nbsp;my $sth = $dbh->prepare("SELECT password FROM users WHERE username = ?");<br /> &nbsp; &nbsp;$sth->execute($r->user);<br /> &nbsp; &nbsp;my @turepwd = $sth->fetchrow_array();<p /> &nbsp; &nbsp;if ($password eq $turepwd[0]) {<br /> &nbsp; &nbsp; &nbsp; &nbsp;return Apache2::Const::OK;<br /> &nbsp; &nbsp;}<br />  <br /> &nbsp; &nbsp;$r->note_basic_auth_failure;<br /> &nbsp; &nbsp;return Apache2::Const::HTTP_UNAUTHORIZED;<br />}<br />  <br />1;</pre>然后在 perl.conf 里面添加<br /><pre>Alias /auth/ "E:/Fayland/auth/"<br />&lt;Location /auth/><br />      SetHandler perl-script<br />      PerlResponseHandler ModPerl::Registry<br />      PerlAuthenHandler MyApache2::MyAuth<br />      Options +ExecCGI<br />  <br />      AuthType Basic<br />      AuthName "Fayland's Test WebSite"<br />      Require valid-user<br />&lt;/Location></pre>上面就是一个简单的例子。这里没有使用 <a href="http://search.cpan.org/perldoc?Apache::DBI">Apache::DBI</a> 而是直接使用了 DBI 是为了简便。<p /><ul>简单的解释下代码：<br /><li>my ($status, $password) = $r->get_basic_auth_pw;<br />第一个 $status 是状态，只有在弹出窗口的用户名和密码都被填写时，$status 为 Apache2::Const::OK<br />否则的话，return $status unless $status == Apache2::Const::OK; 返回它原来的状态。一般就是浏览器直接显示 401 Authorization Required</li><li>必须注意是 AuthType Basic 这样才能用 $r->get_basic_auth_pw</li><li>用户名用 $r->user 获取，密码用 $r->get_basic_auth_pw 的第二字段</li><li>然后我们比较的密码，如果密码正确的话返回 Apache2::Const::OK 否则返回 Apache2::Const::HTTP_UNAUTHORIZED 让它继续验证。</li></ul>这中间你还可以更复杂点，针对不同的 $status 返回不同的东西。用户名不存在返回什么，密码错误返回什么的。<br />不过大致的代码就是这个样子了。更详细的查看 Apache/modperl 文档：<br /><a href="http://perl.apache.org/docs/2.0/user/handlers/http.html#PerlAuthenHandler">http://perl.apache.org/docs/2.0/user/handlers/http.html#PerlAuthenHandler</a></div>
+<p><&lt;Previous: <a href="prototype_FormSubmit.html">用 prototype 来写 Ctrl+Enter 提交表单</a>&nbsp;&nbsp;>>Next: <a href="ShareURL0511.html">Share the URLs (November 2005)</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=modperl%20%E7%9A%84%E7%94%A8%E6%88%B7%E9%AA%8C%E8%AF%81&url=http://www.fayland.org/journal/modperl_PerlAuthenHandler.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='modperl_helloworld.html'>modperl Apache2::HelloWorld</a> < <span class='digit'>2005-11-16 23:24:07</span> ></li><li><a href='modperl_http_cycle.html'>modperl 服务器的运行阶段和句柄</a> < <span class='digit'>2005-11-22 15:33:08</span> ></li><li><a href='modperl_PerlTransHandler.html'>modperl 的 PerlTransHandler 应用</a> < <span class='digit'>2005-11-23 22:24:02</span> ></li><li><a href='modperl_Filter_part1.html'>modperl Filter Part1</a> < <span class='digit'>2005-12-18 14:47:29</span> ></li></ul>
+Created on <span class="digit">2005-11-26 00:08:37</span>, Last modified on <span class="digit">2005-11-26 00:14:00</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

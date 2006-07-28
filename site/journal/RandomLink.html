@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>随机链接</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="050603_ubuntu.html">Thank God, ubuntu rocks</a>&nbsp;&nbsp;>>Next: <a href="050604.html">fail to embed parrot in pugs(Resolved)</a></p>
+<h1>随机链接</h1>
+<div class='content'>
+<p>Category: <a href='Script.html'>Script</a> &nbsp; Keywords: <b>random link</b></p><p>一个简单的脚本，功能就是获得随机的一篇 journal. :)<br />
+<a href='../scripts/random_link.pl.txt'>仅供参考</a>。</p>
+
+<pre>#!/usr/bin/perl
+
+use CGI qw/redirct/; # 获取 redirect 方法用于输出 302 转网页
+
+my $dir = "$ENV{'DOCUMENT_ROOT'}/journal"; ＃ 网页所在的绝对路径
+unless (-e $dir) { die "no such dir, please set the \$dir\n$dir non-exist"; } ＃ 检测该路径是否存在
+
+opendir(DIR, $dir);
+my @files = readdir(DIR); ＃ 获取所有文件
+closedir(DIR);
+
+my @wantfiles;
+foreach (@files) {
+    next unless (/\.html$/); # 我们只需要 HTML 文件
+    next if (/^index/); # 忽略所有 index 开头的索引文件
+    push(@wantfiles, $_);
+}
+
+my $total = scalar @wantfiles; # 文件的个数
+my $random = int(rand($total)); # 由此获得的随机数字
+
+print CGI::redirect("http://www.fayland.org/journal/$wantfiles[$random]"); ＃ 转网页地址
+</pre>
+
+It's a easy hack, and <a href='../cgi-bin/random_link.pl'>have fun</a>!
+</div>
+<p><&lt;Previous: <a href="050603_ubuntu.html">Thank God, ubuntu rocks</a>&nbsp;&nbsp;>>Next: <a href="050604.html">fail to embed parrot in pugs(Resolved)</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E9%9A%8F%E6%9C%BA%E9%93%BE%E6%8E%A5&url=http://www.fayland.org/journal/RandomLink.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Template_random_quotes.html'>Template Toolkit && random</a> < <span class='digit'>2005-11-07 16:16:46</span> ></li><li><a href='irclogger_link.html'>获取 IRC logger 里的链接</a> < <span class='digit'>2005-05-18 22:09:00</span> ></li></ul>
+Created on <span class="digit">2005-06-04 01:00:57</span>, Last modified on <span class="digit">2005-06-04 01:01:59</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

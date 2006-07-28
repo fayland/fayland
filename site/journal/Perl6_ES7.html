@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>sub infix:<(7)> ($Perl6, @Examples)</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Perl6_ES6.html">multi sub Examples (6, Perl6) {...}</a>&nbsp;&nbsp;>>Next: <a href="Perl6_ES8.html">let @Examples[8] = 'Perl6';</a></p>
+<h1>sub infix:<(7)> ($Perl6, @Examples)</h1>
+<div class='content'>
+<p>Category: <a href='Perl6.html'>Perl6</a> &nbsp; Keywords: <b>Operator overloading Perl6</b></p><h3>Description</h3>
+关于操作符重载的笔记。
+
+<h3>Details</h3>
+操作符只是带有特殊名字的子程序。我们这里对上一章 <a href='Perl_ES6.html'>multi sub Examples (6, Perl6) {...}</a> 里介绍的 multi sub 的例子用操作符重新写一次：
+<pre>multi sub infix:<(+)> (Num $a, Num $b) { return $a + $b; }
+multi sub infix:<(+)> (Str $a, Str $b) { return $a ~ $b; }
+multi sub infix:<(+)> ($a, $b) { return $a ~ '-' ~ $b; }
+
+say 1 (+) 2; # 3
+say 'a' (+) 'b'; # ab
+say 0 (+) 'a'; # 0-a</pre>
+这里唯一需要介绍的是 infix 的意思。
+
+<h3>(pre|in|post|circum)fix</h3>
+操作符我们分为一元操作符和二元操作符，当然还有三元和 circumfix/圆周型。<br />
+<ul>
+<li>一元操作符按操作符在前在后分为两种，分别对应 prefix 和 postfix
+<pre>sub prefix:<(+)> ($a) { return "pre~$a~"; }
+sub postfix:<(+)> ($a) { return "~$a~post"; }
+
+say (+) 2; # pre~2~
+say 2 (+); # ~2~post</pre>
+<li>二元操作符只能放中间，所以我们用 infix. 就是最前面的例子中所用的。<br />
+二元操作符中有个特性，可以用 is commutative 定义成可交换的。如：
+<pre>multi sub infix:<(+)> (Str $a, Num $b) is commutative { return "$a-$b"; }
+
+say 0 (+) 'a'; # 0-a
+say 'a' (+) 0; # a-0</pre>
+这样不管前后顺序，只要有一个是 Str 有一个是 Num 就可以了。
+<li>还有种圆周型操作符。最常见的是 HTML 中的注释：<code>&lt;!-- --></code>, 这时候我们就要用 circumfix
+<pre><code>sub circumfix:«&lt;!-- -->» ($text) { ... }</code></pre>
+</ul>
+
+<h3>You should know</h3>
+What I said is a part of Perl6.</div>
+<p><&lt;Previous: <a href="Perl6_ES6.html">multi sub Examples (6, Perl6) {...}</a>&nbsp;&nbsp;>>Next: <a href="Perl6_ES8.html">let @Examples[8] = 'Perl6';</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=sub%20infix:%3C(7)%3E%20($Perl6,%20@Examples)&url=http://www.fayland.org/journal/Perl6_ES7.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Perl6_ES2.html'>@Perl6 <== @Examples xx 2</a> < <span class='digit'>2005-05-20 18:53:54</span> ></li><li><a href='Perl6_ES14.html'>has $.Examples14 handles 'Perl6';</a> < <span class='digit'>2005-06-02 01:38:59</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li><li><a href='Perl6_ES0.html'>@Examples[0] is Perl6</a> < <span class='digit'>2005-05-19 20:26:08</span> ></li><li><a href='Perl6_ES1.html'>given @Examples[1] when Perl6</a> < <span class='digit'>2005-05-19 22:05:56</span> ></li><li><a href='Perl6_ES3.html'>my Perl6 @Examples[3]</a> < <span class='digit'>2005-05-21 13:53:16</span> ></li><li><a href='Perl6_ES4.html'>say q:2 '@*Examples.[4] &Perl6()';</a> < <span class='digit'>2005-05-22 12:24:12</span> ></li><li><a href='Perl6_ES5.html'>sub Perl6 (*@Examples[5] is copy)</a> < <span class='digit'>2005-05-22 15:37:26</span> ></li><li><a href='Perl6_ES6.html'>multi sub Examples (6, Perl6) {...}</a> < <span class='digit'>2005-05-23 22:43:33</span> ></li><li><a href='Perl6_ES8.html'>let @Examples[8] = 'Perl6';</a> < <span class='digit'>2005-05-24 13:05:58</span> ></li><li><a href='Perl6_ES9.html'>Perl6 | Examples & 9 ^ junction</a> < <span class='digit'>2005-05-26 12:35:29</span> ></li><li><a href='Perl6_ES10.html'>%Examples{'IO'} = open('Perl6');</a> < <span class='digit'>2005-05-30 00:24:01</span> ></li><li><a href='Perl6_ES11.html'>class Examples11 is Perl6 { ... }</a> < <span class='digit'>2005-05-30 13:31:31</span> ></li><li><a href='Perl6_ES12.html'>$Perl6 = $class.bless(:Example<12>);</a> < <span class='digit'>2005-05-31 11:38:46</span> ></li><li><a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> < <span class='digit'>2005-05-31 18:22:03</span> ></li><li><a href='Perl6_ES16.html'>my subtype Examples16 of Perl6 where /^kissu$/</a> < <span class='digit'>2005-06-04 23:59:29</span> ></li><li><a href='Perl6_ES17.html'>my enum Example17 <<:Perl(6) Today>></a> < <span class='digit'>2005-06-05 12:14:08</span> ></li><li><a href='Perl6_ES18.html'>my $queen; rule me {Perl6|Examples18}</a> < <span class='digit'>2005-06-06 12:26:32</span> ></li><li><a href='Perl6_ES19.html'>m:nth(19)/Perl6Examples/</a> < <span class='digit'>2005-06-06 22:02:01</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li></ul>
+Created on <span class="digit">2005-05-24 02:16:42</span>, Last modified on <span class="digit">2005-05-25 21:45:30</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Maypole</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="041030.html">Apache2与Sp2冲突</a>&nbsp;&nbsp;>>Next: <a href="utf8.html">utf8与gb2312编码</a></p>
+<h1>Maypole</h1>
+<div class='content'>
+<p>Category: <a href='InstallNote.html'>InstallNote</a> &nbsp; Keywords: <b>Maypole</b></p>OS: Win2000 SP4<br>
+Apache: C:\Apache2<br>
+Perl: C:\usr<br>
+使用的是<a href='http://perl.apache.org'>Perl-5.8-win32-bin.exe</a>.<br>
+Apache/2.0.50 (Win32) mod_perl/1.99_15-dev Perl/v5.8.4<br><br>
+
+先cmd, cpan Maypole<br>
+经过一系列的prerequisite的模块安装。一切都很顺利。<br>
+
+然后拷贝.cpan/build/Maypole-2.04/ex/BeerDB.pm to C:/usr/site/lib.<br>
+编辑conf/perl.conf, 在其后增加<br>
+<pre><code># Maypole
+Alias /beerdb/ "E:/Fayland/beerdb/"
+&lt;Location /beerdb>
+  SetHandler perl-script
+  PerlHandler BeerDB
+&lt;/Location>
+</code></pre>
+
+首先编辑BeerDB.pm, 更改它的数据库地址。<br>
+BeerDB->setup("dbi:mysql:beerdb","user","pass");<br>
+将C:\.cpan\build\Maypole-2.04\templates下的模板文件移到beerdb目录下。<br>
+其中有点特别的是maypole.css要移到和beerdb同级目录下。<br>
+参考<a href='http://www-900.ibm.com/developerworks/cn/linux/l-maypole/index.shtml'>使用 Maypole 构建 Web 应用程序</a>增加了数据库Table结构。<br>
+访问http://localhost/beerdb/就大致完成操作。其他的改天继续研究。<br><br>
+
+<div class='highlight'>TroubleShooting</div><p>
+<ul>
+<li>Access denied for user: '@localhost' to database 'beerdb'?<br>
+例如是mysql的话<br>
+BeerDB->setup("dbi:mysql:beerdb");<br>
+在其后增加user/pass.<br>
+BeerDB->setup("dbi:mysql:beerdb","user","pass");<br>
+<li>Can't locate object method "set_db" via package "BeerDB::Beer"?<br>
+我在Win2000下使用mysql时出现这问题，经过Search发现是Class::DBI::mysql的问题，重装此模块总是出错。后来装了mysql4的最新版得以解决。
+</ul>
+<div class='highlight'>Refer</div><p>
+<ul>
+<li><a href='http://www-900.ibm.com/developerworks/cn/linux/l-maypole/index.shtml'>使用 Maypole 构建 Web 应用程序</a>
+<li><a href='http://www.perl.com/pub/a/2004/04/15/maypole.html'>Rapid Web Application Deployment with Maypole</a>
+<li><a href=zt_maypole.html'>Joe Jiang 翻译的 使用Maypole进行快速Web应用开发</a>
+<li><a href='http://www.perl.com/pub/a/2004/04/29/maypole.html'>Rapid Web Application Deployment with Maypole : Part 2</a>
+</ul>
+</div>
+<p><&lt;Previous: <a href="041030.html">Apache2与Sp2冲突</a>&nbsp;&nbsp;>>Next: <a href="utf8.html">utf8与gb2312编码</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Maypole&url=http://www.fayland.org/journal/Maypole.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='041030.html'>Apache2与Sp2冲突</a> < <span class='digit'>2004-10-30 20:33:33</span> ></li><li><a href='050117.html'>Goodbye for a while</a> < <span class='digit'>2005-01-17 15:44:21</span> ></li></ul>
+Created on <span class="digit">2004-10-31 20:56:20</span>, Last modified on <span class="digit">2005-01-11 20:34:50</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

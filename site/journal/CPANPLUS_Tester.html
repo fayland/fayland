@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>be a CPANPLUS Tester</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Feedburner.html">using FeedBurner</a>&nbsp;&nbsp;>>Next: <a href="Template_builtin_Filters.html">Template builtin Filters</a></p>
+<h1>be a CPANPLUS Tester</h1>
+<div class='content'>
+<p>Category: <a href='Basic.html'>Basic</a> &nbsp; Keywords: <b>CPANPLUS tester</b></p>summary:<br /><pre># Console 为控制台，Win2000 下运行 cmd<br />Console >perl -MCPAN -e shell<br /># 或者直接 cpan<p />cpan> install CPANPLUS<br />cpan> install Test::Reporter<br />cpan> q<p />Console >perl -MCPANPLUS -e shell<br /># 或者直接 cpanp<br />CPAN Terminal> s edit<br /># 修改你的配置如 hosts, base 等。测试的话最重要的将 'cpantest' => 1, 这个设置为 1<br />CPAN Terminal> s save<br />CPAN Terminal> i CPAN<br /># 安装模块<br />CPAN Terminal> q<br /></pre>将 'cpantest' => 1 后<br />如果安装模块出错（成功也会问）后会问你是否将错误报告给 CPAN <br />Would you like to send the test report? [y/N]:<br />到时候选 y 就可以了。<p /><ul>参考文章：<br /><li><a href="//www.perl.com/lpt/a/2002/03/26/cpanplus.html">CPAN PLUS</a><br /><li><a href="//www.perl.com/lpt/a/2002/04/30/cpants.html">Becoming a CPAN Tester with CPANPLUS</a><br /></ul></div>
+<p><&lt;Previous: <a href="Feedburner.html">using FeedBurner</a>&nbsp;&nbsp;>>Next: <a href="Template_builtin_Filters.html">Template builtin Filters</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=be%20a%20CPANPLUS%20Tester&url=http://www.fayland.org/journal/CPANPLUS_Tester.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Feeder_01.html'>一个简易的用 Catalyst 编写的 RSS 聚合器</a> < <span class='digit'>2005-10-26 12:12:32</span> ></li><li><a href='Feedburner.html'>using FeedBurner</a> < <span class='digit'>2005-12-07 23:09:52</span> ></li></ul>
+Created on <span class="digit">2005-12-09 16:35:07</span>, Last modified on <span class="digit">2005-12-09 16:44:10</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

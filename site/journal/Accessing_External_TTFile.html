@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>导入 Template Toolkit 文件</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Catalyst_YAML.html">Catalyst config YAML</a>&nbsp;&nbsp;>>Next: <a href="051212.html">my first paid Perl work</a></p>
+<h1>导入 Template Toolkit 文件</h1>
+<div class='content'>
+<p>Category: <a href='Catalyst.html'>Catalyst</a> &nbsp; Keywords: <b>Template TT</b></p>因为 <a href="http://www.template-toolkit.org">TT</a> 是个很庞大的系统，我们经常将 template 拆分为好几部分，然后在某一 .tt 文件中导入外部的文件。<br />很明显，这么做最大的目的是代码复用/ code reuse. 带来的好处还有清晰的结构。<br />我上回在<a href='template_introduction.html'>Template Toolkit 入门</a>提过 INCLUDE 和 INSERT 的区别。<br />不过导入的指示符中我忘了讲另一个很重要的 PROCESS<p />我们先用一个简单的例子解释下三者的区别。一个外部文件 ex.tt 如：<br /><pre>[% foo = 'bar' %]<br />foo = [% foo %] in External File.</pre>然后一个主文件：<br /><pre>[% foo = 'main' %]<br />foo = [% foo %] in Main<br />[% INSERT ex.tt %]<br />foo = [% foo %] in Main after insert/include/process</pre><ul>三种情况：<br /><li>如代码所显示的是 [% INSERT 时，显示的结果为：<br /><pre>foo = main in Main<br />[% foo = 'bar' %]<br />foo = [% foo %] in External File.<br />foo = main in Main after insert/include/process</pre>INSERT 的作用就是将文件原封不动的显示出来。</li><li>将 [% INSERT 改为 [% INCLUDE 后将显示：<br /><pre>foo = main in Main<br />foo = bar in External File.<br />foo = main in Main after insert/include/process</pre>INCLUDE 将外部文件执行，然后将结果返回到主文件中。</li><li>将 [% INSERT 改为 [% PROCESS 后将显示：<br /><pre>foo = main in Main<br />foo = bar in External File.<br />foo = bar in Main after insert/include/process</pre>注意与 INCLUDE 的不同。PROCESS 后 foo 在 main 中的值将变为 bar. PROCESS ex.tt 将 foo 改后会影响 main 里的值。<br />INCLUDE 是将结果返回，而 PROCESS 更类似与将这段代码返回然后在 main 中执行。</li></ul><h4>other tips</h4><ul>下面是一些你可能碰到的东西：<br /><li>不管是哪个指示符， INCLUDE 也好 PROCESS 也好。注意下面的区别：<br /><pre>[% myheader = 'my/misc/header' %]<br />[% INCLUDE   myheader  %]            # 'myheader'<br />[% INCLUDE  "myheader" %]            # 'myheader'<br />[% INCLUDE  $myheader  %]            # 'my/misc/header'<br />[% INCLUDE "$myheader" %]            # 'my/misc/header'</pre><li>如果在 main 中定义了 foo 而在 ex.tt 中没有定义 foo 的话， ex.tt 里的 foo 将采用 main 里的 foo 值。</li><li>参数传递。我们可以在 INCLUDE/PROCESS 后传递参数进去。比如：<br /><pre>foo = [% foo %] in External File.</pre><pre>[% INCLUDE ex.tt foo = '77' %]</pre>这样 ex.tt 里的 foo 值将是 77.</li><li>注意如果你在 main 里定义了一个 BLOCK 与 INCLUDE/PROCESS 里的文件名一样时，将调用 main 里的该 BLOCK 而不是外部文件。比如我们有一个外部文件叫 bar（没有后缀），而在 main.tt 里这么写的话：<br /><pre>[% INCLUDE bar %]<br />[% BLOCK bar %]<br />   foo was [% foo %]<br />[% END %]</pre>它调用的是这个 BLOCK 而不是外部文件。这就是优先级问题。</li><li>需要多个文件的话可以使用加号：<br /><pre>[% PROCESS foo + bar %]</pre><li>关于 INCLUDE_PATH 等配置选项设置可以参考：<a href='Template_Configuration.html'>Template Toolkit 的配置选项</a></li></ul>Send me mail if u have any problem. Thanks.</div>
+<p><&lt;Previous: <a href="Catalyst_YAML.html">Catalyst config YAML</a>&nbsp;&nbsp;>>Next: <a href="051212.html">my first paid Perl work</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E5%AF%BC%E5%85%A5%20Template%20Toolkit%20%E6%96%87%E4%BB%B6&url=http://www.fayland.org/journal/Accessing_External_TTFile.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Template_Configuration.html'>Template Toolkit 的配置选项</a> < <span class='digit'>2005-10-24 20:23:23</span> ></li><li><a href='template_introduction.html'>Template Toolkit 入门</a> < <span class='digit'>2005-12-03 18:15:26</span> ></li><li><a href='Template_builtin_Filters.html'>Template builtin Filters</a> < <span class='digit'>2005-12-09 23:14:04</span> ></li><li><a href='Template_customized_Filte.html'>Template customized Filters</a> < <span class='digit'>2005-12-10 01:10:15</span> ></li><li><a href='EmailWithAttachment.html'>发送邮件附件</a> < <span class='digit'>2005-03-23 22:18:40</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li><li><a href='modperl_http_cycle.html'>modperl 服务器的运行阶段和句柄</a> < <span class='digit'>2005-11-22 15:33:08</span> ></li><li><a href='attributes.html'>attributes 用法介绍</a> < <span class='digit'>2005-12-01 00:03:06</span> ></li></ul>
+Created on <span class="digit">2005-12-10 22:42:16</span>, Last modified on <span class="digit">2005-12-10 22:49:07</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

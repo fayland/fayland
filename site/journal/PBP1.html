@@ -1,0 +1,368 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>一种代码风格</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="050911.html">yes yes yes, i'm back</a>&nbsp;&nbsp;>>Next: <a href="PBP2.html">Tips from Perl Best Practices</a></p>
+<h1>一种代码风格</h1>
+<div class='content'>
+<p>Category: <a href='BookNotes.html'>BookNotes</a> &nbsp; Keywords: <b>Code Layout</b></p><p>刚拿起盗版电子书《Perl Best Practices》在读。没机会买正版（没 Visa/MasterCard + 穷），也只好捧着盗版先读下了。<br />
+有机会还是挺想买正版书支持下 Damain Conway 先生的。</p>
+
+<p>既然读着，也就随手翻译点，写点东西。不保证任何东西。</p>
+
+<p>Mr Conway 在 Chapter 2 Code Layout 中讲了下代码布局风格，我看着挺好的，也值得推广下。</p>
+
+<ul>
+<li>括弧的风格，推荐第一种而不是二，三。</li>
+</ul>
+
+
+<pre>    # 推荐
+    my @names = (
+        'Damian',    # Primary key
+        'Matthew',   # Disambiguator
+        'Conway',    # General class or category
+    );
+
+    for my $name (@names) {
+        for my $word ( anagrams_of(lc $name) ) {
+            print &quot;$word\n&quot;;
+        }
+    }
+</pre>
+
+
+
+
+<pre>    # 不推荐这两种
+
+    # Don't use BSD style...
+    my @names =
+    (
+        'Damian',    # Primary key
+        'Matthew',   # Disambiguator
+        'Conway',    # General class or category
+    );
+
+    for my $name (@names)
+    {
+        for my $word (anagrams_of(lc $name))
+        {
+            print &quot;$word\n&quot;;
+        }
+    }
+
+    # And don't use GNU style either...
+
+    for my $name (@names)
+      {
+        for my $word (anagrams_of(lc $name))
+          {
+            print &quot;$word\n&quot;;
+          }
+      }
+</pre>
+
+
+<ul>
+<li>将控制流程的关键字与紧跟后面的括弧分开（加一空格）。<br />
+Separate your control keywords from the following opening bracket.</li>
+</ul>
+
+
+<pre># 推荐
+for my $result (@results) {
+while ($min &lt; $max) {
+if ($value[$try] &lt; $target) {
+
+# 不推荐
+for(@results) {
+while($min &lt; $max) {
+if($value[$try] &lt; $target) {</pre>
+
+
+<ul>
+<li>不要将子程序或变量名与后面的开括弧分开。<br />
+Don't separate subroutine or variable names from the following opening bracket.</li>
+</ul>
+
+
+<pre># Do
+get_candidates($marker);
+if open_region($i);
+$candidates[$i]{region}
+
+# DONOT
+get_candidates ($marker);
+if open_region ($i);
+$candidates [$i] {region}</pre>
+
+
+<ul>
+<li>对于内建函数没必要带括号的就不要带括号。这样加强可读性。<br />
+Don't use unnecessary parentheses for builtins and "honorary" builtins.</li>
+<li>对复杂的键或索引，将其与周围的括弧分开。<br />
+Separate complex keys or indices from their surrounding brackets.</li>
+</ul>
+
+
+<pre># Do
+$candidates[$i] = $incumbent{ $candidates[$i]{ get_region( ) } };
+print $incumbent{ $largest_gerrymandered_constituency };
+
+# Do NOT
+$candidates[$i] = $incumbent{$candidates[$i]{get_region( )}};
+print $incumbent{$largest_gerrymandered_constituency};</pre>
+
+
+<ul>
+<li>使用空格将二元操作符与它的操作数分开。<br />
+Use whitespace to help binary operators stand out from their operands.</li>
+</ul>
+
+
+<pre> # Do
+my $displacement = $initial_velocity * $time  +  0.5 * $acceleration * $time**2;
+my $price = $coupon_paid * $exp_rate  +  ($face_val + $coupon_paid) * $exp_rate**2;
+
+# Do NOT
+my $displacement=$initial_velocity*$time+0.5*$acceleration*$time**2;
+my $price=$coupon_paid*$exp_rate+(($face_val+$coupon_val)*$exp_rate**2);</pre>
+
+
+<ul>
+<li>在每一语句后加分号。但是对于只有一个单独语句的 map 和 grep, 请省略。<br />
+Place a semicolon after every statement.</li>
+</ul>
+
+
+<pre># Do
+if ( $line =~ s{\A (\s*) -- (.*)}{$1#$2}xms ) {
+    push @comments, $2;
+}
+my @sqrt_results = map { sqrt $_ } @results;
+
+# Do NOT
+if ( $line =~ s{\A (\s*) -- (.*)}{$1#$2}xms ) {
+    push @comments, $2
+}
+my @sqrt_results = map { sqrt $_; } @results;</pre>
+
+
+<ul>
+<li>在多行列表的每一个值后面加逗号。<br />
+Place a comma after every value in a multiline list.</li>
+<li>使用 78 列的行。<br />
+Use 78-column lines.</li>
+<li>使用四列的缩进水平（每一缩进为四个空格）。<br />
+Use four-column indentation levels.</li>
+<li>使用空格缩进，而不是制表 Tab. 因为在不同的环境下，制表所表现的空格不一。可以用文本编辑器设置只动转换制表。<br />
+Indent with spaces, not tabs.</li>
+<li>永远不要在同一行上写两个语句。<br />
+Never place two statements on the same line.</li>
+</ul>
+
+
+<pre> # Do
+chomp $record;
+next RECORD if $record eq $EMPTY_STR;
+
+# Do NOT
+chomp $record; next RECORD if $record eq $EMPTY_STR;</pre>
+
+
+<ul>
+<li>请使用段落编写代码。将不同的功能的语句分段（同功能的为一段），在每一段前注释这段的用处。<br />
+Code in paragraphs.</li>
+<li>不要使用拥挤格式的 else/elsif<br />
+Don't cuddle an else.</li>
+</ul>
+
+
+<pre># Do
+}
+else {
+}
+elsif ($sigil eq '@' &amp;&amp; $subsigil eq '?') {
+
+# NOT
+} else {
+} elsif ($sigil eq '@' &amp;&amp; $subsigil eq '?') {</pre>
+
+
+<ul>
+<li>垂直将相关项目排列。<br />
+Align corresponding items vertically.</li>
+</ul>
+
+
+<pre># Do
+my %expansion_of = (
+    q{it's}    =&gt; q{it is},
+    q{we're}   =&gt; q{we are},
+    q{didn't}  =&gt; q{did not},
+    q{must've} =&gt; q{must have},
+    q{I'll}    =&gt; q{I will},
+);
+$name   = standardize_name($name);
+$age    = time - $birth_date;
+$status = 'active';
+
+
+# Do NOT
+my %expansion_of = (
+    q{it's} =&gt; q{it is}, q{we're} =&gt; q{we are}, q{didn't} =&gt; q{did not},
+    q{must've} =&gt; q{must have}, q{I'll} =&gt; q{I will},
+);
+$name = standardize_name($name);
+$age = time - $birth_date;
+$status = 'active';</pre>
+
+
+<ul>
+<li>在操作符<b>前</b>将长表达式截断。缩进时注意与前面句子相关部分对齐。<br />
+Break long expressions before an operator.</li>
+</ul>
+
+
+<pre># Do
+push @steps, $steps[-1]
+             + $radial_velocity * $elapsed_time
+             + $orbital_velocity * ($phase + $phase_shift)
+             - $DRAG_COEFF * $altitude
+             ;
+
+# NOT
+push @steps, $steps[-1] +
+     $radial_velocity * $elapsed_time +
+     $orbital_velocity * ($phase + $phase_shift) -
+     $DRAG_COEFF * $altitude;</pre>
+
+
+<ul>
+<li>如果长表达式在语句的中间，可以额外提出来。<br />
+Factor out long expressions in the middle of statements.</li>
+</ul>
+
+
+<pre># Do
+my $next_step = $steps[-1]
+                + $radial_velocity * $elapsed_time
+                + $orbital_velocity * ($phase + $phase_shift)
+                - $DRAG_COEFF * $altitude
+                ;
+add_step( \@steps, $next_step, $elapsed_time);
+
+# Do NOT
+add_step( \@steps, $steps[-1]
+                   + $radial_velocity * $elapsed_time
+                   + $orbital_velocity * ($phase + $phase_shift)
+                   - $DRAG_COEFF * $altitude
+                   , $elapsed_time);</pre>
+
+
+<ul>
+<li>总是在可能的低优先级的操作符那而不是高优先级那，将长表达式截断。<br />
+Always break a long expression at the operator of the lowest possible precedence.</li>
+</ul>
+
+
+<pre># Do
+push @steps, $steps[-1]
+             + $radial_velocity * $elapsed_time
+             + $orbital_velocity
+                 * ($phase + $phase_shift)
+             - $DRAG_COEFF * $altitude
+             ;
+
+# NOT
+push @steps, $steps[-1] + $radial_velocity
+             * $elapsed_time + $orbital_velocity
+             * ($phase + $phase_shift) - $DRAG_COEFF
+             * $altitude
+             ;</pre>
+
+
+<ul>
+<li>在赋值操作符前将长表达式截断。<br />
+Break long assignments before the assignment operator.</li>
+</ul>
+
+
+<pre># Do
+$predicted_val
+    = $average + $predicted_change * $fudge_factor;
+
+# NOT
+$predicted_val = $average
+                 + $predicted_change * $fudge_factor
+                 ;</pre>
+
+
+<ul>
+<li>将三元层叠用列格式排好。<br />
+Format cascaded ternary operators in columns.</li>
+</ul>
+
+
+<pre> # Do
+my $salute = $name eq $EMPTY_STR                      ? 'Customer'
+           : $name =~ m/\A((?:Sir|Dame) \s+ \S+) /xms ? $1
+           : $name =~ m/(.*), \s+ Ph[.]?D \z     /xms ? &quot;Dr $1&quot;
+           :                                            $name
+           ;
+
+# NOT
+my $salute = $name eq $EMPTY_STR ? 'Customer'
+           : $name =~ m/\A((?:Sir|Dame) \s+ \S+)/xms ? $1
+           : $name =~ m/(.*), \s+ Ph[.]?D \z/xms ? &quot;Dr $1&quot; : $name;</pre>
+
+
+<ul>
+<li>将长列表加上括弧。<br />
+Parenthesize long lists.</li>
+</ul>
+
+
+<pre># Do
+push @items, (
+    &quot;A brand new $item&quot;,
+    &quot;A fully refurbished $item&quot;,
+    &quot;A ratty old $item&quot;,
+);
+
+# NOT
+push @items, &quot;A brand new $item&quot;
+           , &quot;A fully refurbished $item&quot;
+           , &quot;A ratty old $item&quot;
+           ;</pre>
+
+
+<ul>
+<li>Enforce your chosen layout style mechanically.</li>
+</ul>
+
+<p>当然风格是自己选的，并非强制。 Perl 世界是自由的世界。</p></div>
+<p><&lt;Previous: <a href="050911.html">yes yes yes, i'm back</a>&nbsp;&nbsp;>>Next: <a href="PBP2.html">Tips from Perl Best Practices</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E4%B8%80%E7%A7%8D%E4%BB%A3%E7%A0%81%E9%A3%8E%E6%A0%BC&url=http://www.fayland.org/journal/PBP1.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Encode_Guess_And_Han.html'>Lingua::Han::Utils 和 Encode::Guess</a> < <span class='digit'>2005-12-17 02:00:23</span> ></li></ul>
+Created on <span class="digit">2005-09-13 13:02:31</span>, Last modified on <span class="digit">2005-09-13 13:40:58</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

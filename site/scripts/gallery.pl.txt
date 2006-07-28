@@ -1,0 +1,45 @@
+#!/usr/bin/perl -w
+use strict;
+use CGI qw/:standard/;
+use CGI::Carp qw(fatalsToBrowser);
+use Image::Magick;
+
+#settings
+my $thumbs_width = 100; #thumbs's width
+my $thumbs_height = 100; #thumbs's height
+my $dir = 'E:/Fayland/Gallery'; #the to-do dir
+my $url = 'http://localhost/Gallery'; #the relevant url
+my $need_index = 1; # 1 - produce the index.html, 0 - ingore
+
+my $query = new CGI;
+print $query->header;
+
+my @gallery;
+(-d "$dir") or die "Cann't find $dir";
+opendir(DIR,"$dir");
+@gallery = readdir(DIR);
+closedir(DIR);
+@gallery = grep(/(gif|jpe?g|png)$/, @gallery);
+
+my $i;
+open(FH, ">$dir/index.html") if ($need_index);
+foreach (@gallery) {
+    $_ =~ m/(.*)\.(.*)/;
+    my $thumbsfile = "$1.png";
+    unless (-e "$dir/thumbs/$thumbsfile") {
+        my $image=Image::Magick->new;
+        my $x = $image->Read("$dir/$_");
+        warn "$x" if "$x";
+        $x = $image->Resize(width=>$thumbs_width, height=>$thumbs_height);
+        $x = $image->Write("$dir/thumbs/$thumbsfile");
+    }
+    print "<a href='$url/$_'><img src='$url/thumbs/$thumbsfile' width='100' height='100' border='0' alt='$_' /></a>";
+    print FH "<a href='$_'><img src='thumbs/$thumbsfile' width='100' height='100' border='0' alt='$_' /></a>" if ($need_index);
+    $i++;
+    if ($i % 5 == 0) {
+        print "<br>";
+        print FH "<br>" if ($need_index);
+    }
+}
+close(FH) if ($need_index);
+print "<p>Visit the <a href='$url/index.html'>IndexPage</a></p>" if ($need_index);

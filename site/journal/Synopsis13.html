@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Synopsis 13: 重载</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="050308.html">weird thing with nmake pugs</a>&nbsp;&nbsp;>>Next: <a href="IDCardValidate.html">中国身份证验证模块</a></p>
+<h1>Synopsis 13: 重载</h1>
+<div class='content'>
+<p>Category: <a href='Translation.html'>Translation</a> &nbsp; Keywords: <b>Synopsis</b></p>English version: <a href='http://dev.perl.org/perl6/synopsis/S13.html'>http://dev.perl.org/perl6/synopsis/S13.html</a><br>
+
+<h2>TITLE</h2>
+<p>Synopsis 13: Overloading</p>
+<p>纲要 13：重载</p>
+
+<h2>AUTHOR</h2>
+<p>Larry Wall <<a href="mailto:larry@wall.org">larry@wall.org</a>></p>
+
+<h2>VERSION</h2>
+<pre>
+  Maintainer: Larry Wall <larry@wall.org>
+  Date: 2 Nov 2004
+  Last Modified: 2 Dec 2004
+  Number: 13
+  Version: 3</pre>
+
+
+<h2>Overview 概述</h2>
+<p>This synopsis discusses those portions of Apocalypse 12 that ought to have
+been in Apocalypse 13.</p>
+<p>本纲要用以讨论启示录 12 中应该位于启示录 13 的部分。</p>
+<p>
+</p>
+
+<h2>Multiple dispatch 多重分派</h2>
+<p>The overloading mechanism of Perl 5 has been superseded by Perl
+6's multiple dispatch mechanism.  Nearly all internal functions
+are defined as <code>multi</code> subs or <code>multi</code> methods on generic types.
+Built-in operators are merely oddly named functions with an alternate
+call syntax.  All you have to do to overload them is to define your
+own <code>multi</code> subs and methods that operate on arguments with more
+specific types.</p>
+<p>Perl 5 中的重载机制将被 Perl 6 中的多重分派机制所取代。几乎所有的内部函数
+都是由传递一般类的 <code>multi</code> 子程序或 <code>multi</code> 方法所定义。内置运算符不过是
+奇怪的函数名加上不同的调用语法而已。要重载它们的话，你只需要定义你自己的
+ <code>multi</code> 子程序和方法，然后通过指定特定类型的参数来达成目的。</p>
+<p>For unary operators, this makes little effective difference, but for
+binary operators, multiple dispatch fixes the Perl 5 problem of paying
+attention only to the type of the left argument.  Since both argument
+types are used in deciding which routine to call, there is no longer
+any trickery involving swapping the arguments to use the right argument's
+type instead of the left one.  And there's no longer any need to
+examine a special flag to see if the arguments were reversed.</p>
+<p>对于一元运算符，没有什么大变化。但对于二元运算符，多重分派修正了 Perl 5 
+中仅仅对左边的参数类型加以注意的错误。因为在多重分派中所有的参数类型
+对你要调用哪个程序都有影响，所以再也不需要通过调换参数，用右边参数类型来代替
+左边而达成调用欺骗。而且再也不需要检查一个特定标记来决定这个参数是否保留。</p>
+<p>For much more about multiple dispatch, see A12.</p>
+<p>需要更多关于多重分派的信息，请参考 A12.</p>
+
+<h2>Syntax 语法</h2>
+<p>There is no longer any special <code>use overload</code> syntax separate from the
+declarations of the <code>multi</code> routines themselves.  To overload an
+existing built-in sub, say something like:</p>
+<p>除了 <code>multi</code> 程序申明外，再也没有任何特殊的 <code>use overload</code> 语法。
+如果要重载一个已存在的内建子程序，这用这么写：</p>
+<pre>
+    multi sub *uc (TurkishStr $s) {...}</pre>
+<p>Now if you call <code>uc()</code> on any Turkish string, it will call your function
+rather than the built-in one.  Putting the <code>multi</code> into the <code>*</code>
+namespace makes it show up in everyone's packages, but as long as no one
+else defines a version of <code>uc</code> on <code>TurkishStr</code>, there's no collision.
+The types of the invocants are included in the ``long name'' of any <code>multi</code>
+sub or method.</p>
+<p>现在如果你用 土耳其/Turkish 字符串来调用 <code>uc</code>, 那么它将调用你刚写的函数
+而不是内建函数。将 <code>multi</code> 放在 <code>*</code> 命名空间可以让此子程序在所有人的 包/package 
+中使用，只用没有其他人也定义了一个 <code>TurkishStr</code> 版本的 <code>uc</code> ，那就没有任何冲突。
+调用的类别将保护在任何 <code>multi</code> 子程序或方法的“长名”内。</p>
+<p>If you want to overload string concatenation for Arabic strings
+so you can handle various ligatures, you can say:</p>
+<p>如果你想对 阿拉伯语/Arabic 字符串 重载字符串联以便处理不同的 连字/ligatures, 
+你可以这么写：</p>
+<pre>
+    multi sub *infix:<~>(ArabicStr $s1, ArabicStr $s2) {...}
+    multi sub *infix:<~>(Str $s1, ArabicStr $s2) {...}
+    multi sub *infix:<~>(ArabicStr $s1, Str $s2) {...}</pre>
+<p>Ordinary methods can be turned into multi methods within the class definition:</p>
+<p>一般方法可以在类定义中转换成 多重/multi 方法：</p>
+<pre>
+    class MyNum {
+        multi method abs(MyNum $x) {...}
+        ...
+    }</pre>
+<p>Likewise operators on your new type can appear in the class:</p>
+<p>同样地，传递新类型的运算符也可以包含在类里：</p>
+<pre>
+    class MyNum {
+        multi method prefix:<+> (MyNum $x) {...} # what we do in numeric context
+        multi method prefix:<~> (MyNum $x) {...} # what we do in string context
+        multi method prefix:<?> (MyNum $x) {...} # what we do in boolean context
+        ...
+    }</pre>
+<p>Binary operators may be declared as commutative:</p>
+<p>二元运算符还可以被定义成可交换的：</p>
+<pre>
+    multi sub infix:<+> (Us $us, Them $them) is commutative { myadd($us,$them) }</pre>
+<p>That's equivalent to:</p>
+<p>这等同于：</p>
+<pre>
+    multi sub infix:<+> (Us $us, Them $them) { myadd($us,$them) }
+    multi sub infix:<+> (Them $them, Us $us) { myadd($us,$them) }</pre>
+<p>Note the lack of <code>*</code> on those definitions.  That means this definition
+of addition is only in effect within the scope of the package in which
+<code>infix:&lt;+></code> is defined.  Similar constraints apply to lexically scoped
+multi subs.  Generally you want to put your multi subs into the <code>*</code>
+space, however, so that they work everywhere.</p>
+<p>注意这些定义中都没有 <code>*</code>. 这表示新增的这个定义只对 <code>infix:&lt;+></code> 所定义的
+包作用域有效。相同的约束作用于在词法作用域的 多重/multi 子程序。不过通常你应该
+将 多重/multi 子程序放在 <code>*</code> 空间内，这样它们能在任何地方使用。</p>
+<p>The <code>use overload</code> syntax had one benefit over Perl 6's syntax in that
+it was easy to alias several different operators to the same service
+routine.  This can easily be handled with Perl 6's aliasing:</p>
+<p><code>use overload</code> 语法相较于 Perl 6 语法还有个优点，它可以简单的使用别名让许多不同
+的运算符使用同一个服务程序。通过 Perl 6 的别名，这也可以轻松搞定：</p>
+<pre>
+    multi sub unimpl (MyFoo $x) { upchuck(); }
+    &infix:<+> ::= &unimpl;
+    &infix:<-> ::= &unimpl;
+    &infix:<*> ::= &unimpl;
+    &infix:</> ::= &unimpl;</pre>
+<p>
+</p>
+
+<h2>Fallbacks 预设机制</h2>
+<p>Dispatch is based on a routine's signature declaration without regard
+to whether the routine is defined yet.  If an attempt is made to
+dispatch to a declared but undefined routine, Perl will redispatch
+to <code>AUTOSUBDEF</code> or <code>AUTOMETHDEF</code> as appropriate to define the routine.
+This provides a run-time mechanism for fallbacks.  By default, these
+declarations are taken at face value and do not specify any underlying
+semantics.  As such, they're a ``shallow'' interpretation.</p>
+<p>分派机制只是基于程序的声明信号，而不管这个程序是否已经被定义。如果试图分派
+一个已声明却未定义的程序， Perl 将重分派到 <code>AUTOSUBDEF</code> 或 <code>AUTOMETHDEF</code> 
+来定义这个程序。这就提供了一个运行时的预设机制。默认这些声明将根据外表值来
+判断而不指定任何潜在的语意。也就是说，这是种“浅层”解释。</p>
+<p>However, sometimes you want to specify a ``deep'' interpretation of
+your operators.  That is, you're specify the abstract operation,
+which may be used by various shallow operators.  Any deep multi
+declarations will be ``amplified'' into all the shallow operators that
+can be logically based on it.  If you say:</p>
+<p>但是，有时候你需要对你的运算符指定一个“深层”解释。也就是说，你指定个抽象
+运算符，它可能被多个浅层操作符所调用。任何一个深层多重声明都会被“扩大”到所有
+逻辑上基于它的浅层运算符。</p>
+<pre>
+    multi sub infix:<%> (Us $us, Them $them) is deep { mymod($us,$them) }</pre>
+<p>then</p>
+<p>那么</p>
+<pre>
+    multi sub infix:<%=> (Us $us, Them $them) { $us = $us % $them }</pre>
+<p>is also generated for you (unless you define it yourself).
+The mappings of magical names to sub definitions is controlled by the
+<code>%?DEEPMAGIC</code> compiler hash.  Pragmas can influence the contents of
+this hash over a lexical scope, so you could have different policies
+on magical autogeneration.  The default mappings correspond to the
+standard fallback mappings of Perl 5 overloading.</p>
+<p>也会被产生（除非你自己定义它）。
+魔术名字（magical names）到子程序声明的映射由 <code>%?DEFPMAGIC</code> 编译器散列
+所约束。编译指示（Pargmas）能在词法作用域范围内影响这个散列的值，所以你
+可以在魔术自动生成上有很多不同的策略。默认的映射与 Perl 5 重载的标准预设
+映射相应。</p></div>
+<p><&lt;Previous: <a href="050308.html">weird thing with nmake pugs</a>&nbsp;&nbsp;>>Next: <a href="IDCardValidate.html">中国身份证验证模块</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Synopsis%2013:%20%E9%87%8D%E8%BD%BD&url=http://www.fayland.org/journal/Synopsis13.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='050307.html'>The project of Synopsis localization</a> < <span class='digit'>2005-03-07 22:55:26</span> ></li><li><a href='Synopsis1.html'>Synopsis 1 / 纲要一</a> < <span class='digit'>2005-03-08 00:11:40</span> ></li><li><a href='Synopsis10.html'>纲要十：包</a> < <span class='digit'>2005-03-12 16:31:57</span> ></li><li><a href='Synopsis11.html'>纲要十一：模块</a> < <span class='digit'>2005-03-14 15:32:36</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li></ul>
+Created on <span class="digit">2005-03-09 20:53:09</span>, Last modified on <span class="digit">2005-03-12 16:33:17</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

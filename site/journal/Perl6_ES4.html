@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>say q:2 '@*Examples.[4] &Perl6()';</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Quiz.html">Perl Quiz/小测试</a>&nbsp;&nbsp;>>Next: <a href="Perl6_ES5.html">sub Perl6 (*@Examples[5] is copy)</a></p>
+<h1>say q:2 '@*Examples.[4] &Perl6()';</h1>
+<div class='content'>
+<p>Category: <a href='Perl6.html'>Perl6</a> &nbsp; Keywords: <b>Variable Perl6</b></p><h3>Variables</h3>
+<ul>
+<li>真正意义上的全局变量生存在包 * 里。如 $*UID, @*ARGS, %*ENV<br />
+打印所有环境变量：
+<pre>for %*ENV.kv -> $key, $val {
+    say "$key => $val";
+}</pre>
+如果我们只写 %ENV, 那编译器将从最里面包依次往外搜索到全局包。<br />
+<pre>for %ENV.kv -> $key, $val {
+    say "$key => $val";
+}</pre>
+上面这段代码与 %*ENV 相同。但如果定义了 %ENV 就不一样了：
+<pre>my %ENV = ( 'a' => 'b', 'c' => 'd' );
+
+for %ENV.kv -> $key, $val {
+    say "$key => $val";
+}
+# output is
+# a => b
+# c => d</pre>
+<li>文件范围的变量的第二标记为 =. 例如 $=DATA 是你文件内 =begin DATA 句柄的变量名。<br />
+所有的 pod 结构可以通过 %=POD （或类似的）来获得。
+<li>词汇范围的变量的第二标记为 ?. 它们是是编译器所知道的值。（运行期的值进入了包 *.）<br />
+例如：$?FILE 和 $?LINE 是你当前的文件和当前行数字。
+<pre>#!/usr/bin/pugs
+# the filename is t.pugs
+say $?FILE, $?LINE; #t.pugs3</pre>
+可能的变量有：（请参考 <a href='http://www.fayland.org/Perl6/Synopsis/zh_cn/S02.pod'>S02.pod</a>）
+<table border="1">
+<tr><td>变量名</td><td>英文解释</td><td>中文解释</td><td>举例说明</td></tr>
+<tr><td>$?OS</td><td>Which os am I compiled for?</td><td>当前编译的操作系统</td><td>如 Win2000 下为 MSWin32</td></tr>
+<tr><td>$?OSVER</td><td>Which os version am I compiled for?</td><td>当前编译操作系统的版本号</td><td></td></tr>
+<tr><td>$?PERLVER</td><td>Which Perl version am I compiled for?</td><td>当前编译的 Perl 版本号</td><td></td></tr>
+<tr><td>$?FILE</td><td>Which file am I in?</td><td>当前的文件名</td><td></td></tr>
+<tr><td>$?LINE</td><td>Which line am I at?</td><td>所在的行号</td><td></td></tr>
+<tr><td>$?PACKAGE<br />@?PACKAGE</td><td>Which package(s) am I in?</td><td>所在的包名</td><td></td></tr>
+<tr><td>$?MODULE<br />@?MODULE</td><td>Which module am I in?</td><td>所在的模块名</td><td></td></tr>
+</table>
+<li>因为 *, =, ? 都可以做为包名使用，所以你可以这么写：%*::ENV, $=::DATA, @?::MODULE
+</ul>
+
+<h3>内插/interpolate</h3>
+<ol><li>数组内插：要内插整个数组，现在必须使用空中括号[]做下标。
+<pre>my @a = ('p', 'e', 'r', 'l');
+say "array @a"; # array @a
+say "array @a[]"; # array p e r l</pre>
+<li>散列内插：要内插整个散列，必须得使用空括号或三角符号：
+<pre>my %bar = ( 'a' => 'b', 'c' => 'd' );
+print "hash are:\n%bar{}";
+# output is
+# hash are:
+# a       b
+# c       d</pre>
+对于一个 Pair 来说，键和值之间插入 tab （制表），整个 Pair 后面插入一个换行。
+<li>子程序内插：为了内插子程序调用结果，必须在前加 & 后加括号：
+<pre>sub func {
+    return ('f', 'u', 'n', 'c');
+}
+
+print "call &func return &func()"; # call &func return f u n c</pre>
+在标量上下文调用函数。（如果返回一个列表，那么列表将做为数组内插。）
+<li>方法内插：为了内插一个没有参数的方法返回值，括号是必须的：
+<pre>print "The attribute is $obj.attr().\n"</pre>
+同样的，在标量上下文调用方法。（如果返回列表，将其作为数组内插。）
+<li>裸包内插，例子如下：
+<pre>my $i = 2;
+say "now \$i is { $i * 2 }"; # now $i is 4</pre>
+如果你想让双引号不内插大括号，你可以明确地去掉这功能：
+<pre> qq:c(0) "Here are { $two uninterpolated } curlies"; # c(0) 去掉了内插</pre>
+q 后面的副词可以设置你只内插标量或数组或散列或什么（见下面详细解说）。例如：
+<pre>my $two = 2;
+say q:s 'Here are { $two * 2 } curlies'; # Here are { 2 * 2 } curlies</pre>
+这里我们用 :s 限定了只内插标量。
+</ol>
+
+<h3>引号副词</h3>
+<table border='1'>
+<tr><td>Short/短名</td><td>Long/长名</td><td>Meaning/意思</td></tr>
+<tr><td>:x</td><td>:exec</td><td>Execute as command and return results / 当成命令运行并返回结果</td></tr>
+<tr><td>:w</td><td>:words</td><td>Split result on words (no quote protection) / 按字分割（不考虑引号保护）</td></tr>
+<tr><td>:ww</td><td>:quotewords</td><td>plit result on words (with quote protection) / 按此分割 （考虑引号保护）</td></tr>
+<tr><td>:t</td><td>:to</td><td>Interpret result as heredoc terminator / 以 heredoc 形式内插结果</td></tr>
+<tr><td>:0</td><td>:raw</td><td>No escapes at all (unless otherwise adverbed) / 无转义（除非有其他副词）</td></tr>
+<tr><td>:1</td><td>:single</td><td>Interpolate \\, \q and \' (or whatever) / 内插 \\, \q 和 \' （或其它）</td></tr>
+<tr><td>:2</td><td>:double</td><td>Interpolate all the following / 内插下面所有</td></tr>
+<tr><td>:s</td><td>:scalar</td><td>Interpolate $ vars / 内插 $ 变量</td></tr>
+<tr><td>:a</td><td>:array</td><td>Interpolate @ vars / 内插 @ 变量</td></tr>
+<tr><td>:h</td><td>:hash</td><td>Interpolate % vars / 内插 % 变量</td></tr>
+<tr><td>:f</td><td>:function</td><td>Interpolate & calls / 内插 & 调用</td></tr>
+<tr><td>:c</td><td>:closure</td><td>Interpolate {...} expressions / 内插 {...} 表达式</td></tr>
+<tr><td>:b</td><td>:backslash</td><td>Interpolate \n, \t, etc. (implies :m) / 内插 \n, \t, etc.（暗指 :m）
+</td></tr>
+</table>
+<p>当以 q 开头时，上面的所有都可以省略冒号，所以我们自动就有了如下形式：</p>
+<pre>    Form    Same as
+    ====    =======
+    qx//    q:x//
+    qw//    q:w//
+    qww//    q:ww//
+    qt//    q:t//
+    q0//    q:0//
+    q1//    q:1//    (same as q//)
+    q2//    q:2//    (same as qq//)
+    qs//    q:s//
+    qa//    q:a//
+    qh//    q:h//
+    qf//    q:f//
+    qc//    q:c//
+    qb//    q:b//</pre>
+<p>你可以定义你自己的引号副词和操作符。所有的大写副词都是保留给用户定义的。
+所有在 Latin1 上的 Unicode 也是保留给用户定义的。</p>
+
+<h3>Others</h3>
+<ul>
+<li>根据上面的副词，<< 再也没有了，我们现在这么来写 Heredoc:
+<pre>print qq:to/END/
+Give $amount to the man behind curtain number $curtain.
+END</pre>
+<li>再也没有 C<$#foo> 记法了。用 C<@foo.end> 来代替，空数组返回 -1。<br />
+（多唯数组用 C<@foo.shape[$dimension]> ）
+<pre>my @a1 = (1,2,4);
+my @a2 = ();
+say @a1.end, @a2.end; # 2-1</pre>
+<li>而数组的个数可以用 @foo.elems 或 +@foo 得到。
+</ul>
+
+<h3>All is welcomed</h3>
+Thank God.</div>
+<p><&lt;Previous: <a href="Quiz.html">Perl Quiz/小测试</a>&nbsp;&nbsp;>>Next: <a href="Perl6_ES5.html">sub Perl6 (*@Examples[5] is copy)</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=say%20q:2%20'@*Examples.%5B4%5D%20&Perl6()';&url=http://www.fayland.org/journal/Perl6_ES4.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Perl6_ES14.html'>has $.Examples14 handles 'Perl6';</a> < <span class='digit'>2005-06-02 01:38:59</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li><li><a href='Perl6_ES0.html'>@Examples[0] is Perl6</a> < <span class='digit'>2005-05-19 20:26:08</span> ></li><li><a href='Perl6_ES1.html'>given @Examples[1] when Perl6</a> < <span class='digit'>2005-05-19 22:05:56</span> ></li><li><a href='Perl6_ES2.html'>@Perl6 <== @Examples xx 2</a> < <span class='digit'>2005-05-20 18:53:54</span> ></li><li><a href='Perl6_ES3.html'>my Perl6 @Examples[3]</a> < <span class='digit'>2005-05-21 13:53:16</span> ></li><li><a href='Perl6_ES5.html'>sub Perl6 (*@Examples[5] is copy)</a> < <span class='digit'>2005-05-22 15:37:26</span> ></li><li><a href='Perl6_ES6.html'>multi sub Examples (6, Perl6) {...}</a> < <span class='digit'>2005-05-23 22:43:33</span> ></li><li><a href='Perl6_ES7.html'>sub infix:<(7)> ($Perl6, @Examples)</a> < <span class='digit'>2005-05-24 02:16:42</span> ></li><li><a href='Perl6_ES8.html'>let @Examples[8] = 'Perl6';</a> < <span class='digit'>2005-05-24 13:05:58</span> ></li><li><a href='Perl6_ES9.html'>Perl6 | Examples & 9 ^ junction</a> < <span class='digit'>2005-05-26 12:35:29</span> ></li><li><a href='Perl6_ES10.html'>%Examples{'IO'} = open('Perl6');</a> < <span class='digit'>2005-05-30 00:24:01</span> ></li><li><a href='Perl6_ES11.html'>class Examples11 is Perl6 { ... }</a> < <span class='digit'>2005-05-30 13:31:31</span> ></li><li><a href='Perl6_ES12.html'>$Perl6 = $class.bless(:Example<12>);</a> < <span class='digit'>2005-05-31 11:38:46</span> ></li><li><a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> < <span class='digit'>2005-05-31 18:22:03</span> ></li><li><a href='Perl6_ES16.html'>my subtype Examples16 of Perl6 where /^kissu$/</a> < <span class='digit'>2005-06-04 23:59:29</span> ></li><li><a href='Perl6_ES17.html'>my enum Example17 <<:Perl(6) Today>></a> < <span class='digit'>2005-06-05 12:14:08</span> ></li><li><a href='Perl6_ES18.html'>my $queen; rule me {Perl6|Examples18}</a> < <span class='digit'>2005-06-06 12:26:32</span> ></li><li><a href='Perl6_ES19.html'>m:nth(19)/Perl6Examples/</a> < <span class='digit'>2005-06-06 22:02:01</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li></ul>
+Created on <span class="digit">2005-05-22 12:24:12</span>, Last modified on <span class="digit">2005-05-29 23:32:05</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

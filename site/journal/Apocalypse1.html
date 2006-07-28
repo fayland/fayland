@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Apocalypse 1 / 启示录一</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Apocalypse.html">Perl 6 Apocalypse</a>&nbsp;&nbsp;>>Next: <a href="050301.html">Goodbye, CET 6</a></p>
+<h1>Apocalypse 1 / 启示录一</h1>
+<div class='content'>
+<p>Category: <a href='Translation.html'>Translation</a> &nbsp; Keywords: <b>Apocalypse</b></p><h2>特殊说明</h2>
+DanceDanceDance在2003年五月翻译了此文的第一稿，而到现在原文已有细微变化。<br>
+我在他翻译的基础上对照原文略做了增减与修改。<br>
+此文版权归他所有。他的联系方式为：gongwuming_AT_hotmail_Dot_com<p>
+
+原文地址：<a href='http://dev.perl.org/perl6/apocalypse/A01.html'>http://dev.perl.org/perl6/apocalypse/A01.html</a>
+
+<h2>标题</h2>
+<p>启示录 1 ：丑陋的，坏的和好的</p>
+
+<h2>作者</h2>
+<p>Larry Wall <larry@wall.org></p>
+
+<h2>版本</h2>
+<pre>维护者: Larry Wall <larry@wall.org>
+日期: 2 Apr 2001
+最后修改: 27 Sep 2004
+编号: 1
+版本: 2
+</pre>
+
+当听到启示录这个词的时候，人们往往会感到害怕，但是此时，我赋予了它好的意思：揭示。一个启示录应当给好人带来好消息。（如果它给坏人带去坏消息，那也没关系。只要你不是坏人。）<p>
+
+在以下的专栏中，我所要揭示的将是关于 Perl6 的设计思路。或者，更确切地说，是设计的开始，因为，在我最初的发言之后，设计过程必然会继续进行。我并非无所不知，尽管有些谣言会这么认为。显然我太渺小，同上帝游戏的工作并不适合我。但无论如何，总有人必须去做，所以，我只好硬着头皮，竭尽全力。我期望你们能够帮助我一起创造历史。在自愿的基础上，我们都得尽自己的一份力量。<p>
+
+如果你着眼于 Perl6 的历史，你就能发现为什么这篇文章的幅标题是“丑陋的，坏的和好的”了，从某种意义上来说，去年的RFC过程甚是丑陋。它是一个自由讨论的过程，这就意味着它的丑陋——并不是指粗野，因为 RFC 过程实际上是相当文明的——而是指在RFC中各种意见大都是些毫无联系的构思。坦白的说，RFC完全偏离了原来的计划。有的 RFC 是矛盾的，而有的 RFC 迷失了。很多的 RFC 本来着眼于现实的问题但却用好笑的角度试着提出解决方案。很多 RFC 修补了些小毛病却忘了最基础最底层的问题。<p>
+
+我也发现了 Larry 的重新设计语言的第一法则：Everyone wants the colon. <p>
+
+刚才讲的是丑陋的部分。而坏的部分是有些人指望我用这些 RFC 在两个星期内建立起一个一致的设计方案。开始的时候，我打算将那些RFC分成好的，坏的和丑陋的三类，而最终，他们中的大多数被归为了丑陋的，因为好的那些通常存在一些错误，而即使坏的那些通常指出了一个问题，其思想还是不错的，即使这个解决方案完全就是杜撰的。 <p>
+
+现在，五个月过去了，我一直都在思考如何才能获得一致。很多人知道当你的 Perl 程序超过了你的物理内存的时候什么会发生——你开始抓狂了。我也会这样。我无法很好的在头脑里面一次处理很多的问题，而且我不是一个善于分析问题的人。我的长处在于综合，而非分析。我无法忍受生活中有许多让我分心的事情，有一些是我自己造成的，有一些不是。我不会更多的谈这些，都留在我的还未发表的自传里面吧。 <p>
+
+但是现在，我们来谈谈好的部分（我希望是的）。经过考虑了许许多多单个的 RFC ，而且不知道如何开始将他们作为一个整体来思考的时期之后，我终于发现了用来思考这些问题的恰当的顺序，或多或少，就是骆驼书章节的顺序。更确切的说，骆驼书的章节就是为了在解释 Perl 时减少他们之间的直接引用而设计的。所以用大概同样的顺序来思考 Perl 6 ，将减少在我做出决定之前必须去决定的那些事情。<p>
+
+所以，我已经非常乐意的将所有的 RFC 按照章节顺序进行了分类，现在，他们看起来更容易管理了。（我还重新组织了我的 email ，这样不管消息位于邮件列表的哪个位置，我都能在所有消息中看到那些谈到特定 RFC 的消息。这对我帮助很大。）我打算为每一章写一个“启示录”，所以，启示录 1 将对应着第一章：Perl 概述(An Overview of Perl)。（当然，在这本书中，“概述”更象一个短小的教程，而非真正完整的对 Perl 进行分析的哲学基础。尽管如此，将那些总体谈到 Perl 6 的 RFC 分类到此倒是很方便。） <p>
+
+所以今天，我将谈到下面的RFC: <p>
+<pre>    RFC  PSA  Title
+    ---  ---  -----
+     16  bdb  保持Perl的缺省状态不受warning和strict等的限制。
+      26  ccb  命名操作符还是函数
+      28  acc  Perl 应该保持本色。
+      73  adb  所有 Perl 的核心函数应该返回对象。
+     141  abr  这是最后的主要修订。
+</pre>
+
+PSA 代表着“Problem（问题）, Solution（解答）, Acceptance（接受）”.问题(problem)和解答(solution)的等级为a-f, 通常，你将发现我对问题(problem)的评级高于解答(solution)。接受(acceptance)评级是以下之一： <p>
+<pre>a 完全接受
+b 基本接受
+c 勉强接受
+r 拒绝</pre>
+
+如果我的确认为有些东西不应该过早决定，我会用d表示延期(Deferred)。<p>
+
+<h3><a name='RFC141'>RFC 141</a>: 这是最后的主要修订</h3>
+
+最初，我倾向于接受这个RFC，但是最终，在神学的立场上(on theological grouds)，我决定否决它。在关于启示录的文学作品中，7 是一个代表完美的数字，而6则代表着瑕疵。实际上，就像RFC暗示的，我们可能不会结束向2*PI这样一个版本号的收敛，不过 6.6.6 看上去更不幸。<p>
+
+所以，Perl 7 将是最后一个主要的修订版本。实际上，Perl 7 将会非常完美，它将不会再需要任何修改。perl 6 仅仅是 Perl 7 的原型。:-) <p>
+
+实际上，我同意这个 RFC 的潜在的情感——我否定它，只是为了娱乐的价值。我想让 Perl 继续演变，能够更好的解决问题。以至于，如果你细读 RFC ，你会发现我的一些设计目标刻意表现的比较模糊。 <p>
+
+首先，Perl将会支持映射于( mapping onto )单语义模型( single semantic model )的多重语法( multiple syntaxes )。其次，单语义模型将会反过来映射到多平台。 <p>
+
+多重语法听起来象一个邪恶之物，但是他们对于语言的演化是非常需要的。某种程度上来说，我们已经有了多重语法模型；每次你使用一个 pragma 或者 module ，你就在扭曲你正在使用的语言。只要在 module 的开头清晰地说明了你是使用哪个版本的语言，那就没啥大问题。 <p>
+
+对多重语法的支持是如何允许（ Perl ）不断进化，有个特殊而强有力的例子就是从 Perl 5 移植到 Perl 6 本身。详见下面关于 RFC 16 的讨论。 <p>
+
+多后端(multiple backends)对于我们如今居住的世界很重要。Perl 6 绝对不能限制在那些要能进行 C 编程的平台上运行。它必须能够在其他的虚拟机上运行，比如说那些由 Java 和 C# 支持的。 <p>
+
+<h3><a name='RFC28'>RFC 28</a>: Perl应该保持本色。</h3>
+
+我由衷的希望那些钟情 Perl 5 的人们会更钟情于 Perl 6 。也可以这样说，我由衷的希望 Perl 将继续满足人们的一切需要，因为那也是Perl的希望。 <p>
+
+我原则上接受这个 RFC (我不想胡言乱语)，但仍然有些不同意见，因为我认为没有必要害怕任何一些编程范例“接管”设计工作。这将不会发生。Perl 的组成本来就是多范例的(multi-paradigmatic)。Perl 让你能够遵循任何范例，且不用特意遵循。<p> 
+
+Perl的实质是真正的上下文敏感(context sensitivity)，不是指语法上下文(syntactic context)，而是语义的(semantic)，实在的(pragmatic)以及文化的(cultral)上下文。这整套哲学在 Perl 6 中不会改变，虽然一些特定的上下文敏感会被修改。目前的一些上下文敏感阻碍的我们在某些领域做的更好。通过有目的摆脱一些束缚，我们能够使 Perl 比现在更好的理解我们的意愿。 <p>
+
+一个特别的例子，如果我们鼓起勇气打破 @foo 和 $foo[] 之间的奇怪的关系，那么很多的事情都能够得到改进。是的，我们失去了目前的切片符号(slice notation)(我期待一些更好的东西能代替它)。但是，如果我们一致的将 @foo 看作在标量上下文中返回一个数组引用，我们可以让下标(subscript)带数组引用，这样我们就不用象在 Perl 5 中那样需要区别 $foo[] 和 $foo->[] 。在启示录 2 中，当我们仔细研究如 RFC 9: 高地数据类型的时候等的时候，会有更多的讨论。 <p>
+
+<h3><a name='RFC16'>RFC 16</a>: 保持 Perl 的缺省状态不受 warning 和 strict 等的限制。 </h3>
+
+关于这个讨论我感到非常为难，两方的论据都非常充分。如果读一遍讨论，所有的那些意见都是被反复的而有力的提出。讨论主要集中在关于 strictness 的主题，因为这个 RFC 主题显得更具哲学意味，所以在该启示录中我们就应该给出一个结论。<p> 
+
+我会同时谈谈 strictness 和 warnings ，再大体上谈谈限制(constraints)，不过我会首先绕开一些深奥的设计主题。我认为，这个 RFC (以及与其相对的)，代表了一个例子，那就是为什么象我这样的一些程序员必须对其做出一个判断，因为它既是对的，同时又是错的。很多 RFC 旗帜鲜明，错过了折中的机会。一个 RFC 的确只应该关注于一个领域而非全部。但是，因为所有的这些 RFC 是依照 Perl 5 的思想来撰写的，所以，他们不能进行妥协，即使在那些 Perl 6 的设计要求那么做的地方。 <p>
+
+对于我来说，一个最重要的主题就是是否能将 Perl 5 的代码转换为 Perl 6 的代码。一个大家非常关注的地方就是 shell 脚本，在 shell 脚本中，到处都有俏皮的内嵌代码。我们确实没有好的办法来转化这些“符咒”，所以用一个新的命令行来转到“no strict”是不切实际的。 <p>
+
+另一个与之密切相关的问题是 Perl 如何识别那些偶然碰到的 Perl 5 代码。不可能立即赋予工作代码一套新的语义集。所以，我认为，不可能通过定义(definition)来使 Perl 6 处理 Perl 5 的代码。运行过程的情况应该是，在新的东西出现之前，假定 Perl 6 本来在处理 Perl 5 的代码。这就意味着，我们必须有一些声明(declaration)，这些声明清晰的将代码声明为 Perl 6 。 <p>
+
+目前，面对以上问题，存在一些正确的，和错误的解决方法。我对 DEC 升级 BASIC/PLUS 来处理长变量名所采取的方法非常气愤。他们的解决方案是要求所有使用长变量名的程序在最开始加上 EXTEND 命令。所以，从此以后，所有的 BASIC/PLUS 程序在最开始都有 EXTEND 。我不知道是不是应该称其为坏或者丑陋，但绝非好。 <p>
+
+一个好一些的方法是修改那些本来存在的东西。如果你看看 CPAN 的那些模块，在最开始你看到了什么？答案：" package "声明。我们来打破它。<p> 
+
+所以，我声明，在文件开始的 package 声明指出了你正在分析 Perl 5 代码。如果你想要写 Perl 6 模块或者类，那么关键字会是 module 或者 class 。我不清楚确切的模块和类的声明的语法，但是我清楚的是，我们将如同 package 声明那样设定目前的全局名字域(global namespace)。<p>
+
+现在，通过将模块和类默认值设为 strict 和 warnings 能够处理很多编程的问题。但是要注意，在主程序(the main programs)中默认值是 Perl 5 ，其被定义为 non-strict 。我们仍然必须解决， Perl 6 的主程序应该如何区别于 Perl 5 (或许是加上一个" use 6.0 "？)，以及是否 Perl 6 主程序应该将默认值设为 strict (我想不会)，不过你已经看到了，老师可以对学生以不及格相威胁，只要他没有在程序开始加上“ module Main ”，而且从不告诉他的学生，那样做的原因是因为要开启 strict 和 warnings 。<p>
+
+其他的一些方法也是可行的，不过将我们带入一个更深的主题，关于工程方针和站点方针(the issue of project policy and site policy)。人们总是渴望各种文件能够自动的从各个位置读入，我已经坚决反对这么做，因为这在暗中(implicityly)使脚本变得笨重。与之相反，外在的(explicit)的不轻便性(non-portablity)是可以接受的，所以我们的假象的老师没有理由不会坚持在程序的开头加上"use Policy;"之类的东西。<p>
+
+现在让我们看看，以上的方法怎么会引起一个更深的程序设计主题。真正的问题是，很难在 Perl 5 中写这样一个 Policy 模块，因为它不是一个普通的模块，而是一个超模块( meta-module )。它想要完成" use strict "和" use warnings "，但它自己却不能。所以，我们在 Perl 6 中必须实现的一个东西就是 meta-use 声明，它看起来很像从前的 use 声明，但却可以代表用户声明其他的东西，为了用户，为了工程，或者为了站点。（或是其他任何东西。我不是一个 policy 书呆子。）<p>
+
+所以，是否我同意该 RFC 完全依赖于“默认值(defualt)”的含义。就像又矮又胖的人那样，我会为我认为的最方便的的形式赋予含义。那就是工作时的上下文敏感性。<p>
+
+我同意该 RFC 也是因为我的人生哲学，道德绝不可强求。不过，总有些时候，道德会被强烈的提出，所以我认为可以写个模块和类来解决。<p>
+
+[ 更新：现在当我们知道它是 Perl 6 而不是 Perl 5 时，主程序默认将开启 strict. 如果我们首先看到了类如“ use 6.0 ”等东西，那我们知道这是 Perl 6 ，从而我们知道它的格式是严格的。（同样的 #!/usr/bin/perl6 将默认开启 strict 。）我想我们可以认可一个更短而非正规的不带 use 的形式来默认不开启 strict ：
+<pre>
+    v6;
+    $x = 1; # global is legal
+</pre>
+（没有 v6 将默认为 Perl 5 。）由 -e 运行的脚本也将默认不开启 strict 。也许我们能允许无争议的 -e 作为最终的行，用以在以下行中抑制 strict 的使用。当然，“ no strict ”也是可以行的。 ] 
+
+<h3><a name='RFC73'>RFC 73</a>: 所有 Perl 的核心函数应该返回对象</h3>
+
+我不知道该 RFC 是否应该属于概要。原则上，我同意该 RFC 。当然，如果所有的 Perl 变量都是对象，这个 RFC 肯定正确。但是，真正的问题在于，对于未知的性能水平，你对能返回对象的兴趣有多少。 Perl 5 的对象相对的笨重，如果所有的 Perl 6 的对象都是这样，事情就糟了。<p>
+
+我正在考虑该解决方案应该是对数值(data values)的更好的抽象类型支持，就像在 C structs 中在内部所呈现的那样。当我们试着将 C struct tm 转换成哈希值得时候，我们往往会陷入困境。相反，struct tm 之间的互相转换却十分的高效，因为这是一个 no-op 。我们可以使这样一个 struct 看起来像一个 Perl 对象，然后通过属性方法(attribute methods)高效的访问它，就像一个真正的对象一样。我们可以只通过强加一个抽象的系统开销(overhead)。最大的系统开销将很可能会是 struct 的内存管理而非 int ，然后，通过某些上下文相关的优化，系统开销能够被大大节省。<p>
+
+无论如何，我想指出，当我们谈论以不同以往的方式返回对象的时候，我们不必惊惶。记住任何对象能够定义 stringify 和 numify 来重载那些类要做的事情，所以，过去的代码看起来是这样：
+
+<pre>print scalar localtime;</pre>
+
+它能够继续不经改变得运行，即使localtime在标量上下文中返回一个对象。
+
+<h3><a name='RFC26'>RFC 26</a>: 命名操作符还是函数</h3>
+
+我不晓得在什么地方放置这个 RFC 好。<p>
+
+我发现这个RFC容易让人弄胡涂，因为其表达的理论的内容，比其描述的要激进的多。如果忽略理论的内容，我会非常同意它。在 Perl 5 中我们主要通过其调用的方式来区分操作符和函数。这个 RFC 可以澄清的一个地方是 Perl 5 区分了两种类型的有名操作符(named operators): 有名一元操作符(named unary operators)和列表操作符(list operators)。因为他们含有不同的优先级(precedence)所以他们可以被区分开来。我们将在启示录 3 中讨论优先级的改革，但是我怀疑我们会将两种有名操作符联合起来。(我的确知道简化 Perl 优先级表的方式，从 24 层简化到 18 层，虽然，这样做让一些不常用的操作符对 C 的兼容性造成破坏。这个以后再说。)<p>
+
+<p>你现在开始明白为什么我的工作不仅仅是对各个 RFC 进行投票。我们会面临很多不能被 RFC 所包含的重大主题。我们必须决定在多大程度上我们的文化应该保留或者进行修改。我们必须使 Perl 5 向 Perl 6 平滑过渡，使人们很容易的适应 Perl 6 。我们必须关注那些深刻的主题直到我们从中发现更深刻的部分。我们必须使所有的人都能够随时方便的使用 Perl 来工作。<p>
+
+在启示录2中，我们会试着修改变量，质疑我们的引用方式，修改上下文的关系，等等。<p></div>
+<p><&lt;Previous: <a href="Apocalypse.html">Perl 6 Apocalypse</a>&nbsp;&nbsp;>>Next: <a href="050301.html">Goodbye, CET 6</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Apocalypse%201%20/%20%E5%90%AF%E7%A4%BA%E5%BD%95%E4%B8%80&url=http://www.fayland.org/journal/Apocalypse1.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Apocalypse.html'>Perl 6 Apocalypse</a> < <span class='digit'>2005-02-28 12:30:10</span> ></li><li><a href='Apocalypse_005.html'>Apocalypse RFC 005</a> < <span class='digit'>2005-03-02 23:58:33</span> ></li></ul>
+Created on <span class="digit">2005-02-28 17:55:10</span>, Last modified on <span class="digit">2005-02-28 20:54:22</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

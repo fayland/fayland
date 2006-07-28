@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>用 Ajax 技术添加预览功能</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="minicpan.html">如何用 minicpan 映像自己的 CPAN</a>&nbsp;&nbsp;>>Next: <a href="Profiling.html">从细节处提升Perl性能</a></p>
+<h1>用 Ajax 技术添加预览功能</h1>
+<div class='content'>
+<p>Category: <a href='Javascript.html'>Javascript</a> &nbsp; Keywords: <b>Ajax</b></p><h2>简单介绍</h2>
+Preview/预览功能在BBS, CMS中是个常用的功能，如果没有 Ajax, 一般就得弹出窗口或提交页面，挺麻烦的。<br>
+而有 Ajax 后自然不同，写完了直接在本页显示结果。<p>
+
+我给自己的 Eplanet 添加了用 Ajax 写就的预览功能。代码如下，仅供参考。
+
+<h2>Update</h2>
+2005/4/21 将 GET 改为 POST 方法，这样能支持大于 512K 的参数。
+
+<h2>代码分析</h2>
+<ul>
+<li>js 分析<br>
+loadXMLDoc 为创建一个 XMLHttpRequest 对象，可以提交 URL <br />
+PreviewMe 为预览函数，没有回复时提交，提交后得到的回复显示出来<br>
+form 区块为填写预览内容区块，而且有一按钮用以交互<br>
+<div id="preview" 为显示区域<br>
+<pre><code>
+&lt;script language="javascript" type="text/javascript">
+var req;
+
+function loadXMLDoc(url, parameters) 
+{
+    // branch for native XMLHttpRequest object
+    if (window.XMLHttpRequest) {
+        req = new XMLHttpRequest();
+        req.onreadystatechange = processReqChange;
+        req.open("POST", url, true);
+        req.setRequestHeader('Connection', 'close');
+        req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        req.send(parameters);
+    // branch for IE/Windows ActiveX version
+    } else if (window.ActiveXObject) {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+        if (req) {
+            req.onreadystatechange = processReqChange;
+            req.open("POST", url, true);
+            req.setRequestHeader('Connection', 'close');
+            req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            req.send(parameters);
+        }
+    }
+}
+
+function PreviewMe(input, response)
+{
+  if (response != ''){ 
+    // Response mode
+    message = document.getElementById('preview');
+    message.innerHTML = response;
+  }else{
+    // Input mode
+    url  = 
+      '[% base %]/preview/';
+    loadXMLDoc(url,'body=' + encodeURIComponent(input));
+  }
+}
+
+function processReqChange() 
+{
+    // only if req shows "complete"
+    if (req.readyState == 4) {
+        // only if "OK"
+        if (req.status == 200) {
+
+      response  = req.responseText;
+     
+      PreviewMe('', response);
+
+        } else {
+            alert("There was a problem retrieving the XML data:\n" + req.statusText);
+        }
+    }
+}
+&lt;/script>
+
+&lt;form>&lt;textarea name="editor" name="cms_text" rows="15" cols="100" wrap="virtual">&lt;/textarea>
+&lt;input type='button' onclick="PreviewMe(this.form.editor.value,'');" value='Preview Me'>
+&lt;/form>
+
+&lt;div style='margin:2em; border: 1px solid #888888;background: #000; color:#FFF;'>Preview:&lt;br>
+&lt;div id="preview" style='background: #FFF; color:#000;padding: 1em'>&lt;/div>
+&lt;/div>
+</code></pre>
+<li>[% base %]/preview/?body= 文件<br>
+此代码块主要是用一个 CGI 接收 body 参数，经过变换打印出来。如下是我的 Eplanet 代码（片断）：
+<pre><code>
+package Eplanet::C::Preview;
+
+use base 'Catalyst::Base';
+
+sub preview : Global {
+    my ( $self, $c, $submit ) = @_;
+    
+    my $text = $c->req->params->{'body'};
+    
+    #damn it, why i should add this
+    $c->res->headers->header( 'Content-Type' => 'text/html;charset=utf-8' );
+    
+    $c->res->output("$text");
+
+}
+
+1;
+</code></pre>
+</ul>
+
+<h2>特殊说明</h2>
+这是个不完整也不完美的代码。<br>
+Catalyst 有个 Plugin::Ajax. 但是不太完美，不符合我的要求。<br>
+已经把它加到自己的 BBS 中，如果有时间给 LeoBBSx 等写个修改。<br>
+如下为一截图：<br>
+<img src='img/Ajax_preview.jpg' border='1' /></div>
+<p><&lt;Previous: <a href="minicpan.html">如何用 minicpan 映像自己的 CPAN</a>&nbsp;&nbsp;>>Next: <a href="Profiling.html">从细节处提升Perl性能</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E7%94%A8%20Ajax%20%E6%8A%80%E6%9C%AF%E6%B7%BB%E5%8A%A0%E9%A2%84%E8%A7%88%E5%8A%9F%E8%83%BD&url=http://www.fayland.org/journal/Ajax_preview.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='JS_encode.html'>Ajax && encodeURIComponent</a> < <span class='digit'>2005-05-15 15:31:00</span> ></li><li><a href='Ajax_url.html'>Ajax 网址备忘</a> < <span class='digit'>2005-04-08 19:44:12</span> ></li></ul>
+Created on <span class="digit">2005-04-10 01:35:28</span>, Last modified on <span class="digit">2005-10-14 00:59:00</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

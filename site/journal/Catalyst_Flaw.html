@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Catalyst 的一个不足（一个已去掉）</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Perl6_Rules.html">用 Perl6::Rules 来写 Formatter</a>&nbsp;&nbsp;>>Next: <a href="050928_tapl.html">Types and Programming Languages</a></p>
+<h1>Catalyst 的一个不足（一个已去掉）</h1>
+<div class='content'>
+<p>Category: <a href='Catalyst.html'>Catalyst</a> &nbsp; Keywords: <b>Catalyst</b></p><a href="http://dev.catalyst.perl.org">Catalyst</a> 很好，开发速度真的很快。它把 URL-Action 自动化掉，再加上非常 powerful 的 <a href="http://search.cpan.org/perldoc?Class::DBI">Class::DBI</a> 和 <a href="http://www.template-toolkit.org">TT</a> （或者其他东西），能让人避开烦琐的东西而专注于实现功能。<p />但是 Catalyst 并不是完美的。我最烦它就是没有类似 <a href="http://search.cpan.org/perldoc?Apache::Reload">Apache::Reload</a> 的东西。每一次修改完代码都要 Ctrl+C 停掉然后再开启。比较烦琐。而不用 server.pl 的话速度又很慢。我还是喜欢 server.pl 来做开发。这就是很麻烦的一个东西。<p />另一个不完美之处就是测试。catalyst 自动生成的 t 目录下的 *.t 文件都是错误。这是因为每一个测试文件都要运行一次工程模块。另外写测试文件也是很困难的一件事。 perl Build test 都是错误，发布时咋办，只好把它们删除掉了。<p />当然，有总比没有好。<a href='http://dev.catalyst.perl.org'>Catalyst</a> 还是值得赞赏的。<h3>Update</h3>写完了这个却发现在 Catalyst/Wiki 中发现 <a href="http://dev.catalyst.perl.org/wiki/ReStart">http://dev.catalyst.perl.org/wiki/ReStart</a><br />试了下最下面那个脚本，尽然成功。Thank God.</div>
+<p><&lt;Previous: <a href="Perl6_Rules.html">用 Perl6::Rules 来写 Formatter</a>&nbsp;&nbsp;>>Next: <a href="050928_tapl.html">Types and Programming Languages</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Catalyst%20%E7%9A%84%E4%B8%80%E4%B8%AA%E4%B8%8D%E8%B6%B3%EF%BC%88%E4%B8%80%E4%B8%AA%E5%B7%B2%E5%8E%BB%E6%8E%89%EF%BC%89&url=http://www.fayland.org/journal/Catalyst_Flaw.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='050328.html'>Catalyst & Eplanet</a> < <span class='digit'>2005-03-28 13:19:19</span> ></li><li><a href='050423.html'>Day [05.4.23] stay with me</a> < <span class='digit'>2005-04-23 16:17:02</span> ></li><li><a href='Catalyst_Authenticate.html'>Catalyst Authenticate</a> < <span class='digit'>2005-09-26 12:50:39</span> ></li><li><a href='Catalyst_Session_Win32.html'>Catalyst 在 Win32 下的 Session</a> < <span class='digit'>2005-09-29 11:08:04</span> ></li><li><a href='Catalyst_NoFavIcon.html'>Catalyst && favicon.ico</a> < <span class='digit'>2005-09-30 00:57:57</span> ></li><li><a href='Catalyst_Overview.html'>我对 Catalyst 的理解和介绍</a> < <span class='digit'>2005-10-08 01:39:40</span> ></li><li><a href='Catalyst_XMLRPC.html'>Catalyst && XML-RPC</a> < <span class='digit'>2005-10-11 21:50:30</span> ></li><li><a href='Catalyst_YAML.html'>Catalyst config YAML</a> < <span class='digit'>2005-12-10 12:50:39</span> ></li><li><a href='CatalystAdventCalendar_CN.html'>Catalyst Advent Calendar 中文版</a> < <span class='digit'>2005-12-15 23:28:40</span> ></li></ul>
+Created on <span class="digit">2005-09-27 13:44:31</span>, Last modified on <span class="digit">2005-09-27 21:07:22</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

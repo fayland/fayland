@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Template customized Filters</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Template_builtin_Filters.html">Template builtin Filters</a>&nbsp;&nbsp;>>Next: <a href="Catalyst_YAML.html">Catalyst config YAML</a></p>
+<h1>Template customized Filters</h1>
+<div class='content'>
+<p>Category: <a href='Catalyst.html'>Catalyst</a> &nbsp; Keywords: <b>Template Filters</b></p>昨日写了点 <a href="http://www.template-toolkit.org">TT</a> 内置过滤器（<a href='Template_builtin_Filters.html'>Template builtin Filters</a>），现在有兴趣讲讲自己怎么写一个 filter.<p />昨日说了 filter 分为两种：一种为静态，一种为动态。二者的区别是静态不接受任何参数，如 html, collapse, trim, ucfirst, lower 等，而动态接受参数，如 format('%0.3f'), indent("> ")<br />而放置 filter 的地方也分为两种，一种是直接放在代码里，另一种是写为 <a href="http://search.cpan.org/perldoc?Template::Plugin::Filter">Template::Plugin::Filter</a> 的子类模块。<br />我打算先讲直接放在代码里的。<h4>Static Filters</h4>静态过滤器是最简单的。我们用个最简单的 filter 来写个 lower/ucfirst 过滤器。<br /><pre>sub ucf {<br /> &nbsp; &nbsp;my $text = shift;<br /> &nbsp; &nbsp;$text = ucfirst lc $text;<br /> &nbsp; &nbsp;return $text;<br />}<br />my $tt = Template->new({<br />    FILTERS => {<br />        'ucf' => \&amp;ucf,<br />        'lcf' => sub { lcfirst uc shift; },<br />    },<br />});</pre>上面就是静态过滤器的两种形式。一种是 subroutine 子程序的引用，一种是匿名子程序。<br />无论是哪种子程序都接受一个 shift 过来的字符串，然后返回一个 $string.<br />注册 filters 使用 FILTERS 参数。而 <a href="http://dev.catalyst.perl.org">Catalyst</a> 可以这么写：<br /><pre>package Eplanet::V::TT;<p />use strict;<br />use base 'Catalyst::View::TT';<p />__PACKAGE__->config->{FILTERS} = {<br /> &nbsp; &nbsp;'ucf' => \&amp;ucf,<br /> &nbsp; &nbsp;'lcf' => sub { lcfirst uc shift; },<br />};</pre>而 filter 的应用与内置的是一样的。<br /><pre>[% FILTER ucf %]template is great[% END %]</pre>输出 Template is great<br /><pre>[% | lcf %]template is great[% END %]</pre>输出 tEMPLATE IS GREAT<h4>Dynamic Filters</h4>动态的是可以接受参数的。它的注册方法与静态的略微有点不同：<br /><pre>my $tt = Template->new({<br />    FILTERS => {<br />        'ucf' => \&amp;ucf, # our trusty static filter<br />        'cut' => [ \&amp;cut, 1 ], # our dynamic filter<br />    },<br />});</pre>第一种是我们所熟悉的静态过滤器，而第二种就是动态过滤器。它传递的一个数组引用且第二个参数为 1.<br />我们所熟悉的静态过滤器还有种写法：<br /><pre>'ucf' => [ \&amp;ucf, 0 ],</pre>这与 'ucf' => \&ucf, 是一样的。<p />动态过滤器所定义的子程序大致为这样子的：<br /><pre>sub cut {<br />    my ($context, $len) = @_;<br />    return sub {<br />        my $text = shift;<br />        $text = substr($text, 0, $len);<br />        return $text;<br />    }<br />}</pre><pre>[% | cut(5) %]template is great[% END %]</pre>输出为 templ<br />动态过滤器里第一个参数 $context 是 <a href="http://search.cpan.org/perldoc?Template::Context">Template::Context</a> 的一个对象，这个涉及到 Template 的内核我也不太懂。<br />第二个参数 $len 这里就是 5.<br />它返回的必须是一个程序的引用。跟静态的差不多。不过这个返回的子程序引用是个闭包。<p />这样我们差不多说清楚了 filter 怎么写了，下面说说怎么写一个模块。<h4>Template::Plugin::Filter</h4><pre>package MyTemplate::Plugin::Filter::Textile;<p />use strict;<br />use Template::Plugin::Filter;<br />use base qw(Template::Plugin::Filter);<br />use Text::Textile;<p />sub filter {<br /> &nbsp; &nbsp;my ($self, $text) = @_;<br /> &nbsp; &nbsp;$text = Text::Textile::textile($text);<br /> &nbsp; &nbsp;return $text;<br />}<p />1;</pre>这是一个标准的写法：use base qw(Template::Plugin::Filter); see <a href="http://search.cpan.org/perldoc?Template::Plugin::Filter">Template::Plugin::Filter</a><br />然后覆盖它的 filter 子程序。参数为 my ($self, $text) = @_; 返回字符串。一个静态过滤器。<br />而注册的写法为：<br /><pre>my $tt2 = Template->new({<br />    PLUGIN_BASE => 'MyTemplate::Plugin::Filter'<br />    PLUGINS => {<br />        Textile => 'MyTemplate::Plugin::Filter::Textile',<br />    },<br />});</pre>因为 Filter 是 Plugin 的一种，所以我们这里设置的是 PLUGINS.<br />Catalyst 的 ::V::TT 写法类似：<br /><pre>__PACKAGE__->config->{PLUGIN_BASE} = 'MyTemplate::Plugin::Filter';<br />__PACKAGE__->config->{PLUGINS} = {<br /> &nbsp; &nbsp;Textile => 'MyTemplate::Plugin::Filter::Textile',<br />};</pre>而实际用则这么写：<br /><pre>[% USE Textile %]<br />[% FILTER $Textile %]this is _like_ *so* *cool*[% END %]</pre>效果为：<p>this is <em>like</em> <strong>so</strong> <strong>cool</strong></p><h4>Conclusion</h4>这就是大致上一般的 template toolkit filter 的知识。如有错误请指正。Enjoy!</div>
+<p><&lt;Previous: <a href="Template_builtin_Filters.html">Template builtin Filters</a>&nbsp;&nbsp;>>Next: <a href="Catalyst_YAML.html">Catalyst config YAML</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Template%20customized%20Filters&url=http://www.fayland.org/journal/Template_customized_Filte.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Template_Configuration.html'>Template Toolkit 的配置选项</a> < <span class='digit'>2005-10-24 20:23:23</span> ></li><li><a href='template_introduction.html'>Template Toolkit 入门</a> < <span class='digit'>2005-12-03 18:15:26</span> ></li><li><a href='Template_builtin_Filters.html'>Template builtin Filters</a> < <span class='digit'>2005-12-09 23:14:04</span> ></li><li><a href='Accessing_External_TTFile.html'>导入 Template Toolkit 文件</a> < <span class='digit'>2005-12-10 22:42:16</span> ></li></ul>
+Created on <span class="digit">2005-12-10 01:10:15</span>, Last modified on <span class="digit">2005-12-10 01:40:17</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

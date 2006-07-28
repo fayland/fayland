@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Template Toolkit && random</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Feeder_01.html">一个简易的用 Catalyst 编写的 RSS 聚合器</a>&nbsp;&nbsp;>>Next: <a href="Javascript_highlight_Perl.html">Javascript Code Syntax Highlighter / Perl</a></p>
+<h1>Template Toolkit && random</h1>
+<div class='content'>
+<p>Category: <a href='Catalyst.html'>Catalyst</a> &nbsp; Keywords: <b>Tempalte random</b></p>在我的 journal Index 页上往下数四行，会出现 Larry Wall 的一些语言。本来就一句<br /><pre>Call me bored, but don't call me boring. -- Larry Wall</pre>后来想想应该多增加一点，且变成随机出现。一想到随机，我第一个想到的就是 <a href="http://search.cpan.org/perldoc?List::Util">List::Util</a> , 那里面有个 shuffle 函数用以打乱 list 的次序。<br />当然这不是唯一选择，或许也不是最好的选择。不过或许也算凑巧， CPAN 上还是有它的 Template Plugin: <a href="http://search.cpan.org/perldoc?Template::Plugin::ListUtil">Template::Plugin::ListUtil</a> <p />放到里面的代码很简单，大致就是：<br /><pre>[% USE ListUtil %]<p />&lt;style><br />.quotes {<br /> &nbsp; &nbsp;white-space: -moz-pre-wrap;  /* Mozilla, supported since 1999 */<br /> &nbsp; &nbsp;white-space: -pre-wrap;      /* Opera 4 - 6 */<br /> &nbsp; &nbsp;white-space: -o-pre-wrap;    /* Opera 7 */<br /> &nbsp; &nbsp;white-space: pre-wrap;       /* CSS3 - Text module (Candidate Recommendation)<br />                                 http://www.w3.org/TR/css3-text/#white-space */<br /> &nbsp; &nbsp;word-wrap: break-word;       /* IE 5.5+ */<br />}<br />&lt;/style><p />[% quote_words = [ <br /> "Call me bored, but don't call me boring. -- Larry Wall",<br /> "I don't know if it's what you want, but it's what you get.  :-)<br />             -- Larry Wall in &lt;10502@jpl-devvax.JPL.NASA.GOV>",<br /> "I think it's a new feature.  Don't tell anyone it was an accident.  :-)<br />         -- Larry Wall on s/foo/bar/eieio in &lt;10911@jpl-devvax.JPL.NASA.GOV>",<br /> "Obviously I was either onto something, or on something. -- Larry Wall",<br /> "The following two statements are usually both true:<br />  There's not enough documentation.<br />  There's too much documentation. -- Larry Wall",<br /> "If someone stinks, view it as a reason to help them, not a reason to avoid them. -- Larry Wall",<br /> "In general, if you think something isn't in Perl, try it out, because it usually is. :-)<br />    --Larry Wall in &lt;1991Jul31.174523.9447@netlabs.com>"<br /> ] %]<p />&lt;div class='quotes'>[% ListUtil.random(quote_words) %]&lt;/div><br /></pre>后来又把右边浮动框的颜色也随机化了一下。<p />大致也就这样。看了一点 Perl Template Toolkit 的 Chapter 5. Filters</div>
+<p><&lt;Previous: <a href="Feeder_01.html">一个简易的用 Catalyst 编写的 RSS 聚合器</a>&nbsp;&nbsp;>>Next: <a href="Javascript_highlight_Perl.html">Javascript Code Syntax Highlighter / Perl</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Template%20Toolkit%20&&%20random&url=http://www.fayland.org/journal/Template_random_quotes.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='RandomLink.html'>随机链接</a> < <span class='digit'>2005-06-04 01:00:57</span> ></li></ul>
+Created on <span class="digit">2005-11-07 16:16:46</span>, Last modified on <span class="digit">2005-11-25 11:46:56</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

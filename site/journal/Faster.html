@@ -1,0 +1,654 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>When perl is not quite fast enough</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="DBI.html">DBI</a>&nbsp;&nbsp;>>Next: <a href="Gallery.html">Gallery缩略图制作</a></p>
+<h1>When perl is not quite fast enough</h1>
+<div class='content'>
+<p>Category: <a href='Translation.html'>Translation</a> &nbsp; Keywords: <b>faster</b></p>Original URL:<a href="http://www.ccl4.org/~nick/P/Fast_Enough/">http://www.ccl4.org/~nick/P/Fast_Enough/</a><br>
+<Author: Nicholas Clark><br>
+<Translated by: Fayland @ www.1313s.com><br>
+<UL>
+  <LI><A href="#when_perl_is_not_quite_fast_enough">When perl is not quite fast enough</A> 
+  <LI>
+  <UL>
+    <LI><A href="#introduction">简介</A> 
+    <LI><A href="#obvious_things">一些明显的事</A> 
+    <LI><A href="#compromises">某些折衷/Compromises</A> 
+    <LI><A href="#banish_the_demons_of_stupidity">放逐愚蠢的魔鬼/Banish the demons of stupidity</A> 
+    <LI><A href="#intermission">间断</A> 
+    <LI><A href="#tests">测试</A> 
+    <LI><A href="#what_causes_slowness">What causes slowness</A> 
+    <LI><A href="#step_by_step">Step by step</A> 
+    <LI><A href="#small_easy_things">简单的小事</A> 
+    <LI><A href="#needless_importing_is_slow">无关的倒入会变慢</A> 
+    <LI><A href="#regexps">regexps</A> 
+    <LI><A href="#devel::dprof">Devel::DProf</A> 
+    <LI><A href="#benchmark">Benchmark</A> 
+    <LI><A href="#what_causes_slowness_in_perl">What causes slowness in perl?</A> 
+    <LI><A href="#ops_are_bad,_m'kay1">Ops are bad, m'kay</A> 
+    <LI><A href="#memoize">Memoize</A> 
+    <LI><A href="#miscellaneous">Miscellaneous</A> 
+    <LI><A href="#yay_for_y">yay for y</A> 
+    <LI><A href="#ops_are_bad,_m'kay2">Ops are bad, m'kay</A> 
+    <LI><A href="#how_to_make_perl_fast_enough">How to make perl fast enough</A> </LI></UL></LI></UL>
+
+<h2><a name=when_perl_is_not_quite_fast_enough>When perl is not quite fast enough</a></h2>
+<P>此份手稿是为了我在 YAPC::EU::2002 上的讲演而准备的。它不是我实际上所说讲演的抄本，更合适的说法是，它只是转成幻灯片的 pod 笔记，一些随手写在纸上或存在脑中的笔记，我试着将它们做成连贯的文章。我还试着增加一些有用的反馈 - 有时我能记起这是谁说的，在此感谢他们。</P>
+<P><A href="http://www.ccl4.org/~nick/P/Fast_Enough/00.html">您可以按此查看幻灯片</A>，我希望找到幻灯片做了哪些改变是显而易见的。</P>
+<h2><a name=introduction>简介</a></h2>
+<P>你可能有些 Perl 程序，但是它们运行得很慢。然后你很想对此做些改变。此文讲述了怎样对程序提速和怎样及时地避免问题。</P>
+<h2><a name=obvious_things>一些明显的事</a></h2>
+<DL>
+  <DT><a name=item_find_better_algorithm>寻找更好的算法</A> 
+  <DD>您的程序运行在您所想的最有效的方法之上。但是很有可能别人从另一个完全不同的角度看问题，从而找到一个快 100 倍的算法。您<EM>确定</EM>你使用了最好的算法？做些研究吧。
+  <DT><A name=item_throw_more_hardware_at_it>使用更好的硬件</A> 
+  <DD>如果您的程序不是在许多台机子上运行，或许使用更好的硬件会比较便宜。毕竟硬件是越来越便宜而程序员要付高工资。或许你能通过改变硬件而获得高性能；也有可能给您的机子编译一个自定义内核就足够了。
+  <DT><A name=item_mod_perl>mod_perl</A> 
+  <DD>对于我所写的 CGI 程序，我发现即使我削减了所有可以削减的，服务器还是只能每秒供应 2.5 。而运行在同一机子上同样的代码，不同的是使用了 mod_perl ，它能每秒供应 25 。这是一个不费很大力气就能做 10 倍提速的方法。如果您的代码不适合于运行在 mod_perl 下，这里还有 <A href="http://www.fastcgi.com/">fastcgi</A> (CGI.pm 支持)。如果您的程序不是 CGI ，可以考虑持续性的 perl daemon，见 <A href="http://search.cpan.org/search?mode=module&query=PPerl">PPerl on CPAN</A>。
+  <DT><A name=item_rewrite_in_c%2c_er_c%2b%2b%2c_sorry_java%2c_i_mean>重写于 <STRONG>C</STRONG>, 或 <STRONG>C++</STRONG>, sorry <STRONG>Java</STRONG>, I mean <STRONG>C#</STRONG>, oops no ...</A> 
+  <DD>当然，最后一个“显而易见”的解决方案就是用 native 语言重写您的代码，如 C, C++, Java, C# 或者任何当前合适的。</DD></DL>
+<P>但是这些可能不是实际或策略上可接受的方案。</P>
+<h2><A name=compromises>某些折衷</a></h2>
+<P>那么，你能做某些折衷。</P>
+<DL>
+  <DT><a name=item_xs>XS</A> 
+  <DD>您可能发现 5% 的代码使用了 95% 的时间，这些时间 Perl 用来做它低效的工作，如移动位/bit shifting。因此你能用 C 来写那 bit ，用 Perl 写剩下的，最后用 XS 将二者联合起来。但是你需要学习 XS 和 perl API，这是份艰巨的工作。
+  <DT><A name=item_inline>Inline</A> 
+  <DD>或许你能使用 <A href="http://search.cpan.org/search?mode=module&query=Inline::C">Inline</A>。如果你要操作 Perl 内部，你仍然需要学习 perl API，但是如果你只需要在您的纯 C 代码或他人的 C 库中调用 perl，Inline 让此轻而易举。
+  <P>如下是我的 perl 程序，它调用了 perl 函数 <code>rot32</code>。而这里是一个 C 函数 <code>rot32</code> ，它接受两个整数，用第二个整数旋转第一个，然后返回一个整数值。这是你所需的，它能工作得很好。</P><PRE>    #!/usr/local/bin/perl -w
+    use strict;
+    
+    printf "$_:\t%08X\t%08X\n", rot32 (0xdead, $_), rot32 (0xbeef, -$_)
+      foreach (0..31);
+    
+    use Inline C => <<'EOC';
+    
+    unsigned rot32 (unsigned val, int by) {
+      if (by >= 0)
+        return (val >> by) | (val << (32 - by));
+      return (val << -by) | (val >> (32 + by));
+    }
+    EOC
+    __END__</PRE><PRE>    0:      0000DEAD        0000BEEF
+    1:      80006F56        00017DDE
+    2:      400037AB        0002FBBC
+    3:      A0001BD5        0005F778
+    4:      D0000DEA        000BEEF0
+    ...</PRE>
+  <DT><A name=item_compile_your_own_perl%3f>编译您自己的 perl ?</A> 
+  <DD>您是否用系统提供的 perl 运行程序。编译自己的 perl 能让程序跑得更快。例如，当线程编译进 perl ，所有它的内部变量都要满足线程安全/thread safe，这能让程序变慢一点。如果 perl 可以使用线程，但你不使用线程，于是你毫无理由地付出了一点速度。同样地，你能有个比系统使用的更好的编译器。例如，我发现使用 gcc 3.2 比 2.9.5 某些我的 C 代码快了 5% 。[某个对我有益的激烈质问者/hecklers说他提升了 14% ，(如果我记忆无误的话)这是从重编译 perl 编译器所获得的] 
+  <DT><A name=item_different_perl_version%3f>不同的 perl 版本?</A> 
+  <DD>试着采用不同的 perl 版本。不同的版本对某些事情有提速。如果你使用了一个旧的 perl ，试着用最新版本。如果你运行最新版本而没使用这些最新的特性，那试着使用一个旧版本。</DD></DL>
+<h2><A name=banish_the_demons_of_stupidity>放逐愚蠢的魔鬼/Banish the demons of stupidity</a></h2>
+<P>您是否使用了这种语言最棒的特性？</P>
+<DL>
+  <DT><a name=item_hashes>hashes</A> 
+  <DD>引用 Larry Wall 的话 - 在关联数组中使用线性搜索就像试着联合某人对付 loaded Uzi 。 
+  <P>我相信你不会这么做。但是你是否保留您的数组已排序，这样你能使用对分检索？这很快。但是使用 hash 应该会更快。</P>
+  <DT><A name=item_regexps>regexps</A> 
+  <DD>没有正则表达式/regexps的语言需要你另外写代码来解析字符串。perl 有 regexps ，又它们重写或许能获得 10 倍加速。甚至使用锚标<code>\G</code>和标记<code>/gc</code>可能会更快。 <PRE>    if ( /\G.../gc ) {
+        ...
+    } elsif ( /\G.../gc ) {
+        ...
+    } elsif ( /\G.../gc ) {</PRE>
+  <DT><A name=item_pack_and_unpack><code>pack</code> 和 <code>unpack</code></A> 
+
+  <DD>pack 和 unpack 有太多的特性值得去记住。翻看 manpage - 你可能只用一个 unpack 代替整个子程序。
+  <DT><A name=item_undef><code>undef</code></A> 
+  <DD>undef. 什么是我意味的 undef? 
+  <P>您是否只为了丢弃它而计算？</P>
+  <P>For example the script in the Encode module that compiles character 
+  conversion tables would print out a warning if it saw the same character 
+  twice. If you or I build perl we'll just let those build warnings scroll off 
+  the screen - we don't care - we can't do anything about it. And it turned out 
+  that keeping track of everything needed to generate those warnings was slowing 
+  things down considerably. So I added a flag to disable that code, and perl 5.8 
+  defaults to use it, so it builds more quickly.</P></DD></DL>
+<h2><A name=intermission>间断</a></h2>
+<P>许多对我有益的激烈质问者/hecklers （大部分是看过讲演的 London.pm (我将 David Adler 做为 London.pm 的一分子因为他订阅了这份列表)）希望我提醒各位<STRONG>除非你确实绝对的需要，否则真的不应该去优化</STRONG>。您在让您的代码更难维修，更难扩展和更易引进新的 bugs 。很可能在一开始你就在需要优化的地方做了些不该做的事。</P>
+<P>我同意上述观点。</P>
+<P>同样，我也不想改变幻灯片的运行顺序。There isn't a 
+good order to try to describe things in, and some of the ideas that follow are 
+actually more "good practice" than optimisation techniques, so possibly ought to 
+come before the slides on finding slowness. I'll mark what I think are good 
+habits to get into, and once you understand the techniques then I'd hope that 
+you'd use them automatically when you first write code. That way (hopefully) 
+your code will never be so slow that you actually want to do some of the brute 
+force optimising I describe here.</P>
+<h2><a name=tests>测试</a></h2>
+<DL>
+  <DT><a name=item_must_not_introduce_new_bugs>必须不引进新的 bugs</A> 
+  <DD>当你优化现有<STRONG>运行</STRONG>代码最重要的是不引进新的 bugs 。
+  <DT><A name=item_use_your_full_regression_tests_%3a%2d%29>使用您所有的回归/regression测试 :-)</A> 
+  <DD>尽可能使用您所有的一整套 regression 测试。您应该有，对不？
+  <P>[这时候你们或许会不安地笑，因为我打赌只有非常少的人能写份全面的测试代码]</P>
+  <DT><A name=item_keep_a_copy_of_original_program><STRONG>保留</STRONG>原始程序的备份</A> 
+  <DD>您<STRONG>应该</STRONG>保留一份原始代码的拷贝。如果其他的都失败了这是您最后的凭借。试着使用版本控制系统/CSV。做一个脱机备份。检查您的备份是否可读。你得保证不能丢失它。
+  <BR>最后，您对于优化时是否引进了新的 bugs 的最终测试为检查优化后的版本是否与原先版本有同样的输出结果。（当然，优化版本花费更少的时间）。
+</DD></DL>
+<h2><A name=what_causes_slowness>What causes slowness</a></h2>
+<DL>
+  <DT><a name=item_cpu>CPU</A> 
+  <DD>It's obvious that if you script hogs the CPU for 10 seconds solid, then to 
+  make it go faster you'll need to reduce the CPU demand. 
+  <DT><A name=item_ram>RAM</A> 
+  <DD>A lesser cause of slowness is memory. 
+  <DL>
+    <DT><A name=item_perl_trades_ram_for_speed>perl trades RAM for speed</A> 
+    <DD>One of the design decisions Larry made for perl was to trade memory for 
+    speed, choosing algorithms that use more memory to run faster. So perl tends 
+    to use more memory. 
+    <DT><A name=item_slower>getting slower (relative to CPU)</A> 
+    <DD>CPUs keep getting faster. Memory is getting faster too. But not as 
+    quickly. So in relative terms memory is getting slower. [Larry was correct 
+    to choose to use more memory when he wrote perl5 over 10 years ago. However, 
+    in the future CPU speed will continue to diverge from RAM speed, so it might 
+    be an idea to revisit some of the CPU/RAM design trade offs in parrot] 
+    <DT><A name=item_memory_like_a_pyramid>memory like a pyramid</A> 
+    <DD>
+    <P>You can never have enough memory, and it's never fast enough.</P>
+    <P>Computer memory is like a pyramid. At the point you have the CPU and its 
+    registers, which are very small and very fast to access. Then you have 1 or 
+    more levels of cache, which is larger, close by and fast to access. Then you 
+    have main memory, which is quite large, but further away so slower to 
+    access. Then at the base you have disk acting as virtual memory, which is 
+    huge, but very slow.</P>
+    <P>Now, if your program is swapping out to disk, you'll realise, because the 
+    OS can tell you that it only took 10 seconds of CPU, but 60 seconds elapsed, 
+    so you know it spent 50 seconds waiting for disk and that's your speed 
+    problem. But if your data is big enough to fit in main RAM, but doesn't all 
+    sit in the cache, then the CPU will keep having to wait for data from main 
+    RAM. And the OS timers I described count that in the CPU time, so it may not 
+    be obvious that memory use is actually your problem.</P></DD></DL>
+  <P>This is the original code for the part of the Encode compiler 
+  (<code>enc2xs</code>) that generates the warnings on duplicate characters:</P><PRE>    if (exists $seen{$uch}) {
+        warn sprintf("U%04X is %02X%02X and %02X%02X\n",
+                     $val,$page,$ch,@{$seen{$uch}});
+    }
+    else {
+        $seen{$uch} = [$page,$ch];
+    }</PRE>
+  <P>It uses the hash <code>%seen</code> to remember all the Unicode characters 
+  that it has processed. The first time that it meets a character it won't be in 
+  the hash, the <code>exists</code> is false, so the <code>else</code> block 
+  executes. It stores an arrayref containing the code page and character number 
+  in that page. That's <STRONG>three</STRONG> things per character, and there 
+  are a lot of characters in Chinese.</P>
+  <P>If it ever sees the same Unicode character again, it prints a warning 
+  message. The warning message is just a string, and this is the only place that 
+  uses the data in <code>%seen</code>. So I changed the code - I pre-formatted 
+  that bit of the error message, and stored a single scalar rather than the 
+  three:</P><PRE>    if (exists $seen{$uch}) {
+        warn sprintf("U%04X is %02X%02X and %04X\n",
+                     $val,$page,$ch,$seen{$uch});
+    }
+    else {
+        $seen{$uch} = $page << 8 | $ch;
+    }</PRE>
+  <P>That reduced the memory usage by a third, and it runs more 
+quickly.</P></DD></DL>
+<h2><A name=step_by_step>Step by step</a></h2>
+<P>How do you make things faster? Well, this is something of a black art, down 
+to trial and error. I'll expand on aspects of these 4 points in the next 
+slides.</P>
+<DL>
+  <DT><a name=item_what_might_be_slow%3f>哪些是慢的？</A> 
+  <DD>你必须找到那些使真正慢的东西。在已足够快的代码上浪费精力是不值得的 - 将其放在能获得最大回报的代码上吧。
+  <DT><A name=item_think_of_re%2dwrite>考虑重写</A> 
+  <DD>不管你怎么咒骂它们，并非所有的代码都能变得快起来。所以剩下真正能加速的是找出另一种能完成同样工作的方法。
+  <DT><A name=item_try_it>尝试</A> 
+  <DD>但是这或许不可行。检查它是<EM>更快</EM>的和给出了同样的结果。
+  <DT><A name=item_note_results>Note results</A> 
+  <DD>Either way, note your results - I find a comment in the code is good. It's 
+  important if an idea didn't work, because it stops you or anyone else going 
+  back and trying the same thing again. And it's important if a change 
+  <EM>does</EM> work, as it stops someone else (such as yourself next month) 
+  tidying up an important optimisation and losing you that hard won speed gain. 
+  <P>By having commented out slower code near the faster code you can look back 
+  and get ideas for other places you might optimise in the same way.</P></DD></DL>
+<h2><A name=small_easy_things>简单的小事</a></h2>
+<P>下面是一些我认为有用的习惯，所以您应当将它们运用到日常程序中。</P>
+<DL>
+  <DT><a name=item_autosplit_and_autoloader><code>AutoSplit</code> 与 
+  <code>AutoLoader</code></A> 
+  <DD>如果您在写模块，使用模块 <EM>AutoSplit</EM> 与 <EM>AutoLoader</EM> 可以使 perl 只加载那些特定程序实际所用到的模块部分。如此您能获得两个好处 - 在开始加载时不浪费 CPU 去倒入您不用的模块部分，还有当代码编译时不浪费 RAM 去保持着编译的结构。所以您的模块能加载更快，和使用更少的 RAM 。
+  <P>一个可能的问题是使用 AutoLoader 让子程序带来调试混乱。当处于测试状态，您能通过在自动加载子程序前添加注释 <code>__END__</code> 来使 <code>AutoLoader</code> 失效。如此一来，它们就普通地被加载，编译和测试了。</P><PRE>  ...
+  1;
+  # While debugging, disable AutoLoader like this:
+  # __END__
+  ...</PRE>
+  <P>当然，为了使 <code>use</code> 正常，您还得在加载程序段的后面另添加 <code>1;</code> 和可能要另一个 <code>__END__</code> 。</P>
+  <P>Schwern notes that commenting out <code>__END__</code> can cause surprises 
+  if the main body of your module is running under <code>use strict;</code> 
+  because now your AutoLoaded subroutines will suddenly find themselves being 
+  run under <code>use strict</code>. This is arguably a bug in the current 
+  <code>AutoSplit</code> - when it runs at install time to generate the files 
+  for <code>AutoLoader</code> to use it doesn't add lines such as <code>use 
+  strict;</code> or <code>use warnings;</code> to ensure that the split out 
+  subroutines are in the same environment as was current at the 
+  <code>__END__</code> statement. This may be fixed in 5.10.</P>
+  <P>Elizabeth Mattijsen notes that there are different memory use versus memory 
+  shared issues when running under <A 
+  href="#item_mod_perl"><code>mod_perl</code></A>, 
+  with different optimal solutions depending on whether your <code>apache</code> 
+  is forking or threaded.</P>
+  <DT><A name=item_%3dpod_%40___end__><code>=pod</code> @ 
+  <code>__END__</code></A> 
+  <DD>如果您用了一大块 pod 来描述你的代码，那么请尽量不要将其放在文件的上面部分。虽然 perl 分析器能很快的跳过 pod ，但是这不是魔法，它还是需要一点时间的。此外，它也需要从磁盘中读入 pod 就为了忽略它。
+<PRE>  #!perl -w
+  use strict;</PRE><PRE>  =head1 You don't want to do that</PRE><PRE>  big block of pod</PRE><PRE>  =cut</PRE><PRE>  ...
+  1;
+  __END__</PRE><PRE>  =head1 You want to do this</PRE>
+  <P>如果您将您的代码放在 <code>__END__</code> 后面，那么 perl 分析器就不会去注意它。这能省下一点点 CPU，但是如果你有一块很大的 pod (>4K) ，那它意味着文件的最后磁盘<code>块</code>将不会被读进 RAM 。这也许能获得某些加速。[A helpful heckler observed that modern raid systems may well 
+  be reading in 64K chunks, and modern OSes are getting good at read ahead, so 
+  not reading a block as a result of <code>=pod</code> @ <code>__END__</code> 
+  may actually be quite rare.]</P>
+  <P>如果你还是将您的 pod （和测试）放在函数代码的旁边（这看起来更是一种好习惯），那么此建议与您无关。</P></DD></DL>
+<h2><A name=needless_importing_is_slow>无关的倒入会变慢</a></h2>
+<P><code>Exporter</code> 是用 perl 所写的。虽然它很快，但也不是即时的。</P>
+<P>许多模块，为了节省您的输入，都默认在您的命名空间内倒出许多函数和符号变量。如果您只有一个参数在 use 后（模块名参数），比如</P><PRE>    use POSIX;          # Exports all the defaults</PRE>
+<P>于是 <code>POSIX</code> 将有用地在您的命名空间内倒出它的默认符号变量列表。如果您在模块名后有一列表，那它只倒出此列表的符号变量。如果列表为空， 不到处任何符号变量：</P><PRE>    use POSIX ();       # Exports nothing.</PRE>
+<P>您仍然可以使用所有的函数和其他符号变量 - 但您必须使用它们的全名，如在前面输入 <code>POSIX::</code> 。许多人说这样实际上让您的代码更干净，而且现在很清楚的知道子程序是在哪定义的。除了这些，它还更快：</P>
+<TABLE cellSpacing=10>
+  <TBODY>
+  <TR>
+    <TD>use POSIX;</TD>
+    <TD>use POSIX <B>()</B>;</TD></TR>
+  <TR>
+    <TD>0.516s</TD>
+    <TD>0.355s</TD></TR>
+  <TR>
+    <TD>use Socket;</TD>
+    <TD>use Socket <B>()</B>;</TD></TR>
+  <TR>
+    <TD>0.270s</TD>
+    <TD>0.231s</TD></TR></TBODY></TABLE>
+<P><code>POSIX</code> 默认倒出一大堆符号变量。如果您使用了不倒出，它在开始就 <EM>少 30% 的时间</EM>。 <code>Socket</code> 能少 15% 的时间。</P>
+<h2><a name=regexps>regexps</a></h2>
+<DL>
+  <DT><a name=item_avoid_%24%26>avoid $&</A> 
+  <DD>The <code>$&</code> variable returns the last text successfully 
+  matched in any regular expression. It's not lexically scoped, so unlike the 
+  match variables <code>$1</code> etc it isn't reset when you leave a block. 
+  This means that to be correct perl has to keep track of it from any match, as 
+  perl has no idea when it might be needed. As it involves taking a copy of the 
+  matched string, it's expensive for perl to keep track of. If you never mention 
+  <code>$&</code>, then perl knows it can cheat and never store it. But if 
+  you (<STRONG>or any module</STRONG>) mentions <code>$&</code> anywhere 
+  then perl has to keep track of it throughout the script, which slows things 
+  down. So it's a good idea to capture the whole match explicitly if that's what 
+  you need. <PRE>    $text =~ /.* rules/;
+    $line = $&;                 # Now every match will copy $& - slow</PRE><PRE>    $text =~ /(.* rules)/;
+    $line = $1;                 # Didn't mention $& - fast</PRE>
+  <DT><A name=item_avoid_use_english%3b>avoid use English;</A> 
+  <DD><code>use English</code> gives helpful long names to all the punctuation 
+  variables. Unfortunately that includes aliasing <code>$&</code> to 
+  <code>$MATCH</code> which makes perl think that it needs to copy every match 
+  into <code>$&</code>, even if you script never actually uses it. In perl 
+  5.8 you can say <code>use English '-no_match_vars';</code> to avoid mentioning 
+  the naughty "word", but this isn't available in earlier versions of perl. 
+  <DT><A name=item_avoid_needless_captures>avoid needless captures</A> 
+  <DD>Are you using parentheses for capturing, or just for grouping? Capturing 
+  involves perl copying the matched string into <code>$1</code> etc, so it all 
+  you need is grouping use a the non-capturing <code>(?:...)</code> instead of 
+  the capturing <code>(...)</code>. 
+  <DT><A name=item_%2f%2e%2e%2e%2fo%3b>/.../<STRONG>o</STRONG>;</A> 
+  <DD>If you define scalars with building blocks for your regexps, and then make 
+  your final regexp by interpolating them, then your final regexp isn't going to 
+  change. However, perl doesn't realise this, because it sees that there are 
+  interpolated scalars each time it meets your regexp, and has no idea that 
+  their contents are the same as before. If your regexp doesn't change, then use 
+  the <code>/o</code> flag to tell perl, and it will never waste time checking 
+  or recompiling it. 
+  <DT><A name=item_but_don%27t_blow_it>but don't blow it</A> 
+  <DD>You can use the <code>qr//</code> operator to pre-compile your regexps. It 
+  often is the easiest way to write regexp components to build up more complex 
+  regexps. Using it to build your regexps once is a good idea. But don't screw 
+  up (like parrot's <code>assemble.pl</code> did) by telling perl to recompile 
+  the same regexp every time you enter a subroutine: <PRE>    sub foo {
+        my $reg1 = qr/.../;
+        my $reg2 = qr/... $reg1 .../;</PRE>
+  <P>You should pull those two regexp definitions out of the subroutine into 
+  package variables, or file scoped lexicals.</P></DD></DL>
+<h2><A name=devel::dprof>Devel::DProf</a></h2>
+<P>You find what is slow by using a profiler. People often guess where they 
+think their program is slow, and get it hopelessly wrong. Use a profiler.</P>
+<P><code>Devel::DProf</code> is in the perl core from version 5.6. If you're 
+using an earlier perl you can <A 
+href="http://search.cpan.org/search?mode=module&query=Devel::DProf">get it 
+from CPAN</A>.</P>
+<P>You run your program with <code>-d:DProf</code></P><PRE>    perl5.8.0 -d:DProf enc2xs.orig -Q -O -o /dev/null ...</PRE>
+<P>which times things and stores the data in a file named <EM>tmon.out</EM>. 
+Then you run <code>dprofpp</code> to process the <EM>tmon.out</EM> file, and 
+produce meaningful summary information. This excerpt is the default length and 
+format, but you can use options to change things - see the man page. It also 
+seems to show up a minor bug in <code>dprofpp</code>, because it manages to 
+total things up to get 106%. While that's not right, it doesn't affect the 
+explanation.</P><PRE>    Total Elapsed Time = 66.85123 Seconds
+      User+System Time = 62.35543 Seconds
+    Exclusive Times
+    %Time ExclSec CumulS #Calls sec/call Csec/c  Name
+     106.   66.70 102.59 218881   0.0003 0.0005  main::enter
+     49.5   30.86 91.767      6   5.1443 15.294  main::compile_ucm
+     19.2   12.01  8.333  45242   0.0003 0.0002  main::encode_U
+     4.74   2.953  1.078  45242   0.0001 0.0000  utf8::unicode_to_native
+     4.16   2.595  0.718  45242   0.0001 0.0000  utf8::encode
+     0.09   0.055  0.054      5   0.0109 0.0108  main::BEGIN
+     0.01   0.008  0.008      1   0.0078 0.0078  Getopt::Std::getopts
+     0.00   0.000 -0.000      1   0.0000      -  Exporter::import
+     0.00   0.000 -0.000      3   0.0000      -  strict::bits
+     0.00   0.000 -0.000      1   0.0000      -  strict::import
+     0.00   0.000 -0.000      2   0.0000      -  strict::unimport</PRE>
+<P>At the top of the list, the subroutine <code>enter</code> takes about half 
+the total CPU time, with 200,000 calls, each very fast. That makes it a good 
+candidate to optimise, because all you have to do is make a slight change that 
+gives a small speedup, and that gain will be magnified 200,000 times. [It turned 
+out that <code>enter</code> was tail recursive, and part of the speed gain I got 
+was by making it loop instead]</P>
+<P>Third on the list is <code>encode_U</code>, which with 45,000 calls is 
+similar, and worth looking at. [Actually, it was trivial code and in the real 
+<code>enc2xs</code> I inlined it]</P>
+<P><code>utf8::unicode_to_native</code> and <code>utf8::encode</code> are 
+built-ins, so you won't be able to change that.</P>
+<P>Don't bother below there, as you've accounted for 90% of total program time, 
+so even if you did a perfect job on everything else, you could only make the 
+program run 10% faster.</P>
+<P><code>compile_ucm</code> is trickier - it's only called 6 times, so it's not 
+obvious where to look for what's slow. Maybe there's a loop with many 
+iterations. But now you're guessing, which isn't good.</P>
+<P>One trick is to break it into several subroutines, just for benchmarking, so 
+that DProf gives you times for different bits. That way you can see where the 
+juicy bits to optimise are.</P>
+<P><code>Devel::SmallProf</code> should do line by line profiling, but every 
+time I use it it seems to crash.</P>
+<h2><a name=benchmark>Benchmark</a></h2>
+<P>现在您已经确定了慢的地方，您还需要在两个代码中找到更快的一个。模块 <code>Benchmark</code> 能让这变得容易。一个特别好的子程序是 <code>cmpthese</code> ，它能摘录代码片段而且绘制图表。<code>cmpthese</code> 可于 perl 5.6 的 <code>Benchmark</code> 里发现。</P>
+<P>因为为了比较各运行 1000 次的两个代码片段 <code>orig</code> 和 <code>new</code> ，您可以这么做</P><PRE>    use Benchmark ':all';
+    
+    sub orig {
+       ...
+    }
+    
+    sub new {
+       ...
+    }
+    
+    cmpthese (10000, { orig => \&orig, new => \&new } );</PRE>
+<P>Benchmark 运行了两者，分别计时，然后输出一个有用的对比图表：</P><PRE>    Benchmark: timing 10000 iterations of new, orig...
+           new:  1 wallclock secs ( 0.70 usr +  0.00 sys =  0.70 CPU) @ 14222.22/s (n=10000)
+          orig:  4 wallclock secs ( 3.94 usr +  0.00 sys =  3.94 CPU) @ 2539.68/s (n=10000)
+            Rate orig  new
+    orig  2540/s   -- -82%
+    new  14222/s 460%   --</PRE>
+<P>很容易看清楚新的代码比原始代码快 4 倍。</P>
+<h2><a name=what_causes_slowness_in_perl>What causes slowness in perl?</a></h2>
+<P>Actually, I didn't tell the whole truth earlier about what causes slowness in 
+perl. [And astute hecklers such as Philip Newton had already told me this]</P>
+<P>When perl compilers your program it breaks it down into a sequence of 
+operations it must perform, which are usually referred to as <EM>ops</EM>. So 
+when you ask perl to compute <code>$a = $b + $c</code> it actually breaks it 
+down into these ops:</P>
+<UL>
+  <LI><a name=item_fetch_%24b_onto_the_stack>Fetch <code>$b</code> onto the 
+  stack</A> 
+  <LI><A name=item_fetch_%24c_onto_the_stack>Fetch <code>$c</code> onto the 
+  stack</A> 
+  <LI><A name=item_add_the_top_two_things_on_the_stack_together%3b_wr>Add the 
+  top two things on the stack together; write the result to the stack</A> 
+  <LI><A name=item_fetch_the_address_of_%24a>Fetch the address of 
+  <code>$a</code></A> 
+  <LI><A name=item_place_the_thing_on_the_top_of_stack_into_that_addr>Place the 
+  thing on the top of stack into that address</A> </LI></UL>
+<P>Computers are fast at simple things like addition. But there is quite a lot 
+of overhead involved in keeping track of "which op am I currently performing" 
+and "where is the next op", and this book-keeping often swamps the time taken to 
+actually run the ops. So often in perl it's the number of ops your program takes 
+to perform its task that is more important than the CPU they use or the RAM it 
+needs. The hit list is</P>
+<OL>
+  <LI>Ops 
+  <LI>CPU 
+  <LI>RAM </LI></OL>
+<P>So what were my example code snippets that I <code>Benchmark</code>ed?</P>
+<P>It was code to split a line of hex 
+(<code>54726164696e67207374796c652f6d61</code>) into groups of 4 digits 
+(<code>5472 6164 696e</code> ...) , and convert each to a number</P><PRE>    sub orig {
+       map {hex $_} $line =~ /(....)/g;
+    }</PRE><PRE>    sub new {
+       unpack "n*", pack "H*", $line;
+    }</PRE>
+<P>The two produce the same results:</P>
+<HR>
+
+<TABLE>
+  <TBODY>
+  <TR>
+    <TH>orig</TH>
+    <TH>new</TH></TR>
+  <TR>
+    <TD>21618, 24932, 26990, 26400, 29556, 31084, 25903, 28001, 26990, 29793, 
+      26990, 24930, 26988, 26996, 31008, 26223, 29216, 29552, 25957, 25646</TD>
+    <TD>21618, 24932, 26990, 26400, 29556, 31084, 25903, 28001, 26990, 29793, 
+      26990, 24930, 26988, 26996, 31008, 26223, 29216, 29552, 25957, 
+  25646</TD></TR></TBODY></TABLE>
+<P>but the first one is much slower. Why? Following the data path from right to 
+left, it starts well with a global regexp, which is only one op and therefore a 
+fast way to generate a list of the 4 digit groups. But that <code>map</code> 
+block is actually an implicit loop, so for each 4 digit block it iterates round 
+and repeatedly calls <code>hex</code>. Thats at least one op for every list 
+item.</P>
+<P>Whereas the second one has no loops in it, implicit or explicit. It uses one 
+<code>pack</code> to convert the hex temporarily into a binary string, and then 
+one <code>unpack</code> to convert that string into a list of numbers. 
+<code>n</code> is big endian 16 bit quantities. I didn't know that - I had to 
+look it up. But when the profiler told me that this part of the original code 
+was a performance bottleneck, the first think that I did was to look at the the 
+pack docs to see if I could use some sort of 
+<code>pack</code>/<code>unpack</code> as a speedier replacement.</P>
+<h2><A name="ops_are_bad,_m'kay1">Ops are bad, m'kay</a></h2>
+<P>You can ask perl to tell you the ops that it generates for particular code 
+with the <code>Terse</code> backend to the compiler. For example, here's a 1 
+liner to show the ops in the original code:</P>
+<P><code>$ perl -MO=Terse -e'map {hex $_} $line =~ /(....)/g;'</code></P><PRE>    LISTOP (0x16d9c8) leave [1]
+        OP (0x16d9f0) enter
+        COP (0x16d988) nextstate
+        LOGOP (0x16d940) mapwhile [2]
+            LISTOP (0x16d8f8) mapstart
+                OP (0x16d920) pushmark
+                UNOP (0x16d968) null
+                    UNOP (0x16d7e0) null
+                        LISTOP (0x115370) scope
+                            OP (0x16bb40) null [174]
+                            UNOP (0x16d6e0) hex [1]
+                                UNOP (0x16d6c0) null [15]
+                                    SVOP (0x10e6b8) gvsv  GV (0xf4224) *_
+                PMOP (0x114b28) match /(....)/
+                    UNOP (0x16d7b0) null [15]
+                        SVOP (0x16d700) gvsv  GV (0x111f10) *line</PRE>
+<P>At the bottom you can see how the match <code>/(....)/</code> is just one op. 
+But the next diagonal line of ops from <code>mapwhile</code> down to the match 
+are all the ops that make up the <code>map</code>. Lots of them. <EM>And</EM> 
+they get run <STRONG>each time round map's loop</STRONG>. [Note also that the 
+<code>{}</code>s mean that map enters scope each time round the loop. That not a 
+trivially cheap op either]</P>
+<P>Whereas my replacement code looks like this:</P>
+<P><code>$ perl -MO=Terse -e'unpack "n*", pack "H*", $line;'</code></P><PRE>    LISTOP (0x16d818) leave [1]
+        OP (0x16d840) enter
+        COP (0x16bb40) nextstate
+        LISTOP (0x16d7d0) unpack
+            OP (0x16d7f8) null [3]
+            SVOP (0x10e6b8) const  PV (0x111f94) "n*"
+            LISTOP (0x115370) pack [1]
+                OP (0x16d7b0) pushmark
+                SVOP (0x16d6c0) const  PV (0x111f10) "H*"
+                UNOP (0x16d790) null [15]
+                    SVOP (0x16d6e0) gvsv  GV (0x111f34) *line</PRE>
+<P>There are less ops in total. And no loops, so all the ops you see execute 
+only once. :-)</P>
+<P>[My helpful hecklers pointed out that it's hard to work out what an op is. 
+Good call. There's roughly one op per symbol (function, operator, variable name, 
+and any other bit of perl syntax). So if you golf down the number of functions 
+and operators your program runs, then you'll be reducing the number of ops.]</P>
+<P>[These were supposed to be the bonus slides. I talked to fast (quelle 
+surprise) and so manage to actually get through the lot with time for 
+questions]</P>
+<h2><a name=memoize>Memoize</a></h2>
+<DL>
+  <DT><a name=item_caches_function_results>Caches function results</A> 
+  <DD>MJD's <code>Memoize</code> follows the grand perl tradition by trading 
+  memory for speed. You tell <code>Memoize</code> the name(s) of functions you'd 
+  like to speed up, and it does symbol table games to transparently intercept 
+  calls to them. It looks at the parameters the function was called with, and 
+  uses them to decide what to do next. If it hasn't seen a particular set of 
+  parameters before, it calls the original function with the parameters. 
+  However, before returning the result, it stores it in a hash for that 
+  function, keyed by the function's parameters. If it has seen the parameters 
+  before, then it just returns the result direct from the hash, without even 
+  bothering to call the function. 
+  <DT><A name=item_for_functions_that_only_calculate>For functions that only 
+  calculate</A> 
+  <DD>This is useful for functions that calculate things with no side effects, 
+  slow functions that you often call repeatedly with the same parameters. It's 
+  not useful for functions that do things external to the program (such as 
+  generating output), nor is it good for very small, fast functions. 
+  <DT><A name=item_can_tie_cache_to_a_disk_file>Can tie cache to a disk file</A> 
+
+  <DD>The hash <code>Memoize</code> uses is a regular perl hash. This means that 
+  you can tie the hash to a disk file. This allows <code>Memoize</code> to 
+  remember things across runs of your program. That way, you could use 
+  <code>Memoize</code> in a CGI to cache static content that you only generate 
+  on demand (but remember you'll need file locking). The first person who 
+  requests something has to wait for the generation routine, but everyone else 
+  gets it straight from the cache. You can also arrange for another program to 
+  periodically expire results from the cache. </DD></DL>
+<P>As of 5.8 <code>Memoize</code> module has been assimilated into the core. 
+Users of earlier perl can <A 
+href="http://search.cpan.org/search?mode=module&query=Memoize">get it from 
+CPAN</A>.</P>
+<h2><A name=miscellaneous>Miscellaneous</a></h2>
+<P>These are quite general ideas for optimisation that aren't particularly perl 
+specific.</P>
+<DL>
+  <DT><a name=item_pull_things_out_of_loops>Pull things out of loops</A> 
+  <DD>perl's hash lookups are fast. But they aren't as fast as a lexical 
+  variable. <code>enc2xs</code> was calling a function each time round a loop 
+  based on a hash lookup using <code>$type</code> as the key. The value of 
+  <code>$type</code> didn't change, so I pulled the lookup out above the loop 
+  into a lexical variable: <PRE>    my $type_func = $encode_types{$type};</PRE>
+  <P>and doing it only once was faster.</P>
+  <DT><A name=item_experiment_with_number_of_arguments>Experiment with number of 
+  arguments</A> 
+  <DD>Something else I found was that <code>enc2xs</code> was calling a function 
+  which took several arguments from a small number of places. The function 
+  contained code to set defaults if some of the arguments were not supplied. I 
+  found that the way the program ran, most of the calls passed in all the values 
+  and didn't need the defaults. Changing the function to not set defaults, and 
+  writing those defaults out explicitly where needed bought me a speed up. 
+  <DT><A name=item_tail_recursion>Tail recursion</A> 
+  <DD>Tail recursion is where the last thing a function does it call itself 
+  again with slightly different arguments. It's a common idiom, and some 
+  languages can automatically optimise it away. Perl is not one of those 
+  languages. So every time a function tail recurses you have another subroutine 
+  call [not cheap - Arthur Bergman notes that it is 10 pages of C source, and 
+  will blow the instruction cache on a CPU] and re-entering that subroutine 
+  again causes more memory to be allocated to store a new set of lexical 
+  variables [also not cheap]. 
+  <P>perl can't spot that it could just throw away the old lexicals and re-use 
+  their space, but <EM>you</EM> can, so you can save CPU and RAM by re-writing 
+  your tail recursive subroutines with loops. In general, trying to reduce 
+  recursion by replacing it with iterative algorithms should speed things 
+  up.</P></DD></DL>
+<h2><A name=yay_for_y>yay for y</a></h2>
+<P><code>y</code>, or <code>tr</code>, is the transliteration operator. It's not 
+as powerful as the general purpose regular expression engine, but for the things 
+it can do it is often faster.</P>
+<DL>
+  <DT><a name=item_tr%2f%21%2f%2f_%23_fastest_way_to_count_chars>tr/!// # 计算字符次数的更快的方法</A> 
+  <DD><code>tr</code> 并不删除字符除非你使用了 <code>/d</code> 。如果你没有任何代替字符操作，它使用了只读。在标量上下文中，它返回匹配字符的次数。这是一种最快速的方法来计算单字符或字符串被匹配的次数。（它比在列表上下文上使用 <code>m/.../g</code> 要快。但是如果你只是检查某字符是否出现一次以上，那请使用 <code>m/.../</code> ，因为它会在第一次检查到就停止，而 <code>tr///</code> 会检查到最后）
+  <DT><A name=item_tr/>tr/q/Q/ 比 s/q/Q/g 更快</A> 
+  <DD><code>tr</code> is also faster than the regexp engine for doing 
+  character-for-character substitutions. 
+  <DT>tr/a-z//d 比 s/[a-z]//g 更快
+  <DD><code>tr</code> is faster than the regexp engines for doing character 
+  range deletions. [When writing the slide I assumed that it would be faster for 
+  single character deletions, but I <code>Benchmark</code>ed things and found 
+  that <code>s///g</code> was faster for them. So never guess timings; always 
+  test things. You'll be surprised, but that's better than being wrong] </DD></DL>
+<h2><A name="ops_are_bad,_m'kay2">Ops are bad, m'kay</a></h2>
+<P>Another example lifted straight from <code>enc2xs</code> of something that I 
+managed to accelerate quite a bit by reducing the number of ops run. The code 
+takes a scalar, and prints out each byte as \x followed by 2 digits of hex, as 
+it's generating C source code:</P><PRE>    #foreach my $c (split(//,$out_bytes)) {
+    #  $s .= sprintf "\\x%02X",ord($c);
+    #}
+    # 9.5% faster changing that loop to this:
+    $s .= sprintf +("\\x%02X" x length $out_bytes), unpack "C*", $out_bytes;</PRE>
+<P>The original makes a temporary list with <code>split</code> [not bad in 
+itself - ops are more important than CPU or RAM] and then loops over it. Each 
+time round the loop it executes several ops, including using ord to convert the 
+byte to its numeric value, and then using sprintf with the format 
+<code>"\\x%02X"</code> to convert that number to the C source.</P>
+<P>The new code effectively merges the <code>split</code> and looped 
+<code>ord</code> into one op, using <code>unpack</code>'s <code>C</code> format 
+to generate the list of numeric values directly. The more interesting (arguably 
+sick) part is the format to <code>sprintf</code>, which is inside 
+<code>+(...)</code>. You can see from the <code>.=</code> in the original that 
+the code is just concatenating the converted form of each byte together. So 
+instead of making <code>sprintf</code> convert each value in turn, only for perl 
+ops to stick them together, I use <code>x</code> to replicate the per-byte 
+format string once for each byte I'm about to convert. There's now one 
+<code>"\\x%02X"</code> for each of the numbers in the list passed from 
+<code>unpack</code> to <code>sprintf</code>, so sprintf just does what it's 
+told. And <code>sprintf</code> is faster than perl ops.</P>
+<h2><a name=how_to_make_perl_fast_enough>How to make perl fast enough</a></h2>
+<DL>
+  <DT><A name=item_use_the_language%27s_fast_features>use the language's fast 
+  features</A> 
+  <DD>You have enormous power at your disposal with regexps, <code>pack</code>, 
+  <code>unpack</code> and <code>sprintf</code>. So why not use them? 
+  <P>All the <code>pack</code> and <code>unpack</code> code is implemented in 
+  pure C, so doesn't have any of the book-keeping overhead of perl ops. 
+  <code>sprintf</code> too is pure C, so it's fast. The regexp engine uses its 
+  own private bytecode, but it's specially tuned for regexps, so it runs much 
+  faster than general perl code. And the implementation of <code>tr</code> has 
+  less to do than the regexp engine, so it's faster.</P>
+  <P>For maximum power, remember that you can generate regexps and the formats 
+  for <code>pack</code>, <code>unpack</code> and <code>sprintf</code> at run 
+  time, based on your data.</P>
+  <DT><A name=item_give_the_interpreter_hints>give the interpreter hints</A> 
+  <DD>Make it obvious to the interpreter what you're up to. Avoid 
+  <code>$&</code>, use <code>(?:...)</code> when you don't need capturing, 
+  and put the <code>/o</code> flag on constant regexps. 
+  <DT><A name=item_less_ops>less OPs</A> 
+  <DD>Try to accomplish your tasks using less operations. If you find you have 
+  to optimise an existing program then this is where to start - golf is good, 
+  but remember it's run time strokes not source code strokes. 
+  <DT><A name=item_less>less CPU</A> 
+  <DD>Usually you want to find ways of using less CPU. 
+  <DT>less RAM 
+  <DD>but don't forget to think about how your data structures work to see if 
+  you can make them use less RAM. </DD></DL></div></div>
+<p><&lt;Previous: <a href="DBI.html">DBI</a>&nbsp;&nbsp;>>Next: <a href="Gallery.html">Gallery缩略图制作</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=When%20perl%20is%20not%20quite%20fast%20enough&url=http://www.fayland.org/journal/Faster.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='DBI.html'>DBI</a> < <span class='digit'>2004-10-30 18:50:50</span> ></li><li><a href='050330.html'>Class::DBI 改 Primary 项</a> < <span class='digit'>2005-03-30 22:27:07</span> ></li></ul>
+Created on <span class="digit">2004-10-30 19:00:47</span>, Last modified on <span class="digit">2005-03-28 12:58:33</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

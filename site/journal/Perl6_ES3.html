@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>my Perl6 @Examples[3]</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="ShareURL0505.html">Share the URLs with u (May 2005)</a>&nbsp;&nbsp;>>Next: <a href="Quiz.html">Perl Quiz/小测试</a></p>
+<h1>my Perl6 @Examples[3]</h1>
+<div class='content'>
+<p>Category: <a href='Perl6.html'>Perl6</a> &nbsp; Keywords: <b>type perl6</b></p><p>Perl 6 中引进了类型(Type). 当然，你也可以像 Perl 5 一样不使用这东西。但类型所带来的诱惑是不能抵挡的。</p>
+
+<p>Perl 6 中内建的对象类型以大写字母开头：Int, Num, Str, Bit, Ref, Scalar, Array, Hash, Rule 和 Code.<br />
+非对象（值）类型全是小写字母：int, num, str, bit, 和 ref.</p>
+
+<h3>指定变量的类型</h3>
+在 Perl 5 中你没有（简单的）方法来生成一个只能存储数字的标量或生成一个引用只指向 Dog 这个类的对象。<br />
+同样的，你也很难生成一个只能含字符串的数组或是指定一个散列的值只能是数字数组的引用。<br />
+在 Perl 6 中，这种指定将变得非常简单。
+<pre>my Int $number;
+my Dog $obj_ref;
+my Str @strings;
+my Array of Num %counters;</pre>
+看看下面的例子：
+<pre>my int @array is MyArray;</pre>
+它的意思是你声明了 @array 里的元素都为整数，而这个数组本身是一个 MyArray 类。
+
+<h3>类型在子程序里的应用</h3>
+<pre>sub Num mean(Int @vals) {
+  return sum(@vals)/@vals;
+}</pre>
+指定 mean 函数接受一个整数数组并返回一个数。你也可以这么写：
+<pre>sub mean(Int @vals) returns Num {
+   return sum(@vals)/@vals;
+}</pre>
+我们进一步扩展这功能，要求返回的是数组，并且数组里的元素只能是整形：
+<pre>sub hist(Int @vals) returns Array of Int {
+  my Int @histogram;
+  for @vals { @histogram[$_]++ }
+  return @histogram;
+}</pre>
+这里我们用 of 来生成了一个复合类型。“内部类型”（of 后面）指定了“外部类型”（of 后面）的数据存储类型。
+
+<h3>传递多个数组</h3>
+在 Perl 5 中传递多个数组我们一般都得用引用。如
+<pre>sub func {
+    my ($a_ref, $b_ref) = @_;
+    my @a = @$a_ref;my @b = @$b_ref;
+
+    # &func(\@a, \@b);
+</pre>
+在 Perl 6 中可以直接传递多个数组，下面的例子是可行的：
+<pre>sub func (Array @a, Array @b) {
+    say +@a, +@b;
+}
+
+my @a1 = (1,2,3);
+my @a2 = (4,5,6,7);
+
+&func(@a1, @a2); # 3,4</pre>
+散列也一样，用 Hash %hash 就能传递整个散列。<br />
+甚至我们可以省略 sub func (Array @a, Array @b) 里的 Array, Perl 6 会自动搞定。<br />
+不过请注意：省略类型 Array 的话，我们传递两个标量参数给 func 时是不会报错的。
+
+<h3>Am I correct?</h3>
+It's not finished. I'll add something later.</div>
+<p><&lt;Previous: <a href="ShareURL0505.html">Share the URLs with u (May 2005)</a>&nbsp;&nbsp;>>Next: <a href="Quiz.html">Perl Quiz/小测试</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=my%20Perl6%20@Examples%5B3%5D&url=http://www.fayland.org/journal/Perl6_ES3.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Perl6_ES16.html'>my subtype Examples16 of Perl6 where /^kissu$/</a> < <span class='digit'>2005-06-04 23:59:29</span> ></li><li><a href='050928_tapl.html'>Types and Programming Languages</a> < <span class='digit'>2005-09-28 16:37:09</span> ></li><li><a href='prototype_FormSubmit.html'>用 prototype 来写 Ctrl+Enter 提交表单</a> < <span class='digit'>2005-11-25 21:44:37</span> ></li><li><a href='Perl6_ES14.html'>has $.Examples14 handles 'Perl6';</a> < <span class='digit'>2005-06-02 01:38:59</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li><li><a href='Perl6_ES0.html'>@Examples[0] is Perl6</a> < <span class='digit'>2005-05-19 20:26:08</span> ></li><li><a href='Perl6_ES1.html'>given @Examples[1] when Perl6</a> < <span class='digit'>2005-05-19 22:05:56</span> ></li><li><a href='Perl6_ES2.html'>@Perl6 <== @Examples xx 2</a> < <span class='digit'>2005-05-20 18:53:54</span> ></li><li><a href='Perl6_ES4.html'>say q:2 '@*Examples.[4] &Perl6()';</a> < <span class='digit'>2005-05-22 12:24:12</span> ></li><li><a href='Perl6_ES5.html'>sub Perl6 (*@Examples[5] is copy)</a> < <span class='digit'>2005-05-22 15:37:26</span> ></li><li><a href='Perl6_ES6.html'>multi sub Examples (6, Perl6) {...}</a> < <span class='digit'>2005-05-23 22:43:33</span> ></li><li><a href='Perl6_ES7.html'>sub infix:<(7)> ($Perl6, @Examples)</a> < <span class='digit'>2005-05-24 02:16:42</span> ></li><li><a href='Perl6_ES8.html'>let @Examples[8] = 'Perl6';</a> < <span class='digit'>2005-05-24 13:05:58</span> ></li><li><a href='Perl6_ES9.html'>Perl6 | Examples & 9 ^ junction</a> < <span class='digit'>2005-05-26 12:35:29</span> ></li><li><a href='Perl6_ES10.html'>%Examples{'IO'} = open('Perl6');</a> < <span class='digit'>2005-05-30 00:24:01</span> ></li><li><a href='Perl6_ES11.html'>class Examples11 is Perl6 { ... }</a> < <span class='digit'>2005-05-30 13:31:31</span> ></li><li><a href='Perl6_ES12.html'>$Perl6 = $class.bless(:Example<12>);</a> < <span class='digit'>2005-05-31 11:38:46</span> ></li><li><a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> < <span class='digit'>2005-05-31 18:22:03</span> ></li><li><a href='Perl6_ES17.html'>my enum Example17 <<:Perl(6) Today>></a> < <span class='digit'>2005-06-05 12:14:08</span> ></li><li><a href='Perl6_ES18.html'>my $queen; rule me {Perl6|Examples18}</a> < <span class='digit'>2005-06-06 12:26:32</span> ></li><li><a href='Perl6_ES19.html'>m:nth(19)/Perl6Examples/</a> < <span class='digit'>2005-06-06 22:02:01</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li></ul>
+Created on <span class="digit">2005-05-21 13:53:16</span>, Last modified on <span class="digit">2005-05-22 15:52:01</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

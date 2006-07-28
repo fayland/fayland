@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>dp.SyntaxHighlighter testing</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+	<link type="text/css" rel="stylesheet" href="SyntaxHighlighter.css"></link>
+
+	<style>
+	/* @import url(SyntaxHighlighter.css); */
+
+	body {
+		font-family: Arial;
+		font-size: 12px;
+	}
+	</style>
+</head>
+
+<body bgcolor="#cecece">
+	
+<textarea name="code" class="perl">
+package Eplanet;
+
+use strict;
+use lib 'E:\svn\Catalyst\trunk\Catalyst\lib'; # the svn directory
+use Catalyst qw/-Debug Static::Simple/;
+use YAML (); # load the config
+use Class::Date qw/:errors date now/; # for new,update in list.tt
+
+our $VERSION = '0.04';
+
+# load the YAML Eplanet.yml config file
+Eplanet->config(
+	YAML::LoadFile(__PACKAGE__->config->{'home'} . '/Eplanet.yml')
+);
+Eplanet->setup;
+
+sub begin : Private {
+	my ( $self, $c ) = @_;
+	# if the last part of the url is build, set the "build" as 1.
+	$c->stash->{build} = (pop eq 'build')?'1':'0';
+	# date now, for list,add,edit etc.
+	$c->stash->{date_now} = now;
+	$c->stash( CatalystVersion => $Catalyst::VERSION );
+}
+
+sub default : Private {
+    my ( $self, $c ) = @_;
+    #$c->res->output('Congratulations, NewApp is on Catalyst!');
+    $c->res->redirect('list') unless ($c->req->path); # if nothing, redirect to list
+}
+
+sub end : Private {
+	my ( $self, $c ) = @_;
+	my $handled = ($c->res->output or $c->res->redirect);
+	# by default, the template name is the same as action
+	if (! $c->stash->{template} && -e ($c->config->{root} . '/' . $c->req->action . '.tt')) {
+		$c->stash->{template} = $c->req->action . '.tt';
+	}
+	# if no output or not redirect, handle it by template
+	if (! $handled && $c->stash->{template}) {
+		$c->forward('Eplanet::V::TT');
+	}
+	# if no template, just error 'no output' by default to remind me
+	die "Woo!"; debug screen if ($c->req->param('dump') == 1);
+	
+	continue foreach require package scalar format unless local until
+	while elsif next last goto else redo sub for use no if my our
+	
+	getprotobynumber getprotobyname getservbyname gethostbyaddr gethostbyname
+	getservbyport getnetbyaddr getnetbyname getsockname getpeername setpriority
+	getprotoent setprotoent getpriority endprotoent getservent setservent endservent
+	sethostent socketpair getsockopt gethostent endhostent setsockopt setnetent
+	quotemeta localtime prototype getnetent endnetent rewinddir wantarray
+	getpwuid closedir getlogin readlink endgrent getgrgid getgrnam shmwrite
+	shutdown readline endpwent setgrent readpipe formline truncate dbmclose
+	syswrite setpwent getpwnam getgrent getpwent ucfirst sysread setpgrp
+	shmread sysseek sysopen telldir defined opendir connect lcfirst getppid
+	binmode syscall sprintf getpgrp readdir seekdir waitpid reverse unshift
+	symlink dbmopen semget msgrcv rename listen chroot msgsnd shmctl accept
+	unpack exists fileno shmget system unlink printf gmtime msgctl semctl values
+	rindex substr splice length msgget select socket return caller delete alarm
+	ioctl index undef lstat times srand chown fcntl close write umask rmdir study
+	sleep chomp untie print utime mkdir atan2 split crypt flock chmod BEGIN bless
+	chdir semop shift reset link stat chop grep fork dump join open tell pipe exit
+	glob warn each bind sort pack eval push keys getc kill seek sqrt send wait
+	rand tied read time exec recv eof chr int ord exp pos pop sin log abs oct
+	hex tie cos vec END ref map die __DATA__ __END__ __PACKAGE__ qw qq qr lc do
+	@_ $_
+	
+	-C -b -S -u -t -p -l -d -f -g -s -z uc -k -e -O -T -B -M -A -X -W -c -R -o -x  -w -r
+	
+	xor and not cmp or ne eq ge le gt lt ->
+	||= ... .= x= %= /= *= -= += =~ ** -- .. ||  ++ ^= |=  ,  : ? ^ | x % / * < 
+	& \ ~ !  . - +  <<= <=> &&= => !~ &= != >= <= >> << = > -> = \&\& ==
+}
+
+1;
+</textarea>
+
+<script class="javascript" src="shCore.js"></script>
+<script class="javascript" src="shBrushPerl.js"></script>
+<script class="javascript">
+dp.SyntaxHighlighter.HighlightAll('code');
+</script>
+
+</body>
+</html>

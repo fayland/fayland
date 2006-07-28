@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>从我出生来过去多久了？</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="NetSMTP.html">如何用Net::SMTP发送邮件</a>&nbsp;&nbsp;>>Next: <a href="open.html">关于open的"+<"模式</a></p>
+<h1>从我出生来过去多久了？</h1>
+<div class='content'>
+<p>Category: <a href='Script.html'>Script</a> &nbsp; Keywords: <b>Time::Local</b></p><h2>简单描述</h2>
+近日闲来无事，写个小程序冶冶情。<br>
+程序的用途是看看从我出生以来过了多长时间了？虽然我有年的概念可没有秒分时天的概念。<br>
+程序很简单，大部分脏累的工作都由Time::Local完成了。最核心的代码为：
+<pre>
+my $in_time = timelocal($sec,$min,$hour,$day,$mon,$year);
+</pre>
+timelocal可以把我们所能看懂的年月日等换回1970年到现在的秒，它的功能与localtime正好反一下。<br>
+写的这么长就因为要写成Web格式。麻烦了点。<br>
+可以点击<a href="http://www.1313s.com/cgi-bin/App.cgi?q=time">http://www.1313s.com/cgi-bin/App.cgi?q=time</a>来看看你已经活了多少秒？
+<h2>Code</h2>
+<pre>
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI::Carp qw(fatalsToBrowser);
+use CGI qw/:cgi/;
+use Time::Local qw/timelocal/;
+
+my $cgi = new CGI;
+print $cgi->header(-charset=>'gb2312');
+
+&interface unless ($cgi->param('year'));
+
+my $sec = $cgi->param('sec');
+my $min = $cgi->param('min');
+my $hour = $cgi->param('hour');
+my $day = $cgi->param('day');
+my $mon = $cgi->param('mon');
+my $year = $cgi->param('year');
+$sec =~ /^[0-9]{1,2}$/ and $sec >= 0 and $sec < 60 
+	or &interface("秒");
+$min =~ /^[0-9]{1,2}$/ and $min >= 0 and $min < 60 
+	or &interface("分");
+$hour =~ /^[0-9]{1,2}$/ and $hour >= 0 and $hour < 24 
+	or &interface("时");
+$day =~ /^[0-9]{1,2}$/ and $day > 0 and $day < 32 
+	or &interface("日");
+$mon =~ /^[0-9]{1,2}$/ and $mon > 0 and $mon < 13
+	or &interface("月");
+$year =~ /^[0-9]{4}$/ and $year > 1970
+	or &interface("年");
+
+$mon--;
+my $in_time = timelocal($sec,$min,$hour,$day,$mon,$year);
+my $now = time;
+
+&interface("年") if ($in_time > $now);
+
+$sec = $now - $in_time;
+$min = int($sec/60);
+$hour = int($min/60);
+$day = int($hour/24);
+<code>
+print "您总共过了 &lt;b>$sec&lt;/b> 秒，&lt;b>$min&lt;/b> 分， &lt;b>$hour&lt;/b> 小时， &lt;b>$day&lt;/b> 天&lt;br>请珍惜时间！";
+
+sub interface {
+	my $error = shift;
+	print qq~&lt;h2>&lt;font color='red'>您所输入的$error有误，请查阅后再提交&lt;/font>&lt;/h2>~ if ($error);
+	print &lt;&lt;HTML;
+&lt;form>
+查看从你出生以来过了几秒几分几小时几天。&lt;br>
+请输入您的生日：&lt;br>
+&lt;input type=text name=year size=4 value='$year'>年
+&lt;input type=text name=mon size=2 value='$mon'>月
+&lt;input type=text name=day size=2 value='$day'>日
+&lt;input type=text name=hour size=2 value='$hour'>时
+&lt;input type=text name=min size=2 value='$min'>分
+&lt;input type=text name=sec size=2 value='$sec'>秒&lt;br>
+&lt;input type=submit>&lt;/form>
+HTML</code>
+	exit;
+}
+</pre></div>
+<p><&lt;Previous: <a href="NetSMTP.html">如何用Net::SMTP发送邮件</a>&nbsp;&nbsp;>>Next: <a href="open.html">关于open的"+<"模式</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=%E4%BB%8E%E6%88%91%E5%87%BA%E7%94%9F%E6%9D%A5%E8%BF%87%E5%8E%BB%E5%A4%9A%E4%B9%85%E4%BA%86%EF%BC%9F&url=http://www.fayland.org/journal/TimePassed.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='NetSMTP.html'>如何用Net::SMTP发送邮件</a> < <span class='digit'>2004-11-26 18:38:11</span> ></li><li><a href='EmailWithAttachment.html'>发送邮件附件</a> < <span class='digit'>2005-03-23 22:18:40</span> ></li></ul>
+Created on <span class="digit">2004-12-10 17:45:07</span>, Last modified on <span class="digit">2005-01-11 18:19:02</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

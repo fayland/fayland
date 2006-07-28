@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Kwiki 安装笔记</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="IPaddress.html">如何寻找用户真实IP</a>&nbsp;&nbsp;>>Next: <a href="LBPostMachine.html">LB Post Machine</a></p>
+<h1>Kwiki 安装笔记</h1>
+<div class='content'>
+<p>Category: <a href='InstallNote.html'>InstallNote</a> &nbsp; Keywords: <b>Kwiki</b></p>如果可以，不妨先试试<a href='#11_9'>最下面</a>的那种最简单的方法。<p>
+
+下载最新版本的Kwiki，Kwiki的homepage: <a href="http://www.kwiki.org">http://www.kwiki.org</a>.<br>
+Kwiki的整个程序系统就是一个index.cgi然后调用Kwiki的模块。所有的Kwiki功能都有模块所成。这里暂时不讨论程序问题。讲讲我在Win32下的安装（其他OS类似）。<br>
+Kwiki程序还调用了Kwiki作者写的另两个模块，而它们没打包在下载来的Kwiki_*.tar.gz中。所以必须先安装这两个模块。IO::All,Spoon。与其他模块安装同，可以通过cpan安装。<br>
+模块安装完毕后，进入目录：
+<pre>
+% perl Makefile.PL
+% make test
+% make install
+</pre>
+注：Win32下为nmake，没有此程序的朋友可以参考<a href="Win32.html">Win32</a>。<br>
+上述三行将Kwiki的一系列模块加入perl目录的site/lib里。<br>
+我解压缩后的目录位置置于cgi-bin目录下，所有接下来执行README所说的：
+<pre>
+% perl kwiki -new Kwiki
+</pre>
+将其安装到Kwiki目录中。到此，简单的Kwiki安装完毕。可以通过http://localhost|url/cgi-bin/Kwiki/index.cgi访问。<br>
+不过这样的Kwiki功能薄弱，还需要安装一些plugins.visit <a href="http://www.kwiki.org/?KwikiPluginList">http://www.kwiki.org/?KwikiPluginList</a>.我所选择的plugin为Kwiki::UserPreferences, Kwiki::GuestBook, Kwiki::NewPage.其他plugin的安装方式相同。安装plugin非常简单，只需要安装其对应的模块就成了。安装方法与安装IO::All,Spoon一样。<br>
+安装完毕后，将解压缩包里的kwiki文件移到cgi-bin/Kwiki目录下，然后执行：
+<pre>
+% perl kwiki -add Kwiki::UserPreferences Kwiki::GuestBook Kwiki::NewPage
+</pre>
+到此Kwiki安装结束。<p />
+<h2>Added @ 2004/8/22</h2>
+<p>更新plugins的另一种方法，在<a href="http://www.kwiki.org">http://www.kwiki.org</a>上也有介绍。<br>
+<ol>
+<li>安装plugin模块
+<li>在plugins文件里增加模块名称
+<li>执行 perl kwiki -update
+</ol>
+follows is my plugins:
+<pre>
+Kwiki::Display
+Kwiki::Edit
+Kwiki::Htaccess
+Kwiki::Theme::Basic
+Kwiki::Toolbar
+Kwiki::Status
+Kwiki::Widgets
+Kwiki::UserName
+Kwiki::GuestBook
+Kwiki::UserPreferences
+Kwiki::NewPage
+Kwiki::Search
+Kwiki::Archive::Rcs
+Kwiki::RecentChanges
+Kwiki::Revisions
+</pre>
+</p>
+<h2><a name="11_9">Added @ 2004/11/9</a></h2>
+
+重装了次系统。发现只用
+<pre>cpan Kwiki</pre>
+就可以了。它会自动查找关联模块。并在Perl/bin目录下生成kwiki.bat与kwiki文件。<br>
+安装完成后，cmd进入console. 比如我安装在E:\Fayland\cgi-bin\Kwiki目录下。
+<pre>E:\Fayland>kwiki -new cgi-bin\Kwiki</pre></div>
+<p><&lt;Previous: <a href="IPaddress.html">如何寻找用户真实IP</a>&nbsp;&nbsp;>>Next: <a href="LBPostMachine.html">LB Post Machine</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Kwiki%20%E5%AE%89%E8%A3%85%E7%AC%94%E8%AE%B0&url=http://www.fayland.org/journal/Kwiki.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Kwiki_formatter.html'>Kwiki Formatter</a> < <span class='digit'>2005-04-14 22:42:55</span> ></li></ul>
+Created on <span class="digit">2004-10-30 19:06:42</span>, Last modified on <span class="digit">2004-11-11 00:23:37</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

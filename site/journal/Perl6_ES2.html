@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>@Perl6 <== @Examples xx 2</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="Perl6_ES1.html">given @Examples[1] when Perl6</a>&nbsp;&nbsp;>>Next: <a href="ShareURL0505.html">Share the URLs with u (May 2005)</a></p>
+<h1>@Perl6 <== @Examples xx 2</h1>
+<div class='content'>
+<p>Category: <a href='Perl6.html'>Perl6</a> &nbsp; Keywords: <b>Operators Perl6</b></p><p>本文介绍了一些新的操作符，未完成。</p>
+
+<p><a href='#O1'><b>~</b></a>, <a href='#O2'>??::</a>, <a href='#O3'><b>//</b></a>, <a href='#O4'><b>x</b>, <b>xx</b></a>, <a href='#O5'><b>==></b>, <b><==</b></a>, <a href='#O7'><b>:</b></a>, <a href='#O8'><b>:=</b>, <b>::=</b>, <b>=:=</b></a>, <a href='#O9'>»«, >><<</a></p>
+
+<ol>
+<li><a name='O1'><b>~</b></a> 将它的参数强制为字符串上下文，<b>+</b> 强制为数字上下文，<b>?</b> 强制为布尔型上下文，<b>*</b> 为列表上下文。
+<pre>+@foo        # @foo.elems 获得数组的个数
+~@foo        # join ' ', @foo
+?@foo        # ? @foo.elems
++%foo        # +%foo.keys</pre>
+<li>条件操作符由原来的 ?: 变为 <a name='O2'>??::</a>
+<li>操作符 <a name='O3'><b>//</b></a> 与 || 不同的是查看左侧的是否定义（即使为假也没事），而 || 查看是否为真。
+<li><a name='O4'><b>x</b> 和 <b>xx</b></a>, x 操作 scalar, xx 操作 array
+<pre>my $twin = "Lintilla";
+$twin x= 2;          # "LintillaLintilla"
+
+@array = "Lintilla" xx 3; # ("Lintilla", "Lintilla", "Lintilla")
+
+@array = (4, 2);
+@array xx= 2;              # now (4, 2, 4, 2)</pre>
+<li>新操作符 <a name='O5'><b>==></b> 和 <b><==</b></a> 它作用于参数和返回值都是列表的函数。以前用 map grep 写很长的代码，要从右往左看比较别扭。用这两操作符可以看起来比较清晰。
+<pre># Perl 5
+@result = map { floor($^x / 2) } grep { /^ \d+ $/ } @data;</pre>
+<pre># Perl 6
+@data ==> grep { /^ \d+ $/ }
+      ==> map { floor($^x / 2) }
+      ==> @result;
+# or
+@result <== map { floor($^x / 2) }
+        <== grep { /^ \d+ $/ }
+        <== @data;</pre>
+<li><a name='O6'><b>:</b></a> 的意思：
+<pre>feed $hacker: 'Pizza and cola'; # 等同于 $hacker.feed('Pizza and cola');</pre>
+<li><a name='O8'><b>:=</b>, <b>::=</b>, <b>=:=</b></a>. := 称为绑定，我们将不再有 typeglob 类型，而用 := 来代替。::= 与 := 做相同的事情，不同的是 ::= 是运行在编译时。=:= 用以比较两个变量是否绑定。
+<pre>my $x = 'Just Another';
+my $y := $x;
+$y = 'Perl Hacker'; # $x 和 $y 都变为 'Perl Hacker'
+
+print '$x is the same as $y' if $x =:= $y; # true
+
+my $z := $y;
+print '$x is the same as $y' if $x =:= $z; # true
+</pre>
+<li>我们管这种操作符 <a name='O9'>»«, >><<</a> 为向量操作符。它对数组操作并返回数组。每一个操作符（包括你自己定义的）都有对应的向量操作符。因为它默认的上下文是数组，所以当一边是标量时会将标量扩充为数组。例子：
+<pre>print join('-', (1,1,2,3,5) »+« (1,2,3,5,1)); # 2-3-5-8-6
+print join('-', (1,4,2,3,5) >>-<< 1); # 右边为标量扩充为 (1,1,1,1,1), 结果为 0-3-1-2-4
+print join('-', (1,4,2,3,5) »-« (1,1)); # 目前 pugs 是将右边补齐为 (1,1,undef,undef,undef), 结果为 0-3-2-3-5</pre>
+我们不仅有二元向量操作符，还有一元的（左操作符加«，»加右操作符）：
+<pre>@negatives = -« @positives; # 所有元素前加负号
+@a »++; # 每个元素加 1
+("f","oo","bar")».length;   # (1,2,3)
+@objects ».run(); # 每个 @objects 元素都执行 run()</pre>
+方法调用为 postfix, 不是 infix, 所以是加 ». 后面没有 «<br />
+因为在 ASCII 下不能输出 »«, 所以我们用 >><<来代替。
+</ol>
+
+<h3>Correction is welcomed</h3>
+God bless us.</div>
+<p><&lt;Previous: <a href="Perl6_ES1.html">given @Examples[1] when Perl6</a>&nbsp;&nbsp;>>Next: <a href="ShareURL0505.html">Share the URLs with u (May 2005)</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=@Perl6%20%3C==%20@Examples%20xx%202&url=http://www.fayland.org/journal/Perl6_ES2.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Perl6_ES14.html'>has $.Examples14 handles 'Perl6';</a> < <span class='digit'>2005-06-02 01:38:59</span> ></li><li><a href='050519.html'>Synopsis localization</a> < <span class='digit'>2005-05-19 11:21:25</span> ></li><li><a href='Perl6_ES0.html'>@Examples[0] is Perl6</a> < <span class='digit'>2005-05-19 20:26:08</span> ></li><li><a href='Perl6_ES1.html'>given @Examples[1] when Perl6</a> < <span class='digit'>2005-05-19 22:05:56</span> ></li><li><a href='Perl6_ES3.html'>my Perl6 @Examples[3]</a> < <span class='digit'>2005-05-21 13:53:16</span> ></li><li><a href='Perl6_ES4.html'>say q:2 '@*Examples.[4] &Perl6()';</a> < <span class='digit'>2005-05-22 12:24:12</span> ></li><li><a href='Perl6_ES5.html'>sub Perl6 (*@Examples[5] is copy)</a> < <span class='digit'>2005-05-22 15:37:26</span> ></li><li><a href='Perl6_ES6.html'>multi sub Examples (6, Perl6) {...}</a> < <span class='digit'>2005-05-23 22:43:33</span> ></li><li><a href='Perl6_ES7.html'>sub infix:<(7)> ($Perl6, @Examples)</a> < <span class='digit'>2005-05-24 02:16:42</span> ></li><li><a href='Perl6_ES8.html'>let @Examples[8] = 'Perl6';</a> < <span class='digit'>2005-05-24 13:05:58</span> ></li><li><a href='Perl6_ES9.html'>Perl6 | Examples & 9 ^ junction</a> < <span class='digit'>2005-05-26 12:35:29</span> ></li><li><a href='Perl6_ES10.html'>%Examples{'IO'} = open('Perl6');</a> < <span class='digit'>2005-05-30 00:24:01</span> ></li><li><a href='Perl6_ES11.html'>class Examples11 is Perl6 { ... }</a> < <span class='digit'>2005-05-30 13:31:31</span> ></li><li><a href='Perl6_ES12.html'>$Perl6 = $class.bless(:Example<12>);</a> < <span class='digit'>2005-05-31 11:38:46</span> ></li><li><a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> < <span class='digit'>2005-05-31 18:22:03</span> ></li><li><a href='Perl6_ES16.html'>my subtype Examples16 of Perl6 where /^kissu$/</a> < <span class='digit'>2005-06-04 23:59:29</span> ></li><li><a href='Perl6_ES17.html'>my enum Example17 <<:Perl(6) Today>></a> < <span class='digit'>2005-06-05 12:14:08</span> ></li><li><a href='Perl6_ES18.html'>my $queen; rule me {Perl6|Examples18}</a> < <span class='digit'>2005-06-06 12:26:32</span> ></li><li><a href='Perl6_ES19.html'>m:nth(19)/Perl6Examples/</a> < <span class='digit'>2005-06-06 22:02:01</span> ></li><li><a href='Perl6_Rules.html'>用 Perl6::Rules 来写 Formatter</a> < <span class='digit'>2005-09-27 10:02:45</span> ></li></ul>
+Created on <span class="digit">2005-05-20 18:53:54</span>, Last modified on <span class="digit">2005-05-24 17:49:52</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>

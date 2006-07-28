@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="../style/journal.css" type="text/css" />
+<style type="text/css"><!--
+.googleadsense {
+	margin: 2px;
+	padding: 0px;
+//--></style><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-65008-1";
+urchinTracker();
+</script><title>Parrot_in_a_Nutshell(中文翻译版)</title>
+</head>
+<body>
+<a href="index.html">Journal</a>(2005) | <a href="../blog/"><b>Blog</b></a>(2006) | <a href="http://www.fayland.org/cgi-bin/random_link.pl">RandomLink</a> | <a href="AboutFayland.html">WhoAmI</a> | <a href="LiveBookmark.html">LiveBookmark</a> | <a href="http://www.fayland.org/">HomePage</a>
+<p><&lt;Previous: <a href="NiBoard.html">NiBoard</a>&nbsp;&nbsp;>>Next: <a href="Parrot_in_a_Nutshell.en.html">Parrot in a Nutshell(English)</a></p>
+<h1>Parrot_in_a_Nutshell(中文翻译版)</h1>
+<div class='content'>
+<p>Category: <a href='Translation.html'>Translation</a> &nbsp; Keywords: <b>Parrot Dan Sugalski</b></p>2004/8/17 20% unfinished.<br>
+
+2004/8/18 5% unfinished, with <a href="http://www.ourparrot.org">bloves</a>.<br>
+
+<h1>Parrot in a Nutshell</h1>
+
+<p>By Dan Sugalski, <a href="mailto:dan@sidhe.org">dan@sidhe.org</a></p>
+
+<p><a href="Parrot_in_a_Nutshell.en.html">英文/Engligh</a>, <a href="http://www.zenspider.com/dl/rubyconf2002/Parrot_in_a_ns_for_ruby.pdf">英文PDF下载</a></p>
+
+<h3>什么是 Parrot</h3>
+<ul>
+<li>perl 6 的解释器</li>
+<li>一个多语言的虚拟机(VM)</li>
+<li>一个不能控制（快成真）的愚人节玩笑</li>
+</ul>
+
+<h3>Parrot 的官方说法</h3>
+<ul>
+<li>用于支持 perl 6</li>
+<li>建造更快的 perl</li>
+<li>建造更清洁的 perl</li>
+</ul>
+
+<h3>Parrot 的非官方说法</h3>
+<ul>
+<li>普通快速的解释器引擎</li>
+<li>Mono 人的苦恼</li>
+<li>python 使用者的真正苦恼</li>
+<li>试图接管世界</li>
+</ul>
+
+<h3>Parrot 的指导目标</h3>
+<ul>
+<li><a href="#Speed">速度</a></li>
+<li><a href="#Maintainability">易维护性</a></li>
+<li><a href="#Longevity">长寿</a></li>
+<li><a href="#Extensibility">易扩展性</a></li>
+<li><a href="#Flexibility">强适应性</a></li>
+</ul>
+
+<h3><a name="Speed">速度</a></h3>
+<ul>
+<li>越快越好</li>
+<li>慢的解释器是无用的</li>
+<li>几乎不可能再快了</li>
+<li>Parrot 自动调整到最大速度</li>
+</ul>
+
+<h3><a name="Maintainability">易维护性</a></h3>
+<ul>
+<li>努力让某些事件不可见</li>
+<li>努力执行一种代码标准</li>
+<li>开源工程(Open Source projects) 只有少数资源处于设计中</li>
+<li>几乎不能再更易维护了</li>
+<li>对于实际已完成的工程，维护总要消耗很多资源</li>
+</ul>
+
+<h3><a name="Longevity">长寿</a></h3>
+<ul>
+<li>软件良好运行的时间总是超出你所想的</li>
+<li>设计时考虑长期的易扩展性总能推迟不可避免的重写</li> 
+<li>如果你以后还会要看这个代码，那么最好现在就确信我们能看清它</li>
+</ul>
+
+<h3><a name="Extensibility">易扩展性</a></h3>
+<ul>
+<li>每个人都想用 C 增加点什么</li>
+<li>永远是还是不够快</li>
+<li>有很多外部库是值得一用的</li>
+<li>一个良好的扩充机制是件非常棒的事</li>
+<li>一个糟糕的机制真让人受罪</li>
+</ul>
+
+<h3><a name="Flexibility">强适应性</a></h3>
+<ul>
+<li>通解比特解有更多的长期潜能</li>
+<li>人们总是做些你意料不到的事</li>
+<li>如果现在就考虑强适应性，那以后花费的时间就少了</li>
+<li>即使现在花费的时间多一点也是值得的</li>
+</ul>
+
+<h3>多语言接受力</h3>
+<ul>
+<li><a href="#Support perl">支持 perl</a></li>
+<li><a href="#Support Dynamic Languages in general">支持常见的动态语言</a></li>
+<li><a href="#Nice target for language designers">给语言设计者的 nice 目标</a></li>
+</ul>
+
+<h3><a name="Support perl">支持 perl</a></h3>
+<ul>
+<li>Perl 6 是所有开始的理由 </li>
+<li>Perl 拥有所有常见动态语言中最复杂的语义(semantics)</li>
+<li>随着语言发展，Perl 解释器的执行是主要的苦恼</li>
+</ul>
+
+<h3><a name="Support Dynamic Languages in general">支持常见的动态语言</a></h3>
+<ul>
+<li>例如包括 Ruby 和 Python</li>
+<li>在编译时会出现某种不确定的语言</li>
+<li>实际上很琐碎，只需要大约考虑下</li>
+</ul>
+
+<h3><a name="Nice Target">nice 目标</a></h3>
+<ul>
+<li>如果我们能表达所有语义，这能让语言设计者更容易些</li>
+<li>许多人现在将 C 或 GCC 做为目标</li>
+<li>对于许多语言来说，Impedance 失谐会更低</li>
+</ul>
+
+<h3>天生能玩 Zork</h3>
+<ul>
+<li>是的，我没说错</li>
+<li>parrot -b:zmachine zork.dat </li>
+<li>比起正确地操作 Java, Python, or .NET 的字节码还要更难</li>
+<li>如果我们能正确操作这个，那么我们能操作任何人的字节码</li>
+<li>另外它真的非常 cool</li>
+</ul>
+
+<h3>解释器要素</h3>
+<ul>
+<li>许多软件能运行其他软件</a></li>
+<li><a href="#CPU in software">软件中的 CPU</a></li>
+<li><a href="#Generally flexible">通常意义的强适应性</a></li>
+<li><a href="#Generally slow">通常意义上的慢</a></li>
+<li><a href="#Easy to write for">Easy to write for</a></li>
+<li><a href="#Easy to write">Easy to write</a></li>
+<li><a href="#Portable">容易移植</a></li>
+</ul>
+
+<h3><a name="CPU in software">软件中的 CPU</a></h3>
+<ul>
+<li>在虚拟机(VM)中有一个“V”</li>
+<li>编译器作者能将解释器当成 CPU 芯片的一种形态</li>
+<li>允许并且使“核心”动作更容易定制</li>
+<li>有时候软件能当成硬件</li>
+<li>但是更多时候是不能</li>
+</ul>
+
+<h3><a name="Generally flexible">通常意义的强适应性</a></h3>
+<ul>
+<li>当核心功能性已在软件中后，他们就可变了</li>
+<li>一般来说，软件比硬件对适应性的限制要少</li>
+<li>对大多数人来说，考虑软件比硬件更简单</li>
+<li>更改的边际成本更低</li>
+</ul>
+
+<h3><a name="Generally slow">通常意义上的慢</a></h3>
+<ul>
+<li>在用户的程序和硬件运行它之间有一间接层</li>
+<li>非常容易有 impedance 失谐问题</li>
+<li>也非常容易让速度逐渐消失</li>
+</ul>
+
+<h3><a name="Easy to write for">Easy to write for</a></h3>
+<ul>
+<li>很容易掩盖困难部分</li>
+<li>解释器应该能用“我能被简单地使用”来描述自己</li>
+<li>你应该将它作为你的目标，如果不是，那你就做错了什么事情</li>
+</ul>
+
+<h3><a name="Easy to write">Easy to write</a></h3>
+<ul>
+<li>解释器是纯语义(semantics)的，而语义是容易表达的</li>
+<li>但是定义语义要花费长一点的时间</li>
+<li>一个简单的解释器能在一星期内装配起来</li>
+<li>（但是 parrot 离“简单”还远呢） </li>
+<li>不管是不是很复杂，只需要一个 SMOP</li>
+</ul>
+
+<h3><a name="Portable">容易移植</a></h3>
+<ul>
+<li>一般来说，表达的语义大多数都是平台无关的</li>
+<li>这意味着特定平台的东西是独立的</li>
+<li>平台特有但未执行的东西能被仿效</li>
+<li>通常来说，真正需要对付的代码只有一小部分</li>
+</ul>
+
+<h3>Parrot 的核心概念</h3>
+<ul>
+<li><a href="#Register Based">基于寄存器</a></li>
+<li><a href="#Language Neutral">语言无关</a></li>
+<li><a href="#Very high level">高标准</a></li>
+<li><a href="#Introspective">内省的</a></li>
+<li><a href="#Mutable">易变的</a></li>
+<li><a href="#Threaded">多线程</a></li>
+<li><a href="#With continuations">With continuations</a></li>
+</ul>
+
+<h3><a name="Register Based">基于寄存器</a></h3>
+<ul>
+<li>32 each 整数/Integer, 字符串/String, 浮点数/Float, 和 PMC（Parrot Magic Cookie的缩写） </li>
+<li>对于解释器来说，寄存器是一种命名了的临时的位置(slot)</li>
+<li>它以硬件的 CPUs 为模型</li>
+<li>一般来说，它比单纯的基于堆栈的模型更有效</li>
+</ul>
+
+<h3><a name="Language Neutral">语言无关</a></h3>
+<ul>
+<li>用<i>人</i>的感觉</li>
+<li>我们不强迫用户非得使用 ASCII, Unicode, Latin-1, 或 EBCDIC </li>
+<li>不管数据的编码如何，引擎都有相应的处理工具</li>
+<li>这对于大部分是本地语言的文本处理很重要</li>
+</ul>
+
+<h3><a name="Very high level">高标准</a></h3>
+<ul>
+<li>多线程，闭包，continuations, aggregate operations, multimethod dispatch all core elements </li>
+<li>不将困难的事物归入库</li>
+<li>使编译器作者更容易</li>
+<li>对于解释器执行来说，二进制(Bit)远大于烦恼</li>
+</ul>
+
+<h3><a name="Introspective">内省的</a></h3>
+<ul>
+<li>代码能检查解释器的当前状态</li>
+<li>大多数，如果说不是全部，核心数据结构都是可获得的</li>
+<li>包括堆栈入口，符号表，词汇变量</li>
+<li>变量 arenas, 内存池和解释器数据也一样</li>
+</ul>
+
+<h3><a name="Mutable">易变的</a></h3>
+<ul>
+<li>代码能被创建 on the fly </li>
+<li>库能被自动加载</li>
+<li>操作码(Opcodes)能被重定义 on the fly </li>
+<li>运行时，基础变量方法都可覆盖</li>
+</ul>
+
+<h3><a name="Threaded">多线程</a></h3>
+<ul>
+<li>多线程是 Parrot 的一个核心要素</li>
+<li>多线程编译器是个有趣的任务</li>
+<li>“有趣(interesting)” 的另一个不愉快的含义 </li>
+<li>从一开始就要把它设计进去</li>
+</ul>
+
+<h3><a name="With Continuations">With Continuations</a></h3>
+<ul>
+<li>Really odd Lisp thing </li>
+<li>有几分像控制流程的闭包</li>
+<li>参考：意外处理/exceptions是一种简单的扩建物/continuation </li>
+<li>它们<i>将</i>毁坏你的大脑</li>
+<li>即使你的大脑已经死了，但是，它们能让你做些<b>及其聪明的事</b></li>
+</ul></div>
+<p><&lt;Previous: <a href="NiBoard.html">NiBoard</a>&nbsp;&nbsp;>>Next: <a href="Parrot_in_a_Nutshell.en.html">Parrot in a Nutshell(English)</a></p>
+<p><strong>Options:</strong> <a href='http://del.icio.us/post?title=Parrot_in_a_Nutshell(%E4%B8%AD%E6%96%87%E7%BF%BB%E8%AF%91%E7%89%88)&url=http://www.fayland.org/journal/Parrot_in_a_Nutshell.cn.html'>+Del.icio.us</a></p>
+<strong>Related items</strong>
+<ul><li><a href='Parrot_in_a_Nutshell.en.html'>Parrot in a Nutshell(English)</a> < <span class='digit'>2004-10-30 19:20:36</span> ></li><li><a href='050604.html'>fail to embed parrot in pugs(Resolved)</a> < <span class='digit'>2005-06-04 19:09:35</span> ></li></ul>
+Created on <span class="digit">2004-10-30 19:19:10</span>, Last modified on <span class="digit">2004-11-11 00:24:06</span><br />
+Copyright 2004-2005 All Rights Reserved. Powered by <a href="Eplanet.html">Eplanet</a> && <a href='http://catalyst.perl.org'>Catalyst</a> 5.62.
+</body>
+</html>
