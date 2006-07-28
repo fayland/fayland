@@ -1,0 +1,15 @@
+---
+name: Lingua-Han-Utils
+version: 0.05
+author:
+  - Fayland Lam <fayland@gmail.com>
+abstract: The utility tools of Chinese character(HanZi)
+license: perl
+build_requires:
+  Encode::Guess: 0
+  Test::More: 0
+provides:
+  Lingua::Han::Utils:
+    file: lib/Lingua/Han/Utils.pm
+    version: 0.05
+generated_by: Module::Build version 0.2611

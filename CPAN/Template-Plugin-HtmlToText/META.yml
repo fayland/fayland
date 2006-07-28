@@ -1,0 +1,8 @@
+--- #YAML:1.0
+name: Template-Plugin-HtmlToText
+version: 0.01
+author:
+  - Fayland Lam <fayland@gmail.com>
+abstract: Plugin interface to HTML::FormatText
+license: perl
+generated_by: Module::Build version 0.2612, without YAML.pm

@@ -1,0 +1,8 @@
+--- #YAML:1.0
+name: Lingua-Han-PinYin
+version: 0.06
+author:
+  - Fayland, fayland@gmail.com
+abstract: Retrieve the Mandarin(PinYin) of Chinese character(HanZi).
+license: perl
+generated_by: Module::Build version 0.2612, without YAML.pm
