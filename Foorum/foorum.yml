@@ -45,3 +45,7 @@ per_page:
 dir:
   js: 'http://fayland:3000/js'
   images: 'http://fayland:3000/images'
+
+email:
+  on: 0
+  import: 1

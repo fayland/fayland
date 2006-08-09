@@ -15,7 +15,6 @@ use Catalyst qw/
 	Session::State::Cookie
 	Static::Simple
 	Prototype
-	SubRequest
 	FormValidator::Simple
 /;
 
