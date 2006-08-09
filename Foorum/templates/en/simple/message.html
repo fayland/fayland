@@ -1,0 +1,14 @@
+<style>
+	A:visited{text-decoration: underline}
+	A:link{text-decoration: underline;}
+</style>
+<div class='message'>
+    [% message.msg %]
+	[% IF message.uri %]
+	    <br><br>
+		(<a href="[% message.uri %]"><u>如果浏览器没有自动返回，请点击这里)</u>)</a>
+	[% END %]
+</div>
+[% IF message.uri %]
+<meta http-equiv="refresh" content="4; url=[% message.uri %]">
+[% END %]

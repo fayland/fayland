@@ -1,0 +1,47 @@
+---
+name: Foorum
+dsn: dbi:mysql:foorum
+dsn_user: root
+dsn_pwd: '123456'
+
+View::TT:
+  POST_CHOMP: 1
+  PRE_CHOMP:  1
+  EVAL_PERL: 1
+  CONTEXT: ''
+  DELIMITER: ';'
+
+authentication:
+  dbic:
+    user_class: "DBIC::User"
+    user_field: "username"
+    password_field: "password"
+    password_type: "hashed"
+    password_hash_type: "SHA-1"
+session:
+  dbic_class: "DBIC::Session"
+
+static:
+  dirs:
+   - js
+   - css
+  ignore_extensions:
+   - cgi
+   - pl
+  debug: 0
+
+validator:
+  plugins:
+    - 'DBIC::Unique'
+
+maintain: 0
+maintain_reason: "The borad is under maintain. Sorry for any inconvenience."
+
+per_page:
+  forum: 20
+  topic: 10
+  message: 8
+
+dir:
+  js: 'http://fayland:3000/js'
+  images: 'http://fayland:3000/images'

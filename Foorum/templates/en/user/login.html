@@ -1,0 +1,24 @@
+<div class='one'
+<table align='center'>
+	<tbody>
+	<form method='post'>
+	<input type='hidden' name='process' value='1' />
+	<tr class='title'><td colspan='2'>Login</td></tr>
+	[% IF error %]
+	<tr class='misc2'><td colspan='2'><span style='color:red'>
+	[% SWITCH error %]
+	    [% CASE 'ERROR_ALL_REQUIRED' %]
+	    ALL is required.
+	    [% CASE 'ERROR_AUTH_FAILED' %]
+	    incorrect password or username.
+	    [% CASE %]
+	    [% error %]
+	[% END %]
+	</span></td></tr>
+	[% END %]
+	<tr class='misc1'><td width='20%' align='right'><label for="username">Username:</label></td><td><input type='text' name='username' value='[% c.req.param('username') %]' length='12' /></td></tr>
+	<tr class='misc2'><td width='20%' align='right'><label for="password">Password:</label></td><td><input type='password' name='password' length='12' /></td></tr>
+	<tr class='misc1'><td colspan='2'><input type='submit' /></td></tr>
+	</form>
+	</tbody>
+</table>

@@ -1,0 +1,14 @@
+[% WRAPPER 'message/bar.html' %]
+
+<div class='one'> 
+<table align='center'>
+<tr class="title"><td>To</td><td>Subject</td><td>Date</td></tr>
+[% FOREACH message IN messages %]
+<tr class="[% IF loop.count % 2 == 0 %]misc1[% ELSE %]misc2[% END %]">
+<td><a href='/u/[% message.recipient.username %]'>[% message.recipient.username %]</a></td><td><a href='/message/[% message.message_id %]'>[% message.title %]</a></td><td>[% message.post_on %]</td>
+</tr>
+[% END %]
+</table>
+</div>
+
+[% END %]

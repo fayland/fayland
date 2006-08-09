@@ -1,0 +1,79 @@
+.highlight { color:[% highlight %]; }
+.semilight { color:[% semilight %]; }
+.title { background:[% bg_title %]; color:[% font_title %]; }
+.tblr { border:1px solid [% color_border %]; }
+.blr { border:1px solid [% color_border %];border-top:0px; }
+.tlr { border:1px solid [% color_border %];border-bottom:0px; }
+.one table {
+    border: 1px solid [% color_border %];
+    border-left: 0px;
+    border-bottom: 0px;
+    width: [% width_table %];
+    border-collapse: collapse;
+}
+.one td,.multi td {
+    border:1px solid [% color_border %];
+    BORDER-RIGHT: 0px;
+    border-top: 0px;
+    padding: 6px;
+}
+.multi table {
+    border:1px solid [% color_border %];
+    border-left: 0px;
+    border-bottom: 0px;
+    border-top: 0px;
+    width: [% width_table %];
+    border-collapse: collapse;
+}
+.multi td table {
+    border: 0px;
+    width:100%;
+}
+.multi td table td {
+    border: 0px;
+    text-align:left;
+    padding:2px
+}
+.online,.online table,.online td {
+    border: 0px;
+    padding:0px;
+}
+hr {
+    background: [% color_border %];
+    height:1;
+}
+body {
+    color: [% font_body %];
+    background: [% bg_body %];
+}
+A:visited { color: [% link_visited %]; }
+A:active { color: [% link_active %]; }
+A:hover { color: [% link_hover %]; }
+A:link { color: [% link_link %]; }
+
+#timer {
+    text-align: center;
+    clear: both;
+    color: [% font_body %];
+}
+
+/* simple/message.html */
+.message {
+    position:absolute;
+    left:15%;top:25%;
+    padding:20px;
+    line-height:140%;
+    width:70%;
+    height:auto;
+    background:#FEF4D1;
+}
+
+/* forum */
+.forum_one {
+    background: [% bg_forum_one %];
+    color: [% font_forum_one %];
+}
+.forum_two {
+    background: [% font_forum_two %];
+    color: [% font_forum_two %];
+}

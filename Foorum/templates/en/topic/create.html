@@ -1,0 +1,32 @@
+<script type="text/javascript">
+    _editor_url  = "/js/xinha/"  // (preferably absolute) URL (including trailing slash) where Xinha is installed
+    _editor_lang = "en";      // And the language we need to use in the editor.
+</script>
+<script type="text/javascript" src="[% c.config.dir.js %]/xinha/htmlarea.js"></script>
+<script type="text/javascript" src="[% c.config.dir.js %]/xinha/my_config.js"></script>
+
+[% USE FillInForm %]
+
+[% FILTER fillinform fdat => c.req.params %]
+
+<div class='one'>
+<form method="post">
+<input type='hidden' name='process' value='1' />
+<table align='center' border='1' cellpadding='6'>
+  <tr class='title'><td colspan='2'>Create a new topic</td></tr>
+  <tr class='forum1'><td>Subject</td><td><input type='text' size='60' maxlength='80' name='title' />
+  [% IF c.form.error('title') %]title should be 1-80 chars.[% END %]
+</td></tr>
+  <tr class='forum2'><td>Text</td><td>
+    <div class='myTextArea'>
+	<textarea id='myTextArea' name="text" style='width: 90%' rows="15">
+	</textarea>
+    </div>
+	[% IF c.form.error('text') %]text is required.[% END %]
+  </td></tr>
+  <tr class='forum1'><td colspan='2'><input type='submit'></td></tr>
+</table>
+</form>
+</div>
+
+[% END %]

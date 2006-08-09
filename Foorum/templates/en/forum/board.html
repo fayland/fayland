@@ -1,0 +1,39 @@
+<div class='one'>
+<table height='28' align='center'>
+	<tr class="title" align='center'>
+	<td width='42'>Status</td>
+	<td width='*'>Forum Name</td>
+	<td width='80'>Moderators</td>
+	<td width='60'>Threads</td>
+	<td width='60'>Replies</td>
+	<td width='190'>Last Update</td>
+	</tr>
+</table>
+[% FOREACH f IN forums %]
+<div class='multi'>
+<table align='center'>
+	<tr align='center'>
+	<td class='forum1' width='42'>$fold</td>
+	<td class='forum2' valign='top' width='*'>
+		<table>
+			<tr>
+			<td align="left"><a href='/forum/[% f.forum_id %]'><span class='semilight'>[% f.name %]</span></a></td>
+			</tr>
+			<tr>
+			<td align="left">[% f.description %]</td>
+			</tr>
+		</table>
+	</td>
+	<td class='forum1' width='80'>
+	    <a href='/u/[% roles.${f.forum_id}.admin %]'>[% roles.${f.forum_id}.admin %]</a>
+	    [% FOREACH moderator IN roles.${f.forum_id}.moderator %]
+	    <br /><a href='/u/[% moderator %]'>[% moderator %]</a>
+	    [% END %]
+	</td>
+	<td class='forum2' width='60'><span class='highlight'>[% f.total_topics %]</span></td>
+	<td class='forum2' width='60'><span class='highlight'>[% f.total_replies %]</span></td>
+<td class='forum1' width='190' align='left'><a href='/forum/[% f.forum_id _ '/' _ f.last_post.topic_id %]'>[% f.last_post.title %]</a><br /><a href='/u/[% f.last_post.last_updator.username %]'>[% f.last_post.last_updator.username %]</a><br />[% f.last_post.last_update_date %]</td>
+	</tr>
+</table>
+</div>
+[% END %]

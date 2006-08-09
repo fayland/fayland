@@ -1,0 +1,24 @@
+<div class='one'>
+<table align='center'>
+	<tbody>
+	<form method='post'>
+	<input type='hidden' name='process' value='1' />
+	<tr class='title'><td colspan='2'>Email Edit</td></tr>
+	<tr class='misc1'><td width='20%' align='right'>Username:</td><td>[% c.user.username %]
+	</td></tr>
+    <tr class='misc2'><td align='right'>Email:</td><td><input type='text' name='email' size='24' />
+	[% IF c.form.error('email') %]
+	    [% IF c.form.error('email', 'DBIC_UNIQUE') %]
+	    This email is used by another one.
+	    [% ELSIF c.form.error('email', 'EMAIL_DUPLICATION') %]
+	    You should type a different email.
+	    [% ELSE %]
+	    you should spec a correct email.
+	    [% END %]
+	[% END %]
+	</td></tr>
+	<tr class='misc2'><td></td><td><input type='submit' /></td></tr>
+	</form>
+	</tbody>
+</table>
+</div>

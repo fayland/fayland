@@ -1,0 +1,42 @@
+[% USE Dumper %]
+[% USE FillInForm %]
+[% FILTER fillinform fdat => c.req.params %]
+<div id='register' class='one'>
+<table align='center'>
+	<tbody>
+	<form method='post'>
+	<input type='hidden' name='process' value='1' />
+	<tr class='title'><td colspan='2'>Register Agreement</td></tr>
+	<tr class='misc1'><td colspan='2'>
+		<ul>Read it carefully, be sure you are willing to accept all:
+		<li>1
+		<li>2
+		<li>3
+		</ul>
+	</td></tr>
+	<tr class='misc2'><td width='20%' align='right'>Username:</td><td><input type='text' name='username' size='12' />
+	[% IF c.form.error('username') %]
+	    [% IF c.form.error('username', 'DBIC_UNIQUE') %]
+	    This username is used by another one.
+	    [% ELSE %]
+	    username should be 6-20 chars.
+	    [% END %]
+	[% END %]
+	</td></tr>
+	<tr class='misc1'><td align='right'>Password:</td><td><input type='password' name='password' size='12' /> [% IF c.form.error('password') %]password should be 6-20 [% END %]</td></tr>
+	<tr class='misc2'><td align='right'>Confirm password:</td><td><input type='password' name='confirm_password' size='24' /> [% IF c.form.error('passwords') %]Confirm password is not the same as password[% END %]</td></tr>
+	<tr class='misc1'><td align='right'>Email:</td><td><input type='text' name='email' size='12' />
+	[% IF c.form.error('email') %]
+	    [% IF c.form.error('email', 'DBIC_UNIQUE') %]
+	    This email is used by another one.
+	    [% ELSE %]
+	    you should spec a correct email.
+	    [% END %]
+	[% END %]
+	</td></tr>
+	<tr class='misc2'><td></td><td><input type='submit' /></td></tr>
+	</form>
+	</tbody>
+</table>
+</div>
+[% END %]

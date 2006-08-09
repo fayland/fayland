@@ -1,0 +1,24 @@
+[% ERRORS = {
+    'PERMISSION_DENIED' => 'you are not allowed to do that.',
+    'ALL_REQUIRED'      => 'ALL is required.',
+} %]
+
+[% IF (matches = error.msg.match('ERROR_(\w+)'));
+    IF ERRORS.${matches.0};
+       error.msg = ERRORS.${matches.0};
+    END;
+   END %]
+
+<style>
+	A:visited{text-decoration: underline}
+	A:link{text-decoration: underline;}
+</style>
+<table cellpadding="0" cellspacing="0" border="0" width="93%" align="center" height="75%">
+	<tr align="center" valign="middle"><td>
+		<table cellpadding="10" cellspacing="0" border="0" width="80%" align="center">
+			<tr><td bgcolor="#FEF4D1" valign="middle" align="center">
+			[% error.msg %]
+			</td></tr>
+		</table>
+	</td></tr>
+</table>
