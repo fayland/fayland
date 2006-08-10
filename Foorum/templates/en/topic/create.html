@@ -1,13 +1,13 @@
-<script type="text/javascript">
-    _editor_url  = "/js/xinha/"  // (preferably absolute) URL (including trailing slash) where Xinha is installed
-    _editor_lang = "en";      // And the language we need to use in the editor.
-</script>
-<script type="text/javascript" src="[% c.config.dir.js %]/xinha/htmlarea.js"></script>
-<script type="text/javascript" src="[% c.config.dir.js %]/xinha/my_config.js"></script>
-
 [% USE FillInForm %]
 
-[% FILTER fillinform fdat => c.req.params %]
+[% UNLESS c.req.param('process');
+    filldata = {
+        title => comment.title,
+        text  => comment.text,
+    };
+END; %]
+
+[% FILTER fillinform fdat => filldata || c.req.params %]
 
 <div class='one'>
 <form method="post">
@@ -18,10 +18,8 @@
   [% IF c.form.error('title') %]title should be 1-80 chars.[% END %]
 </td></tr>
   <tr class='forum2'><td>Text</td><td>
-    <div class='myTextArea'>
-	<textarea id='myTextArea' name="text" style='width: 90%' rows="15">
+	<textarea name="text" style='width: 90%' rows="15">
 	</textarea>
-    </div>
 	[% IF c.form.error('text') %]text is required.[% END %]
   </td></tr>
   <tr class='forum1'><td colspan='2'><input type='submit'></td></tr>
