@@ -50,7 +50,10 @@ sub create : Regex('^forum/(\d+)/topic$') {
     my $forum_id = $c->req->snippets->[0];
     my $forum = $c->forward('/get/forum', [ $forum_id ]);
     
-    $c->stash->{template} = 'topic/create.html';
+    $c->stash( {
+        template => 'topic/create.html',
+        action   => 'create',
+    } );
     
     return unless ($c->req->param('process'));
     
@@ -107,7 +110,10 @@ sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
     my $topic = $c->forward('/get/topic', [ $forum_id, $topic_id ]);
     my $comment_id = $c->req->snippets->[3];
     
-    $c->stash->{template} = 'topic/create.html';
+    $c->stash( {
+        template => 'topic/create.html',
+        action   => 'reply',
+    } );
     
     return unless ($c->req->param('process'));
     
@@ -163,7 +169,10 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
     my $comment_id = $c->req->snippets->[2];
     my $comment  = $c->forward('/get/comment', [ $comment_id, 'thread', $topic_id ] );
     
-    $c->stash->{template} = 'topic/create.html';
+    $c->stash( {
+        template => 'topic/create.html',
+        action   => 'edit',
+    } );
     
     return unless ($c->req->param('process'));
     

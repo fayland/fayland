@@ -1,3 +1,4 @@
+[% USE HTML::BBCode( 'bbcode_unlimited' ) %]
 [% title = topic.title _ ' : ' _ forum.name %]
 
 [% url_prefix = '/forum/' _ forum.forum_id _ '/' _ topic.topic_id %]
@@ -40,7 +41,7 @@
 	  [% IF comment.author.status == 'banned' %]
 	    The author is banned.
 	  [% ELSE %]  
-	    $addme[% comment.text %]
+	    $addme[% comment.text | bbcode_unlimited %]
 	  [% END %]
 	  </span>
       </td></tr>
