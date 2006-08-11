@@ -1,0 +1,63 @@
+.highlight { color:[% style.highlight %]; }
+.semilight { color:[% style.semilight %]; }
+.tblr { border:1px solid [% style.border_color %] }
+.blr { border:1px solid [% style.border_color %];border-top:0px }
+.tlr { border:1px solid [% style.border_color %];border-bottom:0px }
+
+.one TABLE { border:1px solid [% style.border_color %];border-left: 0px;border-bottom: 0px;width:[% style.table_width %];border-collapse: collapse; }
+.one TD, .multi TD { border:1px solid [% style.border_color %];BORDER-RIGHT: 0px;BORDER-TOP: 0px;padding: 6px; }
+.multi TABLE { border:1px solid [% style.border_color %];border-left: 0px;border-bottom: 0px;border-top: 0px;width:[% style.table_width %];border-collapse: collapse; }
+.multi TD TABLE { border: 0px;width:100%; }
+.multi TD TABLE TD { border: 0px;text-align:left;padding:2px }
+
+.none TABLE { border:0px; width:[% style.table_width %]; }
+.none TD { border: 0px; padding: 6px; }
+
+.online,.online TABLE,.online TD { border: 0px;Padding:0px }
+hr { background:[% style.border_color %];height:1 }
+body { color: #333333; background: [% style.body_bg %]; }
+A:visited { color: #333333 }
+A:active { color: #333333 }
+A:hover { color: #333333 }
+A:link { color: #333333 }
+
+#timer {
+    text-align: center;
+    clear: both;
+    color: #FFFFF4;
+}
+
+/* simple/message.html */
+.message {
+    position:absolute;
+    left:15%;top:25%;
+    padding:20px;
+    line-height:140%;
+    width:70%;
+    height:auto;
+    background:#FEF4D1;
+}
+
+.title { background:#F5DEB3; color:#333333;font-weight: bold }
+
+/* forum */
+.forum1 {
+    background: #FEF4D1;
+    color: #333333;
+}
+.forum2 {
+    background: #FFFBEC;
+    color: #333333;
+}
+.misc1 {
+    background: #FEF4D1;
+    color: #333333;
+}
+.misc2 {
+    background: #FFFBEC;
+    color: #333333;
+}
+
+/* topic */
+.plumbline { width: 1px; height: 100%;background:#90c8ff }
+.horizontal { width: 99%; height: 1px;border-top:1px solid #90c8ff }

@@ -30,6 +30,20 @@ sub basic : LocalRegex('^(\d+)/basic$') {
     
 }
 
+sub style : LocalRegex('^(\d+)/style$') {
+    my ($self, $c) = @_;
+    
+    my $forum_id = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    
+    $c->stash->{template} = 'forumadmin/style.html';
+    
+    return unless ($c->req->param('submit'));
+    
+    &_check_policy( $self, $c, $forum );
+    
+    
+}
 
 sub _check_policy {
     my ( $self, $c, $forum ) = @_;
