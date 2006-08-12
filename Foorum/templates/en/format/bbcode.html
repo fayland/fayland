@@ -53,7 +53,7 @@ function showfont(font) {
     if (helpstat) {
         alert("字体标记\r\n\r\n给文字设置字体.\r\n\r\n用法: [font="+font+"]改变文字字体为"+font+"[/font]");
     } else if (basic) {
-        AddTxt = "[font="+font+"][/font]";AddText(AddTxt);
+        AddText("[font=" + font + "][/font]");
     } else {
         txt = prompt("Font:" + font,"Text");
         if (txt != null) {
@@ -62,9 +62,113 @@ function showfont(font) {
     }  
 }
 
-function enable(btn){btn.filters.gray.enabled=0;}
-function disable(btn){btn.filters.gray.enabled=1;}
+function bold() {
+    if (helpstat) {
+        alert("加粗标记\r\n\r\n使文本加粗.\r\n\r\n用法: [b]这是加粗的文字[/b]");
+    } else if (basic) {
+        AddTxt="[b][/b]";AddText(AddTxt);
+    } else {
+        txt = prompt("文字将被变粗.","文字");
+        if (txt != null) {
+            AddText("[b]" + txt + "[/b]");
+        }
+    }
+}
+function italicize() {
+    if (helpstat) {
+        alert("斜体标记\r\n\r\n使文本字体变为斜体.\r\n\r\n用法: [i]这是斜体字[/i]");
+    } else if (basic) {
+        AddText("[i][/i]");
+    } else {
+        txt=prompt("文字将变斜体","文字");
+        if (txt!=null) {
+            AddText("[i]" + txt + "[/i]");
+        }
+    }
+}
 
+function underline() {
+    if (helpstat) {
+        alert("下划线标记\r\n\r\n给文字加下划线.\r\n\r\n用法: [u]要加下划线的文字[/u]");
+    } else if (basic) {
+         AddText("[u][/u]");
+    } else {
+        txt=prompt("下划线文字.","文字");
+        if (txt!=null) {
+            AddText("[u]" + txt + "[/u]");
+        }
+    }
+}
+
+function center() {
+    if (helpstat) {
+        alert("对齐标记\r\n\r\n使用这个标记, 可以使文本左对齐、居中、右对齐.\r\n\r\n用法: [align=center|left|right]要对齐的文本[/align]");
+    } else if (basic) {
+         AddTxt="[align=center|left|right][/align]";AddText(AddTxt);
+    } else {
+        txt2=prompt("对齐样式\r\n\r\n输入 'center' 表示居中, 'left' 表示左对齐, 'right' 表示右对齐.","center");
+        while ((txt2!="") && (txt2!="center") && (txt2!="left") && (txt2!="right") && (txt2!=null)) {
+            txt2=prompt("错误!\r\n\r\n类型只能输入 'center' 、 'left' 或者 'right'.","");
+        }
+        txt=prompt("要对齐的文本","文本");
+        if (txt!=null) {
+            AddTxt="[align="+txt2+"]"+txt;AddText(AddTxt);AddTxt="[/align]";AddText(AddTxt);
+        }
+    }
+}
+
+function hyperlink() {
+    if (helpstat) {
+        alert("超级链接标记\r\n\r\n插入一个超级链接标记\r\n\r\n使用方法: [url]http://www.1313s.com[/url]\r\n\r\nUSE: [url=http://www.1313s.com]链接文字[/url]");
+    } else if (basic) {
+        AddText('[url][/url]');
+    } else {
+        txt2=prompt("链接文本显示.\r\n\r\n如果不想使用, 可以为空, 将只显示超级链接地址. ",""); 
+        if (txt2!=null) {
+            txt = prompt("超级链接.","http://");
+            if (txt!=null) {
+                if (txt2=="") {
+                    AddText("[url]" + txt + "[/url]");
+                } else {
+                    AddText("[url=" + txt + "]" + txt2 + "[/url]");
+                }
+            }
+        }
+    }
+}
+
+function email() {
+    if (helpstat) {
+        alert("Email 标记\r\n\r\n插入 Email 超级链接\r\n\r\n用法1: [email]email@163.com[/email]\r\n\r\n用法2: [email=email@163.com]小张[/email]");
+    } else if (basic) {
+        AddText("[email][/email]");
+    } else {
+        txt2 = prompt("链接显示的文字.\r\n\r\n如果为空，那么将只显示你的 Email 地址","");
+        if (txt2!=null) {
+            txt=prompt("Email 地址.","name\@domain.com");
+            if (txt!=null) {
+                 if (txt2 == "") {
+                    AddText("[email]" + txt + "[/email]");
+                 } else {
+                    AddText=("[email=" + txt + "]" + txt2 + "[/email]");
+                 }
+            }
+        }
+    }
+}
+
+function image() {
+    if (helpstat) {
+        alert("图片标记\r\n\r\n插入图片\r\n\r\n用法： [img]http:\/\/www.1313s.com\/baby.jpg[/img]");
+    } else if (basic) {
+        AddText("[img][/img]");
+    } else {
+        txt = prompt("图片的 URL","http://");
+        if(txt != null) {
+            AddText("[img]" + txt + "[/img]");
+        }
+    }
+}
 </script>
 <div class='none'>
 <table align='center'>
@@ -84,15 +188,14 @@ function disable(btn){btn.filters.gray.enabled=1;}
         <option style="background-color:[% color %];color:[% color %]" value="[% color %]">[% color %]</option>
         [% END %]
         </select>
-    </td></tr>
-    <tr><td>
-        <img onclick='bold()' height='22' alt='Bold' src='[% c.config.dir.image %]/bbcode/bold.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)">
-        <img onclick='italicize()' height='22' alt='Italicize' src='[% c.config.dir.image %]/bbcode/italicize.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)">
-        <img onclick='underline()' height='22' alt='Underline' src='[% c.config.dir.image %]/bbcode/underline.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)">
-        <img onclick='center()' height='22' alt='Center' src='[% c.config.dir.image %]/bbcode/center.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)">
-        <img onclick='hyperlink()' height='22' alt='Hyperlink' src='[% c.config.dir.image %]/bbcode/url.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)">
-        <img onclick='email()' height='22' alt='Email' src='[% c.config.dir.image %]/bbcode/email.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)">
-        <img onclick='image()' height='22' alt='Image' src='[% c.config.dir.image %]/bbcode/image.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)"> 
+    <br />
+        <img onclick='bold()' height='22' alt='Bold' src='[% c.config.dir.images %]/bbcode/bold.gif' width='23'>
+        <img onclick='italicize()' height='22' alt='Italicize' src='[% c.config.dir.images %]/bbcode/italicize.gif' width='23'>
+        <img onclick='underline()' height='22' alt='Underline' src='[% c.config.dir.images %]/bbcode/underline.gif' width='23'>
+        <img onclick='center()' height='22' alt='Center' src='[% c.config.dir.images %]/bbcode/center.gif' width='23'>
+        <img onclick='hyperlink()' height='22' alt='Hyperlink' src='[% c.config.dir.images %]/bbcode/url.gif' width='23'>
+        <img onclick='email()' height='22' alt='Email' src='[% c.config.dir.images %]/bbcode/email.gif' width='23'>
+        <img onclick='image()' height='22' alt='Image' src='[% c.config.dir.images %]/bbcode/image.gif' width='23'> 
     </td></tr>
 </table>
 </div>

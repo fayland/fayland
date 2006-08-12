@@ -118,9 +118,6 @@ use warnings;
 our $VERSION = '1.05';
 our @bbcode_tags = qw(code quote b u i color size list url email img font align flash music);
 
-# BY fayland
-# add align, flash, music, font support
-
 sub new {
    my ($class, $args) = @_;
    $args ||= {};
@@ -356,6 +353,11 @@ controls="ImageWindow,StatusBar,ControlPanel" width='352' height='288' border='0
       }
    } elsif ($attr) {
       $attr =~ s|javascript:||g if($self->{options}->{no_jslink});
+      # specail treat for size
+      if ($tag eq 'size') {
+        $attr = 8  if ($attr < 8);
+        $attr = 16 if ($attr > 16);
+      }
       $html = sprintf($self->{options}->{html_tags}->{$tag}, $attr, $content);
    } else {
       $content =~ s|javascript:||g if($self->{options}->{no_jslink});
