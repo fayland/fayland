@@ -21,7 +21,9 @@ requires 'Catalyst::Plugin::Session::Store::DBIC';
 requires 'Catalyst::Plugin::FormValidator::Simple';
 requires 'Template::Plugin::FillInForm';
 requires 'Template::Plugin::Dumper';
+requires 'Template::Plugin::Date';
 requires 'Template::Plugin::HTML::BBCode';
+requires 'Template::Plugin::String::Compare';
 
 catalyst;
 

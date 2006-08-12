@@ -1,3 +1,6 @@
+[% USE date %]
+[% USE String.Compare %]
+
 <div class='one'>
 <table height='28' align='center'>
 	<tr class="title" align='center'>
@@ -9,11 +12,18 @@
 	<td width='190'>Last Update</td>
 	</tr>
 </table>
+[% mytime = date.now - 86000 %]
+[% mydatestring = date.format(mytime, '%Y-%m-%d %H:%M:%S') %]
 [% FOREACH f IN forums %]
+[% IF String.Compare.new(f.last_post.last_update_date) > mydatestring %]
+[% status = 'on' %]
+[% ELSE %]
+[% status = 'off' %]
+[% END %]
 <div class='multi'>
 <table align='center'>
 	<tr align='center'>
-	<td class='forum1' width='42'>$fold</td>
+	<td class='forum1' width='42'><img src='[% c.config.dir.images %]/board/[% status %].gif' /></td>
 	<td class='forum2' valign='top' width='*'>
 		<table>
 			<tr>
@@ -30,10 +40,29 @@
 	    <br /><a href='/u/[% moderator %]'>[% moderator %]</a>
 	    [% END %]
 	</td>
-	<td class='forum2' width='60'><span class='highlight'>[% f.total_topics %]</span></td>
-	<td class='forum2' width='60'><span class='highlight'>[% f.total_replies %]</span></td>
+	<td class='forum2' width='60'>
+	    [% IF status == 'on' %]
+	    <span class='highlight'><b>[% f.total_topics %]</b></span>
+	    [% ELSE %]
+	    [% f.total_topics %]
+	    [% END %]
+	</td>
+	<td class='forum2' width='60'>
+	    [% IF status == 'on' %]
+	    <span class='highlight'><b>[% f.total_replies %]</b></span>
+	    [% ELSE %]
+	    [% f.total_replies %]
+	    [% END %]
+	</td>
 <td class='forum1' width='190' align='left'><a href='/forum/[% f.forum_id _ '/' _ f.last_post.topic_id %]'>[% f.last_post.title | html | truncate(20) %]</a><br /><a href='/u/[% f.last_post.last_updator.username %]'>[% f.last_post.last_updator.username %]</a><br />[% f.last_post.last_update_date %]</td>
 	</tr>
 </table>
 </div>
 [% END %]
+<br />
+
+<div class='one'>
+<table align='center'>
+    <tr><td>[% date.format(date.now, '%Y-%m-%d %H:%M:%S') %]</td></tr>
+</table>
+</div>
