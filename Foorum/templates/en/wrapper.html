@@ -1,4 +1,4 @@
-﻿[% USE Dumper %]
+[% USE Dumper %]
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -36,7 +36,7 @@
     <a href='/register'>Register</a>  | <a href='/login'>Log in</a>
     [% END %]
     [% IF forum AND c.user_exists AND roles.is_admin %]
-     <a href='/forumadmin/[% forum.forum_id %]'>Forum Admin</a>
+    | <a href='/forumadmin/[% forum.forum_id %]'>Forum Admin</a>
     [% END %]
 </span>
 

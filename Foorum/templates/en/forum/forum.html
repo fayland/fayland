@@ -36,7 +36,7 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin %]'>[% forum_roles.${f
 			    [% IF t.elite %]
 			    <span class='highlight'>[Elite]</a> 
 			    [% END %]
-			    <a href='/forum/[% forum.forum_id %]/[% t.topic_id %]'><span class='semilight'>[% t.title %]</span></a>
+			    <a href='/forum/[% forum.forum_id %]/[% t.topic_id %]'><span class='semilight'>[% t.title | html %]</span></a>
 			</td>
 			</tr>
     	</table>

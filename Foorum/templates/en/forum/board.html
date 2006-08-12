@@ -32,7 +32,7 @@
 	</td>
 	<td class='forum2' width='60'><span class='highlight'>[% f.total_topics %]</span></td>
 	<td class='forum2' width='60'><span class='highlight'>[% f.total_replies %]</span></td>
-<td class='forum1' width='190' align='left'><a href='/forum/[% f.forum_id _ '/' _ f.last_post.topic_id %]'>[% f.last_post.title %]</a><br /><a href='/u/[% f.last_post.last_updator.username %]'>[% f.last_post.last_updator.username %]</a><br />[% f.last_post.last_update_date %]</td>
+<td class='forum1' width='190' align='left'><a href='/forum/[% f.forum_id _ '/' _ f.last_post.topic_id %]'>[% f.last_post.title | html | truncate(20) %]</a><br /><a href='/u/[% f.last_post.last_updator.username %]'>[% f.last_post.last_updator.username %]</a><br />[% f.last_post.last_update_date %]</td>
 	</tr>
 </table>
 </div>

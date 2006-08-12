@@ -169,6 +169,45 @@ function image() {
         }
     }
 }
+
+function quote() {
+    if (helpstat) {
+        alert("引用标记\r\n\r\n引用一些文字.\r\n\r\n用法: [quote]引用内容[/quote]");
+    } else if (basic) {
+        AddText("[quote][/quote]");
+    } else {
+        txt=prompt("被引用的文字","文字");
+        if(txt!=null) {
+            AddText("[quote]" + txt + "[/quote]");
+        }
+    }
+}
+
+function flash() {
+    if (helpstat){
+        alert("Flash 动画\r\n\r\n插入 Flash 动画.\r\n\r\n用法: [flash]Flash 文件的地址[/flash]");
+    } else if (basic) {
+        AddText("[swf][/swf]");
+    } else {
+        txt=prompt("Flash 文件的地址","http://");
+        if (txt!=null) {
+            AddText("[flash]" + txt + "[/flash]");
+        }
+    }  
+}
+
+function music() {
+    if (helpstat){
+        alert("在线音/视频播放\r\n\r\n播放 URL 地址\r\n\r\n用法： [muisc]http:\/\/www.CGIer.com\/demo.wmv[/muisc]");
+    } else if (basic) {
+        AddText("[muisc][/muisc]");
+    } else {
+        txt=prompt("在线音/视频播放 (mms及http均可)", "http://");
+        if(txt!=null) {
+            AddText("[muisc]" + txt + "[/muisc]");
+        }
+    }
+}
 </script>
 <div class='none'>
 <table align='center'>
@@ -196,6 +235,10 @@ function image() {
         <img onclick='hyperlink()' height='22' alt='Hyperlink' src='[% c.config.dir.images %]/bbcode/url.gif' width='23'>
         <img onclick='email()' height='22' alt='Email' src='[% c.config.dir.images %]/bbcode/email.gif' width='23'>
         <img onclick='image()' height='22' alt='Image' src='[% c.config.dir.images %]/bbcode/image.gif' width='23'> 
+        <img onclick='quote()' height='22' alt='Quote' src='[% c.config.dir.images %]/bbcode/quote.gif' width='23'>
+        <img onclick='flash()' height='22' alt='Flash' src='[% c.config.dir.images %]/bbcode/swf.gif' width='23'>
+        <img onclick='music()' height='22' alt='Realplayer' src='[% c.config.dir.images %]/bbcode/rm.gif' width='23'>
+        <img onclick='music()' height='22' alt='Media Player' src='[% c.config.dir.images %]/bbcode/wm.gif' width='23'>
     </td></tr>
 </table>
 </div>

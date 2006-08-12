@@ -1,0 +1,6 @@
+180a181,185
+>     # set user_id in session table
+>     if ($c->user_exists) {
+>         $fields{user_id} = $c->user->user_id;
+>     }
+> 
