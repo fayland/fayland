@@ -1,0 +1,108 @@
+[% PROCESS 'config/format.html' %]
+<script language="javascript" type="text/javascript">
+
+var helpstat = false;
+var basic = false;
+var stprompt = true;
+
+function thelp(swtch) {
+    if (swtch == 1){
+        basic = false;
+        stprompt = false;
+        helpstat = true;
+    } else if (swtch == 0) {
+        helpstat = false;
+        stprompt = false;
+        basic = true;
+    } else if (swtch == 2) {
+        helpstat = false;
+        basic = false;
+        stprompt = true;
+    }
+}
+
+function AddText(NewCode) { $('text').value += NewCode }
+
+function showcolor(color) {
+    if (helpstat) {
+        alert("颜色标记\r\n\r\n设置文本颜色.  任何颜色名都可以被使用.\r\n\r\n用法: [color="+color+"]颜色要改变为"+color+"的文字[/color]");
+    } else if (basic) {
+        AddText("[color=" + color + "][/color]");
+    } else {
+        txt = prompt("The color you picked is: " + color, "Text");
+        if(txt != null) {
+            AddText("[color="+color+"]" + txt + "[/color]");
+        }
+    }
+}
+
+function showsize(size) {
+    if (helpstat) {
+        alert("文字大小标记\r\n\r\n设置文字大小.\r\n\r\n可变范围 1 - 6.\r\n\r\n 1 为最小 6 为最大.\r\n\r\n用法: [size="+size+"]这是 "+size+" 文字[/size]");
+    } else if (basic) {
+        AddText("[size=" + size + "][/size]");
+    } else {
+        txt = prompt("Size: " + size, "Text");
+        if (txt != null) {
+            AddText("[size=" + size + "]" + txt + "[/size]");
+        }
+    }
+} 
+
+function showfont(font) {
+    if (helpstat) {
+        alert("字体标记\r\n\r\n给文字设置字体.\r\n\r\n用法: [font="+font+"]改变文字字体为"+font+"[/font]");
+    } else if (basic) {
+        AddTxt = "[font="+font+"][/font]";AddText(AddTxt);
+    } else {
+        txt = prompt("Font:" + font,"Text");
+        if (txt != null) {
+            AddText("[font=" + font + "]" + txt + "[/font]");
+        }
+    }  
+}
+
+function enable(btn){btn.filters.gray.enabled=0;}
+function disable(btn){btn.filters.gray.enabled=1;}
+
+</script>
+<div class='none'>
+<table align='center'>
+    <tr><td>
+        <select onchange='showfont(this.options[this.selectedIndex].value)' name='font'>
+        [% FOREACH font IN config.all_fonts %]
+        <option style="font-family: [% font %]" value="[% font %]">[% font %]</option>
+        [% END %]
+        </select>
+        <select onchange='showsize(this.options[this.selectedIndex].value)' name='size'>
+        [% FOREACH font_size IN [8 .. 16] %]
+        <option style='font-size: [% font_size %]pt' value='[% font_size %]'>[% font_size %]</font>
+        [% END %]
+        </select>
+        <select onchange='showcolor(this.options[this.selectedIndex].value)' name='color'>
+        [% FOREACH color IN config.all_colors %]
+        <option style="background-color:[% color %];color:[% color %]" value="[% color %]">[% color %]</option>
+        [% END %]
+        </select>
+    </td></tr>
+    <tr><td>
+        <img onclick='bold()' height='22' alt='Bold' src='[% c.config.dir.image %]/bbcode/bold.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)">
+        <img onclick='italicize()' height='22' alt='Italicize' src='[% c.config.dir.image %]/bbcode/italicize.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)">
+        <img onclick='underline()' height='22' alt='Underline' src='[% c.config.dir.image %]/bbcode/underline.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)">
+        <img onclick='center()' height='22' alt='Center' src='[% c.config.dir.image %]/bbcode/center.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)">
+        <img onclick='hyperlink()' height='22' alt='Hyperlink' src='[% c.config.dir.image %]/bbcode/url.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)">
+        <img onclick='email()' height='22' alt='Email' src='[% c.config.dir.image %]/bbcode/email.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)">
+        <img onclick='image()' height='22' alt='Image' src='[% c.config.dir.image %]/bbcode/image.gif' width='23' class="gray" onmouseover="enable(this)" onmouseout="disable(this)"> 
+    </td></tr>
+</table>
+</div>
+
+[% content %]
+
+<div class='none'>
+<table align='center'>
+    <tr><td>
+        Mode:<input type="radio" name="mode" value="help" onClick="thelp(1)"> Help <input type="radio" name="mode" value="prompt" checked='yes' onClick="thelp(2)"> Full <input type="radio" name="mode" value="basic"  onClick="thelp(0)"> Basic
+    </td></tr>
+</table>
+</div>

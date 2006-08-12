@@ -6,30 +6,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" /> 
 <script type="text/javascript" src="[% base %]js/prototype.js"></script> 
-
-<!--
-<script type="text/javascript">
-	var djConfig = { isDebug: true };
-</script>
-<script type="text/javascript" src="[% c.config.dir.js %]/dojo/dojo.js"></script>
-<script type="text/javascript">
-	dojo.require("dojo.widget.TabContainer");
-	dojo.require("dojo.widget.ContentPane");
-	dojo.require("dojo.widget.LayoutContainer");
-</script>
--->
-
 <link rel="stylesheet" href="[% base %]css/common.css" type="text/css" /> 
 [% IF forumid %]
 <link rel="stylesheet" href="[% base %]css/customer/forum[% forumid %].css" type="text/css" />
 [% ELSE %]
 <link rel="stylesheet" href="[% base %]css/default.css" type="text/css" />
 [% END %]
-<style>
-.dojoTabPaneWrapper {
-  padding : 10px 10px 10px 10px;
-} 
-</style>
 <title>[% title || c.config.name %]</title>
 </head>
 <body>
@@ -40,8 +22,8 @@
 <tr class='title'><td>
 
     <a href='/board'>[% c.config.name %]</a>
-    [% IF forum %] → <a href='/forum/[% forum.forum_id %]'>[% forum.name %]</a> [% END %]
-    [% IF topic %] → [% topic.title %] [% END %]
+    [% IF forum %] → <a href='/forum/[% forum.forum_id %]'>[% forum.name | html %]</a> [% END %]
+    [% IF topic %] → [% topic.title | html %] [% END %]
 <span style='float:right'>
     [% IF c.user_exists %]
     <a href='/message'>Message</a>

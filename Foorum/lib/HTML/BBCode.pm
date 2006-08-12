@@ -116,10 +116,10 @@ use strict;
 use warnings;
 
 our $VERSION = '1.05';
-our @bbcode_tags = qw(code quote b u i color size list url email img align flash music);
+our @bbcode_tags = qw(code quote b u i color size list url email img font align flash music);
 
 # BY fayland
-# add align, flash, music support
+# add align, flash, music, font support
 
 sub new {
    my ($class, $args) = @_;
@@ -145,7 +145,8 @@ sub _init {
      u          => '<span style="text-decoration: underline;">%s</span>',
      i          => '<span style="font-style: italic">%s</span>',
      color      => '<span style="color: %s">%s</span>',
-     size       => '<span style="font-size: %spx">%s</span>',
+     size       => '<span style="font-size: %spt">%s</span>',
+     font       => '<span style="font-family: %s">%s</span>',
      url        => '<a href="%s">%s</a>',
      email      => '<a href="mailto:%s">%s</a>',
      img        => '<img src="%s" alt="" />',

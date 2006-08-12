@@ -3,13 +3,6 @@ package Foorum::Controller::Utils;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use HTML::Scrubber;
-use vars qw/$scrubber/;
-
-$scrubber = HTML::Scrubber->new( 
-    allow => [ qw[ p b i u hr br font s span div ] ],
-    deny  => [ qw[ script style ] ],
-);
 
 __PACKAGE__->config->{namespace} = '';
 
@@ -37,14 +30,6 @@ sub print_error : Private {
     
     $c->stash->{error}    = $error;
     $c->stash->{template} = 'simple/error.html';
-}
-
-sub html_scrubber : Private {
-    my ( $self, $c, $html ) = @_;
-    
-    $html = $scrubber->scrub($html);
-    
-    return $html;
 }
 
 1;

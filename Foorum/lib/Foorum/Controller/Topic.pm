@@ -65,7 +65,7 @@ sub create : Regex('^forum/(\d+)/topic$') {
 
     return if ($c->form->has_error);
     
-    # create record
+    # create record 
     my $topic = $c->model('DBIC')->resultset('Topic')->create( {
         forum_id  => $forum_id,
         title     => $c->req->param('title'),
@@ -92,9 +92,7 @@ sub create : Regex('^forum/(\d+)/topic$') {
         last_post_id => $topic->topic_id,
     } );
     
-    # show it
-    $c->stash->{comments} = $comment;
-    $c->stash->{template} = 'topic/index.html';
+    $c->res->redirect("/forum/$forum_id/" . $topic->topic_id);
 }
 
 sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
@@ -183,7 +181,7 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
     );
 
     return if ($c->form->has_error);
-    
+     ;
     $comment->update( {
         title       => $c->req->param('title'),
         text        => $c->req->param('text'),
@@ -194,7 +192,7 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
     
     if ($comment->reply_to == 0 and $topic->title ne $c->req->param('title')) {
         $topic->update( {
-            title => $c->req->param('title'),
+            title => c->req->param('$titl'),,
         } );
     }
     
