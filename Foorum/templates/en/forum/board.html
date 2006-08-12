@@ -15,7 +15,7 @@
 [% mytime = date.now - 86000 %]
 [% mydatestring = date.format(mytime, '%Y-%m-%d %H:%M:%S') %]
 [% FOREACH f IN forums %]
-[% IF String.Compare.new(f.last_post.last_update_date) > mydatestring %]
+[% IF f.policy != 'private' AND String.Compare.new(f.last_post.last_update_date) > mydatestring %]
 [% status = 'on' %]
 [% ELSE %]
 [% status = 'off' %]
@@ -23,7 +23,13 @@
 <div class='multi'>
 <table align='center'>
 	<tr align='center'>
-	<td class='forum1' width='42'><img src='[% c.config.dir.images %]/board/[% status %].gif' /></td>
+	<td class='forum1' width='42'>
+	    [% IF f.policy == 'private' %]
+	    <img src='[% c.config.dir.images %]/board/private.gif' />
+	    [% ELSE %]
+	    <img src='[% c.config.dir.images %]/board/[% status %].gif' />
+	    [% END %]
+	</td>
 	<td class='forum2' valign='top' width='*'>
 		<table>
 			<tr>
@@ -54,7 +60,13 @@
 	    [% f.total_replies %]
 	    [% END %]
 	</td>
-<td class='forum1' width='190' align='left'><a href='/forum/[% f.forum_id _ '/' _ f.last_post.topic_id %]'>[% f.last_post.title | html | truncate(20) %]</a><br /><a href='/u/[% f.last_post.last_updator.username %]'>[% f.last_post.last_updator.username %]</a><br />[% f.last_post.last_update_date %]</td>
+    <td class='forum1' width='190' align='left'>
+        [% IF f.policy == 'private' %]
+        Private
+        [% ELSE %]
+        <a href='/forum/[% f.forum_id _ '/' _ f.last_post.topic_id %]'>[% f.last_post.title | html | truncate(20) %]</a><br /><a href='/u/[% f.last_post.last_updator.username %]'>[% f.last_post.last_updator.username %]</a><br />[% f.last_post.last_update_date %]
+        [% END %]
+    </td>
 	</tr>
 </table>
 </div>
