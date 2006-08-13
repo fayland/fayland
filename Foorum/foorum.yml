@@ -20,6 +20,7 @@ authentication:
     password_hash_type: "SHA-1"
 session:
   dbic_class: "DBIC::Session"
+  expires: 3600
 
 static:
   dirs:

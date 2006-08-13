@@ -26,7 +26,9 @@
          [% comment.author.username %] <br />
          [% comment.author.gender %]<br />
          [% IF comment.author.status %]Status: [% comment.author.status %]<br />[% END %]
-         Register on: [% comment.author.register_on %]
+         Threads: [% comment.author.threads %]<br />
+         Replies: [% comment.author.replies %]<br />
+         Register on: [% comment.author.register_on %]<br />
         [% ELSE %]
          Anonymous
         [% END %]

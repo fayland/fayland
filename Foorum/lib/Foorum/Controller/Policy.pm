@@ -10,7 +10,7 @@ sub fill_user_role : Private {
     my ( $self, $c, $field ) = @_;
     
     my @field = ('site'); # 'site' means site-cross Administrator
-    push @field, $field if ($field);
+    push @field, $field if ($field and $field ne 'site');
     my @roles = $c->model('DBIC')->resultset('UserRole')->search( {
         user_id => $c->user->user_id,
         field   => \@field,
@@ -42,6 +42,7 @@ sub fill_user_role : Private {
 sub is_admin : Private {
     my ( $self, $c, $field ) = @_;
     
+    $field = 'site' unless ($field);
     &fill_user_role( $self, $c, $field ) unless ($roles->{$field}->{role_filled});
     
     return $roles->{is_admin};
@@ -50,6 +51,7 @@ sub is_admin : Private {
 sub is_moderator : Private {
     my ( $self, $c, $field ) = @_;
 
+    $field = 'site' unless ($field);
     &fill_user_role( $self, $c, $field ) unless ($roles->{$field}->{role_filled});
     
     return $roles->{is_moderator};
@@ -58,6 +60,7 @@ sub is_moderator : Private {
 sub is_user : Private {
     my ( $self, $c, $field ) = @_;
     
+    $field = 'site' unless ($field);
     &fill_user_role( $self, $c, $field ) unless ($roles->{$field}->{role_filled});
     
     return $roles->{is_member};

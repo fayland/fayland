@@ -86,6 +86,12 @@ sub create : Regex('^forum/(\d+)/topic$') {
         reply_to    => 0,
     } );
     
+    # update user stat
+    $c->user->obj->update( {
+        threads => \"threads + 1",
+        last_post_id => $topic->topic_id,
+    } );
+    
     # update forum
     $forum->update( {
         total_topics => $forum->total_topics + 1,
@@ -145,6 +151,12 @@ sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
         total_replies => $topic->total_replies + 1,
         last_update_date => DateTime->now,
         last_updator_id  => $c->user->user_id,
+    } );
+    
+    # update user stat
+    $c->user->obj->update( {
+        replies => \"replies + 1",
+        last_post_id => $topic_id,
     } );
     
     $c->forward('/print_message', [ {

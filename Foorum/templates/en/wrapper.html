@@ -12,7 +12,13 @@
 [% ELSE %]
 <link rel="stylesheet" href="[% base %]css/default.css" type="text/css" />
 [% END %]
-<title>[% title || c.config.name %]</title>
+<title> 
+    [% IF title %]
+    [% title _ ' : ' _ c.config.name %]
+    [% ELSE %]
+    [% c.config.name %]
+    [% END %]
+</title>
 </head>
 <body>
 
@@ -48,7 +54,7 @@
 
 [% content %]
 
-<div id='footer'><p>Copyright 2006 All Rights Reserved. Powered by [% c.config.name %] beta.</p></div>
+<div id='footer'><p>Copyright &copy; 2006 All Rights Reserved. Powered by [% c.config.name %] beta.</p></div>
 <div id='timer'><p>This page needs [% elapsed_time %] to load. </p></div>
 </body>
 </html>

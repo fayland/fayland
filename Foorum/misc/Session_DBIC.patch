@@ -1,6 +1,8 @@
-180a181,185
+180a181,187
 >     # set user_id in session table
 >     if ($c->user_exists) {
 >         $fields{user_id} = $c->user->user_id;
 >     }
+>     # set path in session table
+>     $fields{path} = substr($c->req->path, 0, 255) if ($c->req->path);
 > 

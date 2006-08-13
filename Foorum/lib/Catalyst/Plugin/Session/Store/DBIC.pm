@@ -182,6 +182,8 @@ sub store_session_data {
     if ($c->user_exists) {
         $fields{user_id} = $c->user->user_id;
     }
+    # set path in session table
+    $fields{path} = substr($c->req->path, 0, 255) if ($c->req->path);
 
     $c->_dbic_session_resultset->update_or_create(\%fields);
 }
