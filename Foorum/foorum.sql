@@ -40,6 +40,7 @@ CREATE TABLE comment (
   object_id int(11)  DEFAULT ''  ,
   author_id int(11)    ,
   title varchar(255)  DEFAULT ''  ,
+  forum_id int(11)    ,
   PRIMARY KEY (comment_id)
 );
 
@@ -107,6 +108,7 @@ CREATE TABLE session (
   session_data text    ,
   expires int(11)  DEFAULT '0'  ,
   user_id int(11)    ,
+  path varchar(255)    ,
   PRIMARY KEY (id)
 );
 
@@ -148,6 +150,9 @@ CREATE TABLE user (
   login_times int(11)  DEFAULT '1'  ,
   homepage varchar(255)    ,
   status varchar(16)    ,
+  threads int(8)  DEFAULT ''  ,
+  replies int(8)  DEFAULT ''  ,
+  last_post_id int(11)    ,
   PRIMARY KEY (user_id),
   UNIQUE username (username)
 );

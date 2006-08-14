@@ -6,9 +6,9 @@
     [% message.msg %]
 	[% IF message.uri %]
 	    <br><br>
-		(<a href="[% message.uri %]"><u>如果浏览器没有自动返回，请点击这里)</u>)</a>
+		(<a href="[% message.uri %]"><u>Please click <a href='[% message.uri %]'>here</a> if the page doesn't reload in [% message.refresh_time || 4 %] seconds!</u>)</a>
 	[% END %]
 </div>
 [% IF message.uri %]
-<meta http-equiv="refresh" content="4; url=[% message.uri %]">
+<meta http-equiv="refresh" content="[% message.refresh_time || 4 %]; url=[% message.uri %]">
 [% END %]

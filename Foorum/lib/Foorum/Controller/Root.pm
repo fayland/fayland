@@ -26,9 +26,10 @@ sub auto : Private {
 	
 	# for login using
 	my $url_referer = $c->req->path;
-    if ($url_referer ne 'login'
+    if ($url_referer !~ /ajax\//
     and $url_referer ne 'register'
-    and $url_referer ne 'logout') {
+    and $url_referer ne 'logout'
+    and $url_referer ne 'login') {
         $c->session->{url_referer} = $url_referer;
     }
     
@@ -53,6 +54,10 @@ sub end : Private {
 	return if ($c->res->body || $c->res->redirect);
 
     $c->stash->{elapsed_time} = tv_interval( $t0, [gettimeofday] );
+    
+    # get whos view this page?
+    my $results = $c->model('Online')->whos_view_this_page($c);
+    $c->stash->{whos_view_this_page} = $results;
     
     # template international
     my $lang = $c->config->{lang} || 'en';

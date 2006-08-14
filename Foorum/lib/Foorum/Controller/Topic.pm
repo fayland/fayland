@@ -84,6 +84,7 @@ sub create : Regex('^forum/(\d+)/topic$') {
         post_on     => DateTime->now,
         post_ip     => $c->req->address,
         reply_to    => 0,
+        forum_id    => $forum_id,
     } );
     
     # update user stat
@@ -140,6 +141,7 @@ sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
         post_on     => DateTime->now,
         post_ip     => $c->req->address,
         reply_to    => $comment_id,
+        forum_id    => $forum_id,
     } );
 
     # update forum and topic
@@ -229,7 +231,7 @@ sub delete : Regex('^forum/(\d+)/(\d+)/(\d+)/delete$') {
         my $delete_count = $c->model('DBIC')->resultset('Comment')->search( {
             object_type => 'thread',
             object_id   => $topic_id,
-        } )->delete_all;
+        } )->delete;
         
         $c->log->debug("Delete count:" . Dumper($delete_count));
         
