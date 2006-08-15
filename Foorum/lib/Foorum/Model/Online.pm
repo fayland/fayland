@@ -53,7 +53,12 @@ sub whos_view_this_page {
         page     => 1,
     } )->all; 
 
+    #use Data::Dumper;
+    #$c->log->debug(Dumper(\@session));
+
     my @results = &_handler_session($self, $c, @session);
+
+    #$c->log->debug(Dumper(\@results));
     
     return wantarray?@results:\@results;
 }
@@ -61,16 +66,30 @@ sub whos_view_this_page {
 sub _handler_session {
     my ($self, $c, @session) = @_;
     
+    my $has_me; # damn it, we query it *before* the path is updated.
     my @results;
     foreach my $session (@session) {
-       my $data = $c->get_session_data($session->id);
-       my $refer = $data->{url_referer};
-       my $visit_time  = $data->{__created};
-       my $active_time = $data->{__updated};
-       my $IP          = $data->{__address};
-       my $user;
-       $user = $c->model('DBIC::User')->find( { user_id => $session->user_id } ) if ($session->user_id);
-       push @results, { user => $user, refer => $refer, visit_time => $visit_time, active_time => $active_time, IP => $IP };
+        my $data = $c->get_session_data($session->id);
+        my $refer = $data->{url_referer};
+        my $visit_time  = $data->{__created};
+        my $active_time = $data->{__updated};
+        my $IP          = $data->{__address};
+        my $user;
+        if ($session->user_id) {
+            if ($c->user_exists and $session->user_id == $c->user->user_id) {
+                $user   = $c->user;
+                $refer  = $c->session->{url_referer};
+                $has_me = 1;
+            } else {
+                $user = $c->model('DBIC::User')->find( { user_id => $session->user_id } );
+            }
+        }
+        push @results, { user => $user, refer => $refer, visit_time => $visit_time, active_time => $active_time, IP => $IP };
+    }
+    
+    # add $c->user for whos_view_this_page
+    unless ($has_me) {
+        push @results, { user => $c->user || '', refer => $c->session->{url_referer}, visit_time => $c->session->{__created}, active_time => $c->session->{__updated}, IP => $c->session->{__address}, }
     }
     
     return wantarray?@results:\@results;

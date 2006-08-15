@@ -45,7 +45,7 @@ sub begin : Private {
 sub default : Private {
     my ( $self, $c ) = @_;
 
-    $c->forward('/forum/board');
+    $c->forward('/forum');
 }
 
 sub end : Private {
@@ -57,6 +57,8 @@ sub end : Private {
     
     # get whos view this page?
     my $results = $c->model('Online')->whos_view_this_page($c);
+    #use Data::Dumper;
+    #$c->log->debug(Dumper($results));
     $c->stash->{whos_view_this_page} = $results;
     
     # template international

@@ -5,7 +5,7 @@ use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
 
-sub board : Path('') {
+sub default : Private {
     my ($self, $c) = @_;
     
     my @forums = $c->model('DBIC')->resultset('Forum')->search( { }, {

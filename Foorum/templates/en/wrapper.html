@@ -1,4 +1,5 @@
 [% USE Dumper %]
+[% USE date %]
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -27,7 +28,7 @@
 <table align='center'> 
 <tr class='title'><td>
 
-    <a href='/board'>[% c.config.name %]</a>
+    <a href='/forum'>[% c.config.name %]</a>
     [% IF forum %] → <a href='/forum/[% forum.forum_id %]'>[% forum.name | html %]</a> [% END %]
     [% IF topic %] → [% topic.title | html %] [% END %]
 <span style='float:right'>
@@ -53,6 +54,8 @@
 <p></p>
 
 [% content %]
+
+[% INCLUDE site/whos_view_this_page.html %]
 
 <div id='footer'><p>Copyright &copy; 2006 All Rights Reserved. Powered by [% c.config.name %] beta.</p></div>
 <div id='timer'><p>This page needs [% elapsed_time %] to load. </p></div>
