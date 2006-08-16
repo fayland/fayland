@@ -68,4 +68,12 @@ sub comment : Private {
     return $comment;
 }
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
+
 1;

@@ -13,4 +13,12 @@ __PACKAGE__->config(
     WRAPPER      => 'simple_wrapper.html',
 );
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
+
 1;

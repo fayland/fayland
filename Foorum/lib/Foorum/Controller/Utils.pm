@@ -32,4 +32,12 @@ sub print_error : Private {
     $c->stash->{template} = 'simple/error.html';
 }
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
+
 1;

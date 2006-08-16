@@ -92,4 +92,12 @@ sub get_forum_moderators : Private {
     return $roles;
 }
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
+
 1;

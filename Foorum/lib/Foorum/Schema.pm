@@ -19,5 +19,12 @@ __PACKAGE__->load_classes(qw/
     MessageUnread
 /);
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
 
 1;

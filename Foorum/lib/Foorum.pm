@@ -16,6 +16,7 @@ use Catalyst qw/
 	Static::Simple
 	Prototype
 	FormValidator::Simple
+	Scheduler
 /;
 
 our $VERSION = '0.01';

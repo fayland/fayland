@@ -12,4 +12,12 @@ __PACKAGE__->config(
                        ],
 );
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
+
 1;

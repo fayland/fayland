@@ -71,4 +71,12 @@ sub import_contacts : Local {
     return unless ($c->req->param('submit'));
 }
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
+
 1;

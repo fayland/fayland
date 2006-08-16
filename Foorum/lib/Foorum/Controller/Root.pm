@@ -79,6 +79,12 @@ sub end : Private {
 
 
 
+=pod
 
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
 
 1;

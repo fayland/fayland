@@ -17,4 +17,12 @@ sub test : Global {
     $c->res->body('OK'. Dumper($c->session->{test}));
 }
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
+
 1;

@@ -65,4 +65,12 @@ sub forum : LocalRegex('^(\d+)(/elite)?(/page=(\d+))?$') {
 	$c->stash->{template} = 'forum/forum.html';
 }
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
+
 1;

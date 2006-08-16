@@ -19,4 +19,12 @@ sub default : Private {
     #$c->res->body(Dumper(\@results));
 }
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
+
 1;

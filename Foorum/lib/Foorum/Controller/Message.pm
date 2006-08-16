@@ -142,4 +142,12 @@ sub message : LocalRegex('^(\d+)$') {
     $c->stash->{template} = 'message/message.html';
 }
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
+
 1;

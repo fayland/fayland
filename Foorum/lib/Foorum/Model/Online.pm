@@ -95,4 +95,12 @@ sub _handler_session {
     return wantarray?@results:\@results;
 }
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
+
 1;

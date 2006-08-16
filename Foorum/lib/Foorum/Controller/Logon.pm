@@ -45,4 +45,12 @@ sub logout : Global {
 	$c->forward('/print_message', [ "Logout success! <a href='/'>Back</a>" ] );
 }
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
+
 1;

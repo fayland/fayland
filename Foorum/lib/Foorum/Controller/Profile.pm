@@ -124,5 +124,12 @@ sub change_email : Local {
     $c->res->body('ok');
 }
 
+=pod
+
+=head2 AUTHOR
+
+Fayland Lam <fayland@gmail.com>
+
+=cut
 
 1;
