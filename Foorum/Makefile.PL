@@ -19,6 +19,7 @@ requires 'Catalyst::Plugin::Session';
 requires 'Catalyst::Plugin::Session::State::Cookie';
 requires 'Catalyst::Plugin::Session::Store::DBIC';
 requires 'Catalyst::Plugin::FormValidator::Simple';
+requires 'Catalyst::Plugin::Scheduler';
 requires 'Template::Plugin::FillInForm';
 requires 'Template::Plugin::Dumper';
 requires 'Template::Plugin::Date';

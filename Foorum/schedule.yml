@@ -1,0 +1,3 @@
+---
+- at: '0 * * * *'
+  event: /cron/remove_sessions
