@@ -7,9 +7,15 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" /> 
 <script type="text/javascript" src="[% base %]js/prototype.js"></script> 
-<link rel="stylesheet" href="[% base %]css/common.css" type="text/css" /> 
-[% IF forumid %]
-<link rel="stylesheet" href="[% base %]css/customer/forum[% forumid %].css" type="text/css" />
+<link rel="stylesheet" href="[% base %]css/common.css" type="text/css" />
+[% IF forum.forum_id %]
+    [% TRY %]
+    [% css_file = c.config.home _ '/root/css/customer/forum' _ forum.forum_id _ '.css' %]
+    [% USE File( css_file ) %]
+<link rel="stylesheet" href="[% base %]css/customer/forum[% forum.forum_id %].css" type="text/css" />
+    [% CATCH File %]
+<link rel="stylesheet" href="[% base %]css/default.css" type="text/css" />
+    [% END %]
 [% ELSE %]
 <link rel="stylesheet" href="[% base %]css/default.css" type="text/css" />
 [% END %]
@@ -22,7 +28,6 @@
 </title>
 </head>
 <body>
-
 <br />
 <div class='one'>
 <table align='center'> 
@@ -42,7 +47,7 @@
     [% ELSE %]
     <a href='/register'>Register</a>  | <a href='/login'>Log in</a>
     [% END %]
-    [% IF forum AND c.user_exists AND roles.is_admin %]
+    [% IF forum.forum_id AND c.user_exists AND roles.is_admin %]
     | <a href='/forumadmin/[% forum.forum_id %]'>Forum Admin</a>
     [% END %]
 </span>

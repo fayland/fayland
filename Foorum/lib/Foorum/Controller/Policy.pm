@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
-use vars qw/$roles/;
+
 
 sub fill_user_role : Private {
     my ( $self, $c, $field ) = @_;
@@ -16,7 +16,7 @@ sub fill_user_role : Private {
         field   => \@field,
     } )->all;
     
-    $roles->{$field}->{role_filled} = 1;
+    my $roles;
     foreach (@roles) {
         $roles->{$_->field}->{$_->role} = 1;
     }
@@ -43,27 +43,27 @@ sub is_admin : Private {
     my ( $self, $c, $field ) = @_;
     
     $field = 'site' unless ($field);
-    &fill_user_role( $self, $c, $field ) unless ($roles->{$field}->{role_filled});
+    &fill_user_role( $self, $c, $field ) unless ($c->stash->{roles});
     
-    return $roles->{is_admin};
+    return $c->stash->{roles}->{is_admin};
 }
 
 sub is_moderator : Private {
     my ( $self, $c, $field ) = @_;
 
     $field = 'site' unless ($field);
-    &fill_user_role( $self, $c, $field ) unless ($roles->{$field}->{role_filled});
+    &fill_user_role( $self, $c, $field ) unless ($c->stash->{roles});
     
-    return $roles->{is_moderator};
+    return $c->stash->{roles}->{is_moderator};
 }
 
 sub is_user : Private {
     my ( $self, $c, $field ) = @_;
     
     $field = 'site' unless ($field);
-    &fill_user_role( $self, $c, $field ) unless ($roles->{$field}->{role_filled});
+    &fill_user_role( $self, $c, $field ) unless ($c->stash->{roles});
     
-    return $roles->{is_member};
+    return $c->stash->{roles}->{is_member};
 }
 
 sub get_forum_moderators : Private {

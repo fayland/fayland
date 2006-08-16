@@ -13,6 +13,9 @@
 .none TABLE { border:0px; width:97%; }
 .none TD { border: 0px; padding: 6px; }
 
+.tablewidth TABLE { width: 97%; }
+.tablewidth TABLE TABLE { width: 100%; }
+
 .online,.online TABLE,.online TD { border: 0px;Padding:0px }
 hr { background:#000000;height:1 }
 body { color: #333333; background: #FFFFF4; }

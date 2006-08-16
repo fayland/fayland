@@ -45,7 +45,7 @@ sub begin : Private {
 sub default : Private {
     my ( $self, $c ) = @_;
 
-    $c->forward('/forum');
+    $c->forward('Foorum::Controller::Forum', 'default');
 }
 
 sub end : Private {

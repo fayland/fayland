@@ -3,6 +3,7 @@ package Foorum::Controller::ForumAdmin;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
+use Foorum::Utils qw/is_color/;
 
 sub home : LocalRegex('^(\d+)$') {
     my ($self, $c) = @_;
@@ -42,7 +43,9 @@ sub style : LocalRegex('^(\d+)/style$') {
     
     &_check_policy( $self, $c, $forum );
     
-    
+    my %params = $c->req->params;
+    # validate the %params;
+
 }
 
 sub _check_policy {
@@ -52,4 +55,5 @@ sub _check_policy {
         $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
     }
 }
+
 1;

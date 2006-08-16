@@ -1,14 +1,16 @@
 [% url_base = '/forumadmin/' _ forum.forum_id %]
 
-<table align='center' width='97%'>
+<div class='tablewidth'>
+<table align='center'>
 <tr><td valign='top' align='left'>
 <div class='one'>
 <table>
 <tr><td height='16' class='title'>Menu</td></tr>
 <tr><td height='16' class='forum1'><a href='[% url_base %]/basic'>Basic Setting</a></td></tr>
-<tr><td height='16' class='forum1'><a href='[% url_base %]/style'>Style Setting</a></td></tr>
+<tr><td height='16' class='forum2'><a href='[% url_base %]/style'>Style Setting</a></td></tr>
 </table>
 </div>
 </td><td valign='top'>
 [% content %]
 </td></tr></table>
+</div>

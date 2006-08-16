@@ -4,7 +4,7 @@
     <tr class='title'><td colspan='2'> -=> Who is viewing this Page? [ [% date.format(date.now, '%Y-%m-%d %H:%M:%S') %] ]</td></tr>
     <tr>
     <td class='forum1' align='center' width='26'><img src='[% c.config.dir.images %]/board/online.gif' alt='On' width='16' height='16' /></td>
-    <td class='forum2'>
+    <td class='forum2' width='*'>
     [% FOREACH whos IN whos_view_this_page %]
     [% IF whos.user %]
     <a href='/u/[% whos.user.username %]' alt="Visit time: [% date.format(whos.visit_time, '%Y-%m-%d %H:%M:%S') %]\nActive time: [% date.format(whos.active_time, '%Y-%m-%d %H:%M:%S') %]">[% whos.user.username %]</a>[% UNLESS loop.last %], [% END %]

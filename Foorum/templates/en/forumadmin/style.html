@@ -26,13 +26,151 @@
 		<td align=right><b>Get Color Code</b></td>
 		<td><select onchange="show_color(this.options[this.selectedIndex].value)" name="color">
 		    [% color_option %]
-		    </select> <input type=text name="showcolor" id='showcolor' size='7'>
+		    </select> <input type='text' name="showcolor" id='showcolor' size='7'>
 		</td>
     </tr>
     <tr class='misc2'>
 		<td align='right'><b>BackGround Color:</b></td>
 		<td>
-		<input type=text name="bg_color" id='bg_color' size='7' maxlength='7' onChange="CHANGEC('bg_color')">
+		<input type='text' name="bg_color" id='bg_color' size='7' maxlength='7' onChange="CHANGEC('bg_color')" />
+		</td>
+    </tr>
+    <tr class='misc1'>
+		<td align='right'><b>BackGround Image:</b></td>
+		<td>
+		<input type='text' name="bg_image" size='60' />
+		</td>
+    </tr>
+    <tr class='misc2'>
+		<td align='right'><b>Unvisited Link:</b></td>
+		<td>
+		<input type='text' name="alink" id='alink' size='7' maxlength='7' onChange="CHANGEC('alink')" />
+		</td>
+    </tr>
+    <tr class='misc1'>
+		<td align='right'><b>Visited Link:</b></td>
+		<td>
+		<input type='text' name="vlink" id='vlink' size='7' maxlength='7' onChange="CHANGEC('vlink')" />
+		</td>
+    </tr>
+    <tr class='misc2'>
+		<td align='right'><b>Hover Link:</b></td>
+		<td>
+		<input type='text' name="hlink" id='hlink' size='7' maxlength='7' onChange="CHANGEC('hlink')" />
+		</td>
+    </tr>
+    <tr class='misc1'>
+		<td align='right'><b>Table Width:</b></td>
+		<td>
+		<input type='text' name="tablewidth" size='4' maxlength='4' />
+		</td>
+    </tr>
+    <tr class='misc2'>
+		<td align='right'><b>Table Border Color:</b></td>
+		<td>
+		<input type='text' name="tablebordercolor" id='tablebordercolor' size='7' maxlength='7' onChange="CHANGEC('tablebordercolor')" />
+		</td>
+    </tr>
+    <tr class='misc1'>
+		<td align='right'><b>Title Background Color:</b></td>
+		<td>
+		<input type='text' name="title_bgcolor" id='title_bgcolor' size='7' maxlength='7' onChange="CHANGEC('title_bgcolor')" />
+		</td>
+    </tr>
+    <tr class='misc2'>
+		<td align='right'><b>Table Font Color:</b></td>
+		<td>
+		<input type='text' name="title_fontcolor" id='title_fontcolor' size='7' maxlength='7' onChange="CHANGEC('title_fontcolor')" />
+		</td>
+    </tr>
+    <tr class='misc1'>
+		<td align='right'><b>Forum Background Color One:</b></td>
+		<td>
+		<input type='text' name="forumcolor1" id='forumcolor1' size='7' maxlength='7' onChange="CHANGEC('forumcolor1')" />
+		</td>
+    </tr>
+    <tr class='misc2'>
+		<td align='right'><b>Forum Font Color One:</b></td>
+		<td>
+		<input type='text' name="forumfont1" id='forumfont1' size='7' maxlength='7' onChange="CHANGEC('forumfont1')" />
+		</td>
+    </tr>
+    <tr class='misc1'>
+		<td align='right'><b>Forum Background Color Two:</b></td>
+		<td>
+		<input type='text' name="forumcolor2" id='forumcolor2' size='7' maxlength='7' onChange="CHANGEC('forumcolor2')" />
+		</td>
+    </tr>
+    <tr class='misc2'>
+		<td align='right'><b>Forum Font Color Two:</b></td>
+		<td>
+		<input type='text' name="forumfont2" id='forumfont2' size='7' maxlength='7' onChange="CHANGEC('forumfont2')" />
+		</td>
+    </tr>
+    <tr class='misc1'>
+		<td align='right'><b>Reply Background Color One:</b></td>
+		<td>
+		<input type='text' name="replycolor1" id='replycolor1' size='7' maxlength='7' onChange="CHANGEC('replycolor1')" />
+		</td>
+    </tr>
+    <tr class='misc2'>
+		<td align='right'><b>Reply Font Color One:</b></td>
+		<td>
+		<input type='text' name="replyfont1" id='replyfont1' size='7' maxlength='7' onChange="CHANGEC('replyfont1')" />
+		</td>
+    </tr>
+    <tr class='misc1'>
+		<td align='right'><b>Reply Background Color Two:</b></td>
+		<td>
+		<input type='text' name="replycolor2" id='replycolor2' size='7' maxlength='7' onChange="CHANGEC('replycolor2')" />
+		</td>
+    </tr>
+    <tr class='misc2'>
+		<td align='right'><b>Reply Font Color Two:</b></td>
+		<td>
+		<input type='text' name="replyfont2" id='replyfont2' size='7' maxlength='7' onChange="CHANGEC('replyfont2')" />
+		</td>
+    </tr>
+    <tr class='misc1'>
+		<td align='right'><b>Others' Background Color One:</b></td>
+		<td>
+		<input type='text' name="misccolor1" id='misccolor1' size='7' maxlength='7' onChange="CHANGEC('misccolor1')" />
+		</td>
+    </tr>
+    <tr class='misc2'>
+		<td align='right'><b>Others' Font Color One:</b></td>
+		<td>
+		<input type='text' name="miscfont1" id='miscfont1' size='7' maxlength='7' onChange="CHANGEC('miscfont1')" />
+		</td>
+    </tr>
+    <tr class='misc1'>
+		<td align='right'><b>Others' Background Color Two:</b></td>
+		<td>
+		<input type='text' name="misccolor2" id='misccolor2' size='7' maxlength='7' onChange="CHANGEC('misccolor2')" />
+		</td>
+    </tr>
+    <tr class='misc2'>
+		<td align='right'><b>Others' Font Color Two:</b></td>
+		<td>
+		<input type='text' name="miscfont2" id='miscfont2' size='7' maxlength='7' onChange="CHANGEC('miscfont2')" />
+		</td>
+    </tr>
+    <tr class='misc1'>
+		<td align='right'><b>Highlight Color:</b></td>
+		<td>
+		<input type='text' name="highlight" id='highlight' size='7' maxlength='7' onChange="CHANGEC('highlight')" />
+		</td>
+    </tr>
+    <tr class='misc2'>
+		<td align='right'><b>Semi-Highlight Color:</b></td>
+		<td>
+		<input type='text' name="semilight" id='semilight' size='7' maxlength='7' onChange="CHANGEC('semilight')" />
+		</td>
+    </tr>
+    <tr class='misc1'>
+		<td align='right'> </td>
+		<td>
+		<input type='submit' name="submit" value='GO!' />
 		</td>
     </tr>
 </table>
