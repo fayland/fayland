@@ -41,11 +41,37 @@ sub style : LocalRegex('^(\d+)/style$') {
     
     return unless ($c->req->param('submit'));
     
+    # execute validation.
+    $c->form(
+        bg_color => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        alink => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        vlink => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        hlink => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        tablebordercolor => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        titlecolor => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        titlefont => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        forumcolor1 => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        forumfont1 => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        forumcolor2 => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        forumfont2 => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        replycolor1 => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        replyfont1 => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        replycolor2 => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        replyfont2 => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        misccolor1 => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        miscfont1 => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        misccolor2 => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        miscfont2 => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        highlight => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        semilight => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        tablewidth => [ ['BETWEEN', 70, 100] ],
+        bg_image  => [ 'HTTP_URL', ['REGEX', qr/^(gif|jpe?g|png)$/ ] ],
+    );
+
+    return if ($c->form->has_error);
+
     &_check_policy( $self, $c, $forum );
     
-    my %params = $c->req->params;
-    # validate the %params;
-
 }
 
 sub _check_policy {

@@ -5,6 +5,14 @@
 <option style="background-color:[% color %];color:[% color %]" value="[% color %]">[% color %]</option>
 [% END %]
 [% END %]
+[% BLOCK color_tr %]
+<tr class='misc[% tr_misc %]'>
+	<td align='right'><b>[% tr_name %]:</b></td>
+	<td>
+	<input type='text' name="[% color_name %]" id='[% color_name %]' size='7' maxlength='7' onChange="CHANGEC('[% color_name %]')" /> [% IF c.form.error(color_name, 'REGEX') %]It's not a validated color.[% END %]
+	</td>
+</tr>
+[% END %]
 
 <script>
 	function CHANGEC(obj) {
@@ -14,6 +22,9 @@
 		$('showcolor').value = color;
 	}
 </script>
+
+[% USE FillInForm %]
+[% FILTER fillinform fdat => c.req.params %]
 
 [% WRAPPER 'forumadmin/bar.html' %]
 
@@ -29,144 +40,39 @@
 		    </select> <input type='text' name="showcolor" id='showcolor' size='7'>
 		</td>
     </tr>
-    <tr class='misc2'>
-		<td align='right'><b>BackGround Color:</b></td>
-		<td>
-		<input type='text' name="bg_color" id='bg_color' size='7' maxlength='7' onChange="CHANGEC('bg_color')" />
-		</td>
-    </tr>
+    [% PROCESS color_tr tr_misc = 2 tr_name = 'BackGround Color' color_name = 'bg_color' %]
     <tr class='misc1'>
 		<td align='right'><b>BackGround Image:</b></td>
 		<td>
 		<input type='text' name="bg_image" size='60' />
 		</td>
     </tr>
-    <tr class='misc2'>
-		<td align='right'><b>Unvisited Link:</b></td>
-		<td>
-		<input type='text' name="alink" id='alink' size='7' maxlength='7' onChange="CHANGEC('alink')" />
-		</td>
-    </tr>
-    <tr class='misc1'>
-		<td align='right'><b>Visited Link:</b></td>
-		<td>
-		<input type='text' name="vlink" id='vlink' size='7' maxlength='7' onChange="CHANGEC('vlink')" />
-		</td>
-    </tr>
-    <tr class='misc2'>
-		<td align='right'><b>Hover Link:</b></td>
-		<td>
-		<input type='text' name="hlink" id='hlink' size='7' maxlength='7' onChange="CHANGEC('hlink')" />
-		</td>
-    </tr>
+    [% PROCESS color_tr tr_misc = 2 tr_name = 'Unvisited Link' color_name = 'alink' %]
+    [% PROCESS color_tr tr_misc = 1 tr_name = 'Visited Link' color_name = 'vlink' %]
+    [% PROCESS color_tr tr_misc = 2 tr_name = 'Hover Link' color_name = 'hlink' %]
     <tr class='misc1'>
 		<td align='right'><b>Table Width:</b></td>
 		<td>
 		<input type='text' name="tablewidth" size='4' maxlength='4' />
 		</td>
     </tr>
-    <tr class='misc2'>
-		<td align='right'><b>Table Border Color:</b></td>
-		<td>
-		<input type='text' name="tablebordercolor" id='tablebordercolor' size='7' maxlength='7' onChange="CHANGEC('tablebordercolor')" />
-		</td>
-    </tr>
-    <tr class='misc1'>
-		<td align='right'><b>Title Background Color:</b></td>
-		<td>
-		<input type='text' name="title_bgcolor" id='title_bgcolor' size='7' maxlength='7' onChange="CHANGEC('title_bgcolor')" />
-		</td>
-    </tr>
-    <tr class='misc2'>
-		<td align='right'><b>Table Font Color:</b></td>
-		<td>
-		<input type='text' name="title_fontcolor" id='title_fontcolor' size='7' maxlength='7' onChange="CHANGEC('title_fontcolor')" />
-		</td>
-    </tr>
-    <tr class='misc1'>
-		<td align='right'><b>Forum Background Color One:</b></td>
-		<td>
-		<input type='text' name="forumcolor1" id='forumcolor1' size='7' maxlength='7' onChange="CHANGEC('forumcolor1')" />
-		</td>
-    </tr>
-    <tr class='misc2'>
-		<td align='right'><b>Forum Font Color One:</b></td>
-		<td>
-		<input type='text' name="forumfont1" id='forumfont1' size='7' maxlength='7' onChange="CHANGEC('forumfont1')" />
-		</td>
-    </tr>
-    <tr class='misc1'>
-		<td align='right'><b>Forum Background Color Two:</b></td>
-		<td>
-		<input type='text' name="forumcolor2" id='forumcolor2' size='7' maxlength='7' onChange="CHANGEC('forumcolor2')" />
-		</td>
-    </tr>
-    <tr class='misc2'>
-		<td align='right'><b>Forum Font Color Two:</b></td>
-		<td>
-		<input type='text' name="forumfont2" id='forumfont2' size='7' maxlength='7' onChange="CHANGEC('forumfont2')" />
-		</td>
-    </tr>
-    <tr class='misc1'>
-		<td align='right'><b>Reply Background Color One:</b></td>
-		<td>
-		<input type='text' name="replycolor1" id='replycolor1' size='7' maxlength='7' onChange="CHANGEC('replycolor1')" />
-		</td>
-    </tr>
-    <tr class='misc2'>
-		<td align='right'><b>Reply Font Color One:</b></td>
-		<td>
-		<input type='text' name="replyfont1" id='replyfont1' size='7' maxlength='7' onChange="CHANGEC('replyfont1')" />
-		</td>
-    </tr>
-    <tr class='misc1'>
-		<td align='right'><b>Reply Background Color Two:</b></td>
-		<td>
-		<input type='text' name="replycolor2" id='replycolor2' size='7' maxlength='7' onChange="CHANGEC('replycolor2')" />
-		</td>
-    </tr>
-    <tr class='misc2'>
-		<td align='right'><b>Reply Font Color Two:</b></td>
-		<td>
-		<input type='text' name="replyfont2" id='replyfont2' size='7' maxlength='7' onChange="CHANGEC('replyfont2')" />
-		</td>
-    </tr>
-    <tr class='misc1'>
-		<td align='right'><b>Others' Background Color One:</b></td>
-		<td>
-		<input type='text' name="misccolor1" id='misccolor1' size='7' maxlength='7' onChange="CHANGEC('misccolor1')" />
-		</td>
-    </tr>
-    <tr class='misc2'>
-		<td align='right'><b>Others' Font Color One:</b></td>
-		<td>
-		<input type='text' name="miscfont1" id='miscfont1' size='7' maxlength='7' onChange="CHANGEC('miscfont1')" />
-		</td>
-    </tr>
-    <tr class='misc1'>
-		<td align='right'><b>Others' Background Color Two:</b></td>
-		<td>
-		<input type='text' name="misccolor2" id='misccolor2' size='7' maxlength='7' onChange="CHANGEC('misccolor2')" />
-		</td>
-    </tr>
-    <tr class='misc2'>
-		<td align='right'><b>Others' Font Color Two:</b></td>
-		<td>
-		<input type='text' name="miscfont2" id='miscfont2' size='7' maxlength='7' onChange="CHANGEC('miscfont2')" />
-		</td>
-    </tr>
-    <tr class='misc1'>
-		<td align='right'><b>Highlight Color:</b></td>
-		<td>
-		<input type='text' name="highlight" id='highlight' size='7' maxlength='7' onChange="CHANGEC('highlight')" />
-		</td>
-    </tr>
-    <tr class='misc2'>
-		<td align='right'><b>Semi-Highlight Color:</b></td>
-		<td>
-		<input type='text' name="semilight" id='semilight' size='7' maxlength='7' onChange="CHANGEC('semilight')" />
-		</td>
-    </tr>
+    [% PROCESS color_tr tr_misc = 2 tr_name = 'Table Border Color' color_name = 'tablebordercolor' %]
+    [% PROCESS color_tr tr_misc = 1 tr_name = 'Title Background Color' color_name = 'titlecolor' %]
+    [% PROCESS color_tr tr_misc = 2 tr_name = 'Table Font Color' color_name = 'titlefont' %]
+    [% PROCESS color_tr tr_misc = 1 tr_name = 'Forum Background Color One' color_name = 'forumcolor1' %]
+    [% PROCESS color_tr tr_misc = 2 tr_name = 'Forum Font Color One' color_name = 'forumfont1' %]
+    [% PROCESS color_tr tr_misc = 1 tr_name = 'Forum Background Color Two' color_name = 'forumcolor2' %]
+    [% PROCESS color_tr tr_misc = 2 tr_name = 'Forum Font Color Two' color_name = 'forumfont2' %]
+    [% PROCESS color_tr tr_misc = 1 tr_name = 'Reply Background Color One' color_name = 'replycolor1' %]
+    [% PROCESS color_tr tr_misc = 2 tr_name = 'Reply Font Color One' color_name = 'replyfont1' %]
+    [% PROCESS color_tr tr_misc = 1 tr_name = 'Reply Background Color Two' color_name = 'replycolor2' %]
+    [% PROCESS color_tr tr_misc = 2 tr_name = 'Reply Font Color Two' color_name = 'replyfont2' %]
+    [% PROCESS color_tr tr_misc = 1 tr_name = 'Others\' Background Color One' color_name = 'misccolor1' %]
+    [% PROCESS color_tr tr_misc = 2 tr_name = 'Others\' Font Color One' color_name = 'miscfont1' %]
+    [% PROCESS color_tr tr_misc = 1 tr_name = 'Others\' Background Color Two' color_name = 'misccolor2' %]
+    [% PROCESS color_tr tr_misc = 2 tr_name = 'Others\' Font Color Two' color_name = 'miscfont2' %]
+    [% PROCESS color_tr tr_misc = 1 tr_name = 'Highlight Color' color_name = 'highlight' %]
+    [% PROCESS color_tr tr_misc = 2 tr_name = 'Semi-Highlight Color' color_name = 'semilight' %]
     <tr class='misc1'>
 		<td align='right'> </td>
 		<td>
@@ -176,5 +82,7 @@
 </table>
 </form>
 </div>
+
+[% END %]
 
 [% END %]
