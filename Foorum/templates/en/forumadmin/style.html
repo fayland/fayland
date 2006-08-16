@@ -45,6 +45,7 @@
 		<td align='right'><b>BackGround Image:</b></td>
 		<td>
 		<input type='text' name="bg_image" size='60' />
+		[% IF c.form.error('bg_image') %]It's not a validated Image URL.[% END %]
 		</td>
     </tr>
     [% PROCESS color_tr tr_misc = 2 tr_name = 'Unvisited Link' color_name = 'alink' %]
@@ -53,7 +54,8 @@
     <tr class='misc1'>
 		<td align='right'><b>Table Width:</b></td>
 		<td>
-		<input type='text' name="tablewidth" size='4' maxlength='4' />
+		<input type='text' name="tablewidth" size='4' maxlength='4' />%
+		[% IF c.form.error(tablewidth) %]Table Widht should be 70 - 100.[% END %]
 		</td>
     </tr>
     [% PROCESS color_tr tr_misc = 2 tr_name = 'Table Border Color' color_name = 'tablebordercolor' %]
