@@ -14,7 +14,10 @@ sub handler {
     
     if ($uri =~ /test\.txt$/) {
         $r->filename('E:\Fayland\Perl\fayland.txt');
+        # return DECLINED when use PerlMapToStorageHandler
         return Apache2::Const::DECLINED;
+        # return OK when use PerlTransHandler
+        # return Apache2::Const::OK;
     }
 
     return Apache2::Const::DECLINED;
