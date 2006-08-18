@@ -5,6 +5,7 @@ use warnings;
 use base 'Catalyst::Controller';
 use DateTime;
 use Digest ();
+use Foorum::Utils qw/generate_random_word/;
 
 sub default : Private {
     my ( $self, $c ) = @_;
@@ -31,10 +32,12 @@ sub default : Private {
     
     my @extra_columns;
     if ($c->config->{email}->{on}) {
-    	my $active_code = int(rand(999999));
-    	@extra_columns = ( active_code => $active_code );
+    	my $active_code = &generate_random_word(10);
+    	@extra_columns = ( active_code => $active_code, has_actived => 0, );
     	
     	# TODO, mail send
+    } else {
+        @extra_columns = ( has_actived => 1, );
     }
     
     $c->model('DBIC')->resultset('User')->create({
@@ -43,7 +46,6 @@ sub default : Private {
         email     => $c->req->param('email'),
         register_on => DateTime->now,
         register_ip => $c->req->address,
-        has_actived => 0,
         @extra_columns,
     });
     
@@ -51,6 +53,23 @@ sub default : Private {
         msg => 'register success!',
         uri => $c->session->{url_referer} || '/',
     } ] );
+}
+
+sub activation : Local {
+    my ($self, $c, $username, $active_code) = @_;
+    
+    $username = $c->req->param('username') unless ($username);
+    $active_code = $c->req->param('active_code') unless ($active_code);
+    
+    $c->stash( {
+        template => 'register/activation.html',
+        username => $username,
+    } );
+    return unless ($username and $active_code);
+    
+    my $user = $c->model('DBIC::User')->find( { username => $username } );
+    
+    # TODO
 }
 
 sub import_contacts : Local {

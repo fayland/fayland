@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base 'Exporter';
 use vars qw/@EXPORT_OK/;
-@EXPORT_OK = qw/encodeHTML decodeHTML is_color/;
+@EXPORT_OK = qw/encodeHTML decodeHTML is_color generate_random_word/;
 
 use HTML::Entities ();
 
@@ -24,7 +24,7 @@ sub decodeHTML($) {
 
 =pod
 
-=item is_color
+=item is_color($color)
 
 make sure color is ^\#[0-9a-zA-Z]{6}$
 
@@ -37,6 +37,30 @@ sub is_color {
 	} else {
 		return 0;
 	}
+}
+
+=pod
+
+=item generate_random_word($len)
+
+return a random word (length is $len), char is random ('A' .. 'Z', 'a' .. 'z', 0 .. 9)
+
+!#@!$#$^%$ bad English
+
+=cut
+
+sub generate_random_word {
+    my $len = shift;
+    my @random_words = ('A' .. 'Z', 'a' .. 'z', 0 .. 9);
+    my $random_word;
+    
+    $len = 10 unless ($len);
+    
+    foreach (1 .. $len) {
+        $random_word .= $random_words[int(rand(scalar @random_words))];
+    }
+    
+    return $random_word;
 }
 
 =pod
