@@ -6,6 +6,7 @@ use base 'Catalyst::Controller';
 use DateTime;
 use Digest ();
 use Foorum::Utils qw/generate_random_word/;
+use Data::Dumper;
 
 sub default : Private {
     my ( $self, $c ) = @_;
@@ -15,8 +16,18 @@ sub default : Private {
     return unless ($c->req->param('process'));
     
     # execute validation.
+    
+    # username
+    my $username = $c->req->param('username');
+    my $ERROR_USERNAME = &check_valid_username($self, $c, $username);
+    if ($ERROR_USERNAME) {
+        $c->set_invalid_form( username => $ERROR_USERNAME );
+        return;
+    }
+    
+    # TODO, DBIC_UNIQUE should be LIKE
     $c->form(
-        username  => [[ 'DBIC_UNIQUE', $c->model('DBIC')->resultset('User'), 'username' ], qw/NOT_BLANK ASCII/,       [qw/LENGTH 4 20/] ],
+        username  => [[ 'DBIC_UNIQUE', $c->model('DBIC')->resultset('User'), 'username' ], qw/NOT_BLANK/,       [qw/LENGTH 4 20/] ],
         password  => [qw/NOT_BLANK/,             [qw/LENGTH 6 20/] ],
         email     => [qw/NOT_BLANK EMAIL_LOOSE/, [qw/LENGTH 5 20/], [ 'DBIC_UNIQUE', $c->model('DBIC')->resultset('User'), 'email' ] ],
         { passwords => ['password', 'confirm_password'] } => ['DUPLICATION'],
@@ -41,7 +52,8 @@ sub default : Private {
     }
     
     $c->model('DBIC')->resultset('User')->create({
-        username  => $c->req->param('username'),
+        username  => $username,
+        nickname  => $username,
         password  => $computed,
         email     => $c->req->param('email'),
         register_on => DateTime->now,
@@ -49,10 +61,15 @@ sub default : Private {
         @extra_columns,
     });
     
-    $c->forward('/print_message', [ { 
-        msg => 'register success!',
-        uri => $c->session->{url_referer} || '/',
-    } ] );
+    # redirect or forward
+    if ($c->config->{email}->{on}) {
+        $c->res->redirect("/register/activation/$username"); # to activation
+    } else {
+        $c->forward('/print_message', [ { 
+            msg => 'register success!',
+            uri => $c->session->{url_referer} || '/',
+        } ] );
+    }
 }
 
 sub activation : Local {
@@ -69,7 +86,20 @@ sub activation : Local {
     
     my $user = $c->model('DBIC::User')->find( { username => $username } );
     
-    # TODO
+    $c->detach('/print_error', [ 'ERROR_USER_NON_EXIST' ] ) unless ($user);
+    
+    # validator it
+    if (!$user->active_code or $user->active_code eq $active_code) {
+        $user->update( {
+            active_code => '',
+            has_actived => 1,
+        } );
+        # login will be failed since the $user->password is SHA1 Hashed.
+        # $c->login( $username, $user->password );
+        $c->res->redirect('/profile/edit');
+    } else {
+        $c->stash->{'ERROR_UNMATCHED'} = 1;
+    }
 }
 
 sub import_contacts : Local {
@@ -88,6 +118,29 @@ sub import_contacts : Local {
         email    => $email,
     } );
     return unless ($c->req->param('submit'));
+}
+
+=pod
+
+=item check_valid_username
+
+check a "username" is valid or not
+
+=cut
+
+sub check_valid_username : Private {
+    my ($self, $c, $username) = @_;
+    
+    my @reserved_username = @{ $c->config->{reserved_username} };
+    
+    for ($username) {
+        return 'HAS_BLANK' if (/\s/);
+        return 'HAS_SPECAIL_CHAR' if (/[\a\f\n\e\0\r\t\`\~\!\@\#\$\%\^\&\*\(\)\+\=\\\{\}\;\'\:\"\,\.\/\<\>\?\[\]]/is);
+        if (grep(/^$username$/, @reserved_username)) { # $_$
+            return 'HAS_RESERVED';
+        }
+    }
+    return;
 }
 
 =pod

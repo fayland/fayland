@@ -13,6 +13,14 @@ sub login : Global {
 
 	if ( my $username = $c->req->param("username") and my $password = $c->req->param("password") ) {
 	 	if ( $c->login( $username, $password ) ) {
+	 	    
+	 	    # check if he is actived
+	 	    if ($c->user->active_code) {
+	 	        my $username = $c->user->username;
+	 	        $c->logout;
+	 	        return $c->res->redirect("/register/activation/$username");
+	 	    }
+	 	    
 	 		# login_times++
 	 		$c->user->update( {
 	 		    login_times   => $c->user->login_times + 1,
@@ -42,7 +50,7 @@ sub logout : Global {
 	# log the user out
 	$c->logout;
 	
-	$c->forward('/print_message', [ "Logout success! <a href='/'>Back</a>" ] );
+	$c->res->redirect('/');
 }
 
 =pod

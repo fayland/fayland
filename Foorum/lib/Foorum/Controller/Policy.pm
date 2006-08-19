@@ -79,13 +79,13 @@ sub get_forum_moderators : Private {
         my $user = $c->model('DBIC')->resultset('User')->search( {
             user_id => $_->user_id,
         }, {
-            columns => ['username'],
+            columns => ['username', 'nickname'],
             cache => 1,
         } )->first;
         if ($_->role eq 'admin') {
-            $roles->{$_->field}->{'admin'} = $user->username;
+            $roles->{$_->field}->{'admin'} = $user;
         } elsif ($_->role eq 'moderator') {
-            push @{$roles->{$_->field}->{'moderator'}}, $user->username;
+            push @{$roles->{$_->field}->{'moderator'}}, $user;
         }
     }
     

@@ -28,24 +28,35 @@ sub edit : Local {
     
     $c->stash->{template} = 'user/profile/edit.html';
     
-    return unless ($c->req->param('process'));
-
+    unless ($c->req->param('submit')) {
+        if ($c->user->birthday and $c->user->birthday =~ /^(\d+)\-(\d+)\-(\d+)$/) {
+            $c->stash( {
+                year  => $1,
+                month => $2,
+                day   => $3,
+            } );
+        }
+        return;
+    }
+    # TODO
     $c->form(
         gender   => [ ['REGEX', qr/^(M|F)?$/ ] ],
         { birthday  => ['year', 'month', 'day'] } => ['DATE'],
         homepage => [ 'HTTP_URL' ],
+        nickname => [ qw/NOT_BLANK/, [qw/LENGTH 4 20/] ],
     );
     return if ($c->form->has_error);
 
     my $birthday = $c->req->param('year') . '-' . $c->req->param('month') . '-' . $c->req->param('day');
 
     $c->user->update( {
-        gender   => $c->req->param('gender'),
+        nickname => $c->req->param('nickname') || $c->user->username,
+        gender   => $c->req->param('gender') || '',
         birthday => $birthday,
-        homepage => $c->req->param('homepage'),
+        homepage => $c->req->param('homepage') || '',
     } );
     
-    $c->res->body('ok');
+    $c->res->redirect('/u/' . $c->user->username);
 }
 
 sub change_password : Local {

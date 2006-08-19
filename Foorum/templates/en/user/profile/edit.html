@@ -1,8 +1,11 @@
 [% USE Dumper %]
 [% USE FillInForm %]
-[% UNLESS c.req.param('process');
+[% UNLESS c.req.param('submit');
     data = {
         homepage  => c.user.homepage,
+        nickname  => c.user.nickname,
+        gender    => c.user.gender,
+        year      => year, month => month, day => day,
     };
 END; %]
 [% FILTER fillinform fdat => data || c.req.params %]
@@ -10,9 +13,13 @@ END; %]
 <table align='center'>
 	<tbody>
 	<form method='post'>
-	<input type='hidden' name='process' value='1' />
 	<tr class='title'><td colspan='2'>Profile Edit</td></tr>
     <tr class='misc1'><td width='20%' align='right'>Username:</td><td>[% c.user.username %] ( <a href='/profile/change_password'>Change Password</a>, <a href='/profile/change_email'>Change Email</a>)
+	</td></tr>
+    <tr class='misc1'><td align='right'>Nickname:</td><td><input type='text' name='nickname' size='24' />
+	[% IF c.form.error('nickname') %]
+	the length of nickname should be more than 4 and less than 20
+	[% END %]
 	</td></tr>
     <tr class='misc2'><td align='right'>Gender:</td><td><select name='gender'><option value=''>Secret</option><option value='M'>Male</option><option value='F'>Female</option>
 </select>
@@ -30,7 +37,7 @@ END; %]
 	Please type a valid homepage URL.
 	[% END %]
 	</td></tr>
-	<tr class='misc2'><td></td><td><input type='submit' /></td></tr>
+	<tr class='misc2'><td></td><td><input type='submit' name='submit' /></td></tr>
 	</form>
 	</tbody>
 </table>

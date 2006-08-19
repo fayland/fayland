@@ -37,6 +37,16 @@ validator:
 
 maintain: 0
 maintain_reason: "The borad is under maintain. Sorry for any inconvenience."
+register: 1
+register_closed_reason: "For some reasons, Register is closed."
+reserved_username:
+  - anonymous
+  - guest
+  - administrator
+  - admin
+  - moderator
+  - system
+  - root  
 
 per_page:
   forum: 20
@@ -48,5 +58,5 @@ dir:
   images: 'http://fayland:3000/images'
 
 email:
-  on: 0
+  on: 1
   import: 1

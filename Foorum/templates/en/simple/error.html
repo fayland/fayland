@@ -1,6 +1,7 @@
 [% ERRORS = {
     'PERMISSION_DENIED' => 'you are not allowed to do that.',
     'ALL_REQUIRED'      => 'ALL is required.',
+    'USER_NON_EXSIT     => 'user non-exist',
 } %]
 
 [% IF (matches = error.msg.match('ERROR_(\w+)'));

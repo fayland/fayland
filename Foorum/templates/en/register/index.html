@@ -16,7 +16,13 @@
 	</td></tr>
 	<tr class='misc2'><td width='20%' align='right'>Username:</td><td><input type='text' name='username' size='12' />
 	[% IF c.form.error('username') %]
-	    [% IF c.form.error('username', 'DBIC_UNIQUE') %]
+	    [% IF c.form.error('username', 'HAS_BLANK') %]
+	    don't put blank in your username.
+	    [% ELSIF c.form.error('username', 'HAS_SPECAIL_CHAR') %]
+	    specail char like #$%^%$&^%*&^&* is not allowed.
+	    [% ELSIF c.form.error('username', 'HAS_RESERVED') %]
+	    this username is reserved.
+	    [% ELSIF c.form.error('username', 'DBIC_UNIQUE') %]
 	    This username is used by another one.
 	    [% ELSE %]
 	    username should be 6-20 chars.

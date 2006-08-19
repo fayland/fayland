@@ -41,9 +41,9 @@
 		</table>
 	</td>
 	<td class='forum1' width='80'>
-	    <a href='/u/[% roles.${f.forum_id}.admin %]'>[% roles.${f.forum_id}.admin %]</a>
+	    <a href='/u/[% roles.${f.forum_id}.admin.username %]'>[% roles.${f.forum_id}.admin.nickname %]</a>
 	    [% FOREACH moderator IN roles.${f.forum_id}.moderator %]
-	    <br /><a href='/u/[% moderator %]'>[% moderator %]</a>
+	    <br /><a href='/u/[% moderator.username %]'>[% moderator.nickname %]</a>
 	    [% END %]
 	</td>
 	<td class='forum2' width='60'>
@@ -64,7 +64,7 @@
         [% IF f.policy == 'private' %]
         Private
         [% ELSE %]
-        <a href='/forum/[% f.forum_id _ '/' _ f.last_post.topic_id %]'>[% f.last_post.title | html | truncate(20) %]</a><br /><a href='/u/[% f.last_post.last_updator.username %]'>[% f.last_post.last_updator.username %]</a><br />[% f.last_post.last_update_date %]
+        <a href='/forum/[% f.forum_id _ '/' _ f.last_post.topic_id %]'>[% f.last_post.title | html | truncate(20) %]</a><br /><a href='/u/[% f.last_post.last_updator.username %]'>[% f.last_post.last_updator.nickname %]</a><br />[% f.last_post.last_update_date %]
         [% END %]
     </td>
 	</tr>
