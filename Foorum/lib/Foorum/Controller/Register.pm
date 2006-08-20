@@ -42,11 +42,17 @@ sub default : Private {
     my $computed = $d->digest;
     
     my @extra_columns;
-    if ($c->config->{email}->{on}) {
+    if ($c->config->{mail}->{on}) {
     	my $active_code = &generate_random_word(10);
     	@extra_columns = ( active_code => $active_code, has_actived => 0, );
     	
     	# TODO, mail send
+    	my $email_body = $c->view('SimpleView')->render($c, 'email/activation.html', {
+            additional_template_paths => [ $c->path_to('templates', $c->stash->{lang}) ],
+            username => $username,
+            active_code => $active_code,
+        } );
+        
     } else {
         @extra_columns = ( has_actived => 1, );
     }
@@ -107,7 +113,7 @@ sub import_contacts : Local {
     
     my $email = $c->user->email if ($c->user_exists);
     
-    unless ($c->config->{email}->{import}) {
+    unless ($c->config->{mail}->{import}) {
         $c->detach('/print_message', [ { 
             msg => 'It\'s disabled.',
         } ] );

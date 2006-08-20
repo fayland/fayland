@@ -1,0 +1,43 @@
+22a23
+>     my %args;
+24d24
+<         my %args;
+38a39,43
+>         } elsif ( $args{tls} ) {
+>             require Net::SMTP::TLS;
+>             $SMTP->quit if $SMTP;
+>             $SMTP = Net::SMTP::TLS->new($host, %args);
+>             return failure "Couldn't connect to $host" unless $SMTP;
+58c63,67
+<         $SMTP->mail($from) or return failure "FROM: <$from> denied";
+---
+>         if ( $args{tls} ) {
+>             $SMTP->mail($from);
+>         } else {
+>             $SMTP->mail($from) or return failure "FROM: <$from> denied";
+>         }
+64c73,78
+<         my @ok = $SMTP->to(@to, { SkipBad => 1 });
+---
+>         my @ok;
+>         if ( $args{tls} ) {
+>             @ok = $SMTP->to($to[0]);
+>         } else {
+>             @ok = $SMTP->to(@to, { SkipBad => 1 });
+>         }
+74c88
+<     return failure "No valid recipients" if @bad == @to;
+---
+>     return failure "No valid recipients" if (@bad == @to and ! $args{tls});
+76,77c90,97
+<     return failure "Can't send data"
+<       unless $SMTP->data( $message->as_string );
+---
+>     if ( $args{tls} ) {
+>         $SMTP->data;
+>         $SMTP->datasend( $message->as_string );
+>         $SMTP->dataend;
+>     } else {
+>         return failure "Can't send data"
+>            unless $SMTP->data( $message->as_string );
+>     }

@@ -16,17 +16,24 @@ sub auto : Private {
 	# in case (begin : Private) is overrided
 	$t0 = [gettimeofday] unless ($t0);
 	
-	# for maintain
+	# internationalization
+#    if ($c->req->headers->{'accept-language'} =~ /zh\-cn/) {
+#        $c->stash->{lang} = 'cn';
+#    } else {
+        $c->stash->{lang} = 'en';
+#    }
+
+	my $url_referer = $c->req->path;	
+	# for maintain, but admin can login and do something
 	if ($c->config->{maintain} and
-	    $c->req->path ne 'login') {
+	    ($url_referer ne 'login' and $url_referer !~ /^admin\//)) {
 	        $c->stash->{template} = 'simple/maintain.html';
 	        $c->detach('end');
 	        return 0;
 	}
 	
 	# for login using
-	my $url_referer = $c->req->path;
-    if ($url_referer !~ /ajax\//
+    if ($url_referer !~ /^ajax\//
     and $url_referer ne 'register'
     and $url_referer ne 'logout'
     and $url_referer ne 'login') {
@@ -50,25 +57,25 @@ sub default : Private {
 
 sub end : Private {
     my ( $self, $c ) = @_;
+    
+    die 'I want to die' if ($c->debug and $c->req->param('die')); # for debug using.
 	
 	return if ($c->res->body || $c->res->redirect);
 
-    $c->stash->{elapsed_time} = tv_interval( $t0, [gettimeofday] );
-    
-    # get whos view this page?
-    my $results = $c->model('Online')->whos_view_this_page($c);
-    #use Data::Dumper;
-    #$c->log->debug(Dumper($results));
-    $c->stash->{whos_view_this_page} = $results;
-    
     # template international
-    my $lang = $c->config->{lang} || 'en';
-    $c->stash->{additional_template_paths} = [ $c->path_to('templates', $lang) ];
+    $c->stash->{additional_template_paths} = [ $c->path_to('templates', $c->stash->{lang}) ];
 
     # Forward to View unless response body is already defined
     if ($c->stash->{template} =~ /^simple\//) {
         $c->forward( $c->view('SimpleTT') );
     } else {
+        
+        $c->stash->{elapsed_time} = tv_interval( $t0, [gettimeofday] );
+        
+        # get whos view this page?
+        my $results = $c->model('Online')->whos_view_this_page($c);
+        $c->stash->{whos_view_this_page} = $results;
+        
         $c->forward( $c->view('TT') );
     }
 }

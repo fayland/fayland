@@ -17,7 +17,7 @@ sub profile : Regex('^u/(\w{6,20})$') {
         $c->stash->{user} = $user;
         $c->stash->{template} = 'user/profile.html';
     } else {
-        $c->forward('/print_error', [ 'No such user!' ] );
+        $c->forward('/print_error', [ 'ERROR_USER_NON_EXIST' ] );
     }
 }
 

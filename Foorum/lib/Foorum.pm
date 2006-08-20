@@ -16,6 +16,7 @@ use Catalyst qw/
 	Static::Simple
 	Prototype
 	FormValidator::Simple
+	Email
 	Scheduler
 /;
 
