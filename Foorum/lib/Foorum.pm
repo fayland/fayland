@@ -22,6 +22,10 @@ use Catalyst qw/
 
 our $VERSION = '0.01';
 
+# Log4perl
+use Catalyst::Log::Log4perl;
+__PACKAGE__->log(Catalyst::Log::Log4perl->new('../logger.conf'));
+
 __PACKAGE__->setup;
 
 1;

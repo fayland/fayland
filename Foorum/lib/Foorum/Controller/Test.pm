@@ -6,15 +6,14 @@ use base 'Catalyst::Controller';
 
 sub test : Global {
     my ( $self, $c ) = @_;
+
+    $c->log->debug('debug');
+    $c->log->info('info');
+    $c->log->error('error');
+    $c->log->fatal('fatal');
     
-    if ( $c->login('fayland', '00000000') ) {
-        $c->res->body('1');
-    } else {
-        $c->res->body('2');
-    }
-    return;
     use Data::Dumper;
-    $c->res->body('OK'. Dumper($c->session->{test}));
+    $c->res->body('OK'. Dumper($c->config));
 }
 
 =pod
