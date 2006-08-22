@@ -143,15 +143,15 @@ CREATE TABLE user (
   email varchar(255)    ,
   register_on datetime    ,
   register_ip varchar(32)    ,
-  active_code varchar(32)    ,
+  active_code char(10)    ,
   last_login_on datetime    ,
   last_login_ip varchar(32)    ,
-  has_actived int(11)  DEFAULT '0'  ,
+  has_actived smallint(1)    ,
   login_times int(11)  DEFAULT '1'  ,
   homepage varchar(255)    ,
   status varchar(16)    ,
-  threads int(8)  DEFAULT ''  ,
-  replies int(8)  DEFAULT ''  ,
+  threads int(11)  DEFAULT '0'  ,
+  replies int(11)  DEFAULT '0'  ,
   last_post_id int(11)    ,
   PRIMARY KEY (user_id),
   UNIQUE username (username)
@@ -166,4 +166,4 @@ CREATE TABLE user_role (
   field varchar(32)    
 );
 
-# ----------- Dump file ends -----------
+# ----------- Dump ends -----------
