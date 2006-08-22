@@ -14,12 +14,16 @@
 </tr>
 [% END %]
 
+<script src='[% base %]js/utils/OnDemandJS.js'></script>
 <script>
 	function CHANGEC(obj) {
 		$(obj).style.background = $(obj).value;
 	}
 	function show_color(color) {
 		$('showcolor').value = color;
+	}
+	function LoadStyle(stylename) {
+	    OnDemandJS('stylesetting', '/ajax/loadstyle?style=' + stylename);
 	}
 </script>
 
@@ -33,21 +37,25 @@
 <input type='hidden' name='process' value='1' />
 <table align='center'>
     <tr class='title'><td colspan='2'>Style Setting</td></tr>
+    <tr class='misc1'><td align='right'>Choose one existing Style</td><td><select name='style_template'><option value='black'>Black</option></select><input type='button' value='Show' /></td></tr>
+    <tr class='title'><td colspan='2'>Edit Style</td></tr>
     <tr class='misc1'>
-		<td align=right><b>Get Color Code</b></td>
+		<td align='right'><b>Get Color Code</b></td>
 		<td><select onchange="show_color(this.options[this.selectedIndex].value)" name="color">
 		    [% color_option %]
 		    </select> <input type='text' name="showcolor" id='showcolor' size='7'>
 		</td>
     </tr>
     [% PROCESS color_tr tr_misc = 2 tr_name = 'BackGround Color' color_name = 'bg_color' %]
-    <tr class='misc1'>
+    [% PROCESS color_tr tr_misc = 1 tr_name = 'Body Font Color' color_name = 'bg_fontcolor' %]
+    <tr class='misc2'>
 		<td align='right'><b>BackGround Image:</b></td>
 		<td>
 		<input type='text' name="bg_image" size='60' />
 		[% IF c.form.error('bg_image') %]It's not a validated Image URL.[% END %]
 		</td>
     </tr>
+    [% PROCESS color_tr tr_misc = 1 tr_name = 'Normal Link' color_name = 'link' %]
     [% PROCESS color_tr tr_misc = 2 tr_name = 'Unvisited Link' color_name = 'alink' %]
     [% PROCESS color_tr tr_misc = 1 tr_name = 'Visited Link' color_name = 'vlink' %]
     [% PROCESS color_tr tr_misc = 2 tr_name = 'Hover Link' color_name = 'hlink' %]

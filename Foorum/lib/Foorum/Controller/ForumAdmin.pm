@@ -39,11 +39,14 @@ sub style : LocalRegex('^(\d+)/style$') {
     
     $c->stash->{template} = 'forumadmin/style.html';
     
+    
+    
     return unless ($c->req->param('submit'));
     
     # execute validation.
     $c->form(
         bg_color => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
+        bg_fontcolor => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
         alink => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
         vlink => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
         hlink => [ ['REGEX', qr/^\#[0-9a-zA-Z]{6}$/ ] ],
