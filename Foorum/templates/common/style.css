@@ -54,6 +54,14 @@ A:link { color: [% style.link %] }
     background: [% style.forumcolor2 %];
     color: [% style.forumfont2 %];
 }
+.reply1 {
+    background: [% style.replycolor1 %];
+    color: [% style.replyfont1 %];
+}
+.reply2 {
+    background: [% style.replycolor2 %];
+    color: [% style.replyfont2 %];
+}
 .misc1 {
     background: [% style.misccolor1 %];
     color: [% style.miscfont1 %];

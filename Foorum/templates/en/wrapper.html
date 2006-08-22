@@ -10,9 +10,9 @@
 <link rel="stylesheet" href="[% base %]css/common.css" type="text/css" />
 [% IF forum.forum_id %]
     [% TRY %]
-    [% css_file = c.config.home _ '/root/css/customer/forum' _ forum.forum_id _ '.css' %]
+    [% css_file = c.config.home _ '/root/css/custom/forum' _ forum.forum_id _ '.css' %]
     [% USE File( css_file ) %]
-<link rel="stylesheet" href="[% base %]css/customer/forum[% forum.forum_id %].css" type="text/css" />
+<link rel="stylesheet" href="[% base %]css/custom/forum[% forum.forum_id %].css" type="text/css" />
     [% CATCH File %]
 <link rel="stylesheet" href="[% base %]css/default.css" type="text/css" />
     [% END %]

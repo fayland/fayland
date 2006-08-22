@@ -3,6 +3,8 @@ package Foorum::Controller::Ajax;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
+use YAML::Syck;
+use Data::Dumper;
 
 =pod
 
@@ -45,7 +47,16 @@ sub loadstyle : Local {
     my $output;
     
     return unless (-e $c->path_to('style', 'system', "$style\.yml"));
-    # TODO
+    
+    my $style = LoadFile($c->path_to('style', 'system', "$style\.yml"));
+    
+    foreach (keys %{$style}) {
+        my $background = qq~\$('$_').style.background = "$style->{$_}";~ if ($style->{$_} =~ /^\#/);
+        $output .= <<JAVASCRIPT;
+        \$('$_').value = "$style->{$_}";
+        $background
+JAVASCRIPT
+    }
     
     $c->res->content_type('text/javascript');
     $c->res->body($output);

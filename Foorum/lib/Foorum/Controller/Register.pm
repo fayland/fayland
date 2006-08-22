@@ -47,7 +47,7 @@ sub default : Private {
     	@extra_columns = ( active_code => $active_code, has_actived => 0, );
     	
     	# TODO, mail send
-    	my $email_body = $c->view('SimpleView')->render($c, 'email/activation.html', {
+    	my $email_body = $c->view('NoWrapperTT')->render($c, 'email/activation.html', {
             additional_template_paths => [ $c->path_to('templates', $c->stash->{lang}) ],
             username => $username,
             active_code => $active_code,
