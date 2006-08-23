@@ -3,7 +3,6 @@ package Foorum::Controller::Logon;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use DateTime;
 
 sub login : Global {
 	my ( $self, $c ) = @_;
@@ -24,7 +23,7 @@ sub login : Global {
 	 		# login_times++
 	 		$c->user->update( {
 	 		    login_times   => $c->user->login_times + 1,
-	 		    last_login_on => DateTime->now,
+	 		    last_login_on => \"NOW()",
 	 		    last_login_ip => $c->req->address,
 	 		} );
 	 		

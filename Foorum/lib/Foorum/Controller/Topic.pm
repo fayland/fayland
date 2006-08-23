@@ -3,7 +3,6 @@ package Foorum::Controller::Topic;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use DateTime;
 use Data::Dumper;
 
 sub topic : Regex('^forum/(\d+)/(\d+)(/page=(\d+))?$') {
@@ -71,7 +70,7 @@ sub create : Regex('^forum/(\d+)/topic$') {
         title     => $c->req->param('title'),
         author_id => $c->user->user_id,
         last_updator_id  => $c->user->user_id,
-        last_update_date => DateTime->now,
+        last_update_date => \"NOW()",
     } );
     
     my $comment = $c->model('DBIC')->resultset('Comment')->create( {
@@ -81,7 +80,7 @@ sub create : Regex('^forum/(\d+)/topic$') {
         title       => $c->req->param('title'),
         text        => $c->req->param('text'),
         formatter   => 'text',
-        post_on     => DateTime->now,
+        post_on     => \"NOW()",
         post_ip     => $c->req->address,
         reply_to    => 0,
         forum_id    => $forum_id,
@@ -138,7 +137,7 @@ sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
         title       => $c->req->param('title'),
         text        => $c->req->param('text'),
         formatter   => 'text',
-        post_on     => DateTime->now,
+        post_on     => \"NOW()",
         post_ip     => $c->req->address,
         reply_to    => $comment_id,
         forum_id    => $forum_id,
@@ -151,7 +150,7 @@ sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
     } );
     $topic->update( {
         total_replies => $topic->total_replies + 1,
-        last_update_date => DateTime->now,
+        last_update_date => \"NOW()",
         last_updator_id  => $c->user->user_id,
     } );
     
@@ -200,7 +199,7 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
         title       => $c->req->param('title'),
         text        => $c->req->param('text'),
         formatter   => 'text',
-        update_on   => DateTime->now,
+        update_on   => \"NOW()",
         post_ip     => $c->req->address,
     } );
     

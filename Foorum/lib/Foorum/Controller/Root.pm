@@ -67,7 +67,7 @@ sub end : Private {
 
     # Forward to View unless response body is already defined
     if ($c->stash->{template} =~ /^simple\//) {
-        $c->forward( $c->view('SimpleTT') );
+        $c->stash->{simple_wrapper} = 1;
     } else {
         
         $c->stash->{elapsed_time} = tv_interval( $t0, [gettimeofday] );
@@ -75,9 +75,8 @@ sub end : Private {
         # get whos view this page?
         my $results = $c->model('Online')->whos_view_this_page($c);
         $c->stash->{whos_view_this_page} = $results;
-        
-        $c->forward( $c->view('TT') );
     }
+    $c->forward( $c->view('TT') );
 }
 
 

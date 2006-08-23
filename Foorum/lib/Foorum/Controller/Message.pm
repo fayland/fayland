@@ -3,7 +3,6 @@ package Foorum::Controller::Message;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use DateTime ();
 use Data::Dumper;
 
 sub auto : Private {
@@ -58,7 +57,7 @@ sub compose : Local {
         to_id   => $rept->user_id,
         title   => $c->req->param('title'),
         text    => $c->req->param('text'),
-        post_on => DateTime->now,
+        post_on => \"NOW()",
         post_ip => $c->req->address,
     } );
     

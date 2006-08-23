@@ -1,7 +1,7 @@
 [% ERRORS = {
     'PERMISSION_DENIED' => 'you are not allowed to do that.',
     'ALL_REQUIRED'      => 'ALL is required.',
-    'USER_NON_EXSIT     => 'user non-exist',
+    'USER_NON_EXSIT'     => 'user non-exist',
 } %]
 
 [% IF (matches = error.msg.match('ERROR_(\w+)'));
@@ -14,12 +14,7 @@
 	A:visited{text-decoration: underline}
 	A:link{text-decoration: underline;}
 </style>
-<table cellpadding="0" cellspacing="0" border="0" width="93%" align="center" height="75%">
-	<tr align="center" valign="middle"><td>
-		<table cellpadding="10" cellspacing="0" border="0" width="80%" align="center">
-			<tr><td bgcolor="#FEF4D1" valign="middle" align="center">
-			[% error.msg %]
-			</td></tr>
-		</table>
-	</td></tr>
-</table>
+<div class='message'>
+    <div class='highlight'>[% error.msg %]</div>
+    <p>Please click <a href="javascript:history.back()">here</a> to go back.</p>
+</div>

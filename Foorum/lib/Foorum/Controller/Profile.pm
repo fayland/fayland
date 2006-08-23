@@ -3,7 +3,6 @@ package Foorum::Controller::Profile;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use DateTime;
 use Digest ();
 
 sub profile : Regex('^u/(\w{6,20})$') {
@@ -17,7 +16,7 @@ sub profile : Regex('^u/(\w{6,20})$') {
         $c->stash->{user} = $user;
         $c->stash->{template} = 'user/profile.html';
     } else {
-        $c->forward('/print_error', [ 'ERROR_USER_NON_EXIST' ] );
+        $c->forward('/print_error', [ 'ERROR_USER_NON_EXSIT' ] );
     }
 }
 

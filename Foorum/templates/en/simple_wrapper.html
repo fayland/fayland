@@ -1,27 +1,0 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" /> 
-<script type="text/javascript" src="[% base %]js/prototype.js"></script>
-<link rel="stylesheet" href="[% base %]css/common.css" type="text/css" /> 
-[% IF forum.forum_id %]
-    [% TRY %]
-    [% css_file = c.config.home _ '/root/css/custom/forum' _ forum.forum_id _ '.css' %]
-    [% USE File( css_file ) %]
-<link rel="stylesheet" href="[% base %]css/custom/forum[% forum.forum_id %].css" type="text/css" />
-    [% CATCH File %]
-<link rel="stylesheet" href="[% base %]css/default.css" type="text/css" />
-    [% END %]
-[% ELSE %]
-<link rel="stylesheet" href="[% base %]css/default.css" type="text/css" />
-[% END %]
-
-<title>[% title || c.config.name %]</title>
-</head>
-<body>
-
-[% content %]
-
-</body>
-</html>

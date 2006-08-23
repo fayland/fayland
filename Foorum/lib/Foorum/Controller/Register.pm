@@ -3,7 +3,6 @@ package Foorum::Controller::Register;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use DateTime;
 use Digest ();
 use Foorum::Utils qw/generate_random_word/;
 use Data::Dumper;
@@ -41,17 +40,27 @@ sub default : Private {
     $d->add($password);
     my $computed = $d->digest;
     
+    # email
+    my $email = $c->req->param('email');
+    
     my @extra_columns;
     if ($c->config->{mail}->{on}) {
     	my $active_code = &generate_random_word(10);
     	@extra_columns = ( active_code => $active_code, has_actived => 0, );
     	
-    	# TODO, mail send
     	my $email_body = $c->view('NoWrapperTT')->render($c, 'email/activation.html', {
             additional_template_paths => [ $c->path_to('templates', $c->stash->{lang}) ],
             username => $username,
             active_code => $active_code,
         } );
+        $c->email(
+            header => [
+                From    => $c->config->{mail}->{from_email},
+                To      => $email,
+                Subject => 'Your Activation Code In ' . $c->config->{name},
+            ],
+            body => $email_body,
+        );
         
     } else {
         @extra_columns = ( has_actived => 1, );
@@ -61,8 +70,8 @@ sub default : Private {
         username  => $username,
         nickname  => $username,
         password  => $computed,
-        email     => $c->req->param('email'),
-        register_on => DateTime->now,
+        email     => $email,
+        register_on => \"NOW()",
         register_ip => $c->req->address,
         @extra_columns,
     });
