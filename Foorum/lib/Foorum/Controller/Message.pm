@@ -46,7 +46,7 @@ sub compose : Local {
     return if ($c->form->has_error);
     
     # check user exist
-    my $rept = $c->model('DBIC')->resultset('User')->search( { username => $to } )->first;
+    my $rept = $c->model('DBIC')->resultset('User')->single( { username => $to } );
     unless ($rept) {
         $c->set_invalid_form( to => 'USER_NONEXIST' );
         return;

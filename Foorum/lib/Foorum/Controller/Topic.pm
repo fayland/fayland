@@ -237,11 +237,11 @@ sub delete : Regex('^forum/(\d+)/(\d+)/(\d+)/delete$') {
         $uri = "/forum/$forum_id";
         
         # update last
-        my $lastest = $c->model('DBIC')->resultset('Topic')->search( {
+        my $lastest = $c->model('DBIC')->resultset('Topic')->single( {
             forum_id => $forum_id
         }, {
             order_by => 'last_update_date DESC',
-        } )->first;
+        } );
         my @extra_cols = ($lastest)?(last_post_id => $lastest->topic_id):(last_post_id => '');
         $forum->update( {
             total_topics => $forum->total_topics - 1,
@@ -256,12 +256,12 @@ sub delete : Regex('^forum/(\d+)/(\d+)/(\d+)/delete$') {
         $uri = "/forum/$forum_id/$topic_id";
         
         # update topic
-        my $lastest = $c->model('DBIC')->resultset('Comment')->search( {
+        my $lastest = $c->model('DBIC')->resultset('Comment')->single( {
             object_type => 'thread',
             object_id   => $topic_id,
         }, {
             order_by => 'post_on DESC',
-        } )->first;
+        } );
         
         my @extra_cols;
         if ($lastest) {

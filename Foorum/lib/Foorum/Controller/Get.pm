@@ -7,9 +7,9 @@ use base 'Catalyst::Controller';
 sub forum : Private {
     my ( $self, $c, $forum_id ) = @_;
     
-    my $forum = $c->model('DBIC')->resultset('Forum')->search( {
+    my $forum = $c->model('DBIC')->resultset('Forum')->single( {
         forum_id => $forum_id,
-    })->first;
+    });
     
     # print error if the forum_id is non-exist
     $c->detach('/print_error', [ 'Non-existent forum' ]) unless ($forum);

@@ -14,12 +14,12 @@ sub lock_or_top_or_elite : Regex('^forum/(\d+)/(\d+)/(un)?(top|elite|lock)$') {
     my $is_un    = $c->req->snippets->[2];
     my $action   = $c->req->snippets->[3];
     
-    my $topic = $c->model('DBIC')->resultset('Topic')->search( {
+    my $topic = $c->model('DBIC')->resultset('Topic')->single( {
         topic_id => $topic_id,
         forum_id => $forum_id,
     }, {
         columns => ['author_id'],
-    } )->first;
+    } );
     
     $c->detach('/print_error', [ 'Non-existent topic' ]) unless ($topic);
     

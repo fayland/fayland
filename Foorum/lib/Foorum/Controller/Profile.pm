@@ -10,7 +10,7 @@ sub profile : Regex('^u/(\w{6,20})$') {
     
     my $username = $c->req->snippets->[0];
     
-    my $user = $c->model('DBIC')->resultset('User')->search( { username => $username } )->first;
+    my $user = $c->model('DBIC')->resultset('User')->single( { username => $username } );
     
     if ($user) {
         $c->stash->{user} = $user;
