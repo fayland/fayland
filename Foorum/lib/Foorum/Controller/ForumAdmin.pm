@@ -177,7 +177,10 @@ sub announcement : LocalRegex('^(\d+)/announcement$') {
             } );
         }
     } else {
-        $announce->delete;
+        $c->model('DBIC::Comment')->search( {
+            object_id   => $forum_id,
+            object_type => 'announcement',
+        } )->delete;
     }
     
     $c->res->redirect("/forum/$forum_id");

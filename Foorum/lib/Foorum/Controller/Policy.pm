@@ -75,12 +75,12 @@ sub get_forum_moderators : Private {
 
     my $roles;
     foreach (@users) {
-        my $user = $c->model('DBIC')->resultset('User')->search( {
+        my $user = $c->model('DBIC')->resultset('User')->single( {
             user_id => $_->user_id,
         }, {
             columns => ['username', 'nickname'],
             cache => 1,
-        } )->first;
+        } );
         if ($_->role eq 'admin') {
             $roles->{$_->field}->{'admin'} = $user;
         } elsif ($_->role eq 'moderator') {
