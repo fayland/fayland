@@ -48,7 +48,7 @@ sub loadstyle : Local {
     
     return unless (-e $c->path_to('style', 'system', "$style\.yml"));
     
-    my $style = LoadFile($c->path_to('style', 'system', "$style\.yml"));
+    $style = LoadFile($c->path_to('style', 'system', "$style\.yml"));
     
     foreach (keys %{$style}) {
         my $background = qq~\$('$_').style.background = "$style->{$_}";~ if ($style->{$_} =~ /^\#/);

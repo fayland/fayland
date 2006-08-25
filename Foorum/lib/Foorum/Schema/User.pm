@@ -10,7 +10,7 @@ __PACKAGE__->add_columns(qw/
     status threads replies last_post_id
 /);
 __PACKAGE__->set_primary_key('user_id');
-__PACKAGE__->add_unique_constraint (
+__PACKAGE__->add_unique_constraint(
      username => ['username'],
      email    => ['email'],
 );

@@ -43,12 +43,14 @@ sub style : LocalRegex('^(\d+)/style$') {
     
     # style.yml and style.css
     my $yml = $c->path_to('style', 'custom', "forum$forum_id\.yml");
-    if (-e $yml) {
-        my $style = LoadFile($yml);
-        $c->stash->{style} = $style;
+
+    unless ($c->req->param('submit')) {
+        if (-e $yml) {
+            my $style = LoadFile($yml);
+            $c->stash->{style} = $style;
+        }
+        return;
     }
-    
-    return unless ($c->req->param('submit'));
     
     # execute validation.
     $c->form(
@@ -111,6 +113,75 @@ sub style : LocalRegex('^(\d+)/style$') {
     
     $c->res->redirect("/forum/$forum_id");
 }
+
+sub del_style : LocalRegex('^(\d+)/del_style$') {
+    my ($self, $c) = @_;
+    
+    my $forum_id = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    
+    &_check_policy( $self, $c, $forum );
+    
+    my $yml = $c->path_to('style', 'custom', "forum$forum_id\.yml");
+    my $css = $c->path_to('root', 'css', 'custom', "forum$forum_id\.css");
+    
+    unlink $yml if (-e $yml);
+    unlink $css if (-e $css);
+    
+    $c->res->redirect("/forum/$forum_id");
+}
+
+sub announcement : LocalRegex('^(\d+)/announcement$') {
+    my ($self, $c) = @_;
+    
+    my $forum_id = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    
+    my $announce = $c->model('DBIC::Comment')->find( {
+        object_id   => $forum_id,
+        object_type => 'announcement',
+    } );
+    
+    unless ($c->req->param('submit')) {
+        $c->stash( {
+            template => 'forumadmin/announcement.html',
+            announce => $announce,
+        } );
+        return;
+    }
+    
+    &_check_policy( $self, $c, $forum );
+    
+    my $text  = $c->req->param('announcement');
+    my $title = $c->req->param('title');
+    
+    # if no text is typed, delete the record.
+    # or else, save it.
+    if (length($text) and length($title)) {
+        if ($announce) {
+            $announce->update( {
+                text        => $text,
+                update_on   => \"NOW()",
+                author_id   => $c->user->user_id,
+                title       => $title,
+            } );
+        } else {
+            $c->model('DBIC::Comment')->create( {
+                object_id   => $forum_id,
+                object_type => 'announcement',
+                forum_id    => $forum_id,
+                text        => $text,
+                post_on     => \"NOW()",
+                author_id   => $c->user->user_id,
+                title       => $title,
+            } );
+        }
+    } else {
+        $announce->delete;
+    }
+    
+    $c->res->redirect("/forum/$forum_id");
+}    
 
 sub _check_policy {
     my ( $self, $c, $forum ) = @_;

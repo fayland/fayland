@@ -5,7 +5,6 @@ use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
 
-
 sub fill_user_role : Private {
     my ( $self, $c, $field ) = @_;
     
