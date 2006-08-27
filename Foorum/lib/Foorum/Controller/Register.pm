@@ -77,9 +77,10 @@ sub default : Private {
     });
     
     # redirect or forward
-    if ($c->config->{email}->{on}) {
+    if ($c->config->{mail}->{on}) {
         $c->res->redirect("/register/activation/$username"); # to activation
     } else {
+        $c->login($username, $password);
         $c->forward('/print_message', [ { 
             msg => 'register success!',
             uri => $c->session->{url_referer} || '/',

@@ -37,21 +37,26 @@ sub edit : Local {
         }
         return;
     }
-    # TODO
+    
+    my $birthday = $c->req->param('year') . '-' . $c->req->param('month') . '-' . $c->req->param('day');
+    my (@extra_valid, @extra_insert);
+    if (length($birthday) > 2) { # is not --
+        @extra_valid  = ( { birthday  => ['year', 'month', 'day'] } => ['DATE'] );
+        @extra_insert = ( birthday => $birthday );
+    }
+    
     $c->form(
         gender   => [ ['REGEX', qr/^(M|F)?$/ ] ],
-        { birthday  => ['year', 'month', 'day'] } => ['DATE'],
+        @extra_valid,
         homepage => [ 'HTTP_URL' ],
         nickname => [ qw/NOT_BLANK/, [qw/LENGTH 4 20/] ],
     );
     return if ($c->form->has_error);
 
-    my $birthday = $c->req->param('year') . '-' . $c->req->param('month') . '-' . $c->req->param('day');
-
     $c->user->update( {
         nickname => $c->req->param('nickname') || $c->user->username,
         gender   => $c->req->param('gender') || '',
-        birthday => $birthday,
+        @extra_insert,
         homepage => $c->req->param('homepage') || '',
     } );
     

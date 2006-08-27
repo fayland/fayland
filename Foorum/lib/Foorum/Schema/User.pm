@@ -11,10 +11,10 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key('user_id');
 __PACKAGE__->add_unique_constraint(
-     username => ['username'],
-     email    => ['email'],
+     ['username'], ['email'],
 );
 
 __PACKAGE__->might_have('last_post' => 'Foorum::Schema::Topic', { 'foreign.topic_id' => 'self.last_post_id' } );
+__PACKAGE__->has_many('roles' => 'Foorum::Schema::UserRole', { 'foreign.user_id' => 'self.user_id' } );
 
 1;

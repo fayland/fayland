@@ -184,7 +184,30 @@ sub announcement : LocalRegex('^(\d+)/announcement$') {
     }
     
     $c->res->redirect("/forum/$forum_id");
-}    
+}
+
+sub block_user : LocalRegex('^(\d+)/block_user$') {
+    my ($self, $c) = @_;
+    
+    my $forum_id = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    
+    $c->stash->{template} = 'forumadmin/block_user.html';
+    unless ($c->req->param('submit')) {
+        my @blocked_users = $c->model('DBIC::UserRole')->search( {
+            role  => 'blocked',
+            field => $forum_id,
+        }, {
+            prefetch => ['user'],
+        } )->all;
+        $c->stash->{blocked_users} = \@blocked_users;
+        return;
+    }
+    
+    # first of all, delete all records
+    # TODO
+    my $users = $c->req->param('users');
+} 
 
 sub _check_policy {
     my ( $self, $c, $forum ) = @_;

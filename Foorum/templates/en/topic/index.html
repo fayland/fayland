@@ -23,7 +23,7 @@
 <tr class='reply[% IF loop.count mod 2;'2';ELSE;'1';END; %]'>
     <td valign='top' width='157'>
         [% IF comment.author %]
-         [% comment.author.username %] <br />
+         <a href='/u/[% comment.author.username %]'>[% comment.author.nickname %]</a><br />
          [% comment.author.gender %]<br />
          [% IF comment.author.status %]Status: [% comment.author.status %]<br />[% END %]
          Threads: [% comment.author.threads %]<br />

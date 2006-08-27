@@ -35,6 +35,11 @@ sub fill_user_role : Private {
         $roles->{is_admin} = 1;
     }
     
+    if ($roles->{$field}->{blocked}) {
+        $roles->{is_member} = 0;
+        $roles->{is_blocked} = 1;
+    }
+    
     $c->stash->{roles} = $roles;
 }
 
@@ -63,6 +68,15 @@ sub is_user : Private {
     &fill_user_role( $self, $c, $field ) unless ($c->stash->{roles});
     
     return $c->stash->{roles}->{is_member};
+}
+
+sub is_blocked : Private {
+    my ($self, $c, $field ) = @_;
+    
+    $field = 'site' unless ($field);
+    &fill_user_role( @_ ) unless ($c->stash->{roles});
+    
+    return $c->stash->{roles}->{is_blocked};
 }
 
 sub get_forum_moderators : Private {

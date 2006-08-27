@@ -59,7 +59,7 @@ dir:
 
 # For Foorum pm using
 mail:
-  on: 1 
+  on: 0
   from_email: 'fayland@gmail.com'
   import: 1
 
