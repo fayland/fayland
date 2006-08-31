@@ -5,7 +5,7 @@ use vars qw( @ISA $VERSION );
 use base qw( Template::Plugin );
 use Template::Plugin;
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 sub new {
     my ($class, $context, $arg) = @_;
@@ -37,10 +37,6 @@ __END__
 
 Template::Plugin::HtmlToText - Plugin interface to HTML::FormatText
 
-=head1 VERSION
-
-Version 0.01
-
 =head1 SYNOPSIS
 
 Quick summary of what the module does.
@@ -49,8 +45,15 @@ Perhaps a little code snippet.
 
     [% USE HtmlToText %]
 
-    # or use text2html FILTER
+    # use html2text FILTER to var 'myhtml' or 'myhtmltext'
     [% myhtml FILTER html2text(leftmargin => 0, rightmargin => 50) %]
+    [% myhtmltext | html2text %]
+    
+    # not to a var, but to html code
+    [% FILTER html2text %]
+    <b>heavy</b>
+    [% END %]
+    [%# output is "heavy", no <b></b> %]
 
 =head1 DESCRIPTION
 
