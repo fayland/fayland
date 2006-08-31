@@ -89,7 +89,7 @@ sub get_forum_moderators : Private {
 
     my $roles;
     foreach (@users) {
-        my $user = $c->model('DBIC')->resultset('User')->single( {
+        my $user = $c->model('DBIC')->resultset('User')->find( {
             user_id => $_->user_id,
         }, {
             columns => ['username', 'nickname'],
