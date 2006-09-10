@@ -2,11 +2,12 @@
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
-          'NAME' => 'Lingua::Han::PinYin',
-          'VERSION_FROM' => 'lib/Lingua/Han/PinYin.pm',
+          'NAME' => 'Lingua::Han::Cantonese',
+          'VERSION_FROM' => 'lib/Lingua/Han/Cantonese.pm',
           'PREREQ_PM' => {
                            'File::Spec' => '0',
-                           'Lingua::Han::Utils' => '0.05'
+                           'Lingua::Han::Utils' => '0',
+                           'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],
