@@ -61,7 +61,10 @@
 [% content %]
 
 [% UNLESS simple_wrapper %]
+
+[% UNLESS no_online_view %] 
 [% INCLUDE site/whos_view_this_page.html %]
+[% END %]
 
 <div id='footer'><p>Copyright &copy; 2006 All Rights Reserved. Powered by Foorum beta.</p></div>
 <div id='timer'><p>This page needs [% elapsed_time %] to load. </p></div>

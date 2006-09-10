@@ -7,6 +7,15 @@ use File::Slurp;
 use YAML::Syck;
 use Foorum::Utils qw/is_color/;
 
+sub begin : Private {
+    my ($self, $c) = @_;
+    
+    $c->stash( {
+        no_online_view => 1,
+#        no_url_referer => 1,
+    } );
+}
+
 sub home : LocalRegex('^(\d+)$') {
     my ($self, $c) = @_;
     

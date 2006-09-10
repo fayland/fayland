@@ -24,7 +24,7 @@ sub fill_user_role : Private {
         $roles->{is_member} = 1;
     }
     
-    if ($roles->{$field}->{moderator}) {
+    if ($roles->{site}->{moderator} || $roles->{$field}->{moderator}) {
         $roles->{is_member} = 1;
         $roles->{is_moderator} = 1;
     }

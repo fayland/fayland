@@ -33,10 +33,12 @@ sub auto : Private {
 	}
 	
 	# for login using
-    if ($url_referer !~ /^ajax\//
+    if ($c->stash->{no_url_referer} or 
+       ($url_referer !~ /^ajax\//
     and $url_referer ne 'register'
     and $url_referer ne 'logout'
-    and $url_referer ne 'login') {
+    and $url_referer ne 'login')
+    ) {
         $c->session->{url_referer} = $url_referer;
     }
     
@@ -73,8 +75,10 @@ sub end : Private {
         $c->stash->{elapsed_time} = tv_interval( $t0, [gettimeofday] );
         
         # get whos view this page?
-        my $results = $c->model('Online')->whos_view_this_page($c);
-        $c->stash->{whos_view_this_page} = $results;
+        unless ($c->stash->{no_online_view}) {
+            my $results = $c->model('Online')->whos_view_this_page($c);
+            $c->stash->{whos_view_this_page} = $results;
+        }
     }
     $c->forward( $c->view('TT') );
 }
