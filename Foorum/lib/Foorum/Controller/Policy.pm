@@ -105,6 +105,19 @@ sub get_forum_moderators : Private {
     return $roles;
 }
 
+sub get_forum_admin : Private {
+    my ($self, $c, $forum_id) = @_;
+    
+    # get admin
+    my $rs = $c->model('DBIC::UserRole')->find( {
+        field => $forum_id,
+        role  => 'admin',
+    } );
+    return unless ($rs);
+    my $user = $c->model('DBIC::User')->find( { user_id => $rs->user_id } );
+    return $user;
+}
+
 =pod
 
 =head2 AUTHOR

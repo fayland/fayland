@@ -6,6 +6,7 @@ use base 'Catalyst::Controller';
 use File::Slurp;
 use YAML::Syck;
 use Foorum::Utils qw/is_color/;
+use Data::Dumper;
 
 sub begin : Private {
     my ($self, $c) = @_;
@@ -32,14 +33,78 @@ sub basic : LocalRegex('^(\d+)/basic$') {
     my $forum_id = $c->req->snippets->[0];
     my $forum = $c->forward('/get/forum', [ $forum_id ]);
     
-    $c->stash->{template} = 'forumadmin/basic.html';
+    $c->stash( {
+        template => 'forumadmin/basic.html',
+    } );
     
-    return unless ($c->req->param('process'));
+    my $role = $c->controller('Policy')->get_forum_moderators($c, $forum_id);
+    unless ($c->req->param('submit')) {
+        # get all moderators
+        my $e_moderators = $role->{$forum_id}->{moderator};
+        if ($e_moderators) {
+            my @e_moderators = @{ $e_moderators };
+            my @moderator_username;
+            push @moderator_username, $_->username foreach (@e_moderators);
+            $c->stash->{moderators} = join(',', @moderator_username);
+        }
+        $c->stash->{private} = ($forum->policy eq 'private')?1:0;
+        return;
+    }
         
     &_check_policy( $self, $c, $forum );
     
-    # todo
+    # validate
+    $c->form(
+        name => [qw/NOT_BLANK/,             [qw/LENGTH 1 40/] ],
+#        description  => [qw/NOT_BLANK/ ],
+    );
+    return if ($c->form->has_error);
     
+    my $name  = $c->req->param('name');
+    my $description = $c->req->param('description');
+    my $moderators  = $c->req->param('moderators');
+    my $private = $c->req->param('private');
+
+    # get forum admin
+    my $admin = $role->{$forum_id}->{admin};
+    my $admin_username = $admin->username if ($admin);
+
+    my @moderators = split(/\s*\,\s*/, $moderators);
+    my @moderator_users;
+    foreach (@moderators) {
+        next if ($_ eq $admin_username); # avoid the same man
+        last if (scalar @moderator_users > 2); # only allow 3 moderators at most
+        my $moderator_user = $c->model('DBIC::User')->find( { username => $_ } );
+        unless ($moderator_user) {
+            $c->stash->{non_existence_user} = $_;
+            return $c->set_invalid_form( moderators => 'ADMIN_NONEXISTENCE' );
+        }
+        push @moderator_users, $moderator_user;
+    }
+    
+    # insert data into table.
+    my $policy = ($private == 1)?'private':'public';
+    $forum->update( {
+        name => $name,
+        description => $description,
+#        type => 'classical',
+        policy => $policy,
+    } );
+
+    # delete before create
+    $c->model('DBIC::UserRole')->search( {
+        role    => 'moderator',
+        field   => $forum->forum_id,
+    } )->delete;
+    foreach (@moderator_users) {
+        $c->model('DBIC::UserRole')->create( {
+            user_id => $_->user_id,
+            role    => 'moderator',
+            field   => $forum->forum_id,
+        } );
+    }
+    
+    $c->res->redirect("/forum/$forum_id");
 }
 
 sub style : LocalRegex('^(\d+)/style$') {

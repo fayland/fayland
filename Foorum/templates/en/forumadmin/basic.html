@@ -1,15 +1,37 @@
 [% WRAPPER 'forumadmin/bar.html' %]
 
+[% USE FillInForm %]
+[% UNLESS c.req.param('submit');
+    data = {
+        name  => forum.name,
+        description  => forum.description,
+        private    => private,
+        moderators => moderators,
+    };
+END; %]
+[% FILTER fillinform fdat => data || c.req.params %]
 <div class='one'>
 <form method='post'>
-<input type='hidden' name='process' value='1' />
 <table align='center'>
-    <tr class='forum1'><td>Forum name:</td><td><input type='text' name='name' size='32' /></td></tr>
-    <tr class='forum2'><td>Forum description:</td><td><textarea name='description' cols='36' rows='3'></textarea></td></tr>
-    <tr class='forum1'><td>Moderator</td><td><input type='text' name='moderator' /></td></tr>
-    <tr class='forum2'><td colspan='2'><input type='submit' /></td></tr>
+    <tr class='forum1'><td>Forum Name:</td><td><input type='text' name='name' />
+    [% IF c.form.error('name') %]
+	the length of forum name should be more than 1 and less than 40
+	[% END %]</td></tr>
+    <tr class='forum2'><td>Forum Description</td><td><textarea name='description'></textarea>
+    [% IF c.form.error('description') %]
+	<br />description cann't be null.
+	[% END %]
+	</td></tr>
+    <tr class='forum1'><td>Forum Moderators</td><td><input type='text' name='moderators' /> use ',' to split if there are more than 1 moderator
+    [% IF c.form.error('moderators') %]
+	<br />no such user [% non_existence_user %]
+	[% END %]
+	</td></tr>
+    <tr class='forum2'><td>Policy</td><td><input type='checkbox' name='private' value='1' /> Private</td></tr>
+    <tr class='forum1'><td colspan='2'><input type='submit' name='submit' /></td></tr>
 </table>
 </form>
 </div>
+[% END %]
 
 [% END %]

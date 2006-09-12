@@ -1,10 +1,39 @@
 [% WRAPPER 'admin/bar.html' %]
 
+[% IF is_ok == 1 %]
+<a href='/forum/[% forum.forum_id %]'>Visit here to access the forum ( [% forum.name %] )</a>
+[% ELSE %]
+[% USE FillInForm %]
+[% FILTER fillinform fdat => data || c.req.params %]
 <div class='one'>
+<form method='post'>
 <table align='center'>
 <tr class='title'><td colspan='2'>Create a Forum</td></tr>
-<tr class='misc1'><td>Forum Name:</td><td></td></tr>
+<tr class='misc1'><td>Forum Name:</td><td><input type='text' name='name' />
+    [% IF c.form.error('name') %]
+	the length of forum name should be more than 1 and less than 40
+	[% END %]</td></tr>
+<tr class='misc2'><td>Forum Description</td><td><textarea name='description'></textarea>
+    [% IF c.form.error('description') %]
+	<br />description cann't be null.
+	[% END %]
+	</td></tr>
+<tr class='misc1'><td>Forum Admin</td><td><input type='text' name='admin' />
+    [% IF c.form.error('admin') %]
+	no such user
+	[% END %]
+	</td></tr>
+<tr class='misc2'><td>Forum Moderators</td><td><input type='text' name='moderators' /> use ',' to split if there are more than 1 moderator
+    [% IF c.form.error('moderators') %]
+	<br />no such user [% non_existence_user %]
+	[% END %]
+	</td></tr>
+<tr class='misc1'><td>Policy</td><td><input type='checkbox' name='private' value='1' /> Private</td></tr>
+<tr class='misc2'><td colspan='2'><input type='submit' name='submit' /></td></tr>
 </table>
+</form>
 </div>
+[% END %]
+[% END %]
 
 [% END %]

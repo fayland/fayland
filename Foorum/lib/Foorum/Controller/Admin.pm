@@ -14,9 +14,16 @@ sub auto : Private {
 #        no_url_referer => 1,
     } );
     
-    return 0 unless ($c->user_exists);
+    
+    unless ($c->user_exists) {
+        $c->res->redirect('/login');
+        return 0;
+    }
     # we have admin or moderator for 'site' field
-    return 0 unless ( $c->controller('Policy')->is_moderator( $c, 'site' ) );
+    unless ( $c->controller('Policy')->is_moderator( $c, 'site' ) ) {
+        $c->forward('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
+        return 0;
+    }
     return 1;
 }
 
