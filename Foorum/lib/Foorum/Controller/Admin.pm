@@ -20,7 +20,7 @@ sub auto : Private {
         return 0;
     }
     # we have admin or moderator for 'site' field
-    unless ( $c->controller('Policy')->is_moderator( $c, 'site' ) ) {
+    unless ( $c->model('Policy')->is_moderator( $c, 'site' ) ) {
         $c->forward('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
         return 0;
     }

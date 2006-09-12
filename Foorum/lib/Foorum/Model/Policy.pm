@@ -1,11 +1,11 @@
-package Foorum::Controller::Policy;
+package Foorum::Model::Policy;
 
 use strict;
 use warnings;
-use base 'Catalyst::Controller';
+use base 'Catalyst::Model';
 use Data::Dumper;
 
-sub fill_user_role : Private {
+sub fill_user_role {
     my ( $self, $c, $field ) = @_;
     
     my @field = ('site'); # 'site' means site-cross Administrator
@@ -43,7 +43,7 @@ sub fill_user_role : Private {
     $c->stash->{roles} = $roles;
 }
 
-sub is_admin : Private {
+sub is_admin {
     my ( $self, $c, $field ) = @_;
     
     $field = 'site' unless ($field);
@@ -52,7 +52,7 @@ sub is_admin : Private {
     return $c->stash->{roles}->{is_admin};
 }
 
-sub is_moderator : Private {
+sub is_moderator {
     my ( $self, $c, $field ) = @_;
 
     $field = 'site' unless ($field);
@@ -61,7 +61,7 @@ sub is_moderator : Private {
     return $c->stash->{roles}->{is_moderator};
 }
 
-sub is_user : Private {
+sub is_user {
     my ( $self, $c, $field ) = @_;
     
     $field = 'site' unless ($field);
@@ -70,7 +70,7 @@ sub is_user : Private {
     return $c->stash->{roles}->{is_member};
 }
 
-sub is_blocked : Private {
+sub is_blocked {
     my ($self, $c, $field ) = @_;
     
     $field = 'site' unless ($field);
@@ -79,7 +79,7 @@ sub is_blocked : Private {
     return $c->stash->{roles}->{is_blocked};
 }
 
-sub get_forum_moderators : Private {
+sub get_forum_moderators {
     my ( $self, $c, $forum_id ) = @_;
     
     my @users = $c->model('DBIC')->resultset('UserRole')->search( {
@@ -105,7 +105,7 @@ sub get_forum_moderators : Private {
     return $roles;
 }
 
-sub get_forum_admin : Private {
+sub get_forum_admin {
     my ($self, $c, $forum_id) = @_;
     
     # get admin

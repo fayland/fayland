@@ -37,7 +37,7 @@ sub basic : LocalRegex('^(\d+)/basic$') {
         template => 'forumadmin/basic.html',
     } );
     
-    my $role = $c->controller('Policy')->get_forum_moderators($c, $forum_id);
+    my $role = $c->model('Policy')->get_forum_moderators($c, $forum_id);
     unless ($c->req->param('submit')) {
         # get all moderators
         my $e_moderators = $role->{$forum_id}->{moderator};
@@ -286,7 +286,7 @@ sub block_user : LocalRegex('^(\d+)/block_user$') {
 sub _check_policy {
     my ( $self, $c, $forum ) = @_;
     
-    unless ($c->forward('/policy/is_admin', [ $forum->forum_id ])) {
+    unless ($c->model('Policy')->is_admin( $c, $forum->forum_id )) {
         $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
     }
 }

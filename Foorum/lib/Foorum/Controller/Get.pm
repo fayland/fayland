@@ -15,13 +15,13 @@ sub forum : Private {
     $c->detach('/print_error', [ 'Non-existent forum' ]) unless ($forum);
     
     # check policy
-    if ($c->user_exists and $c->forward('/policy/is_blocked', [ $forum_id ])) {
+    if ($c->user_exists and $c->model('Policy')->is_blocked( $c, $forum_id )) {
         $c->detach('/print_error', [ 'ERROR_USER_BLOCKED' ]);
     }
     if ($forum->policy eq 'private') {
         return $c->res->redirect('/login') unless ($c->user_exists);
         
-        unless ($c->forward('/policy/is_user', [ $forum_id ] )) {
+        unless ($c->model('Policy')->is_user( $c, $forum_id )) {
             $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
         }
     }

@@ -16,7 +16,7 @@ sub default : Private {
     # get all moderators
     my @forum_ids;
     push @forum_ids, $_->forum_id foreach (@forums);
-    my $roles = $c->forward('/policy/get_forum_moderators', [ \@forum_ids ] );
+    my $roles = $c->model('Policy')->get_forum_moderators( $c, \@forum_ids );
     $c->stash->{roles} = $roles;
     
     $c->stash->{forums} = \@forums;
@@ -40,7 +40,7 @@ sub forum : LocalRegex('^(\d+)(/elite)?(/page=(\d+))?$') {
     # get the forum information
     my $forum = $c->forward('/get/forum', [ $forum_id ]);
     # get all moderators
-    $c->stash->{forum_roles} = $c->forward('/policy/get_forum_moderators', [ $forum_id ] );
+    $c->stash->{forum_roles} = $c->model('Policy')->get_forum_moderators( $c, $forum_id );
     
     
     

@@ -9,7 +9,7 @@ sub auto : Private {
     my ($self, $c) = @_;
 
     # only administrator is allowed. site moderator is not allowed here
-    unless ( $c->controller('Policy')->is_admin( $c, 'site' ) ) {
+    unless ( $c->model('Policy')->is_admin( $c, 'site' ) ) {
         $c->forward('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
         return 0;
     }
