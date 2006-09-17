@@ -277,11 +277,108 @@ sub block_user : LocalRegex('^(\d+)/block_user$') {
         $c->stash->{blocked_users} = \@blocked_users;
         return;
     }
+
+    &_check_policy( $self, $c, $forum );
     
     # first of all, delete all records
-    # TODO
+    $c->model('DBIC::UserRole')->search( {
+        role  => 'blocked',
+        field => $forum_id,
+    } )->delete;
+    
+    # then insert
     my $users = $c->req->param('users');
-} 
+    my (@failed_users, @blocked_users);
+    foreach my $username (split(/\s+/, $users)) {
+        my $user = $c->model('DBIC::User')->find( { username => $username } );
+        unless ($user) {
+            push @failed_users, [$username, 'NONEXIST'];
+            next;
+        }
+        # avoid set admin|moderator to blocked
+        my $count = $c->model('DBIC::UserRole')->count( {
+            user_id => $user->user_id,
+            field => $forum_id,
+            role  => ['admin', 'moderator', 'user'],
+        } );
+        if ($count) {
+            push @failed_users, [$username, 'ALREADYHAS'];
+            next;
+        }
+        $c->model('DBIC::UserRole')->create( {
+            user_id => $user->user_id,
+            role => 'blocked',
+            field   => $forum_id,
+        } );
+        push @blocked_users, { user => $user };
+    }
+    
+    $c->stash( {
+        ok => 1,
+        failed_users  => \@failed_users,
+        blocked_users => \@blocked_users,
+    } );
+}
+
+sub members : LocalRegex('^(\d+)/members$') {
+    my ($self, $c) = @_;
+    
+    my $forum_id = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    
+    $c->stash->{template} = 'forumadmin/members.html';
+    unless ($c->req->param('submit')) {
+        my @blocked_users = $c->model('DBIC::UserRole')->search( {
+            role  => 'user',
+            field => $forum_id,
+        }, {
+            prefetch => ['user'],
+        } )->all;
+        $c->stash->{blocked_users} = \@blocked_users;
+        return;
+    }
+
+    &_check_policy( $self, $c, $forum );
+    
+    # first of all, delete all records
+    $c->model('DBIC::UserRole')->search( {
+        role  => 'user',
+        field => $forum_id,
+    } )->delete;
+    
+    # then insert
+    my $users = $c->req->param('users');
+    my (@failed_users, @blocked_users);
+    foreach my $username (split(/\s+/, $users)) {
+        my $user = $c->model('DBIC::User')->find( { username => $username } );
+        unless ($user) {
+            push @failed_users, [$username, 'NONEXIST'];
+            next;
+        }
+        # avoid set admin|moderator to blocked
+        my $count = $c->model('DBIC::UserRole')->count( {
+            user_id => $user->user_id,
+            field => $forum_id,
+            role  => ['admin', 'moderator', 'blocked'],
+        } );
+        if ($count) {
+            push @failed_users, [$username, 'ALREADYHAS'];
+            next;
+        }
+        $c->model('DBIC::UserRole')->create( {
+            user_id => $user->user_id,
+            role => 'user',
+            field   => $forum_id,
+        } );
+        push @blocked_users, { user => $user };
+    }
+    
+    $c->stash( {
+        ok => 1,
+        failed_users  => \@failed_users,
+        blocked_users => \@blocked_users,
+    } );
+}
 
 sub _check_policy {
     my ( $self, $c, $forum ) = @_;

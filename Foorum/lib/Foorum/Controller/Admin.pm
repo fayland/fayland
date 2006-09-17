@@ -13,8 +13,7 @@ sub auto : Private {
         no_online_view => 1, # avoid another connection of database for Admin.
 #        no_url_referer => 1,
     } );
-    
-    
+
     unless ($c->user_exists) {
         $c->res->redirect('/login');
         return 0;
@@ -23,7 +22,8 @@ sub auto : Private {
     unless ( $c->model('Policy')->is_moderator( $c, 'site' ) ) {
         $c->forward('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
         return 0;
-    }
+    }    
+
     return 1;
 }
 

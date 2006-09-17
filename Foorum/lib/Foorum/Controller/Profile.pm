@@ -3,7 +3,20 @@ package Foorum::Controller::Profile;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
+use Foorum::Utils qw/generate_random_word/;
 use Digest ();
+
+sub begin : Private {
+    my ($self, $c) = @_;
+
+    # don't include this into the url_referer    
+    if ($c->action ne 'profile/forget_password') {
+        $c->stash( {
+            no_url_referer => 1,
+            no_online_view => 1,
+        } );
+    }
+}
 
 sub profile : Regex('^u/(\w{6,20})$') {
     my ( $self, $c ) = @_;
@@ -102,6 +115,34 @@ sub change_password : Local {
     $c->res->body('ok');
 }
 
+sub forget_password : Local {
+    my ($self, $c) = @_;
+
+    $c->detach('/print_error', [ 'ERROR_EMAIL_OFF' ] ) unless ($c->config->{mail}->{on});
+    
+    $c->stash->{template} = 'user/profile/forget_password.html';
+    return unless ($c->req->param('submit'));
+    
+    my $username = $c->req->param('username');
+    my $email    = $c->req->param('email');
+    
+    my $user = $c->model('DBIC::User')->find( { username => $username } );
+    return $c->stash->{ERROR_NOT_SUCH_USER} = 1 unless ($user);
+    return $c->stash->{ERROR_NOT_MATCH} = 1 if ($user->email ne $email);
+    
+    # create a random password
+    my $random_password = &generate_random_word(10);
+    my $d = Digest->new( $c->config->{authentication}->{dbic}->{password_hash_type} );
+    $d->add($random_password);
+    my $computed = $d->digest;
+    
+    # send email
+    $c->model('Email')->send_forget_password($c, $email, $username, $random_password);
+    $c->log->debug("PASSWORD: $random_password");
+    $user->update( { password => $computed } );
+    $c->res->redirect('/login');
+}
+
 sub change_email : Local {
     my ( $self, $c ) = @_;
 
@@ -125,10 +166,11 @@ sub change_email : Local {
     
     my @extra_columns;
     if ($c->config->{email}->{on}) {
-    	my $active_code = int(rand(999999));
+    	my $active_code = &generate_random_word(10);
     	@extra_columns = ( active_code => $active_code, has_actived => 0 );
     	
-    	# TODO, mail send
+    	# send activation code
+    	$c->model('Email')->send_activation($c, $email, $c->user->username, $active_code);
     }
     
     $c->user->update( {

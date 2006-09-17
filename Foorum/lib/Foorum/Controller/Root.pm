@@ -8,7 +8,7 @@ use Time::HiRes qw( gettimeofday tv_interval );
 __PACKAGE__->config->{namespace} = '';
 
 # for elapsed_time
-my $t0;
+use vars qw/$t0/;
 
 sub auto : Private {
 	my ( $self, $c ) = @_;
@@ -33,11 +33,9 @@ sub auto : Private {
 	}
 	
 	# for login using
-    if ($c->stash->{no_url_referer} or 
+    if (not $c->stash->{no_url_referer} and 
        ($url_referer !~ /^ajax\//
-    and $url_referer ne 'register'
-    and $url_referer ne 'logout'
-    and $url_referer ne 'login')
+    and $url_referer ne 'register')
     ) {
         $c->session->{url_referer} = $url_referer;
     }

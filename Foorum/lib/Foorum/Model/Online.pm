@@ -66,7 +66,7 @@ sub whos_view_this_page {
 sub _handler_session {
     my ($self, $c, @session) = @_;
     
-    my $has_me; # damn it, we query it *before* the path is updated.
+    my $has_me = 0; # damn it, we query it *before* the path is updated.
     my @results;
     foreach my $session (@session) {
         my $data = $c->get_session_data($session->id);
@@ -75,11 +75,13 @@ sub _handler_session {
         my $active_time = $data->{__updated};
         my $IP          = $data->{__address};
         my $user;
+        if (not $has_me and $session->id eq 'session:' . $c->sessionid) {
+            $has_me = 1;
+        }
         if ($session->user_id) {
             if ($c->user_exists and $session->user_id == $c->user->user_id) {
                 $user   = $c->user;
                 $refer  = $c->session->{url_referer};
-                $has_me = 1;
             } else {
                 $user = $c->model('DBIC::User')->find( { user_id => $session->user_id } );
             }

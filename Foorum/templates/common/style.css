@@ -17,7 +17,7 @@
 hr { background:[% style.border_color %];height:1 }
 body {
     color: [% style.bg_fontcolor %];
-    background-color: [% style.body_bg %];
+    background-color: [% style.bg_color %];
     [% IF style.bg_image %]background-image: url("[% style.bg_image %]");[% END %]
 }
 A:visited { color: [% style.vlink %] }

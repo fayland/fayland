@@ -7,6 +7,16 @@ use Digest ();
 use Foorum::Utils qw/generate_random_word/;
 use Data::Dumper;
 
+sub begin : Private {
+    my ($self, $c) = @_;
+
+    # don't include this into the url_referer    
+    $c->stash( {
+        no_url_referer => 1,
+        no_online_view => 1,
+    } );
+}
+
 sub default : Private {
     my ( $self, $c ) = @_;
     
@@ -18,7 +28,7 @@ sub default : Private {
     
     # username
     my $username = $c->req->param('username');
-    my $ERROR_USERNAME = &check_valid_username($self, $c, $username);
+    my $ERROR_USERNAME = $c->model('Profile')->check_valid_username($c, $username);
     if ($ERROR_USERNAME) {
         $c->set_invalid_form( username => $ERROR_USERNAME );
         return;
@@ -48,19 +58,8 @@ sub default : Private {
     	my $active_code = &generate_random_word(10);
     	@extra_columns = ( active_code => $active_code, has_actived => 0, );
     	
-    	my $email_body = $c->view('NoWrapperTT')->render($c, 'email/activation.html', {
-            additional_template_paths => [ $c->path_to('templates', $c->stash->{lang}) ],
-            username => $username,
-            active_code => $active_code,
-        } );
-        $c->email(
-            header => [
-                From    => $c->config->{mail}->{from_email},
-                To      => $email,
-                Subject => 'Your Activation Code In ' . $c->config->{name},
-            ],
-            body => $email_body,
-        );
+    	# send activation code
+    	$c->model('Email')->send_activation($c, $email, $username, $active_code);
         
     } else {
         @extra_columns = ( has_actived => 1, );
@@ -124,9 +123,7 @@ sub import_contacts : Local {
     my $email = $c->user->email if ($c->user_exists);
     
     unless ($c->config->{mail}->{import}) {
-        $c->detach('/print_message', [ { 
-            msg => 'It\'s disabled.',
-        } ] );
+        $c->detach('/print_error', [ 'ERROR_EMAIL_OFF' ] );
     }
     
     $c->stash( {
@@ -135,30 +132,6 @@ sub import_contacts : Local {
     } );
     return unless ($c->req->param('submit'));
 }
-
-=pod
-
-=item check_valid_username
-
-check a "username" is valid or not
-
-=cut
-
-sub check_valid_username : Private {
-    my ($self, $c, $username) = @_;
-    
-    my @reserved_username = @{ $c->config->{reserved_username} };
-    
-    for ($username) {
-        return 'HAS_BLANK' if (/\s/);
-        return 'HAS_SPECAIL_CHAR' if (/[\a\f\n\e\0\r\t\`\~\!\@\#\$\%\^\&\*\(\)\+\=\\\{\}\;\'\:\"\,\.\/\<\>\?\[\]]/is);
-        if (grep(/^$username$/, @reserved_username)) { # $_$
-            return 'HAS_RESERVED';
-        }
-    }
-    return;
-}
-
 =pod
 
 =head2 AUTHOR

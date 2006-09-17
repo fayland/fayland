@@ -90,6 +90,9 @@ sub create : Local {
             field   => $forum->forum_id,
         } );
     }
+    # mkdir for upload image
+    mkdir($c->path_to('root', 'upload', $forum->forum_id), '0777');
+    chmod 0777, $c->path_to('root', 'upload', $forum->forum_id);
     
     $c->stash( {
         is_ok => 1,

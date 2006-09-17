@@ -4,6 +4,13 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 
+sub begin : Private {
+    my ($self, $c) = @_;
+
+    # don't include this into the url_referer    
+    $c->stash->{no_url_referer} = 1;
+}
+
 sub login : Global {
 	my ( $self, $c ) = @_;
 	
@@ -46,9 +53,16 @@ sub login : Global {
 sub logout : Global {
 	my ( $self, $c ) = @_;
 	
+	# delete the user_id in session
+	$c->model('DBIC::Session')->search( {
+	    id => 'session:' . $c->sessionid,
+	} )->update( {
+	    user_id => undef,
+	} );
+	
 	# log the user out
 	$c->logout;
-	
+
 	$c->res->redirect('/');
 }
 

@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 
+
+
 sub remove_sessions : Local {
     my ( $self, $c ) = @_;
     

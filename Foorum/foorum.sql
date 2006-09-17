@@ -9,7 +9,7 @@
 CREATE TABLE board (
   forum_id int(11)    ,
   page_id int(11)    ,
-  order_no int(11)    ,
+  squence int(11)    ,
   category_id int(11)    ,
   UNIQUE forum_id (forum_id)
 );
@@ -30,7 +30,7 @@ CREATE TABLE category (
 #
 CREATE TABLE comment (
   comment_id int(11)    auto_increment,
-  reply_to int(11)  DEFAULT ''  ,
+  reply_to int(11)  DEFAULT '0'  ,
   text text    ,
   post_on datetime    ,
   update_on datetime    ,
@@ -141,7 +141,7 @@ CREATE TABLE user (
   gender enum('F','M','M')    ,
   birthday date    ,
   email varchar(255)    ,
-  register_on datetime    ,
+  register_on date    ,
   register_ip varchar(32)    ,
   active_code char(10)    ,
   last_login_on datetime    ,
@@ -162,8 +162,8 @@ CREATE TABLE user (
 #
 CREATE TABLE user_role (
   user_id int(11)    ,
-  role enum('admin','moderator','user')  DEFAULT 'user'  ,
+  role enum('admin','moderator','user','blocked')  DEFAULT 'user'  ,
   field varchar(32)    
 );
 
-# ----------- Dump ends -----------
+# ----------- Dump file ends -----------
