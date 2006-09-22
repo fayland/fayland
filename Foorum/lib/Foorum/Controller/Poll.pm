@@ -16,16 +16,17 @@ sub start : Regex('^forum/(\d+)/poll/new$') {
     return unless ($c->req->param('submit'));
 
     # validation
+    my $duration = $c->req->param('duration_day');
     
     # insert record into table
     my $poll = $c->model('DBIC::Poll')->create( {
         author_id => $c->user->user_id,
-	multi     => $c->req->param('multi'),
-	anonymous => 0, # disable it for this moment
-	vote_no   => 0,
-	time      => time(),
-	duration  => $duration,
-	title     => $c->req->param('title'),
+    	multi     => $c->req->param('multi'),
+    	anonymous => 0, # disable it for this moment
+    	vote_no   => 0,
+    	time      => time(),
+    	duration  => $duration,
+    	title     => $c->req->param('title'),
     } );
     my $poll_id = $poll->poll_id;
     # get all options
@@ -50,7 +51,7 @@ sub poll : Regex('^forum/(\d+)/poll/(\d+)(/page=(\d+))?$') {
     my $page     = $c->req->snippets->[2];
 
     $c->stash( {
-	template => 'poll/index.html',
+    	template => 'poll/index.html',
     } );
 }
 

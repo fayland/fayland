@@ -1,1 +1,16 @@
-Run script/foorum_server.pl to test the application.
+=head1 NAME
+
+Foorum - Foorum is a forum script built in Catalyst.
+
+=head2 RUN
+
+you can run it under mod_perl or fastcgi
+
+for test using, we recommend to use builtin server.pl try:
+  
+  perl script/foorum.server.pl -k
+
+=head2 SEE ALSO
+
+L<Catalyst>, L<DBIx::Class>, L<Template>
+

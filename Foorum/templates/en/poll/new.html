@@ -1,0 +1,49 @@
+[% USE FillInForm %]
+
+[% UNLESS c.req.param('process');
+    filldata = {
+        title => comment.title,
+        text  => comment.text,
+    };
+END; %]
+
+<script>
+  function ResponseOptions() {
+      var option_number = $('option_number').value;
+      var insert_html;
+      for (i=0; i++; i < option_number) {
+        insert_html = insert_html + "Option " + i + ": <input type='text' name='option" + i + "'><br />";
+      }
+      new Insertion.Bottom('options', insert_html);
+  }
+</script>
+
+[% FILTER fillinform fdat => filldata || c.req.params %]
+
+<div class='one'>
+<form method="post">
+<input type='hidden' name='process' value='1' />
+<table align='center' border='1' cellpadding='6'>
+  <tr class='title'><td colspan='2'>Create a new POLL</td></tr>
+  <tr class='forum1'><td>Subject</td><td><input type='text' size='60' maxlength='80' name='title' />
+  [% IF c.form.error('title') %]title should be 1-80 chars.[% END %]
+</td></tr>
+  <tr class='forum2'><td>Options:</td><td>
+    Option number: <select name='option_number' id='option_number' onchange='ResponseOptions()'>
+                   <option value='2'>2</option>
+                   <option value='3'>3</option>
+                   <option value='4'>4</option>
+                   <option value='5'>5</option>
+                   <option value='6'>6</option>
+                   <option value='7'>7</option>
+                   <option value='8'>8</option>
+                   <option value='9'>9</option>
+                   </select>
+    <div id='options'></div>
+  </td></tr>
+  <tr class='forum1'><td colspan='2'><input type='submit'></td></tr>
+</table>
+</form>
+</div>
+
+[% END %]

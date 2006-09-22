@@ -101,6 +101,42 @@ CREATE TABLE page (
 );
 
 #
+# Table structure for table 'poll'
+#
+CREATE TABLE poll (
+  poll_id int(11) unsigned   auto_increment,
+  author_id int(11)    ,
+  multi enum('0','1')  DEFAULT ''  ,
+  anonymous enum('0','1')  DEFAULT ''  ,
+  time int(10)    ,
+  duration int(10)    ,
+  vote_no int(6)    ,
+  title varchar(128)    ,
+  PRIMARY KEY (poll_id)
+);
+
+#
+# Table structure for table 'poll_option'
+#
+CREATE TABLE poll_option (
+  option_id int(11) unsigned   auto_increment,
+  poll_id int(11)    ,
+  text varchar(255)    ,
+  vote_no int(6)    ,
+  PRIMARY KEY (option_id)
+);
+
+#
+# Table structure for table 'poll_result'
+#
+CREATE TABLE poll_result (
+  option_id int(11)    ,
+  poll_id int(11)    ,
+  poster_id int(11)    ,
+  poster_ip varchar(32)    
+);
+
+#
 # Table structure for table 'session'
 #
 CREATE TABLE session (
@@ -166,4 +202,4 @@ CREATE TABLE user_role (
   field varchar(32)    
 );
 
-# ----------- Dump file ends -----------
+# ----------- Dump ends -----------
