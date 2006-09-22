@@ -9,6 +9,6 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key('option_id');
 __PACKAGE__->belong_to('poll' => 'Foorum::Schema::Poll', { 'foreign.poll_id' => 'self.poll_id' } );
-__PACKAGE__->has_many('pollresult' => 'Foorum::Schema::PollResult', { 'foreign.option_id' => 'self.option_id' } );
+__PACKAGE__->has_many('results' => 'Foorum::Schema::PollResult', { 'foreign.option_id' => 'self.option_id' } );
 
 1;

@@ -12,6 +12,7 @@ use Catalyst qw/
 	Authentication::Credential::Password
 	Session
 	Session::Store::DBIC
+	Session::State::URI
 	Session::State::Cookie
 	Static::Simple
 	Prototype

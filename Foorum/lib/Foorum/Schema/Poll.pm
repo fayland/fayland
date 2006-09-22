@@ -10,6 +10,6 @@ __PACKAGE__->add_columns(qw/
 __PACKAGE__->set_primary_key('poll_id');
 __PACKAGE__->might_have('author' => 'Foorum::Schema::User', { 'foreign.user_id' => 'self.author_id' } );
 __PACKAGE__->has_many('options' => 'Foorum::Schema::PollOption', { 'foreign.poll_id' => 'self.poll_id' } );
-__PACKAGE__->has_many('pollresult' => 'Foorum::Schema::PollResult', { 'foreign.poll_id' => 'self.poll_id' } );
+__PACKAGE__->has_many('results' => 'Foorum::Schema::PollResult', { 'foreign.poll_id' => 'self.poll_id' } );
 
 1;

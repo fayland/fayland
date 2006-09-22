@@ -21,6 +21,7 @@ authentication:
 session:
   dbic_class: "DBIC::Session"
   expires: 3600
+  param: 'sid'
 
 static:
   dirs:
