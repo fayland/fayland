@@ -26,7 +26,12 @@ sub login : Global {
 	 	        $c->logout;
 	 	        return $c->res->redirect("/register/activation/$username");
 	 	    }
-	 	    
+	 	
+		# remember me
+		if ($c->req->param('remember_me')) {
+			$c->session_time_to_live( 157680000 );
+		}
+
 	 		# login_times++
 	 		$c->user->update( {
 	 		    login_times   => $c->user->login_times + 1,
@@ -54,11 +59,7 @@ sub logout : Global {
 	my ( $self, $c ) = @_;
 	
 	# delete the user_id in session
-	$c->model('DBIC::Session')->search( {
-	    id => 'session:' . $c->sessionid,
-	} )->update( {
-	    user_id => undef,
-	} );
+	$c->delete_session('log out');
 	
 	# log the user out
 	$c->logout;
