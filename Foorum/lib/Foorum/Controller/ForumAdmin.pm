@@ -13,7 +13,6 @@ sub begin : Private {
     
     $c->stash( {
         no_online_view => 1,
-#        no_url_referer => 1,
     } );
 }
 

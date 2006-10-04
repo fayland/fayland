@@ -7,8 +7,6 @@ use base 'Catalyst::Controller';
 sub begin : Private {
     my ($self, $c) = @_;
 
-    # don't include this into the url_referer    
-    $c->stash->{no_url_referer} = 1;
 }
 
 sub login : Global {
@@ -40,13 +38,13 @@ sub login : Global {
             } );
             
             # redirect
-            my $referer = $c->session->{url_referer};
-            $c->log->debug("Refer to: " . $referer);
-            if ($referer) {
-                $c->res->redirect($c->req->base . $referer);
-            } else {
+            #my $referer = $c->session->{url_referer};
+            #$c->log->debug("Refer to: " . $referer);
+            #if ($referer) {
+            #    $c->res->redirect($c->req->base . $referer);
+            #} else {
                 $c->res->redirect('/board');
-            }
+            #}
         } else {
             $c->stash->{error} = 'ERROR_AUTH_FAILED';
         }

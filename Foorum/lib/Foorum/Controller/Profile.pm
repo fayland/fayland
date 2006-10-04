@@ -9,10 +9,8 @@ use Digest ();
 sub begin : Private {
     my ($self, $c) = @_;
 
-    # don't include this into the url_referer    
     if ($c->action ne 'profile/forget_password') {
         $c->stash( {
-            no_url_referer => 1,
             no_online_view => 1,
         } );
     }

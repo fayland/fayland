@@ -7,14 +7,16 @@ use Catalyst qw/
 	-Debug
 	StackTrace
 	ConfigLoader
+	Static::Simple
 	Authentication
 	Authentication::Store::DBIC
 	Authentication::Credential::Password
 	Session::DynamicExpiry
 	Session
 	Session::Store::DBIC
+	Session::State::URI
 	Session::State::Cookie
-	Static::Simple
+	Cache::FileCache
 	Prototype
 	FormValidator::Simple
 	Email

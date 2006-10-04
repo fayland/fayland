@@ -23,22 +23,13 @@ sub auto : Private {
         $c->stash->{lang} = 'en';
 #    }
 
-	my $url_referer = $c->req->path;	
+	my $path = $c->req->path;	
 	# for maintain, but admin can login and do something
 	if ($c->config->{maintain} and
-	    ($url_referer ne 'login' and $url_referer !~ /^admin\//)) {
+	    ($path ne 'login' and $path !~ /^admin\//)) {
 	        $c->stash->{template} = 'simple/maintain.html';
-	        $c->detach('end');
 	        return 0;
 	}
-	
-	# for login using
-    if (not $c->stash->{no_url_referer} and 
-       ($url_referer !~ /^ajax\//
-    and $url_referer ne 'register')
-    ) {
-        $c->session->{url_referer} = $url_referer;
-    }
     
     return 1;
 }

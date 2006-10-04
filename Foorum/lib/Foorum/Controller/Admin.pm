@@ -11,7 +11,6 @@ sub auto : Private {
     
     $c->stash( {
         no_online_view => 1, # avoid another connection of database for Admin.
-#        no_url_referer => 1,
     } );
 
     unless ($c->user_exists) {

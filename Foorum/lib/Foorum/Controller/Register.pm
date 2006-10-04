@@ -9,10 +9,8 @@ use Data::Dumper;
 
 sub begin : Private {
     my ($self, $c) = @_;
-
-    # don't include this into the url_referer    
+ 
     $c->stash( {
-        no_url_referer => 1,
         no_online_view => 1,
     } );
 }
@@ -82,7 +80,7 @@ sub default : Private {
         $c->login($username, $password);
         $c->forward('/print_message', [ { 
             msg => 'register success!',
-            uri => $c->session->{url_referer} || '/',
+            uri => '/',
         } ] );
     }
 }
