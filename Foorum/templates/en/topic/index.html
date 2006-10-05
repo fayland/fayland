@@ -6,7 +6,7 @@
 <div class='none'>
 <table align='center'>
 <tr><td>
-<a href='/forum/[% forum.forum_id %]/topic'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle'></a>
+<a href='/forum/[% forum.forum_id %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle'></a>
 </td></tr>
 </table>
 </div>
@@ -22,16 +22,7 @@
 <table align='center'>
 <tr class='reply[% IF loop.count mod 2;'2';ELSE;'1';END; %]'>
     <td valign='top' width='157'>
-        [% IF comment.author %]
-         <a href='/u/[% comment.author.username %]'>[% comment.author.nickname %]</a><br />
-         [% comment.author.gender %]<br />
-         [% IF comment.author.status %]Status: [% comment.author.status %]<br />[% END %]
-         Threads: [% comment.author.threads %]<br />
-         Replies: [% comment.author.replies %]<br />
-         Register on: [% comment.author.register_on %]<br />
-        [% ELSE %]
-         Anonymous
-        [% END %]
+        [% INCLUDE include/user_profile.html user = comment.author %]
     </td>
     <td width='1' height='100%'><div class='plumbline'></div></td>
 	<td valign='top' width='*'>

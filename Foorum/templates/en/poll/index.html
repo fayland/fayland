@@ -1,0 +1,16 @@
+<div class='one'>
+<table align='center'>
+<tr class='title'>
+<td colspan='2'>[% poll.title %] By [% poll.author.nickname %]</td></tr>
+<tr class='forum1'>
+    <td valign='top' width='157'>[% INCLUDE include/user_profile.html user = poll.author %]</td>
+    <td>
+<ul>
+[% FOREACH option IN poll.options %]
+<li>[% option.text %]</li>
+[% END %]
+</ul>
+</td>
+</tr>
+</table>
+</div>

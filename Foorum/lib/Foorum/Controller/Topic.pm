@@ -39,7 +39,7 @@ sub topic : Regex('^forum/(\d+)/(\d+)(/page=(\d+))?$') {
     $c->stash->{template} = 'topic/index.html';
 }
 
-sub create : Regex('^forum/(\d+)/topic$') {
+sub create : Regex('^forum/(\d+)/topic/new$') {
     my ( $self, $c ) = @_;
     
     return $c->res->redirect('/login') unless ($c->user_exists);

@@ -13,30 +13,40 @@ sub start : Regex('^forum/(\d+)/poll/new$') {
     my $forum = $c->controller('Get')->forum($c, $forum_id);
 
     $c->stash->{template} = 'poll/new.html';
-    return unless ($c->req->param('submit'));
+    return unless ($c->req->param('process'));
 
     # validation
     my $duration = $c->req->param('duration_day');
+    $duration =~ s/\D+//isg;
+    $duration ||= 7; # default is 7 days
+    my $multi = $c->req->param('multi');
+    $multi = 0 if ($multi ne '1'); # 0 or 1
+    
+    my $now = time();
+    $duration = $now + $duration * 86400; # 86400 = 24 * 60 * 60, means 1 day
     
     # insert record into table
     my $poll = $c->model('DBIC::Poll')->create( {
         author_id => $c->user->user_id,
-    	multi     => $c->req->param('multi'),
+    	multi     => $multi,
     	anonymous => 0, # disable it for this moment
     	vote_no   => 0,
-    	time      => time(),
+    	time      => $now,
     	duration  => $duration,
     	title     => $c->req->param('title'),
     } );
     my $poll_id = $poll->poll_id;
     # get all options
-    my $option_no = $c->req->param('option_no');
+    my $option_no = $c->req->param('option_number');
+    $c->log->debug("option no: $option_no");
     foreach (1 .. $option_no) {
-	$c->model('DBIC::PollOption')->create( {
-	    poll_id => $poll_id,
-	    text    => $c->req->param("option$option_no"),
-	    vote_no => 0,
-	} );
+        my $option_text = $c->req->param("option$_");
+        next unless ($option_text);
+    	$c->model('DBIC::PollOption')->create( {
+    	    poll_id => $poll_id,
+    	    text    => $option_text,
+    	    vote_no => 0,
+    	} );
     }
 
     $c->res->redirect("/forum/$forum_id/poll/$poll_id");
@@ -49,8 +59,15 @@ sub poll : Regex('^forum/(\d+)/poll/(\d+)(/page=(\d+))?$') {
     my $forum = $c->controller('Get')->forum($c, $forum_id);
     my $poll_id  = $c->req->snippets->[1];
     my $page     = $c->req->snippets->[2];
+    
+    my $poll = $c->model('DBIC::Poll')->find( {
+        poll_id => $poll_id,
+    }, {
+        prefetch => ['author', 'options'],
+    } );
 
     $c->stash( {
+        poll     => $poll,
     	template => 'poll/index.html',
     } );
 }

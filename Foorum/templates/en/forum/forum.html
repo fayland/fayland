@@ -3,7 +3,8 @@
 <div class='none'>
 <table align='center'>
 <tr><td>
-<a href='/forum/[% forum.forum_id %]/topic'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle' /></a>
+<a href='/forum/[% forum.forum_id %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle' /></a> 
+<a href='/forum/[% forum.forum_id %]/poll/new'><img src='[% c.config.dir.images %]/newpoll.gif' width='99' height='25' align='absmiddle' /></a> 
 </td><td align='right' valign='bottom'>
 Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_roles.${forum.forum_id}.admin.nickname %]</a>
 [% FOREACH moderator IN forum_roles.${forum.forum_id}.moderator %]

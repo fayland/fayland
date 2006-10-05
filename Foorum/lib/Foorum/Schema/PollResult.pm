@@ -8,7 +8,7 @@ __PACKAGE__->add_columns(qw/
     option_id poll_id poster_id poster_ip
 /);
 __PACKAGE__->set_primary_key(qw/option_id poll_id poster_id/);
-__PACKAGE__->belong_to('poll' => 'Foorum::Schema::Poll', { 'foreign.poll_id' => 'self.poll_id' } );
-__PACKAGE__->belong_to('option' => 'Foorum::Schema::PollOption', { 'foreign.option_id' => 'self.option_id' } );
+__PACKAGE__->belongs_to('poll' => 'Foorum::Schema::Poll', { 'foreign.poll_id' => 'self.poll_id' } );
+__PACKAGE__->belongs_to('option' => 'Foorum::Schema::PollOption', { 'foreign.option_id' => 'self.option_id' } );
 
 1;

@@ -17,6 +17,9 @@ __PACKAGE__->load_classes(qw/
     EmailSetting
     Message
     MessageUnread
+    Poll
+    PollOption
+    PollResult
 /);
 
 =pod

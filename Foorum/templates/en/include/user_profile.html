@@ -1,0 +1,10 @@
+[% IF user %]
+ <a href='/u/[% user.username %]'>[% user.nickname %]</a><br />
+ [% user.gender %]<br />
+ [% IF user.status %]Status: [% user.status %]<br />[% END %]
+ Threads: [% user.threads %]<br />
+ Replies: [% user.replies %]<br />
+ Register on: [% user.register_on %]<br />
+[% ELSE %]
+ Anonymous
+[% END %]
