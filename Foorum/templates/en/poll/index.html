@@ -1,3 +1,5 @@
+[% USE Math %]
+
 <div class='one'>
 <table align='center'>
 <tr class='title'>
@@ -5,12 +7,56 @@
 <tr class='forum1'>
     <td valign='top' width='157'>[% INCLUDE include/user_profile.html user = poll.author %]</td>
     <td>
-<ul>
-[% FOREACH option IN poll.options %]
-<li>[% option.text %]</li>
+
+[% IF can_vote %]
+<form name='vote' id='vote'>
+<input type='hidden' name='poll_id' value='[% poll.poll_id %]' />
 [% END %]
-</ul>
+<div class='none'>
+<table border='0' cellpadding='0' cellspacing='0'>
+[%# bar color, from 1 .. 10 %]
+[% bar_color = 1 %]
+[% FOREACH option IN poll.options %]
+<tr><td>
+[% IF can_vote %]
+[% IF poll.multi == 1 %]
+[% input_type = 'checkbox' %]
+[% ELSE %]
+[% input_type = 'radio' %]
+[% END %]
+<input type='[% input_type %]' name='option_id' value='[% option.option_id %]' /> 
+[% END %]
+[% bar_width = ( option.vote_no / poll.vote_no ) * 160 %]
+[% bar_width = Math.int(bar_width) %]
+[% option.text %]</td><td><img src='[% c.config.dir.images %]/poll/bar[% bar_color %].gif' width="[% bar_width %]" height='10' /> ([% option.vote_no %]/[% poll.vote_no %])</td></tr>
+
+[% bar_color = bar_color + 1;IF bar_color > 10; bar_color = 1; END;%]
+[% END %]
+</table>
+</div>
+[% IF can_vote %]
+<input type='button' value='Vote' onclick='javascript:HAVEAVOTE()' />
+</from>
+[% END %]
 </td>
 </tr>
 </table>
 </div>
+[% IF can_vote %]
+<script>
+
+function HAVEAVOTE() {
+    var url  = '/ajax/poll/vote';
+    var pars = Form.serialize("vote");
+    Form.disable("vote");
+
+	var myAjax = new Ajax.Request( url, {
+	    method: 'get',
+	    parameters: pars,
+	    onSuccess: function (request) { alert(request.responseText) },
+	    onFailure: function () { alert('SERVER ERROR 500')    }
+	} );
+}
+
+</script>
+[% END %]

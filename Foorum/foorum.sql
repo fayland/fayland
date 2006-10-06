@@ -105,6 +105,7 @@ CREATE TABLE page (
 #
 CREATE TABLE poll (
   poll_id int(11) unsigned   auto_increment,
+  forum_id int(11) unsigned DEFAULT ''  ,
   author_id int(11)    ,
   multi enum('0','1')  DEFAULT ''  ,
   anonymous enum('0','1')  DEFAULT ''  ,
@@ -202,4 +203,4 @@ CREATE TABLE user_role (
   field varchar(32)    
 );
 
-# ----------- Dump ends -----------
+# ----------- Dump file ends -----------

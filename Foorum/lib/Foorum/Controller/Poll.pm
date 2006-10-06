@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 
-sub start : Regex('^forum/(\d+)/poll/new$') {
+sub create : Regex('^forum/(\d+)/poll/new$') {
     my ($self, $c) = @_;
     
     return $c->res->redirect('/login') unless ($c->user_exists);
@@ -27,6 +27,7 @@ sub start : Regex('^forum/(\d+)/poll/new$') {
     
     # insert record into table
     my $poll = $c->model('DBIC::Poll')->create( {
+        forum_id  => $forum_id,
         author_id => $c->user->user_id,
     	multi     => $multi,
     	anonymous => 0, # disable it for this moment
@@ -66,7 +67,17 @@ sub poll : Regex('^forum/(\d+)/poll/(\d+)(/page=(\d+))?$') {
         prefetch => ['author', 'options'],
     } );
 
+    my $can_vote = 0;
+    if (time() < $poll->duration and $c->user_exists) {
+        my $is_voted = $c->model('DBIC::PollResult')->count( {
+            poll_id   => $poll_id,
+            poster_id => $c->user->user_id,
+        } );
+        $can_vote = 1 unless ($is_voted);
+    }
+
     $c->stash( {
+        can_vote => $can_vote,
         poll     => $poll,
     	template => 'poll/index.html',
     } );
