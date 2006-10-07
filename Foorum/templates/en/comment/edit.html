@@ -1,12 +1,19 @@
 [% USE FillInForm %]
 
-[% FILTER fillinform fdat => c.req.params %]
+[% UNLESS c.req.param('process');
+    filldata = {
+        title => comment.title,
+        text  => comment.text,
+    };
+END; %]
+
+[% FILTER fillinform fdat => filldata || c.req.params %]
 
 <div class='one'>
 <form method="post">
 <input type='hidden' name='process' value='1' />
 <table align='center' border='1' cellpadding='6'>
-  <tr class='title'><td colspan='2'>Create a new topic</td></tr>
+  <tr class='title'><td colspan='2'>Eidt a Comment</td></tr>
   <tr class='forum1'><td>Subject</td><td><input type='text' size='60' maxlength='80' name='title' />
   [% IF c.form.error('title') %]title should be 1-80 chars.[% END %]
 </td></tr>

@@ -1,4 +1,5 @@
 [% USE FillInForm %]
+[% USE HTML::BBCode( 'bbcode_unlimited' ) %]
 
 [% FILTER fillinform fdat => c.req.params %]
 
@@ -6,7 +7,19 @@
 <form method="post">
 <input type='hidden' name='process' value='1' />
 <table align='center' border='1' cellpadding='6'>
-  <tr class='title'><td colspan='2'>Create a new topic</td></tr>
+  <tr class='title'><td colspan='2'>Reply a Comment</td></tr>
+  [% IF comment %]
+  <tr class='forum2'><td colspan='2' align='center'>
+    <table style='width:80%'>
+        <tr><td colspan='2' class='title'>[% comment.title | html %]</td></tr>
+        <tr class='forum1'><td width='150'>
+            [% INCLUDE 'include/user_profile_simple.html' user = comment.author %]
+        </td><td>
+            [% comment.text | html | bbcode_unlimited %]
+        </td></tr>
+    </table>
+  </td></tr>
+  [% END %]
   <tr class='forum1'><td>Subject</td><td><input type='text' size='60' maxlength='80' name='title' />
   [% IF c.form.error('title') %]title should be 1-80 chars.[% END %]
 </td></tr>

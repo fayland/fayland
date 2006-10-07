@@ -24,7 +24,7 @@ sub lock_or_top_or_elite : Regex('^forum/(\d+)/(\d+)/(un)?(top|elite|lock)$') {
     $c->detach('/print_error', [ 'Non-existent topic' ]) unless ($topic);
     
     # check policy
-    unless ($c->user->{is_moderator} or ($action eq 'lock' and $topic->author_id == $c->user->user_id) ) {
+    unless ($c->model('Policy')->is_moderator($c, $forum_id) or ($action eq 'lock' and $topic->author_id == $c->user->user_id) ) {
         $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ] );
     }
     

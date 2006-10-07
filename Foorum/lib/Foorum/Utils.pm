@@ -4,7 +4,12 @@ use strict;
 use warnings;
 use base 'Exporter';
 use vars qw/@EXPORT_OK/;
-@EXPORT_OK = qw/encodeHTML decodeHTML is_color generate_random_word/;
+@EXPORT_OK = qw/
+    encodeHTML decodeHTML
+    is_color
+    generate_random_word
+    get_page_no_from_url
+/;
 
 use HTML::Entities ();
 
@@ -61,6 +66,24 @@ sub generate_random_word {
     }
     
     return $random_word;
+}
+
+=pod
+
+=item get_page_no_from_url
+
+since we always use /page=(\d+)/ as in sub/pager.html
+
+=cut
+
+sub get_page_no_from_url {
+    my ($url) = @_;
+    
+    my $page = 1;
+    if ($url and $url =~ /\/page=(\d+)(\/|$)/) {
+        $page = $1;
+    }
+    return $page;
 }
 
 =pod

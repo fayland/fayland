@@ -22,19 +22,12 @@ sub topic : Regex('^forum/(\d+)/(\d+)(/page=(\d+))?$') {
         hit => $topic->hit + 1,
     } );
     
-    my $it = $c->model('DBIC')->resultset('Comment')->search( {
+    # get comments
+    $c->model('Comment')->get_comments_by_object($c, {
         object_type => 'thread',
         object_id   => $topic_id,
-    }, {
-        order_by => 'post_on',
-        rows => $c->config->{per_page}->{topic},
         page => $page_no,
-        prefetch => ['author'],
     } );
-    
-    my @comments = $it->all;
-    $c->stash->{comments} = \@comments;
-	$c->stash->{pager} = $it->pager;
 
     $c->stash->{template} = 'topic/index.html';
 }
@@ -114,12 +107,15 @@ sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
     my $topic = $c->forward('/get/topic', [ $forum_id, $topic_id ]);
     my $comment_id = $c->req->snippets->[3];
     
-    $c->stash( {
-        template => 'topic/create.html',
-        action   => 'reply',
-    } );
+    # topic is closed or not
+    $c->detach('/print_error', [ 'ERROR_CLOSED' ]) if ($topic->closed);
     
-    return unless ($c->req->param('process'));
+    $c->stash->{template} = 'comment/reply.html';
+    
+    unless ($c->req->param('process')) {
+        my $comment  = $c->forward('/get/comment', [ $comment_id, 'thread', $topic_id ] ) if ($comment_id);
+        return;
+    }
     
     # execute validation.
     $c->form(
@@ -180,10 +176,12 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
     my $comment_id = $c->req->snippets->[2];
     my $comment  = $c->forward('/get/comment', [ $comment_id, 'thread', $topic_id ] );
     
-    $c->stash( {
-        template => 'topic/create.html',
-        action   => 'edit',
-    } );
+    # permission
+    if ($c->user->user_id =! $comment->author_id and not $c->model('Policy')->is_moderator($c, $forum_id)) {
+        $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
+    }
+    
+    $c->stash->{template} = 'comment/edit.html';
     
     return unless ($c->req->param('process'));
     
@@ -194,7 +192,7 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
     );
 
     return if ($c->form->has_error);
-     ;
+
     $comment->update( {
         title       => $c->req->param('title'),
         text        => $c->req->param('text'),
@@ -205,7 +203,7 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
     
     if ($comment->reply_to == 0 and $topic->title ne $c->req->param('title')) {
         $topic->update( {
-            title => c->req->param('$titl'),,
+            title => $c->req->param('title'),
         } );
     }
     
@@ -223,6 +221,11 @@ sub delete : Regex('^forum/(\d+)/(\d+)/(\d+)/delete$') {
     my $topic_id = $c->req->snippets->[1];
     my $comment_id = $c->req->snippets->[2];
     my $comment  = $c->forward('/get/comment', [ $comment_id, 'thread', $topic_id ] );
+    
+    # permission
+    if ($c->user->user_id =! $comment->author_id and not $c->model('Policy')->is_moderator($c, $forum_id)) {
+        $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
+    }
     
     my $uri;
     if ($comment->reply_to == 0) {

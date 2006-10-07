@@ -24,6 +24,13 @@ sub profile : Regex('^u/(\w{6,20})$') {
     my $user = $c->model('DBIC')->resultset('User')->single( { username => $username } );
     
     if ($user) {
+        
+        # get comments
+        $c->model('Comment')->get_comments_by_object($c, {
+            object_type => 'user_profile',
+            object_id   => $user->user_id,
+        } );
+        
         $c->stash->{user} = $user;
         $c->stash->{template} = 'user/profile.html';
     } else {

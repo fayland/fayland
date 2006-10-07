@@ -53,13 +53,12 @@ sub create : Regex('^forum/(\d+)/poll/new$') {
     $c->res->redirect("/forum/$forum_id/poll/$poll_id");
 }
 
-sub poll : Regex('^forum/(\d+)/poll/(\d+)(/page=(\d+))?$') {
+sub poll : Regex('^forum/(\d+)/poll/(\d+)$') {
     my ($self, $c) = @_;
 
     my $forum_id = $c->req->snippets->[0];
     my $forum = $c->controller('Get')->forum($c, $forum_id);
     my $poll_id  = $c->req->snippets->[1];
-    my $page     = $c->req->snippets->[2];
     
     my $poll = $c->model('DBIC::Poll')->find( {
         poll_id => $poll_id,
@@ -75,6 +74,12 @@ sub poll : Regex('^forum/(\d+)/poll/(\d+)(/page=(\d+))?$') {
         } );
         $can_vote = 1 unless ($is_voted);
     }
+    
+    # get comments
+    $c->model('Comment')->get_comments_by_object($c, {
+        object_type => 'poll',
+        object_id   => $poll_id,
+    } );
 
     $c->stash( {
         can_vote => $can_vote,
