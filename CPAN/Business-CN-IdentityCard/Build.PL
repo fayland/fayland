@@ -2,7 +2,7 @@ use strict;
 use Module::Build;
 
 my $build = Module::Build->new(
-    create_makefile_pl => 'passthrough',
+    create_makefile_pl  => 'traditional',
     license            => 'perl',
     module_name        => 'Business::CN::IdentityCard',
     requires           => {
