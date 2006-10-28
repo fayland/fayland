@@ -1,0 +1,45 @@
+[% USE date %]
+
+[% title = forum.name %]
+
+<div class='none'>
+<table align='center'>
+<tr><td>
+<a href='/forum/[% forum.forum_id %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle' /></a> 
+<a href='/forum/[% forum.forum_id %]/poll/new'><img src='[% c.config.dir.images %]/newpoll.gif' width='99' height='25' align='absmiddle' /></a> 
+</td><td align='right' valign='bottom'>
+Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_roles.${forum.forum_id}.admin.nickname %]</a>
+[% FOREACH moderator IN forum_roles.${forum.forum_id}.moderator %]
+[% IF loop.first %], [% END %]<a href='/u/[% moderator.username %]'>[% moderator.nickname %]</a>[% UNLESS loop.last %], [% END %]
+[% END %]
+<td></tr>
+</table>
+</div>
+
+<div class='one'>
+<table align='center'>
+	<tr class='title' align='center'>
+	<td>Subject</td>
+	<td>Author</td>
+	<td>Poll</td>
+	<td>Start Time</td>
+	<td>Close Time</td>
+	</tr>
+[% FOREACH poll IN polls %]
+<tr align='center'>
+	<td class='forum2'><a href='/forum/[% forum.forum_id %]/poll/[% poll.poll_id %]'>[% poll.title | html %]</a></td>
+	<td class='forum1'><a href='/u/[% poll.author.username %]'>[% poll.author.nickname %]</a></td>
+	<td class='forum2'>[% poll.vote_no %]</td>
+	<td class='forum1'>[% date.format(poll.time, '%Y-%m-%d %H:%M:%S') %]</td>
+	<td class='forum2'>[% date.format(poll.duration, '%Y-%m-%d %H:%M:%S') %]</td>
+</tr>
+[% END %]
+</table>
+</div>
+<br />
+
+<div class='none'>
+<table align='center'>
+    <tr><td>[% INCLUDE 'sub/pager.html' url_prefix = '/forum/' _ forum.forum_id _ '/polls' %]</td></tr>
+</table>
+</div>

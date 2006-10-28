@@ -42,7 +42,18 @@ sub forum : LocalRegex('^(\d+)(/elite)?(/page=(\d+))?$') {
     # get all moderators
     $c->stash->{forum_roles} = $c->model('Policy')->get_forum_moderators( $c, $forum_id );
     
-    
+
+    # get poll stuff for page 1 and normal mode
+    if ($page_no == 1 and not $is_elite) {
+	my @polls = $c->model('DBIC')->resultset('Poll')->search( {
+	    forum_id => $forum_id,
+	    duration => { '<', time() },
+	}, {
+	    order_by => 'time desc',
+	    prefetch => ['author'],
+	} )->all;
+        $c->stash->{polls} = \@polls;
+    }
     
     my @extra_cols = ('elite', 1) if ($is_elite);
     

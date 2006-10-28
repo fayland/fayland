@@ -15,6 +15,27 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 </div>
 
 <div class='one'>
+<table align='center'>
+	<tr class='title' align='center'>
+	<td>Subject</td>
+	<td>Author</td>
+	<td>Poll</td>
+	</tr>
+[% FOREACH poll IN polls %]
+<tr align='center'>
+	<td class='forum2'><a href='/forum/[% forum.forum_id %]/poll/[% poll.poll_id %]'>[% poll.title | html %]</a></td>
+	<td class='forum1'><a href='/u/[% poll.author.username %]'>[% poll.author.nickname %]</a></td>
+	<td class='forum2'>[% poll.vote_no %]</td>
+</tr>
+[% END %]
+<tr>
+	<td colspan='3' align='right' class='forum2'><a href='/forum/[% forum.forum_id %]/poll'>View ALL POLLs</a></td>
+</tr>
+</table>
+</div>
+<br />
+
+<div class='one'>
 <table height='28' align='center'>
 	<tr class="title" align='center'>
 	<td width='42'>Status</td>
