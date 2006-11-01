@@ -162,7 +162,8 @@ sub style : LocalRegex('^(\d+)/style$') {
     
     my $style = $c->req->params;
     
-    my $css_content = $c->view('NoWrapperTT')->render($c, 'common/style.css', {
+    my $css_content = $c->view('TT')->render($c, 'common/style.css', {
+        no_wrapper => 1,
         additional_template_paths => [ $c->path_to('templates', $c->stash->{lang}) ],
         style => $style,
     } );
@@ -173,7 +174,8 @@ sub style : LocalRegex('^(\d+)/style$') {
         close(FH);
     }
     
-    my $yml_content = $c->view('NoWrapperTT')->render($c, 'common/style.yml', {
+    my $yml_content = $c->view('TT')->render($c, 'common/style.yml', {
+        no_wrapper => 1,
         additional_template_paths => [ $c->path_to('templates', $c->stash->{lang}) ],
         style => $style,
     } );

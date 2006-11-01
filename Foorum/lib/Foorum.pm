@@ -8,16 +8,14 @@ use Catalyst qw/
 	StackTrace
 	ConfigLoader
 	Static::Simple
+	Cache::FileCache
 	Authentication
 	Authentication::Store::DBIC
 	Authentication::Credential::Password
 	Session::DynamicExpiry
 	Session
 	Session::Store::DBIC
-	Session::State::URI
 	Session::State::Cookie
-	Cache::FileCache
-	Prototype
 	FormValidator::Simple
 	Email
 	Scheduler
