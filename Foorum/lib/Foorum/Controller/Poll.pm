@@ -96,7 +96,7 @@ sub view_polls : Regex('^forum/(\d+)/poll(/page=(\d+))$') {
     my $page     = $c->req->snippets->[2];
 
     # get all moderators
-    $c->stash->{forum_roles} = $c->model('Policy')->get_forum_moderators( $c, $forum_id )
+    $c->stash->{forum_roles} = $c->model('Policy')->get_forum_moderators( $c, $forum_id );
 
     my $rs = $c->model('DBIC::Poll')->search( {
 	forum_id => $forum_id,
