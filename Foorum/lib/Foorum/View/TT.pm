@@ -6,9 +6,9 @@ use base 'Catalyst::View::TT';
 use NEXT;
 
 __PACKAGE__->config(
-	#DEBUG        => DEBUG_PARSER | DEBUG_PROVIDER,
-	INCLUDE_PATH => [
-              Foorum->path_to( 'templates' ), 
+    #DEBUG        => DEBUG_PARSER | DEBUG_PROVIDER,
+    INCLUDE_PATH => [
+        Foorum->path_to( 'templates' ), 
     ],
 );
 

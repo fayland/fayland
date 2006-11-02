@@ -11,6 +11,10 @@
 </table>
 </div>
 
+[% IF c.user_exists %]
+<script type="text/javascript" src="/js/site/star.js"></script>
+[% END %]
+
 <div class='one'>
 <table height='28' align='center'>
 	<tr class="title" align='center'>
@@ -58,7 +62,7 @@
 [% END %]
 <div class='none'>
 <table align='center'>
-    <tr><td>[% INCLUDE 'sub/pager.html' pager = comments_pager %]</td></tr>
+    <tr>[% IF c.user_exists %]<td><a href="javascript:star('topic', '[% topic.topic_id %]', 'starDiv')"><span id='starDiv'>[% IF has_star;'Unstar it';ELSE;'Star it';END %]</span></a></td>[% END %]<td align='right'>[% INCLUDE 'sub/pager.html' pager = comments_pager %]</td></tr>
 </table>
 </div>
 

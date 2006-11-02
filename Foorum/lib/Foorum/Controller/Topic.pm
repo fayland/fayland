@@ -22,6 +22,15 @@ sub topic : Regex('^forum/(\d+)/(\d+)(/page=(\d+))?$') {
         hit => $topic->hit + 1,
     } );
     
+    # 'star' status
+    if ($c->user_exists) {
+        $c->stash->{has_star} = $c->model('DBIC::Star')->count( {
+            user_id => $c->user->user_id,
+            object_type => 'topic',
+            object_id   => $topic_id,
+        } );
+    }        
+    
     # get comments
     $c->model('Comment')->get_comments_by_object($c, {
         object_type => 'thread',

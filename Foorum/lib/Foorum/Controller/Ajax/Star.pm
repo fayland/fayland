@@ -5,7 +5,7 @@ use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
 
-sub star : Local {
+sub default : Private {
     my ($self, $c) = @_;
     
     return $c->res->body('LOGIN FIRST') unless ($c->user_exists);
@@ -22,14 +22,14 @@ sub star : Local {
     my $count = $c->model('DBIC::Star')->count( {
         user_id => $c->user->user_id,
         object_type => $object_type,
-        object_id   -> $object_id,
+        object_id   => $object_id,
     } );
     if ($count) {
         # unstar
         $c->model('DBIC::Star')->search( {
             user_id => $c->user->user_id,
             object_type => $object_type,
-            object_id   -> $object_id,
+            object_id   => $object_id,
         } )->delete;
         $c->res->body('0');
     } else {
@@ -37,7 +37,7 @@ sub star : Local {
         $c->model('DBIC::Star')->create( {
             user_id => $c->user->user_id,
             object_type => $object_type,
-            object_id   -> $object_id,
+            object_id   => $object_id,
         } );
         $c->res->body('1');
     }

@@ -49,8 +49,10 @@ sub default : Private {
 sub end : Private {
     my ( $self, $c ) = @_;
     
-    die 'I want to die' if ($c->debug and $c->req->param('die')); # for debug using.
-	
+    # for login using!
+    if ($c->res->location and $c->res->location =~ /^\/login/) {
+        $c->res->location('/login?referer=/' . $c->req->path);
+    }
 	return if ($c->res->body || $c->res->redirect);
 
     # template international

@@ -33,18 +33,17 @@ sub login : Global {
             # login_times++
             $c->user->update( {
                 login_times   => $c->user->login_times + 1,
-                last_login_on => \"NOW()",
+                last_login_on => \'NOW()',
                 last_login_ip => $c->req->address,
             } );
             
             # redirect
-            #my $referer = $c->session->{url_referer};
-            #$c->log->debug("Refer to: " . $referer);
-            #if ($referer) {
-            #    $c->res->redirect($c->req->base . $referer);
-            #} else {
+            my $referer = $c->req->param('referer');
+            if ($referer) {
+                $c->res->redirect($referer);
+            } else {
                 $c->res->redirect('/board');
-            #}
+            }
         } else {
             $c->stash->{error} = 'ERROR_AUTH_FAILED';
         }

@@ -26,9 +26,13 @@
 [% END %]
 <input type='[% input_type %]' name='option_id' value='[% option.option_id %]' /> 
 [% END %]
+[% option.text %]</td><td>
+    [% IF poll.vote_no %]
 [% bar_width = ( option.vote_no / poll.vote_no ) * 160 %]
 [% bar_width = Math.int(bar_width) %]
-[% option.text %]</td><td><img src='[% c.config.dir.images %]/poll/bar[% bar_color %].gif' width="[% bar_width %]" height='10' /> ([% option.vote_no %]/[% poll.vote_no %])</td></tr>
+<img src='[% c.config.dir.images %]/poll/bar[% bar_color %].gif' width="[% bar_width %]" height='10' /> ([% option.vote_no %]/[% poll.vote_no %])
+    [% END %]
+</td></tr>
 
 [% bar_color = bar_color + 1;IF bar_color > 10; bar_color = 1; END;%]
 [% END %]

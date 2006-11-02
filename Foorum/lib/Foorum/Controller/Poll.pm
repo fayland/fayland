@@ -6,7 +6,7 @@ use base 'Catalyst::Controller';
 
 sub create : Regex('^forum/(\d+)/poll/new$') {
     my ($self, $c) = @_;
-    
+
     return $c->res->redirect('/login') unless ($c->user_exists);
 
     my $forum_id = $c->req->snippets->[0];
@@ -21,20 +21,20 @@ sub create : Regex('^forum/(\d+)/poll/new$') {
     $duration ||= 7; # default is 7 days
     my $multi = $c->req->param('multi');
     $multi = 0 if ($multi ne '1'); # 0 or 1
-    
+
     my $now = time();
     $duration = $now + $duration * 86400; # 86400 = 24 * 60 * 60, means 1 day
-    
+
     # insert record into table
     my $poll = $c->model('DBIC::Poll')->create( {
         forum_id  => $forum_id,
         author_id => $c->user->user_id,
-    	multi     => $multi,
-    	anonymous => 0, # disable it for this moment
-    	vote_no   => 0,
-    	time      => $now,
-    	duration  => $duration,
-    	title     => $c->req->param('title'),
+        multi     => $multi,
+        anonymous => 0, # disable it for this moment
+        vote_no   => 0,
+        time      => $now,
+        duration  => $duration,
+        title     => $c->req->param('title'),
     } );
     my $poll_id = $poll->poll_id;
     # get all options
@@ -43,11 +43,11 @@ sub create : Regex('^forum/(\d+)/poll/new$') {
     foreach (1 .. $option_no) {
         my $option_text = $c->req->param("option$_");
         next unless ($option_text);
-    	$c->model('DBIC::PollOption')->create( {
-    	    poll_id => $poll_id,
-    	    text    => $option_text,
-    	    vote_no => 0,
-    	} );
+        $c->model('DBIC::PollOption')->create( {
+            poll_id => $poll_id,
+            text    => $option_text,
+            vote_no => 0,
+        } );
     }
 
     $c->res->redirect("/forum/$forum_id/poll/$poll_id");
@@ -59,7 +59,7 @@ sub poll : Regex('^forum/(\d+)/poll/(\d+)$') {
     my $forum_id = $c->req->snippets->[0];
     my $forum = $c->controller('Get')->forum($c, $forum_id);
     my $poll_id  = $c->req->snippets->[1];
-    
+
     my $poll = $c->model('DBIC::Poll')->find( {
         poll_id => $poll_id,
     }, {
@@ -74,7 +74,7 @@ sub poll : Regex('^forum/(\d+)/poll/(\d+)$') {
         } );
         $can_vote = 1 unless ($is_voted);
     }
-    
+
     # get comments
     $c->model('Comment')->get_comments_by_object($c, {
         object_type => 'poll',
@@ -84,7 +84,7 @@ sub poll : Regex('^forum/(\d+)/poll/(\d+)$') {
     $c->stash( {
         can_vote => $can_vote,
         poll     => $poll,
-    	template => 'poll/index.html',
+        template => 'poll/index.html',
     } );
 }
 
@@ -99,18 +99,18 @@ sub view_polls : Regex('^forum/(\d+)/poll(/page=(\d+))$') {
     $c->stash->{forum_roles} = $c->model('Policy')->get_forum_moderators( $c, $forum_id );
 
     my $rs = $c->model('DBIC::Poll')->search( {
-	forum_id => $forum_id,
+        forum_id => $forum_id,
     }, {
-	order_by => 'time desc',
-	rows     => $c->config->{per_page}->{forum},
-	page     => $page,
-	prefetch => ['author'],
+        order_by => 'time desc',
+        rows     => $c->config->{per_page}->{forum},
+        page     => $page,
+        prefetch => ['author'],
     } );
 
     $c->stash( {
-	polls => [ $rs->all ],
-	pager => $rs->pager,
-	template => 'poll/view_polls.html',
+        polls => [ $rs->all ],
+        pager => $rs->pager,
+        template => 'poll/view_polls.html',
     } );
 }
 

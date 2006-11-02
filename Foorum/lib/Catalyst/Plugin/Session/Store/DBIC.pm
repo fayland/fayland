@@ -179,9 +179,11 @@ sub store_session_data {
     }
 
     # set user_id in session table
-    if ($c->user_exists) {
-        $fields{user_id} = $c->user->user_id;
-    }
+    eval {
+        if ($c->user_exists) {
+            $fields{user_id} = $c->user->user_id;
+        }
+    };
     # set path in session table
     $fields{path} = substr($c->req->path, 0, 255) if ($c->req->path);
 

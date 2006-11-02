@@ -2,7 +2,7 @@ package Foorum::Schema::PollResult;
 
 use base qw/DBIx::Class/;
 
-__PACKAGE__->load_components(qw/PK::Auto Core/);
+__PACKAGE__->load_components(qw/Core/);
 __PACKAGE__->table('poll_result');
 __PACKAGE__->add_columns(qw/
     option_id poll_id poster_id poster_ip
