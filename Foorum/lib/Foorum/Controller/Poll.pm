@@ -88,12 +88,12 @@ sub poll : Regex('^forum/(\d+)/poll/(\d+)$') {
     } );
 }
 
-sub view_polls : Regex('^forum/(\d+)/poll(/page=(\d+))$') {
+sub view_polls : Regex('^forum/(\d+)/poll(/page=(\d+))?$') {
     my ($self, $c) = @_;
 
     my $forum_id = $c->req->snippets->[0];
     my $forum    = $c->controller('Get')->forum($c, $forum_id);
-    my $page     = $c->req->snippets->[2];
+    my $page     = $c->req->snippets->[2] || 1;
 
     # get all moderators
     $c->stash->{forum_roles} = $c->model('Policy')->get_forum_moderators( $c, $forum_id );
