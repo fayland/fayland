@@ -48,7 +48,7 @@ sub default : Private {
 sub index : Private {
     my ( $self, $c ) = @_;
     
-    $c->forward('Foorum::Controller::Forum', 'default');
+    $c->forward('Foorum::Controller::Forum', 'board');
 }
 
 sub end : Private {
@@ -56,7 +56,7 @@ sub end : Private {
     
     # for login using!
     if ($c->res->location and $c->res->location =~ /^\/login/) {
-        my $location = '/login?goto=/' . $c->req->path;
+        my $location = '/login?referer=/' . $c->req->path;
         $location .= '?' . uri_escape($c->req->uri->query) if ($c->req->uri->query);
         $c->res->location($location);
     }

@@ -42,7 +42,7 @@ sub login : Global {
             if ($referer) {
                 $c->res->redirect($referer);
             } else {
-                $c->res->redirect('/board');
+                $c->res->redirect('/');
             }
         } else {
             $c->stash->{error} = 'ERROR_AUTH_FAILED';

@@ -39,6 +39,11 @@ sub fill_user_role {
         $roles->{is_member} = 0;
         $roles->{is_blocked} = 1;
     }
+
+    if ($roles->{$field}->{pending}) {
+        $roles->{is_member} = 0;
+        $roles->{is_pending} = 1;
+    }
     
     $c->stash->{roles} = $roles;
 }
@@ -68,6 +73,15 @@ sub is_user {
     &fill_user_role( $self, $c, $field ) unless ($c->stash->{roles});
     
     return $c->stash->{roles}->{is_member};
+}
+
+sub is_pending {
+    my ($self, $c, $field) = @_;
+
+    return 0 unless ($field);
+    &fill_user_role($self, $c, $field) unless ($c->stash->{roles});
+
+    return $c->stash->{roles}->{is_pending};
 }
 
 sub is_blocked {

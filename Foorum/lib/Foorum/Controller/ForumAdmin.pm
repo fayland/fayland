@@ -8,29 +8,32 @@ use YAML::Syck;
 use Foorum::Utils qw/is_color/;
 use Data::Dumper;
 
-sub begin : Private {
-    my ($self, $c) = @_;
+sub forum_for_admin : PathPart('forumadmin') Chained('/') CaptureArgs(1) {
+    my ( $self, $c, $forum_id ) = @_;
+
+    my $forum = $c->forward('/get/forum', [ $forum_id ]);
     
+    unless ($c->model('Policy')->is_admin( $c, $forum_id )) {
+        $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
+    }
+
     $c->stash( {
+        forum => $forum,
         no_online_view => 1,
-    } );
+    } );     
 }
 
-sub home : LocalRegex('^(\d+)$') {
+sub home : PathPart('') Chained('forum_for_admin') Args(0) {
     my ($self, $c) = @_;
-    
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
-    &_check_policy( $self, $c, $forum );
-    
+
     $c->stash->{template} = 'forumadmin/index.html';
 }
 
-sub basic : LocalRegex('^(\d+)/basic$') {
+sub basic : Chained('forum_for_admin') Args(0) {
     my ($self, $c) = @_;
-    
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+
+    my $forum = $c->stash->{forum};
+    my $forum_id = $forum->forum_id;
     
     $c->stash( {
         template => 'forumadmin/basic.html',
@@ -49,9 +52,7 @@ sub basic : LocalRegex('^(\d+)/basic$') {
         $c->stash->{private} = ($forum->policy eq 'private')?1:0;
         return;
     }
-        
-    &_check_policy( $self, $c, $forum );
-    
+
     # validate
     $c->form(
         name => [qw/NOT_BLANK/,             [qw/LENGTH 1 40/] ],
@@ -106,11 +107,11 @@ sub basic : LocalRegex('^(\d+)/basic$') {
     $c->res->redirect("/forum/$forum_id");
 }
 
-sub style : LocalRegex('^(\d+)/style$') {
+sub style : Chained('forum_for_admin') Args(0) {
     my ($self, $c) = @_;
-    
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+
+    my $forum = $c->stash->{forum};
+    my $forum_id = $forum->forum_id;
     
     $c->stash->{template} = 'forumadmin/style.html';
     
@@ -155,8 +156,6 @@ sub style : LocalRegex('^(\d+)/style$') {
 
     return if ($c->form->has_error);
 
-    &_check_policy( $self, $c, $forum );
-    
     # save the style.yml and style.css
     my $css = $c->path_to('root', 'css', 'custom', "forum$forum_id\.css");
     
@@ -189,13 +188,11 @@ sub style : LocalRegex('^(\d+)/style$') {
     $c->res->redirect("/forum/$forum_id");
 }
 
-sub del_style : LocalRegex('^(\d+)/del_style$') {
+sub del_style : Chained('forum_for_admin') Args(0) {
     my ($self, $c) = @_;
-    
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
-    
-    &_check_policy( $self, $c, $forum );
+
+    my $forum = $c->stash->{forum};
+    my $forum_id = $forum->forum_id;
     
     my $yml = $c->path_to('style', 'custom', "forum$forum_id\.yml");
     my $css = $c->path_to('root', 'css', 'custom', "forum$forum_id\.css");
@@ -206,11 +203,11 @@ sub del_style : LocalRegex('^(\d+)/del_style$') {
     $c->res->redirect("/forum/$forum_id");
 }
 
-sub announcement : LocalRegex('^(\d+)/announcement$') {
+sub announcement : Chained('forum_for_admin') Args(0) {
     my ($self, $c) = @_;
-    
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+
+    my $forum = $c->stash->{forum};
+    my $forum_id = $forum->forum_id;
     
     my $announce = $c->model('DBIC::Comment')->find( {
         object_id   => $forum_id,
@@ -224,8 +221,6 @@ sub announcement : LocalRegex('^(\d+)/announcement$') {
         } );
         return;
     }
-    
-    &_check_policy( $self, $c, $forum );
     
     my $text  = $c->req->param('announcement');
     my $title = $c->req->param('title');
@@ -261,11 +256,11 @@ sub announcement : LocalRegex('^(\d+)/announcement$') {
     $c->res->redirect("/forum/$forum_id");
 }
 
-sub block_user : LocalRegex('^(\d+)/block_user$') {
+sub block_user : Chained('forum_for_admin') Args(0) {
     my ($self, $c) = @_;
-    
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+
+    my $forum = $c->stash->{forum};
+    my $forum_id = $forum->forum_id;
     
     $c->stash->{template} = 'forumadmin/block_user.html';
     unless ($c->req->param('submit')) {
@@ -279,8 +274,6 @@ sub block_user : LocalRegex('^(\d+)/block_user$') {
         return;
     }
 
-    &_check_policy( $self, $c, $forum );
-    
     # first of all, delete all records
     $c->model('DBIC::UserRole')->search( {
         role  => 'blocked',
@@ -321,11 +314,11 @@ sub block_user : LocalRegex('^(\d+)/block_user$') {
     } );
 }
 
-sub members : LocalRegex('^(\d+)/members$') {
+sub members : Chained('forum_for_admin') Args(0) {
     my ($self, $c) = @_;
-    
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+
+    my $forum = $c->stash->{forum};
+    my $forum_id = $forum->forum_id;
     
     $c->stash->{template} = 'forumadmin/members.html';
     unless ($c->req->param('submit')) {
@@ -339,8 +332,6 @@ sub members : LocalRegex('^(\d+)/members$') {
         return;
     }
 
-    &_check_policy( $self, $c, $forum );
-    
     # first of all, delete all records
     $c->model('DBIC::UserRole')->search( {
         role  => 'user',
@@ -379,14 +370,6 @@ sub members : LocalRegex('^(\d+)/members$') {
         failed_users  => \@failed_users,
         blocked_users => \@blocked_users,
     } );
-}
-
-sub _check_policy {
-    my ( $self, $c, $forum ) = @_;
-    
-    unless ($c->model('Policy')->is_admin( $c, $forum->forum_id )) {
-        $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
-    }
 }
 
 =pod

@@ -125,7 +125,7 @@ sub delete : LocalRegex('^(\d+)/delete$') {
     }
     
     # delete comment
-    my $comment = $c->model('DBIC')->resultset('Comment')->search( {
+    $c->model('DBIC')->resultset('Comment')->search( {
         comment_id => $comment_id,
     } )->delete;
     

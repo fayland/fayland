@@ -22,7 +22,11 @@ sub forum : Private {
         return $c->res->redirect('/login') unless ($c->user_exists);
         
         unless ($c->model('Policy')->is_user( $c, $forum_id )) {
-            $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
+            if ($c->model('Policy')->is_pending($c, $forum_id)) {
+                $c->detach('/print_error', [ 'ERROR_USER_PENDING' ]);
+            } else {
+                $c->detach('/forum/join_us', [ $forum_id ]);
+            }
         }
     }
 

@@ -5,7 +5,7 @@ use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
 
-sub default : Private {
+sub board : Path {
     my ($self, $c) = @_;
 
     my @forums = $c->model('DBIC')->resultset('Forum')->search( { }, {
@@ -74,6 +74,39 @@ sub forum : LocalRegex('^(\d+)(/elite)?(/page=(\d+))?$') {
     $c->stash->{topics} = \@topics;
     $c->stash->{pager} = $pager;
     $c->stash->{template} = 'forum/forum.html';
+}
+
+sub join_us : Private {
+    my ($self, $c, $forum_id) = @_;
+    
+    return $c->res->redirect('/login') unless ($c->user_exists);
+    
+    if ($c->req->method eq 'POST') {
+        my $rs = $c->model('DBIC::UserRole')->find( {
+            user_id => $c->user->user_id,
+            field   => $forum_id,
+        } );
+        if ($rs) {
+            if ($rs->role eq 'user' or $rs->role eq 'moderator' or $rs->role eq 'admin') {
+                return $c->res->redirect("/forum/$forum_id");
+            } elsif ($rs->role eq 'blocked' or $rs->role eq 'pending') {
+                my $role = uc($rs->role);
+                $c->detach('/print_error', [ "ERROR_USER_$role" ]);
+            }
+        } else {
+            $c->model('DBIC::UserRole')->create( {
+                user_id => $c->user->user_id,
+                field   => $forum_id,
+                role    => 'pending',
+            } );
+            $c->detach('/print_message', [ 'Successfully Request. You need wait for admin\'s approval' ]);
+        }
+    } else {
+        $c->stash( {
+            simple_wrapper => 1,
+            template => 'forum/join_us.html',
+        } );
+    }
 }
 
 =pod
