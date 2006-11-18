@@ -24,6 +24,8 @@ sub forum : Private {
         unless ($c->model('Policy')->is_user( $c, $forum_id )) {
             if ($c->model('Policy')->is_pending($c, $forum_id)) {
                 $c->detach('/print_error', [ 'ERROR_USER_PENDING' ]);
+            } elsif ($c->model('Policy')->is_rejected($c, $forum_id)) {
+                $c->detach('/print_error', [ 'ERROR_USER_REJECTED' ]);
             } else {
                 $c->detach('/forum/join_us', [ $forum_id ]);
             }

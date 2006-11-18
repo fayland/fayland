@@ -76,6 +76,51 @@ sub forum : LocalRegex('^(\d+)(/elite)?(/page=(\d+))?$') {
     $c->stash->{template} = 'forum/forum.html';
 }
 
+sub members : LocalRegex('^(\d+)/members(/(\w+))?(/page=(\d+))?$') {
+    my ($self, $c) = @_;
+
+    my $forum_id = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    
+    my $member_type = $c->req->snippets->[2] || 'all';
+    if ($member_type ne 'pending' and $member_type ne 'admin' and $member_type ne 'blocked' and $member_type ne 'user' and $member_type ne 'rejected') {
+        $member_type = 'all';
+    }
+    
+    my $page_no  = $c->req->snippets->[4];
+    $page_no = 1 unless ($page_no and $page_no =~ /^\d+$/);
+    
+    my @query_cols;
+    @query_cols = ('role', $member_type) if ($member_type ne 'all');
+    @query_cols = ('role', ['admin', 'moderator']) if ($member_type eq 'admin');
+    my $rs = $c->model('DBIC::UserRole')->search( {
+        @query_cols,
+        field => $forum_id,
+    }, {
+        rows => 20,
+        page => $page_no,
+    } );
+    my @user_roles = $rs->all;
+    my @all_user_ids = map { $_->user_id } @user_roles;
+    
+    my @members = $c->model('DBIC::User')->search( {
+        user_id => { 'IN', \@all_user_ids },
+    }, {
+        columns => ['user_id', 'username', 'nickname', 'gender', 'register_on'],
+    } )->all;
+    my %members = map { $_->user_id => $_ } @members;
+    
+    $c->log->debug('we have members: ' . scalar @members);
+    
+    $c->stash( {
+        template => 'forum/members.html',
+        member_type => $member_type,
+        pager => $rs->pager,
+        user_roles => \@user_roles,
+        members    => \%members,
+    } );
+}
+
 sub join_us : Private {
     my ($self, $c, $forum_id) = @_;
     
@@ -85,11 +130,13 @@ sub join_us : Private {
         my $rs = $c->model('DBIC::UserRole')->find( {
             user_id => $c->user->user_id,
             field   => $forum_id,
+        }, {
+            columns => ['role'],
         } );
         if ($rs) {
             if ($rs->role eq 'user' or $rs->role eq 'moderator' or $rs->role eq 'admin') {
                 return $c->res->redirect("/forum/$forum_id");
-            } elsif ($rs->role eq 'blocked' or $rs->role eq 'pending') {
+            } elsif ($rs->role eq 'blocked' or $rs->role eq 'pending' or $rs->role eq 'rejected') {
                 my $role = uc($rs->role);
                 $c->detach('/print_error', [ "ERROR_USER_$role" ]);
             }

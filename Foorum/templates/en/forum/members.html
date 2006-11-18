@@ -1,0 +1,43 @@
+[% title = 'Members Of ' _ forum.name %]
+
+<div class='one'>
+<table align='center'>
+	<tr class='title' align='center'>
+	<td>NickName</td>
+	<td>Role</td>
+	<td>Gender</td>
+	<td>Register On</td>
+	</tr>
+[% FOREACH user IN user_roles %]
+<tr align='center'>
+	<td class='forum2'><a href='/u/[% members.${user.user_id}.username %]'>[% members.${user.user_id}.nickname %]</a></td>
+	<td class='forum1'>[% user.role | ucfirst %]</td>
+	<td class='forum2'>[% SWITCH members.${user.user_id}.gender;CASE 'F';'Female';CASE 'M';'Male';CASE;'Secret';END; %]</td>
+	<td class='forum1'>[% members.${user.user_id}.register_on %]</td>
+</tr>
+[% END %]
+<tr class='forum2'>
+    <td colspan='2' align='right'>
+    View: <select name='member_type' id='member_type' onchange='javascript:ChangeView()'>
+    <option value='all'[% IF member_type == 'all' %] selected='selected'[% END %]>All</option>
+    <option value='pending'[% IF member_type == 'pending' %] selected='selected'[% END %]>Pending</option>
+    <option value='admin'[% IF member_type == 'admin' %] selected='selected'[% END %]>Admin</option>
+    <option value='user'[% IF member_type == 'user' %] selected='selected'[% END %]>Members</option>
+    <option value='blocked'[% IF member_type == 'blocked' %] selected='selected'[% END %]>Blocked</option>
+    <option value='rejected'[% IF member_type == 'rejected' %] selected='selected'[% END %]>Rejected</option>
+    </select>
+    </td>
+	<td colspan='2' align='right'>
+	[% INCLUDE 'sub/pager.html' url_prefix = '/forum/' _ forum.forum_id _ '/members' %]
+	</td>
+</tr>
+</table>
+</div>
+<script>
+
+function ChangeView() {
+    var member_type = $('member_type').value;
+    
+    window.location = '/forum/[% forum.forum_id %]/members/' + member_type;
+}
+</script>

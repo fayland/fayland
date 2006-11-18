@@ -13,6 +13,8 @@ sub auto : Private {
 		return 0;
 	}
 	
+	$c->stash->{no_online_view} = 1;
+	
 	return 1;
 }
 

@@ -45,6 +45,11 @@ sub fill_user_role {
         $roles->{is_pending} = 1;
     }
     
+    if ($roles->{$field}->{rejected}) {
+        $roles->{is_member} = 0;
+        $roles->{is_rejected} = 1;
+    }
+    
     $c->stash->{roles} = $roles;
 }
 
@@ -82,6 +87,15 @@ sub is_pending {
     &fill_user_role($self, $c, $field) unless ($c->stash->{roles});
 
     return $c->stash->{roles}->{is_pending};
+}
+
+sub is_rejected {
+    my ($self, $c, $field) = @_;
+
+    return 0 unless ($field);
+    &fill_user_role($self, $c, $field) unless ($c->stash->{roles});
+
+    return $c->stash->{roles}->{is_rejected};
 }
 
 sub is_blocked {
