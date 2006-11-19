@@ -7,6 +7,7 @@
 	<td>Role</td>
 	<td>Gender</td>
 	<td>Register On</td>
+    [% IF roles.is_moderator %]<td width='220'>Action</td>[% END %]
 	</tr>
 [% FOREACH user IN user_roles %]
 <tr align='center'>
@@ -14,20 +15,32 @@
 	<td class='forum1'>[% user.role | ucfirst %]</td>
 	<td class='forum2'>[% SWITCH members.${user.user_id}.gender;CASE 'F';'Female';CASE 'M';'Male';CASE;'Secret';END; %]</td>
 	<td class='forum1'>[% members.${user.user_id}.register_on %]</td>
+	[% IF roles.is_moderator %]
+	<td class='forum2'>
+	[% IF user.role == 'admin' OR user.role == 'moderator' %]
+	-
+	[% ELSE %]
+	    <select id='div_r_[% user.user_id %]'>
+	    [% FOREACH m_type IN ['user', 'rejected', 'blocked'] %]
+	    [% IF user.role != m_type %]<option value='[% m_type %]'>[% m_type | ucfirst %]</option>[% END %]
+	    [% END %]
+        </select>
+        <input type='button' value='Change Membership' onclick="javascript:ChangeMemberType('[% user.user_id %]', '[% user.role %]')" />
+    [% END %]
+    </td>
+	[% END %]
 </tr>
 [% END %]
 <tr class='forum2'>
     <td colspan='2' align='right'>
     View: <select name='member_type' id='member_type' onchange='javascript:ChangeView()'>
-    <option value='all'[% IF member_type == 'all' %] selected='selected'[% END %]>All</option>
-    <option value='pending'[% IF member_type == 'pending' %] selected='selected'[% END %]>Pending</option>
-    <option value='admin'[% IF member_type == 'admin' %] selected='selected'[% END %]>Admin</option>
     <option value='user'[% IF member_type == 'user' %] selected='selected'[% END %]>Members</option>
+    <option value='pending'[% IF member_type == 'pending' %] selected='selected'[% END %]>Pending</option>
     <option value='blocked'[% IF member_type == 'blocked' %] selected='selected'[% END %]>Blocked</option>
     <option value='rejected'[% IF member_type == 'rejected' %] selected='selected'[% END %]>Rejected</option>
     </select>
     </td>
-	<td colspan='2' align='right'>
+	<td colspan='[% IF roles.is_moderator %]3[% ELSE %]2[% END %]' align='right'>
 	[% INCLUDE 'sub/pager.html' url_prefix = '/forum/' _ forum.forum_id _ '/members' %]
 	</td>
 </tr>
@@ -37,7 +50,22 @@
 
 function ChangeView() {
     var member_type = $('member_type').value;
-    
+    if (member_type == 'user') { member_type = ''; }
     window.location = '/forum/[% forum.forum_id %]/members/' + member_type;
 }
+
+[% IF roles.is_moderator %]
+function ChangeMemberType(user_id, from) {
+    var m_type = $('div_r_'+user_id).value;
+    
+    var url  = '/forumadmin/[% forum.forum_id %]/change_membership';
+    var pars = 'user_id=' + user_id + '&from=' + from + '&to=' + m_type;
+    var myAjax = new Ajax.Request( url, {
+        method: 'get',
+        parameters: pars,
+        onSuccess: function(request) { alert(request.responseText); },
+        onFailure: function () { alert('ERROR') }
+    } );
+}
+[% END %]
 </script>

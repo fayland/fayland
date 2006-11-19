@@ -43,16 +43,32 @@ sub forum : LocalRegex('^(\d+)(/elite)?(/page=(\d+))?$') {
     $c->stash->{forum_roles} = $c->model('Policy')->get_forum_moderators( $c, $forum_id );
 
 
-    # get poll stuff for page 1 and normal mode
+    # for page 1 and normal mode
     if ($page_no == 1 and not $is_elite) {
-    my @polls = $c->model('DBIC')->resultset('Poll')->search( {
-        forum_id => $forum_id,
-        duration => { '>', time() },
-    }, {
-        order_by => 'time desc',
-        prefetch => ['author'],
-    } )->all;
+        # poll
+        my @polls = $c->model('DBIC')->resultset('Poll')->search( {
+            forum_id => $forum_id,
+            duration => { '>', time() },
+        }, {
+            order_by => 'time desc',
+            prefetch => ['author'],
+        } )->all;
         $c->stash->{polls} = \@polls;
+        # for private forum
+        if ($forum->policy eq 'private') {
+            my $member_count = $c->model('DBIC::UserRole')->count( {
+                field => $forum_id,
+                role  => ['admin', 'moderator', 'user'],
+            } );
+            my $pending_count = $c->model('DBIC::UserRole')->count( {
+                field => $forum_id,
+                role  => 'pending',
+            } );
+            $c->stash( {
+                member_count => $member_count,
+                pending_count => $pending_count,
+            } );
+        }
     }
 
     my @extra_cols = ('elite', 1) if ($is_elite);
@@ -83,20 +99,25 @@ sub members : LocalRegex('^(\d+)/members(/(\w+))?(/page=(\d+))?$') {
     my $forum = $c->forward('/get/forum', [ $forum_id ]);
     
     my $member_type = $c->req->snippets->[2] || 'all';
-    if ($member_type ne 'pending' and $member_type ne 'admin' and $member_type ne 'blocked' and $member_type ne 'user' and $member_type ne 'rejected') {
-        $member_type = 'all';
+    if ($member_type ne 'pending' and $member_type ne 'blocked' and $member_type ne 'rejected') {
+        $member_type = 'user';
     }
     
     my $page_no  = $c->req->snippets->[4];
     $page_no = 1 unless ($page_no and $page_no =~ /^\d+$/);
     
-    my @query_cols;
-    @query_cols = ('role', $member_type) if ($member_type ne 'all');
-    @query_cols = ('role', ['admin', 'moderator']) if ($member_type eq 'admin');
+    my (@query_cols, @attr_cols);
+    if ($member_type eq 'user') {
+        @query_cols = ('role', ['admin', 'moderator', 'user']);
+        @attr_cols  = ('order_by' => 'role ASC');
+    } else {
+        @query_cols = ('role', $member_type);
+    }
     my $rs = $c->model('DBIC::UserRole')->search( {
         @query_cols,
         field => $forum_id,
     }, {
+        @attr_cols,
         rows => 20,
         page => $page_no,
     } );

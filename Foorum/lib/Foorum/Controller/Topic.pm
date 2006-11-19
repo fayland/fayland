@@ -186,7 +186,7 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
     my $comment  = $c->forward('/get/comment', [ $comment_id, 'thread', $topic_id ] );
     
     # permission
-    if ($c->user->user_id =! $comment->author_id and not $c->model('Policy')->is_moderator($c, $forum_id)) {
+    if ($c->user->user_id != $comment->author_id and not $c->model('Policy')->is_moderator($c, $forum_id)) {
         $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
     }
     

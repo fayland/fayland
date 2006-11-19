@@ -14,10 +14,9 @@
 [% CATCH File %]
 [% END %]
 [% IF forum.policy == 'private' %]
-<tr><td class='forum2'><a href='[% url_base %]/members'>Members Settings</a></td></tr>
+<tr><td class='forum2'><a href='/forum/[% forum.forum_id %]/members'>Members Settings</a></td></tr>
 [% END %]
 <tr><td class='forum1'><a href='[% url_base %]/announcement'>Announcement Setting</a></td></tr>
-<tr><td class='forum2'><a href='[% url_base %]/block_user'>Block Users</a></td></tr>
 </table>
 </div>
 </td><td valign='top'>

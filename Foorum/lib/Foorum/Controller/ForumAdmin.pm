@@ -256,120 +256,36 @@ sub announcement : Chained('forum_for_admin') Args(0) {
     $c->res->redirect("/forum/$forum_id");
 }
 
-sub block_user : Chained('forum_for_admin') Args(0) {
+# it's an ajax request
+sub change_membership : Chained('forum_for_admin') Args(0) {
     my ($self, $c) = @_;
 
     my $forum = $c->stash->{forum};
     my $forum_id = $forum->forum_id;
     
-    $c->stash->{template} = 'forumadmin/block_user.html';
-    unless ($c->req->param('submit')) {
-        my @blocked_users = $c->model('DBIC::UserRole')->search( {
-            role  => 'blocked',
-            field => $forum_id,
-        }, {
-            prefetch => ['user'],
-        } )->all;
-        $c->stash->{blocked_users} = \@blocked_users;
-        return;
+    # get params;
+    my $from = $c->req->param('from');
+    my $to   = $c->req->param('to');
+    my $user_id = $c->req->param('user_id');
+    
+    unless (grep($from, ('user', 'rejected', 'blocked')) and grep($to, ('user', 'rejected', 'blocked')) and $user_id =~ /^\d+$/) {
+        return $c->res->body('Illegal request');
     }
-
-    # first of all, delete all records
-    $c->model('DBIC::UserRole')->search( {
-        role  => 'blocked',
+    
+    my $rs = $c->model('DBIC::UserRole')->find( {
         field => $forum_id,
-    } )->delete;
-    
-    # then insert
-    my $users = $c->req->param('users');
-    my (@failed_users, @blocked_users);
-    foreach my $username (split(/\s+/, $users)) {
-        my $user = $c->model('DBIC::User')->find( { username => $username } );
-        unless ($user) {
-            push @failed_users, [$username, 'NONEXIST'];
-            next;
-        }
-        # avoid set admin|moderator to blocked
-        my $count = $c->model('DBIC::UserRole')->count( {
-            user_id => $user->user_id,
-            field => $forum_id,
-            role  => ['admin', 'moderator', 'user'],
-        } );
-        if ($count) {
-            push @failed_users, [$username, 'ALREADYHAS'];
-            next;
-        }
-        $c->model('DBIC::UserRole')->create( {
-            user_id => $user->user_id,
-            role => 'blocked',
-            field   => $forum_id,
-        } );
-        push @blocked_users, { user => $user };
-    }
-    
-    $c->stash( {
-        ok => 1,
-        failed_users  => \@failed_users,
-        blocked_users => \@blocked_users,
+        user_id => $user_id,
+        role  => $from,
     } );
-}
-
-sub members : Chained('forum_for_admin') Args(0) {
-    my ($self, $c) = @_;
-
-    my $forum = $c->stash->{forum};
-    my $forum_id = $forum->forum_id;
+    return $c->res->body('no record available') unless ($rs);
     
-    $c->stash->{template} = 'forumadmin/members.html';
-    unless ($c->req->param('submit')) {
-        my @blocked_users = $c->model('DBIC::UserRole')->search( {
-            role  => 'user',
-            field => $forum_id,
-        }, {
-            prefetch => ['user'],
-        } )->all;
-        $c->stash->{blocked_users} = \@blocked_users;
-        return;
-    }
-
-    # first of all, delete all records
     $c->model('DBIC::UserRole')->search( {
-        role  => 'user',
         field => $forum_id,
-    } )->delete;
+        user_id => $user_id,
+        role  => $from,
+    } )->update( { role => $to } );
     
-    # then insert
-    my $users = $c->req->param('users');
-    my (@failed_users, @blocked_users);
-    foreach my $username (split(/\s+/, $users)) {
-        my $user = $c->model('DBIC::User')->find( { username => $username } );
-        unless ($user) {
-            push @failed_users, [$username, 'NONEXIST'];
-            next;
-        }
-        # avoid set admin|moderator to blocked
-        my $count = $c->model('DBIC::UserRole')->count( {
-            user_id => $user->user_id,
-            field => $forum_id,
-            role  => ['admin', 'moderator', 'blocked'],
-        } );
-        if ($count) {
-            push @failed_users, [$username, 'ALREADYHAS'];
-            next;
-        }
-        $c->model('DBIC::UserRole')->create( {
-            user_id => $user->user_id,
-            role => 'user',
-            field   => $forum_id,
-        } );
-        push @blocked_users, { user => $user };
-    }
-    
-    $c->stash( {
-        ok => 1,
-        failed_users  => \@failed_users,
-        blocked_users => \@blocked_users,
-    } );
+    $c->res->body('OK');   
 }
 
 =pod
