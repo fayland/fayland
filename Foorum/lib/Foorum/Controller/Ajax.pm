@@ -72,6 +72,34 @@ sub auto : Private {
     return 1;
 }
 
+=pod
+
+=item validate_username
+
+Ajax way to validate the username in Register progress.
+
+=cut
+
+sub validate_username : Local {
+    my ($self, $c) = @_;
+    
+    my $username = $c->req->param('username');
+    
+    if (length($username) < 6 or length($username) > 20) {
+        return $c->res->body('LENGTH');
+    }
+    my $ERROR = $c->model('Profile')->check_valid_username($c, $username);
+    return $c->res->body($ERROR) if ($ERROR);
+
+    # unique
+    my $cnt = $c->model('DBIC::User')->count( {
+        username => $username,
+    } );
+    return $c->res->body('DBIC_UNIQUE') if ($cnt);
+    
+    $c->res->body('OK');
+}
+
 # override Root.pm
 sub end : Private {
     my ($self, $c) = @_;

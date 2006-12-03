@@ -12,8 +12,8 @@ sub check_valid_username {
     
     for ($username) {
         return 'HAS_BLANK' if (/\s/);
-        return 'HAS_SPECAIL_CHAR' if (/[\a\f\n\e\0\r\t\`\~\!\@\#\$\%\^\&\*\(\)\+\=\\\{\}\;\'\:\"\,\.\/\<\>\?\[\]]/is);
-        if (grep(/^$username$/, @reserved_username)) { # $_$
+        return 'HAS_SPECAIL_CHAR' unless (/^[A-Za-z0-9\_\-]+/s);
+        if (grep { $username eq $_ } @reserved_username) { # $_$
             return 'HAS_RESERVED';
         }
     }

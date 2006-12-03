@@ -268,7 +268,8 @@ sub change_membership : Chained('forum_for_admin') Args(0) {
     my $to   = $c->req->param('to');
     my $user_id = $c->req->param('user_id');
     
-    unless (grep($from, ('user', 'rejected', 'blocked')) and grep($to, ('user', 'rejected', 'blocked')) and $user_id =~ /^\d+$/) {
+    unless (grep { $from eq $_ } ('user', 'rejected', 'blocked', 'pending')
+        and grep { $to   eq $_ } ('user', 'rejected', 'blocked') and $user_id =~ /^\d+$/) {
         return $c->res->body('Illegal request');
     }
     
@@ -278,6 +279,12 @@ sub change_membership : Chained('forum_for_admin') Args(0) {
         role  => $from,
     } );
     return $c->res->body('no record available') unless ($rs);
+    
+    if ($from eq 'user' and ($to eq 'rejected' or $to eq 'blocked')) {
+        $forum->update( { total_members => \"total_members - 1" } );
+    } elsif (($from eq 'rejected' or $from eq 'blocked' or $from eq 'pending') and $to eq 'user') {
+        $forum->update( { total_members => \"total_members + 1" } );
+    }
     
     $c->model('DBIC::UserRole')->search( {
         field => $forum_id,

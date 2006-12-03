@@ -65,7 +65,7 @@ sub default : Private {
     
     $c->model('DBIC')->resultset('User')->create({
         username  => $username,
-        nickname  => $username,
+        nickname  => $c->req->param('nickname') || $username,
         password  => $computed,
         email     => $email,
         register_on => \"NOW()",

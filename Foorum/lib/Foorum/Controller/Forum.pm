@@ -56,16 +56,11 @@ sub forum : LocalRegex('^(\d+)(/elite)?(/page=(\d+))?$') {
         $c->stash->{polls} = \@polls;
         # for private forum
         if ($forum->policy eq 'private') {
-            my $member_count = $c->model('DBIC::UserRole')->count( {
-                field => $forum_id,
-                role  => ['admin', 'moderator', 'user'],
-            } );
             my $pending_count = $c->model('DBIC::UserRole')->count( {
                 field => $forum_id,
                 role  => 'pending',
             } );
             $c->stash( {
-                member_count => $member_count,
                 pending_count => $pending_count,
             } );
         }

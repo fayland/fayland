@@ -1,9 +1,9 @@
 [% title = forum.name %]
 
-[% IF forum.policy == 'private' AND member_count %]
+[% IF forum.policy == 'private' %]
 <div class='one'>
 <table align='center'>
-<tr><td class='title' width='40'>Status</td><td class='forum1'>We have <a href='/forum/[% forum.forum_id %]/members'>[% member_count %] users</a> and <a href='/forum/[% forum.forum_id %]/members/pending'>[% pending_count %] pending users</a>.
+<tr><td class='title' width='40'>Status</td><td class='forum1'>We have <a href='/forum/[% forum.forum_id %]/members'>[% forum.total_members %] users</a> and <a href='/forum/[% forum.forum_id %]/members/pending'>[% pending_count %] pending users</a>.
 [% IF pending_count AND roles.is_moderator %]
 <div class='highlight' style='font-weight: bolder'>Tips: You need approval the <a href='/forum/[% forum.forum_id %]/members/pending'>pending requests</a></div>
 [% END %]

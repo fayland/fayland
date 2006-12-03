@@ -19,7 +19,10 @@ sub forum : Private {
         $c->detach('/print_error', [ 'ERROR_USER_BLOCKED' ]);
     }
     if ($forum->policy eq 'private') {
-        return $c->res->redirect('/login') unless ($c->user_exists);
+        unless ($c->user_exists) {
+            $c->res->redirect('/login');
+            $c->detach('/end'); # guess we'd better use Chained
+        }
         
         unless ($c->model('Policy')->is_user( $c, $forum_id )) {
             if ($c->model('Policy')->is_pending($c, $forum_id)) {

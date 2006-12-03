@@ -37,7 +37,7 @@ sub send_forget_password {
         header => [
             From    => $c->config->{mail}->{from_email},
             To      => $email,
-            Subject => 'Your Activation Code In ' . $c->config->{name},
+            Subject => 'Your Password For ' . $username . ' In ' . $c->config->{name},
         ],
         body => $email_body,
     );

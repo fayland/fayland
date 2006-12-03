@@ -53,6 +53,7 @@ sub create : Local {
     my $private = $c->req->param('private');
 
     # validate the admin and moderators first
+    my $total_members = 1;
     my $admin_user = $c->model('DBIC::User')->find( { username => $admin } );
     unless ($admin_user) {
         return $c->set_invalid_form( admin => 'ADMIN_NONEXISTENCE' );
@@ -67,6 +68,7 @@ sub create : Local {
             $c->stash->{non_existence_user} = $_;
             return $c->set_invalid_form( moderators => 'ADMIN_NONEXISTENCE' );
         }
+        $total_members++;
         push @moderator_users, $moderator_user;
     }
     
@@ -77,6 +79,7 @@ sub create : Local {
         description => $description,
         type => 'classical',
         policy => $policy,
+        total_members => $total_members,
     } );
     $c->model('DBIC::UserRole')->create( {
         user_id => $admin_user->user_id,
@@ -98,6 +101,17 @@ sub create : Local {
         is_ok => 1,
         forum => $forum,
     } );
+}
+
+sub remove : Local {
+    my ($self, $c) = @_;
+    
+    my $forum_id = $c->req->param('forum_id');
+    # get the forum information
+    # my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    
+    $c->model('Forum')->remove_forum($c, $forum_id);
+    $c->forward('/print_message', [ 'OK' ] );
 }
 
 =pod
