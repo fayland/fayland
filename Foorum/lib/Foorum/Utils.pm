@@ -5,7 +5,7 @@ use warnings;
 use base 'Exporter';
 use vars qw/@EXPORT_OK/;
 @EXPORT_OK = qw/
-    encodeHTML decodeHTML
+    encodeHTML decodeHTML unhtml
     is_color
     generate_random_word
     get_page_no_from_url
@@ -25,6 +25,24 @@ sub encodeHTML($) {
 
 sub decodeHTML($) {
 	return HTML::Entities::decode($_[0]);
+}
+
+=pod
+
+=item unhtml
+
+convert &<" to accordding stuff
+
+=cut
+
+sub unhtml {
+	my ($s) = @_;
+	return ('') if (! defined($s));
+	$s =~ s/\&/\&amp;/gs;
+	$s =~ s/>/\&gt;/gs;
+	$s =~ s/</\&lt;/gs;
+	$s =~ s/"/\&quot;/gs;
+	return $s;
 }
 
 =pod

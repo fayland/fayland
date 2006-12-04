@@ -4,12 +4,16 @@ use strict;
 use base 'Catalyst::View::TT';
 #use Template::Constants qw( :debug );
 use NEXT;
+use Email::Obfuscate qw(obfuscate_email_address);
 
 __PACKAGE__->config(
     #DEBUG        => DEBUG_PARSER | DEBUG_PROVIDER,
     INCLUDE_PATH => [
         Foorum->path_to( 'templates' ), 
     ],
+    FILTERS      => {
+        'email_obfuscate' => sub { obfuscate_email_address(shift) },
+    }
 );
 
 sub render {
