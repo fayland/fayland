@@ -27,6 +27,8 @@ requires 'Template::Plugin::Dumper';
 requires 'Template::Plugin::Date';
 requires 'Template::Plugin::HTML::BBCode';
 requires 'Template::Plugin::String::Compare';
+requires 'File::Remove';
+requires 'IP::QQWry';
 
 catalyst;
 
