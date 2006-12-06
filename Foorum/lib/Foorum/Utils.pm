@@ -42,6 +42,7 @@ sub unhtml {
 	$s =~ s/>/\&gt;/gs;
 	$s =~ s/</\&lt;/gs;
 	$s =~ s/"/\&quot;/gs;
+	$s =~ s/'/\&apos;/g;
 	return $s;
 }
 

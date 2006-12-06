@@ -3,6 +3,7 @@ package Foorum::Controller::Topic;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
+use Foorum::Utils qw/get_page_no_from_url/;
 use Data::Dumper;
 
 sub topic : Regex('^forum/(\d+)/(\d+)(/page=(\d+))?$') {
@@ -314,6 +315,29 @@ sub _check_policy {
         $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
     }
 
+}
+
+
+sub recent : Local {
+    my ($slef, $c) = @_;
+    
+    my $page = get_page_no_from_url($c->req->path);
+    my $rs = $c->model('DBIC::Topic')->search( {
+        'forum.policy' => 'public',
+    }, {
+        order_by => 'last_update_date desc',
+        prefetch => ['author', 'last_updator'],
+        join => [qw/forum/],
+        rows => 20,
+        page => $page,
+    } );
+    
+    $c->stash( {
+        template => 'topic/recent.html',
+        topics   => [ $rs->all ],
+        pager    => $rs->pager,
+        url_prefix => '/topic/recent',
+    } );
 }
 
 =pod
