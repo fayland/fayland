@@ -8,6 +8,12 @@ use URI::Escape;
 
 __PACKAGE__->config->{namespace} = '';
 
+sub begin : Private {
+    my ( $self, $c ) = @_;
+    
+    $c->stash->{start_t0} = [gettimeofday];
+}
+
 sub auto : Private {
 	my ( $self, $c ) = @_;
 	
@@ -29,12 +35,6 @@ sub auto : Private {
 	}
     
     return 1;
-}
-
-sub begin : Private {
-    my ( $self, $c ) = @_;
-    
-    $c->stash->{start_t0} = [gettimeofday];
 }
 
 sub default : Private {

@@ -8,7 +8,7 @@ use Catalyst qw/
 	StackTrace
 	ConfigLoader
 	Static::Simple
-	Cache::FileCache
+	Cache::Memcached
 	Authentication
 	Authentication::Store::DBIC
 	Authentication::Credential::Password
@@ -16,6 +16,7 @@ use Catalyst qw/
 	Session
 	Session::Store::DBIC
 	Session::State::Cookie
+	PageCache
 	FormValidator::Simple
 	Email
 	Scheduler

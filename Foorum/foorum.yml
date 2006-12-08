@@ -11,6 +11,17 @@ View::TT:
   CONTEXT: ''
   DELIMITER: ';'
 
+cache:
+  servers:
+    - '127.0.0.1:11211'
+
+page_cache:
+  expires: 300
+  set_http_headers: 1
+  debug: 1
+  auto_cache:
+    - '/forum'
+
 authentication:
   dbic:
     user_class: "DBIC::User"
