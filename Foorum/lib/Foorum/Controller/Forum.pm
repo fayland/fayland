@@ -3,6 +3,7 @@ package Foorum::Controller::Forum;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
+use Foorum::Utils qw/get_page_no_from_url/;
 use Data::Dumper;
 
 sub board : Path {
@@ -170,6 +171,37 @@ sub join_us : Private {
             template => 'forum/join_us.html',
         } );
     }
+}
+
+sub recent : Local {
+    my ($slef, $c, $recent_type) = @_;
+    
+    my @extra_cols;
+    my $url_prefix = '/forum/recent';
+    if ($recent_type eq 'elite') {
+        @extra_cols = ('elite', 1);
+        $url_prefix .= '/elite'
+    }
+    
+    my $page = get_page_no_from_url($c->req->path);
+    my $rs = $c->model('DBIC::Topic')->search( {
+        'forum.policy' => 'public',
+        @extra_cols,
+    }, {
+        order_by => 'last_update_date desc',
+        prefetch => ['author', 'last_updator', 'forum'],
+        join => [qw/forum/],
+        rows => 20,
+        page => $page,
+    } );
+
+    $c->stash( {
+        template => 'forum/recent.html',
+        topics   => [ $rs->all ],
+        pager    => $rs->pager,
+        recent_type => $recent_type,
+        url_prefix  => $url_prefix,
+    } );
 }
 
 =pod

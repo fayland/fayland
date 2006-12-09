@@ -21,6 +21,8 @@ page_cache:
   debug: 1
   auto_cache:
     - '/forum'
+    - '/forum/recent'
+    - '/forum/recent/elite'
 
 authentication:
   dbic:

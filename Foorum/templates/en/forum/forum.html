@@ -24,6 +24,7 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 [% END %]
 [% IF forum.policy == 'public' %]
  &nbsp; <a href='/forum/[% forum.forum_id %]/rss'><img src='[% c.config.dir.images %]/site/feed-icon-16x16.gif' width='16' height='16' align='absmiddle' /></a> 
+<link rel="alternate" type="application/rss+xml" title="[% title %]" href="/forum/[% forum.forum_id %]/rss" />
 [% END %]
 <td></tr>
 </table>
