@@ -16,16 +16,28 @@ sub begin : Private {
 sub help : Global {
     my ($self, $c, $help_id) = @_;
     
-    if ($help_id) {
-        $help_id =~ s/\W+//isg;
-        my $help_template = $c->path_to('templates', $c->stash->{lang}, 'help', "$help_id.html");
+    _static_info($c, 'help', $help_id);
+}
+
+sub info : Global {
+    my ($self, $c, $info_id) = @_;
+    
+    _static_info($c, 'info', $info_id);
+}
+
+sub _static_info {
+    my ($c, $type, $type_id) = @_;
+    
+    if ($type_id) {
+        $type_id =~ s/\W+//isg;
+        my $help_template = $c->path_to('templates', $c->stash->{lang}, $type, "$type_id.html");
         if (-e $help_template) {
-            $c->stash->{template} = "help/$help_id.html";
+            $c->stash->{template} = "$type/$type_id.html";
         } else {
-            $c->stash->{template} = "help/index.html";
+            $c->stash->{template} = "$type/index.html";
         }
     } else {
-        $c->stash->{template} = "help/index.html";
+        $c->stash->{template} = "$type/index.html";
     }
 }
 

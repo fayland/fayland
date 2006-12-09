@@ -4,7 +4,7 @@
 	<tr class='title'><td colspan='2'>User profile</td></tr>
 	<tr class='misc1'><td width='20%' align='right'>Username:</td><td>[% user.username %]</td></tr>
 	<tr class='misc2'><td align='right'>Nickname:</td><td>[% user.nickname %]</td></tr>
-	<tr class='misc2'><td align='right'>Email:</td><td>[% user.email | email_obfuscate %]</td></tr>
+	<tr class='misc2'><td align='right'>Email:</td><td>[% user.email | email_obfuscate %] <a href='/help/email'><img src='[% c.config.dir.images %]/site/help.gif' width='16' height='16' align='absmiddle' /></a></td></tr>
 	<tr class='misc1'><td align='right'>Gender:</td><td>
 	    [% SWITCH user.gender; CASE 'M';'Male';CASE 'F';'Female';CASE;'Secret';END; %]
 	    [% IF user.gender %] &nbsp;<img src='[% c.config.dir.images %]/site/gender_[% user.gender %].gif' width='20' height='14' align='absmiddle' />[% END %]

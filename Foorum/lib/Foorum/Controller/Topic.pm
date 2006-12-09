@@ -327,7 +327,7 @@ sub recent : Local {
         'forum.policy' => 'public',
     }, {
         order_by => 'last_update_date desc',
-        prefetch => ['author', 'last_updator'],
+        prefetch => ['author', 'last_updator', 'forum'],
         join => [qw/forum/],
         rows => 20,
         page => $page,
