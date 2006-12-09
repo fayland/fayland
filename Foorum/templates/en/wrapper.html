@@ -44,6 +44,9 @@
     [% ELSE %]
     <a href='/register'>Register</a>  | <a href='/login'>Log in</a>
     [% END %]
+    [% UNLESS forum %]
+     | <a href='/forum/recent'>Recent Topics</a>
+    [% END %]
     [% IF forum.forum_id AND c.user_exists AND roles.is_admin %]
     | <a href='/forumadmin/[% forum.forum_id %]'>Forum Admin</a>
     [% END %]
