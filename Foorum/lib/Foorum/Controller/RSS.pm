@@ -13,7 +13,13 @@ sub forum : Regex('^forum/(\d+)/rss$') {
     $c->cache_page( '600' );
     
     my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    my $forum = $c->model('DBIC::Forum')->find( {
+        forum_id => $forum_id,
+    }, {
+        columns => ['policy', 'name', 'description'],
+    } );
+    return unless ($forum);
+    return if ($forum->policy eq 'private');
     
     my @topics = $c->model('DBIC')->resultset('Topic')->search( {
         forum_id => $forum_id,
@@ -60,6 +66,19 @@ sub forum : Regex('^forum/(\d+)/rss$') {
     $c->res->body($rss->as_string);
 }
 
+sub end : Private {
+    my ($self, $c) = @_;
+    
+    return if ($c->res->body);
+    $c->res->body(<<'RSS');
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+<title>ERROR</title>
+</channel>
+</rss>
+RSS
+}
 
 =pod
 

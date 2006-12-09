@@ -20,8 +20,7 @@ sub default : Private {
     my ($self, $c) = @_;
     
     my @forums = $c->model('DBIC')->resultset('Forum')->search( { }, {
-        order_by => 'me.forum_id',
-        prefetch => ['last_post'],
+        order_by => 'forum_id',
     } )->all;
     
     $c->stash->{forums} = \@forums;

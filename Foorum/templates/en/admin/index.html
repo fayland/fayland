@@ -3,7 +3,11 @@
 <div class='one'>
 <table align='center'>
 <tr class='forum1'><td>
-  Explaination for Forum Administrator's Actions.
+[% IF c.req.param('m') %]
+<h2><span class='highlight'>[% c.req.param('m') %]</span></h2>
+[% ELSE %]
+Explaination for Forum Administrator's Actions.
+[% END %]
 </td></tr>
 </table>
 </div>

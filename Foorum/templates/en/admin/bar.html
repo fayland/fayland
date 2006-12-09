@@ -1,16 +1,19 @@
 [% url_base = '/admin' %]
 
 <table align='center' class='tablewidth'>
-<tr><td valign='top' align='left'>
+<tr><td valign='top' align='left' width='180'>
 <div class='one'>
 <table>
 <tr><td class='title'>Menu</td></tr>
-<tr><td class='misc2'>Site Map</td></tr>
+<tr><td class='misc2'><a href='[% url_base %]'>Site Map</a></td></tr>
 <tr><td class='title'>Forum</td></tr>
-<tr><td class='misc2'><a href='[% url_base %]/forum'>Forum List</a></td></tr>
+<tr><td class='misc2'><a href='[% url_base %]/forum'>Forum Lists</a></td></tr>
 <tr><td class='misc1'><a href='[% url_base %]/forum/create'>Create a Forum</a></td></tr>
+<tr><td class='title'>User</td></tr>
+<tr><td class='misc2'><a href='[% url_base %]/user'>User Lists</a></td></tr>
+<tr><td class='misc1'><a href='[% url_base %]/user/edit'>Edit User</a></td></tr>
 </table>
 </div>
-</td><td valign='top'>
+</td><td valign='top' width='*'>
 [% content %]
 </td></tr></table>

@@ -7,6 +7,7 @@
 	<tr class='misc2'><td align='right'>Email:</td><td>[% user.email | email_obfuscate %]</td></tr>
 	<tr class='misc1'><td align='right'>Gender:</td><td>
 	    [% SWITCH user.gender; CASE 'M';'Male';CASE 'F';'Female';CASE;'Secret';END; %]
+	    [% IF user.gender %] &nbsp;<img src='[% c.config.dir.images %]/site/gender_[% user.gender %].gif' width='20' height='14' align='absmiddle' />[% END %]
 	</td></tr>
 	[% IF user.birthday %]
 	<tr class='misc2'><td align='right'>Birthday:</td><td>[% user.birthday %]</td></tr>

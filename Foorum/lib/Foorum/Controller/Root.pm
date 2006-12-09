@@ -54,13 +54,15 @@ sub index : Private {
 sub end : Private {
     my ( $self, $c ) = @_;
     
+    return if ($c->res->body);
+    
     # for login using!
     if ($c->res->location and $c->res->location =~ /^\/login/) {
         my $location = '/login?referer=/' . $c->req->path;
         $location .= '?' . uri_escape($c->req->uri->query) if ($c->req->uri->query);
         $c->res->location($location);
     }
-	return if ($c->res->body || $c->res->redirect);
+	return if ($c->res->redirect);
 
     # template international
     $c->stash->{additional_template_paths} = [ $c->path_to('templates', $c->stash->{lang}) ];
@@ -79,12 +81,6 @@ sub end : Private {
     }
     $c->forward( $c->view('TT') );
 }
-
-
-
-
-
-
 
 =pod
 

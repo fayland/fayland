@@ -22,7 +22,9 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 [% FOREACH moderator IN forum_roles.${forum.forum_id}.moderator %]
 [% IF loop.first %], [% END %]<a href='/u/[% moderator.username %]'>[% moderator.nickname %]</a>[% UNLESS loop.last %], [% END %]
 [% END %]
- &nbsp; <a href='/forum/[% forum.forum_id %]/rss'><img src='[% c.config.dir.images %]/feed-icon-16x16.gif' width='16' height='16' align='absmiddle' /></a> 
+[% IF forum.policy == 'public' %]
+ &nbsp; <a href='/forum/[% forum.forum_id %]/rss'><img src='[% c.config.dir.images %]/site/feed-icon-16x16.gif' width='16' height='16' align='absmiddle' /></a> 
+[% END %]
 <td></tr>
 </table>
 </div>

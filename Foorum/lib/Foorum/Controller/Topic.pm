@@ -75,6 +75,7 @@ sub create : Regex('^forum/(\d+)/topic/new$') {
         last_updator_id  => $c->user->user_id,
         last_update_date => \"NOW()",
     } );
+    $c->clear_cached_page( "/forum/$forum_id/rss" );
     
     my $comment = $c->model('DBIC')->resultset('Comment')->create( {
         object_type => 'thread',
