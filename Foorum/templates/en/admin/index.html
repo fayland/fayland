@@ -3,8 +3,8 @@
 <div class='one'>
 <table align='center'>
 <tr class='forum1'><td>
-[% IF c.req.param('m') %]
-<h2><span class='highlight'>[% c.req.param('m') %]</span></h2>
+[% IF c.req.param('m') || message %]
+<pre><span class='highlight'>[% c.req.param('m') || message %]</span></pre>
 [% ELSE %]
 Explaination for Forum Administrator's Actions.
 [% END %]
