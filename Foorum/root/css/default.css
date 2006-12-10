@@ -42,9 +42,10 @@ A:link { color: #333333 }
 }
 .yellowboard {
     margin:5% 15% 5% 15%;
-    padding:20px;
+    padding:0px 20px 10px 20px;
     line-height:140%;
-    width:70%;
+    font-size: 120%;
+    width:auto;
     height:auto;
     background:#FEF4D1;
     border:1px solid #000000;

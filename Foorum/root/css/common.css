@@ -17,6 +17,6 @@ TD, DIV, form, OPTION, P, TH { font-family: ËÎÌו; font-size: 9pt }
 INPUT, textarea, select { border-width: 1px; padding: 1px; font-size: 9pt; border-color: #cccccc; }
 
 #footer {
-    text-align: center;
-    clear: both;
+    clear:both;
+    text-align:center;
 }

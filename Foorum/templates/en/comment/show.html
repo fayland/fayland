@@ -17,6 +17,9 @@
 	  [% IF comment.author.status == 'banned' %]
 	    The author is banned.
 	  [% ELSE %]
+	    [% IF comment.upload %]
+	    [% INCLUDE upload/upload.html upload = comment.upload %]
+	    [% END %]
 	    [% comment.text | html | bbcode_unlimited %]
 	  [% END %]
 	  </span>

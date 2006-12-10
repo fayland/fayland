@@ -56,7 +56,7 @@ sub create : Regex('^forum/(\d+)/topic/new$') {
         action   => 'create',
     } );
     
-    return unless ($c->req->param('process'));
+    return unless ($c->req->method eq 'POST');
     
     # execute validation.
     $c->form(
@@ -65,6 +65,15 @@ sub create : Regex('^forum/(\d+)/topic/new$') {
     );
 
     return if ($c->form->has_error);
+
+    my $upload = $c->req->upload('upload');
+    my $upload_id = 0;
+    if ($upload) {
+        $upload_id = $c->model('Upload')->add_file($c, $upload, { forum_id => $forum_id } );
+        unless ($upload_id) {
+            return $c->set_invalid_form( upload => $c->stash->{upload_error} );
+        }
+    }
     
     # create record 
     my $topic = $c->model('DBIC')->resultset('Topic')->create( {
@@ -92,6 +101,7 @@ sub create : Regex('^forum/(\d+)/topic/new$') {
         post_ip     => $c->req->address,
         reply_to    => 0,
         forum_id    => $forum_id,
+        upload_id   => $upload_id,
     } );
     
     # update user stat
@@ -105,7 +115,7 @@ sub create : Regex('^forum/(\d+)/topic/new$') {
         total_topics => $forum->total_topics + 1,
         last_post_id => $topic->topic_id,
     } );
-    
+
     $c->res->redirect("/forum/$forum_id/" . $topic->topic_id);
 }
 
@@ -127,7 +137,7 @@ sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
     
     $c->stash->{template} = 'comment/reply.html';
     
-    unless ($c->req->param('process')) {
+    unless ($c->req->method eq 'POST') {
         my $comment  = $c->forward('/get/comment', [ $comment_id, 'thread', $topic_id ] ) if ($comment_id);
         return;
     }
@@ -139,6 +149,15 @@ sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
     );
 
     return if ($c->form->has_error);
+    
+    my $upload = $c->req->upload('upload');
+    my $upload_id = 0;
+    if ($upload) {
+        $upload_id = $c->model('Upload')->add_file($c, $upload, { forum_id => $forum_id } );
+        unless ($upload_id) {
+            return $c->set_invalid_form( upload => $c->stash->{upload_error} );
+        }
+    }
     
     $comment_id = $topic_id unless ($comment_id);
     my $comment = $c->model('DBIC')->resultset('Comment')->create( {
@@ -152,6 +171,7 @@ sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
         post_ip     => $c->req->address,
         reply_to    => $comment_id,
         forum_id    => $forum_id,
+        upload_id   => $upload_id,
     } );
 
     # update forum and topic
@@ -198,7 +218,7 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
     
     $c->stash->{template} = 'comment/edit.html';
     
-    return unless ($c->req->param('process'));
+    return unless ($c->req->method eq 'POST');
     
     # execute validation.
     $c->form(

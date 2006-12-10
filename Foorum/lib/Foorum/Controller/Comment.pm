@@ -18,11 +18,21 @@ sub post_comment : Local {
     # execute validation.
     _validate($c);
     
+    my $upload = $c->req->upload('upload');
+    my $upload_id = 0;
+    if ($upload) {
+        $upload_id = $c->model('Upload')->add_file($c, $upload, { forum_id => $forum_id } );
+        unless ($upload_id) {
+            $c->detach('/print_error', [ $c->stash->{upload_error} ] );
+        }
+    }
+    
     # create record
     $c->model('Comment')->create_a_comment($c, {
         object_type => $object_type,
         object_id   => $object_id,
         forum_id    => $forum_id,
+        upload_id   => $upload_id,
     } );
     
     $c->res->redirect($path);
@@ -37,7 +47,7 @@ sub reply : LocalRegex('^(\d+)/reply$') {
     my $comment_id = $c->req->snippets->[0];
     my $comment  = $c->forward('/get/comment', [ $comment_id ] );
     
-    return unless ($c->req->param('process'));
+    return unless ($c->req->method eq 'POST');
     
     # execute validation.
     $c->form(
@@ -47,12 +57,22 @@ sub reply : LocalRegex('^(\d+)/reply$') {
 
     return if ($c->form->has_error);
     
+    my $upload = $c->req->upload('upload');
+    my $upload_id = 0;
+    if ($upload) {
+        $upload_id = $c->model('Upload')->add_file($c, $upload, { forum_id => $comment->forum_id } );
+        unless ($upload_id) {
+            return $c->set_invalid_form( upload => $c->stash->{upload_error} );
+        }
+    }
+    
     my ($object_id, $object_type, $forum_id) = 
        ($comment->object_id, $comment->object_type, $comment->forum_id);
     my $info = {
         object_type => $object_type,
         object_id   => $object_id,
         forum_id    => $forum_id,
+        upload_id   => $upload_id,
     };
     
     # create record
@@ -80,7 +100,7 @@ sub edit : LocalRegex('^(\d+)/edit$') {
     }
     
     $c->stash->{template} = 'comment/edit.html';
-    return unless ($c->req->param('process'));
+    return unless ($c->req->method eq 'POST');
     
     # execute validation.
     $c->form(

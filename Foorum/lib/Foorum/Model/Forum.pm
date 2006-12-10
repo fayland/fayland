@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use base 'Catalyst::Model';
 use Data::Dumper;
-use File::Remove qw(remove);
 
 sub remove_forum {
     my ($self, $c, $forum_id) = @_;
@@ -75,8 +74,7 @@ sub remove_forum {
     }
     
     # for upload
-    my $dir = $c->path_to('root', 'upload', $forum_id);
-    remove \1, qw( $dir );
+    $c->model('Upload')->remove_for_forum($c, $forum_id);
 }
 
 =pod

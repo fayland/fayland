@@ -22,7 +22,7 @@ sub get_comments_by_object {
         order_by => 'post_on',
         rows => $c->config->{per_page}->{topic},
         page => $page,
-        prefetch => ['author'],
+        prefetch => ['author', 'upload'],
     } );
     
     my @comments = $it->all;
@@ -86,6 +86,7 @@ sub create_a_comment {
         post_ip     => $c->req->address,
         reply_to    => $reply_to,
         forum_id    => $forum_id,
+        upload_id   => $info->{upload_id} || 0,
     } );
     
 }

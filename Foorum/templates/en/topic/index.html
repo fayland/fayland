@@ -38,6 +38,9 @@
 	  [% IF comment.author.status == 'banned' %]
 	    The author is banned.
 	  [% ELSE %]
+	    [% IF comment.upload %]
+	    [% INCLUDE upload/upload.html upload = comment.upload %]
+	    [% END %]
 	    [% comment.text | html | bbcode_unlimited %]
 	  [% END %]
 	  </span>
@@ -82,13 +85,16 @@
 [% IF c.user_exists AND NOT topic.closed %]
 <br />
 <div class='one'>
-<form method='post' action='[% url_prefix %]/reply'>
+<form method='post' action='[% url_prefix %]/reply' enctype="multipart/form-data">
 <input type='hidden' name='process' value='1' />
 <table align='center'>
     <tr class='title'><td colspan='2'>Reply</td></tr>
     <tr class='misc1'><td>Title</td><td><input type='text' name='title' size='64' maxlength='80' /></td></tr>
     <tr class='misc2'><td>Text</td><td><textarea name='text' style='width: 100%' rows="15"></textarea></td></tr>
-    <tr><td colspan='2'><input type='submit' /></td></tr>
+    <tr class='misc1'><td align='right'>Upload Attachment:</td><td>
+    [% INCLUDE upload/input.html %]
+    </td></tr>
+    <tr class='misc2'><td colspan='2'><input type='submit' /></td></tr>
 </table>
 </form>
 </div>

@@ -19,10 +19,6 @@ page_cache:
   expires: 300
   set_http_headers: 1
   debug: 1
-  auto_cache:
-    - '/forum'
-    - '/forum/recent'
-    - '/forum/recent/elite'
 
 authentication:
   dbic:
@@ -42,6 +38,8 @@ static:
   dirs:
    - js
    - css
+   - upload
+   - images
   ignore_extensions:
    - cgi
    - pl
@@ -50,6 +48,21 @@ static:
 validator:
   plugins:
     - 'DBIC::Unique'
+
+upload:
+  max_size: 300
+  valid_types:
+    - jpg
+    - jpeg
+    - gif
+    - doc
+    - rar
+    - txt
+    - png
+    - zip
+    - swf
+    - htm
+    - html
 
 maintain: 0
 register: 1
