@@ -20,6 +20,7 @@ use Catalyst qw/
 	FormValidator::Simple
 	Email
 	Scheduler
+	Captcha
 /;
 
 our $VERSION = '0.01';

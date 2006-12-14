@@ -51,6 +51,21 @@ validator:
   plugins:
     - 'DBIC::Unique'
 
+captcha:
+  session_name: captcha_string
+  new:
+    width: 80
+    height: 30
+    lines: 1
+    gd_font: giant
+  create:
+    - normal
+    - rect
+  particle:
+    - 100
+  out:
+    force: jpeg
+
 upload:
   max_size: 300
   valid_types:

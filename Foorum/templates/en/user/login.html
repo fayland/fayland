@@ -12,14 +12,19 @@
 	    ALL is required.
 	    [% CASE 'ERROR_AUTH_FAILED' %]
 	    incorrect password or username.
+	    [% CASE 'ERROR_CAPTCHA' %]
+	    captcha is wrong, please try again.
 	    [% CASE %]
 	    [% error %]
 	[% END %]
 	</span></td></tr>
 	[% END %]
-	<tr class='misc1'><td width='20%' align='right'><label for="username">Username:</label></td><td><input type='text' name='username' value='[% c.req.param('username') %]' length='12' /></td></tr>
-	<tr class='misc2'><td align='right'><label for="password">Password:</label></td><td><input type='password' name='password' length='12' /> <a href='/profile/forget_password'>Forget password?</a></td></tr>
-	<tr class='misc1'><td> </td><td><input type='checkbox' name='remember_me' value='1' /> Remember me?</td></tr>
+	<tr class='misc1'><td width='20%' align='right'><label for="username">Username:</label></td><td><input type='text' name='username' value='[% c.req.param('username') %]' size='12' /></td></tr>
+	<tr class='misc1'><td align='right'><label for="password">Password:</label></td><td><input type='password' name='password' size='12' /> <a href='/profile/forget_password'>Forget password?</a></td></tr>
+	[% IF failure_login_times > 2 %]
+    <tr class='misc2'><td align='right'>Captcha:</td><td><input type='text' name='captcha' size='12' /><img src='/captcha' /></td></tr>
+    [% END %]
+	<tr class='misc2'><td> </td><td><input type='checkbox' name='remember_me' value='1' /> Remember me?</td></tr>
 	<tr class='misc2'><td> </td><td><input type='submit' /></td></tr>
 	</form>
 	</tbody>

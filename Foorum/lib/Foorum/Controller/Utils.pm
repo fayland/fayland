@@ -6,6 +6,11 @@ use base 'Catalyst::Controller';
 
 __PACKAGE__->config->{namespace} = '';
 
+sub captcha : Global {
+    my ($self, $c) = @_;
+    $c->create_captcha();
+}
+
 sub print_message : Private {
     my ($self, $c, $msg) = @_;
     

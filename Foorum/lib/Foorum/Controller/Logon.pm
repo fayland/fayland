@@ -4,20 +4,28 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 
-sub begin : Private {
-    my ($self, $c) = @_;
-
-}
-
 sub login : Global {
     my ( $self, $c ) = @_;
     
     $c->stash->{template} = 'user/login.html';
     return unless ($c->req->param('process'));
 
-    if ( my $username = $c->req->param("username") and my $password = $c->req->param("password") ) {
-        if ( $c->login( $username, $password ) ) {
-            
+    my $username = $c->req->param("username");
+    $username =~ s/\W+//isg;
+    # check if we need captcha
+    # for login password wrong more than 3 times, we create a captcha.
+    my $mem_key = "captcha|login|username=$username";
+    my $failure_login_times = $c->cache->get($mem_key);
+    $c->log->debug("failure_login_times is $failure_login_times");
+
+    if ($username and my $password = $c->req->param("password") ) {
+        
+        my $can_login = 0;
+        my $captcha_ok = ($failure_login_times > 2 and $c->validate_captcha($c->req->param('captcha')));
+        $can_login = ($failure_login_times < 3 or $captcha_ok);
+        
+        if ( $can_login and $c->login( $username, $password ) ) {
+
             # check if he is actived
             if ($c->user->active_code) {
                 my $username = $c->user->username;
@@ -45,11 +53,20 @@ sub login : Global {
                 $c->res->redirect('/');
             }
         } else {
-            $c->stash->{error} = 'ERROR_AUTH_FAILED';
+            $failure_login_times = 0 unless ($failure_login_times);
+            $failure_login_times++;
+            $c->cache->set($mem_key, $failure_login_times, 600); # 10 minite
+            $c->stash->{failure_login_times} = $failure_login_times;
+            
+            if ($can_login) {
+                $c->stash->{error} = 'ERROR_AUTH_FAILED';
+            } else {
+                $c->stash->{error} = 'ERROR_CAPTCHA';
+            }
         }
-     } else {
+    } else {
         $c->stash->{error} = 'ERROR_ALL_REQUIRED';
-     }
+    }
 }
 
 sub logout : Global {
