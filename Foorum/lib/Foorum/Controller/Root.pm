@@ -53,21 +53,28 @@ sub index : Private {
 
 sub end : Private {
     my ( $self, $c ) = @_;
-    
-    return if ($c->res->body);
-    
-    # for login using!
-    if ($c->res->location and $c->res->location =~ /^\/login/) {
-        my $location = '/login?referer=/' . $c->req->path;
-        $location .= '?' . uri_escape($c->req->uri->query) if ($c->req->uri->query);
-        $c->res->location($location);
+
+    if ($c->res->body) {
+        my $loadtime = tv_interval( $c->stash->{start_t0}, [gettimeofday] );
+        $c->model('Log')->log_path($c, $loadtime);
+        return 1;
     }
-	return if ($c->res->redirect);
+
+    if ($c->res->location) {
+        # for login using!
+        if ($c->res->location =~ /^\/login/) {
+            my $location = '/login?referer=/' . $c->req->path;
+            $location .= '?' . uri_escape($c->req->uri->query) if ($c->req->uri->query);
+            $c->res->location($location);
+        }
+        my $loadtime = tv_interval( $c->stash->{start_t0}, [gettimeofday] );
+        $c->model('Log')->log_path($c, $loadtime);
+        return 1;
+    }
 
     # template international
     $c->stash->{additional_template_paths} = [ $c->path_to('templates', $c->stash->{lang}) ];
 
-    # Forward to View unless response body is already defined
     if ($c->stash->{template} =~ /^simple\//) {
         $c->stash->{simple_wrapper} = 1;
     } else {
@@ -76,10 +83,12 @@ sub end : Private {
             my $results = $c->model('Online')->whos_view_this_page($c);
             $c->stash->{whos_view_this_page} = $results;
         }
-        
         $c->stash->{elapsed_time} = tv_interval( $c->stash->{start_t0}, [gettimeofday] );
     }
     $c->forward( $c->view('TT') );
+    my $loadtime = tv_interval( $c->stash->{start_t0}, [gettimeofday] );
+    $c->model('Log')->log_path($c, $loadtime);
+    return 1;
 }
 
 =pod

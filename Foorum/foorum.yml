@@ -81,6 +81,10 @@ upload:
     - htm
     - html
 
+logger:
+  path: 1
+  path_load_time_more_than: 0
+
 maintain: 0
 register: 1
 register_closed_reason: "For some reasons, Register is closed."

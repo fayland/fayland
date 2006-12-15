@@ -22,6 +22,7 @@ __PACKAGE__->load_classes(qw/
     PollResult
     Star
     Upload
+    LogPath
 /);
 
 =pod
