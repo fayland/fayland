@@ -119,20 +119,30 @@ sub activation : Local {
 
 sub import_contacts : Local {
     my ($self, $c) = @_;
+
+    return $c->res->redirect('/login') unless ($c->user_exists);
     
-    my $email = $c->user->email if ($c->user_exists);
-    
-    unless ($c->config->{mail}->{import}) {
-        $c->detach('/print_error', [ 'ERROR_EMAIL_OFF' ] );
-    }
-    
+    my $email = $c->req->param('email') || $c->user->email;
+
     $c->stash( {
         template => 'register/import_contacts.html',
         email    => $email,
     } );
     return unless ($c->req->method eq 'POST');
     
+    eval("use WWW::Contact;");
+    if ($@) {
+        $c->detach('/print_error', [ 'ERROR_EMAIL_OFF' ] );
+    }
+    my $wc = WWW::Contact->new();
+    my @contacts = $wc->get_contacts($email, $c->req->param('password'));
+   
+    my $errStr = $wc->errstr;
+    if ($errStr) {
+        $c->detach('/print_error', [ $errStr ] );
+    }
     
+    $c->res->body(Dumper(\@contacts));
 }
 =pod
 

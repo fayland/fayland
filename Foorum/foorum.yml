@@ -109,7 +109,6 @@ dir:
 mail:
   on: 0
   from_email: 'fayland@gmail.com'
-  import: 1
 
 # For plugin Email using
 email:
