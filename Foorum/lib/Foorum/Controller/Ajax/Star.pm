@@ -38,6 +38,7 @@ sub default : Private {
             user_id => $c->user->user_id,
             object_type => $object_type,
             object_id   => $object_id,
+            time => time(),
         } );
         $c->res->body('1');
     }

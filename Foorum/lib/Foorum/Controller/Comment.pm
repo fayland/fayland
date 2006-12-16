@@ -12,7 +12,7 @@ sub post_comment : Local {
     
     # get object_type and object_id from c.req.referer
     my $path = $c->req->referer;
-    my ($object_id, $object_type, $forum_id) = $c->model('Comment')->get_object_from_url($c, $path);
+    my ($object_id, $object_type, $forum_id) = $c->model('Object')->get_object_from_url($c, $path);
     return $c->res->redirect($path) unless ($object_id and $object_type);
     
     # execute validation.
@@ -78,7 +78,7 @@ sub reply : LocalRegex('^(\d+)/reply$') {
     # create record
     $c->model('Comment')->create_a_comment($c, $info );
     
-    my $path = $c->model('Comment')->get_url_from_object($c, $info);
+    my $path = $c->model('Object')->get_url_from_object($c, $info);
     
     $c->forward('/print_message', [ {
         msg => 'Post Reply OK',
@@ -125,7 +125,7 @@ sub edit : LocalRegex('^(\d+)/edit$') {
         object_id   => $object_id,
         forum_id    => $forum_id,
     };
-    my $path = $c->model('Comment')->get_url_from_object($c, $info);
+    my $path = $c->model('Object')->get_url_from_object($c, $info);
     
     $c->forward('/print_message', [ {
         msg => 'Edit Reply OK',
@@ -156,7 +156,7 @@ sub delete : LocalRegex('^(\d+)/delete$') {
         object_id   => $object_id,
         forum_id    => $forum_id,
     };
-    my $path = $c->model('Comment')->get_url_from_object($c, $info);
+    my $path = $c->model('Object')->get_url_from_object($c, $info);
     
     $c->forward('/print_message', [ {
         msg => 'Delete Reply OK',
