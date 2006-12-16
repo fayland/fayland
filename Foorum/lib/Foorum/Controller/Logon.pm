@@ -8,7 +8,7 @@ sub login : Global {
     my ( $self, $c ) = @_;
     
     $c->stash->{template} = 'user/login.html';
-    return unless ($c->req->param('process'));
+    return unless ($c->req->method eq 'POST');
 
     my $username = $c->req->param("username");
     $username =~ s/\W+//isg;
