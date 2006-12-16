@@ -8,7 +8,7 @@ use Data::Dumper;
 use vars qw/$last_15_min/;
 # get the last 15 minites' data
 # 15 * 60 = 900
-$last_15_min = time() - 900;
+$last_15_min = time() + Foorum->config->{session}->{expires} - 900;
 
 sub get_data {
     my ($self, $c, $forum_id, $attr) = @_;

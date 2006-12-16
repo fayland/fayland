@@ -35,7 +35,7 @@ sub login : Global {
         
             # remember me
             if ($c->req->param('remember_me')) {
-                $c->session_time_to_live( 31536000 ); # 1 Year = 24 * 60 * 60 * 365
+                $c->session_time_to_live( 604800 ); # 7 days = 24 * 60 * 60 * 7
             }
 
             # login_times++

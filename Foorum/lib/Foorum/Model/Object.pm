@@ -54,12 +54,21 @@ sub get_object_by_type_id {
     switch ($object_type) {
         case 'topic' {
             $object = $c->model('DBIC::Topic')->find( {
-                topic_id => $object_id
+                topic_id => $object_id,
             }, {
-                prefetch => ['author']
+                prefetch => ['author'],
             } );
             return unless ($object);
             $object->{url} = '/forum/' . $object->forum_id . "/$object_id";
+        }
+        case 'poll' {
+            $object = $c->model('DBIC::Poll')->find( {
+                poll_id => $object_id,
+            }, {
+                prefetch => ['author'],
+            } );
+            return unless ($object_id);
+            $object->{url} = '/forum/' . $object->forum_id . "/poll/$object_id";
         }
     }
     return $object;
