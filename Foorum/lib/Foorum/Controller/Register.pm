@@ -9,7 +9,7 @@ use Data::Dumper;
 
 sub begin : Private {
     my ($self, $c) = @_;
- 
+
     $c->stash( {
         no_online_view => 1,
     } );
@@ -18,9 +18,12 @@ sub begin : Private {
 sub default : Private {
     my ( $self, $c ) = @_;
     
-    $c->stash->{template} = 'register/index.html';
+    unless ($c->config->{register}) {
+        $c->detach('/print_error', [ 'ERROR_REGISTER_CLOSED' ]);
+    }
     
-    return unless ($c->req->param('process'));
+    $c->stash->{template} = 'register/index.html';
+    return unless ($c->req->method eq 'POST');
     
     # execute validation.
     
@@ -32,7 +35,6 @@ sub default : Private {
         return;
     }
     
-    # TODO, DBIC_UNIQUE should be LIKE
     $c->form(
         username  => [[ 'DBIC_UNIQUE', $c->model('DBIC')->resultset('User'), 'username' ], qw/NOT_BLANK/,       [qw/LENGTH 4 20/] ],
         password  => [qw/NOT_BLANK/,             [qw/LENGTH 6 20/] ],
@@ -128,7 +130,9 @@ sub import_contacts : Local {
         template => 'register/import_contacts.html',
         email    => $email,
     } );
-    return unless ($c->req->param('submit'));
+    return unless ($c->req->method eq 'POST');
+    
+    
 }
 =pod
 

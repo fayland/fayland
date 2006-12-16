@@ -5,7 +5,6 @@ use warnings;
 
 use Catalyst qw/
 	-Debug
-	StackTrace
 	ConfigLoader
 	Static::Simple
 	Cache::Memcached

@@ -87,7 +87,6 @@ logger:
 
 maintain: 0
 register: 1
-register_closed_reason: "For some reasons, Register is closed."
 reserved_username:
   - anonymous
   - guest

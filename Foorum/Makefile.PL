@@ -13,7 +13,6 @@ requires 'Data::Dumper';
 requires 'Cache::Memcached';
 requures 'Email::Send' => '2.180';
 requires 'XML::RSS';
-requires 'Catalyst::Plugin::StackTrace';
 requires 'Catalyst::Plugin::Prototype';
 requires 'Catalyst::Plugin::Authentication';
 requires 'Catalyst::Plugin::Authentication::Store::DBIC';
