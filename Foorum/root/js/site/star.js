@@ -15,8 +15,8 @@ function star(obj_type, obj_id, obj_div) {
 function star_response(request) {
     response  = request.responseText;
     if (response == 1) {
-        $(star_obj_div).innerHTML = 'Unstar it';
+        Element.update(star_obj_div , '<img src="http://mail.google.com/mail/images/star_on_2.gif" />');
     } else {
-        $(star_obj_div).innerHTML = 'Star it';
+        Element.update(star_obj_div , '<img src="http://mail.google.com/mail/images/star_off_2.gif" />');
     }
 }
