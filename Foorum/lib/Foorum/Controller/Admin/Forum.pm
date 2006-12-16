@@ -34,7 +34,7 @@ sub create : Local {
         template => 'admin/forum/create.html',
     } );
     
-    return unless ($c->req->param('submit'));
+    return unless ($c->req->method eq 'POST');
     
     # do we trust everything typed by admin?
     # NO.

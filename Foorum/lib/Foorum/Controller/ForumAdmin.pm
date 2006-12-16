@@ -40,7 +40,7 @@ sub basic : Chained('forum_for_admin') Args(0) {
     } );
     
     my $role = $c->model('Policy')->get_forum_moderators($c, $forum_id);
-    unless ($c->req->param('submit')) {
+    unless ($c->req->method eq 'POST') {
         # get all moderators
         my $e_moderators = $role->{$forum_id}->{moderator};
         if ($e_moderators) {
@@ -118,7 +118,7 @@ sub style : Chained('forum_for_admin') Args(0) {
     # style.yml and style.css
     my $yml = $c->path_to('style', 'custom', "forum$forum_id\.yml");
 
-    unless ($c->req->param('submit')) {
+    unless ($c->req->method eq 'POST') {
         if (-e $yml) {
             my $style = LoadFile($yml);
             $c->stash->{style} = $style;
@@ -214,7 +214,7 @@ sub announcement : Chained('forum_for_admin') Args(0) {
         object_type => 'announcement',
     } );
     
-    unless ($c->req->param('submit')) {
+    unless ($c->req->method eq 'POST') {
         $c->stash( {
             template => 'forumadmin/announcement.html',
             announce => $announce,

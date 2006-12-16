@@ -1,7 +1,7 @@
 [% WRAPPER 'forumadmin/bar.html' %]
 
 [% USE FillInForm %]
-[% UNLESS c.req.param('submit');
+[% UNLESS c.req.method == 'POST';
     data = {
         name  => forum.name,
         description  => forum.description,
@@ -28,7 +28,7 @@ END; %]
 	[% END %]
 	</td></tr>
     <tr class='forum2'><td>Policy</td><td><input type='checkbox' name='private' value='1' /> Private</td></tr>
-    <tr class='forum1'><td colspan='2'><input type='submit' name='submit' /></td></tr>
+    <tr class='forum1'><td colspan='2'><input type='submit' /></td></tr>
 </table>
 </form>
 </div>

@@ -5,7 +5,6 @@
 [% FILTER fillinform fdat => c.req.params %]
 <div class='one'> 
 <form method='post'>
-<input type='hidden' name='process' value="1" />
 <table align='center'>
 <tr><td class="title" colspan='4'><b>Compose Message</b></td></tr>
 <tr>
@@ -35,7 +34,7 @@ please spec a rept.
 [% IF c.form.error('text') %]text is required.[% END %]
 </td>
 </tr>
-<tr><td class='misc2' colspan='4' align='center'><input type='submit'> <input type='reset'></td></tr>
+<tr><td class='misc2' colspan='4' align='center'><input type='submit' /> <input type='reset' /></td></tr>
 </table>
 </form>
 </div>

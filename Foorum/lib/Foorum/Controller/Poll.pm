@@ -13,7 +13,7 @@ sub create : Regex('^forum/(\d+)/poll/new$') {
     my $forum = $c->controller('Get')->forum($c, $forum_id);
 
     $c->stash->{template} = 'poll/new.html';
-    return unless ($c->req->param('process'));
+    return unless ($c->req->method eq 'POST');
 
     # validation
     my $duration = $c->req->param('duration_day');

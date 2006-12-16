@@ -8,6 +8,8 @@ use Data::Dumper;
 sub default : Private {
     my ($self, $c, undef, $forum_id) = @_;
 
+    $c->cache_page( '300' ) unless ($c->user_exists);
+
     my ($results, $pager) = $c->model('Online')->get_data($c, $forum_id);
 
     $c->stash( {

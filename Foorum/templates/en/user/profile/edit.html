@@ -1,6 +1,6 @@
 [% USE Dumper %]
 [% USE FillInForm %]
-[% UNLESS c.req.param('submit');
+[% UNLESS c.req.method == 'POST';
     data = {
         homepage  => c.user.homepage,
         nickname  => c.user.nickname,
@@ -37,7 +37,7 @@ END; %]
 	Please type a valid homepage URL.
 	[% END %]
 	</td></tr>
-	<tr class='misc2'><td></td><td><input type='submit' name='submit' /></td></tr>
+	<tr class='misc2'><td></td><td><input type='submit' /></td></tr>
 	</form>
 	</tbody>
 </table>

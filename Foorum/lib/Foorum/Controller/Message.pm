@@ -29,7 +29,7 @@ sub compose : Local {
 	
 	$c->stash->{template} = 'message/compose.html';
 
-    return unless ($c->req->param('process'));
+    return unless ($c->req->method eq 'POST');
     
     # cann't compose to yourself
     my $to = $c->req->param('to');

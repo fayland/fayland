@@ -45,7 +45,7 @@ sub edit : Local {
     
     $c->stash->{template} = 'user/profile/edit.html';
     
-    unless ($c->req->param('submit')) {
+    unless ($c->req->method eq 'POST') {
         if ($c->user->birthday and $c->user->birthday =~ /^(\d+)\-(\d+)\-(\d+)$/) {
             $c->stash( {
                 year  => $1,
@@ -88,7 +88,7 @@ sub change_password : Local {
     
     $c->stash->{template} = 'user/profile/change_password.html';
     
-    return unless ($c->req->param('process'));
+    return unless ($c->req->method eq 'POST');
 
     # check the password typed in is correct
     my $password = $c->req->param('password');
@@ -126,7 +126,7 @@ sub forget_password : Local {
     $c->detach('/print_error', [ 'ERROR_EMAIL_OFF' ] ) unless ($c->config->{mail}->{on});
     
     $c->stash->{template} = 'user/profile/forget_password.html';
-    return unless ($c->req->param('submit'));
+    return unless ($c->req->method eq 'POST');
     
     my $username = $c->req->param('username');
     my $email    = $c->req->param('email');
@@ -155,7 +155,7 @@ sub change_email : Local {
 
     $c->stash->{template} = 'user/profile/change_email.html';
     
-    return unless ($c->req->param('process'));
+    return unless ($c->req->method eq 'POST');
     
     my $email = $c->req->param('email');
     if ($email eq $c->user->email) {
