@@ -4,6 +4,12 @@
 [% title = 'Recent Topics' %]
 [% END %]
 
+<div class='tabnav'>
+    <ul>
+        <li[% IF recent_type != 'elite' %] class='selected'[% END %]><a href='/forum/recent'>Recent Topics</a></li>
+        <li[% IF recent_type == 'elite' %] class='selected'[% END %]><a href='/forum/recent/elite'>Recent Elite Topics</a></li>
+    </ul>
+</div>
 <div class='one'>
 <table height='28' align='center'>
 	<tr class="title" align='center'>

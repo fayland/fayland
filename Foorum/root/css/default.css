@@ -74,3 +74,27 @@ A:link { color: #333333 }
 /* topic */
 .plumbline { width: 1px; height: 100%;background:#90c8ff }
 .horizontal { width: 99%; height: 1px;border-top:1px solid #90c8ff }
+
+.tabnav {
+    margin-bottom: 5px;
+    margin-left: 2%;
+}
+
+.tabnav ul {
+    list-style:none;
+    margin: 0px;
+}
+ 
+.tabnav ul li {
+    display:inline;
+    background:#FFFBEC;
+    margin-left:10px;
+    padding:5px 10px 5px 10px;
+    border:1px solid #000;
+    border-bottom: 0px;
+    
+}
+
+.tabnav ul .selected {
+    background:#F5DEB3;
+}
