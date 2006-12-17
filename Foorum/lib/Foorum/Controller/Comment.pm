@@ -28,7 +28,7 @@ sub post_comment : Local {
     }
     
     # create record
-    $c->model('Comment')->create_a_comment($c, {
+    $c->model('Comment')->create($c, {
         object_type => $object_type,
         object_id   => $object_id,
         forum_id    => $forum_id,
@@ -76,7 +76,7 @@ sub reply : LocalRegex('^(\d+)/reply$') {
     };
     
     # create record
-    $c->model('Comment')->create_a_comment($c, $info );
+    $c->model('Comment')->create($c, $info );
     
     my $path = $c->model('Object')->get_url_from_object($c, $info);
     
@@ -100,6 +100,14 @@ sub edit : LocalRegex('^(\d+)/edit$') {
     }
     
     $c->stash->{template} = 'comment/edit.html';
+    
+    # edit upload
+    my $old_upload;
+    if ($comment->upload_id) {
+        $old_upload = $c->model('DBIC::Upload')->find( { upload_id => $comment->upload_id } );
+    }
+    $c->stash->{upload} = $old_upload;
+    
     return unless ($c->req->method eq 'POST');
     
     # execute validation.
@@ -110,12 +118,30 @@ sub edit : LocalRegex('^(\d+)/edit$') {
 
     return if ($c->form->has_error);
 
+    my $new_upload = $c->req->upload('upload');
+    my $upload_id = $comment->upload_id;
+    if (($c->req->param('attachment_action') eq 'delete') or $new_upload) {
+        # delete old upload
+        if ($old_upload) {
+            $c->model('Upload')->remove_by_upload( $c, $old_upload );
+            $upload_id = 0;
+        }
+        # add new upload
+        if ($new_upload) {
+            $upload_id = $c->model('Upload')->add_file($c, $new_upload, { forum_id => $comment->forum_id } );
+            unless ($upload_id) {
+                return $c->set_invalid_form( upload => $c->stash->{upload_error} );
+            }
+        }
+    }
+
     $comment->update( {
         title       => $c->req->param('title'),
         text        => $c->req->param('text'),
         formatter   => 'text',
         update_on   => \"NOW()",
         post_ip     => $c->req->address,
+        upload_id   => $upload_id,
     } );
     
     my ($object_id, $object_type, $forum_id) = 
@@ -145,9 +171,7 @@ sub delete : LocalRegex('^(\d+)/delete$') {
     }
     
     # delete comment
-    $c->model('DBIC')->resultset('Comment')->search( {
-        comment_id => $comment_id,
-    } )->delete;
+    $c->model('Comment')->remove($c, $comment);
     
     my ($object_id, $object_type, $forum_id) = 
        ($comment->object_id, $comment->object_type, $comment->forum_id);

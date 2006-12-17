@@ -48,8 +48,10 @@ sub remove_by_upload {
     my ($self, $c, $upload) = @_;
     my $directory_1 = int($upload->upload_id/3200/3200);
     my $directory_2 = int($upload->upload_id/3200);
-    remove($c->path_to('root', 'upload', $directory_1, $directory_2, $upload->filename));
-    $upload->delete;
+    my $file = $c->path_to('root', 'upload', $directory_1, $directory_2, $upload->filename)->stringify;
+    $c->log->debug("file is $file");
+    remove( $file );
+    $c->model('DBIC::Upload')->search( { upload_id => $upload->upload_id } )->delete;
 }
 
 sub add_file {
@@ -89,24 +91,26 @@ sub add_file {
     my $upload_id = $upload_rs->upload_id;
     
     my $directory_1 = int($upload_id/3200/3200);
-    unless (-d $c->path_to('root', 'upload', $directory_1)) {
-        mkdir $c->path_to('root', 'upload', $directory_1), 0777;
-        chmod 0777, $c->path_to('root', 'upload', $directory_1);
+    my $dir1 = $c->path_to('root', 'upload', $directory_1)->stringify;
+    unless (-d $dir1) {
+        mkdir $dir1, 0777;
+        chmod 0777, $dir1;
     }
     my $directory_2 = int($upload_id/3200);
-    unless (-d $c->path_to('root', 'upload', $directory_1, $directory_2)) {
-        mkdir $c->path_to('root', 'upload', $directory_1, $directory_2), 0777;
-        chmod 0777, $c->path_to('root', 'upload', $directory_1, $directory_2);
+    my $dir2 = $c->path_to('root', 'upload', $directory_1, $directory_2)->stringify;
+    unless (-d $dir2) {
+        mkdir $dir2, 0777;
+        chmod 0777, $dir2;
     }
     
-    my $target = $c->path_to('root', 'upload', $directory_1, $directory_2, $basename);
+    my $target = $c->path_to('root', 'upload', $directory_1, $directory_2, $basename)->stringify;
     
     # rename if exist
     if (-e $target) {
         my $random_filename;
         while (-e $target) {
             $random_filename = generate_random_word(15) . ".$filetype";
-            $target = $c->path_to('root', 'upload', $directory_1, $directory_2, $random_filename);
+            $target = $c->path_to('root', 'upload', $directory_1, $directory_2, $random_filename)->stringify;
         }
         $upload_rs->update( { filename => $random_filename } );
     }

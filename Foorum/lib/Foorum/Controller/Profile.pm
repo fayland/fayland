@@ -183,7 +183,48 @@ sub change_email : Local {
         @extra_columns,
     } );
     
-    $c->res->body('ok');
+    $c->res->redirect('/register/activation/' . $c->user->username);
+}
+
+sub change_username : Local {
+    my ($self, $c) = @_;
+    
+    return $c->res->redirect('/login') unless ($c->user_exists);
+    
+    $c->stash->{template} = 'user/profile/change_username.html';
+    
+    return unless ($c->req->method eq 'POST');
+    
+    # check the password typed in is correct
+    my $password = $c->req->param('password');
+    my $d = Digest->new( $c->config->{authentication}->{dbic}->{password_hash_type} );
+    $d->add($password);
+    my $computed = $d->digest;
+    if ($computed ne $c->user->password) {
+        $c->set_invalid_form( password => 'WRONG_PASSWORD' );
+        return;
+    }
+    
+    # execute validation.
+    $c->form(
+        new_username => [ qw/NOT_BLANK/ ],
+        { usernames  => ['new_username', 'confirm_username'] } => ['DUPLICATION'],
+    );
+    return if ($c->form->has_error);
+    
+    my $new_username = $c->req->param('new_username');
+    my $ERROR_USERNAME = $c->model('Profile')->check_valid_username($c, $new_username);
+    if ($ERROR_USERNAME) {
+        $c->set_invalid_form( new_username => $ERROR_USERNAME );
+        return;
+    }
+    
+    $c->user->update( {
+        username => $new_username,
+    } );
+    $c->session->{__user} = $new_username;
+    
+    $c->res->redirect("/u/$new_username");
 }
 
 =pod

@@ -14,7 +14,7 @@ END; %]
 	<tbody>
 	<form method='post'>
 	<tr class='title'><td colspan='2'>Profile Edit</td></tr>
-    <tr class='misc1'><td width='20%' align='right'>Username:</td><td>[% c.user.username %] ( <a href='/profile/change_password'>Change Password</a>, <a href='/profile/change_email'>Change Email</a>)
+    <tr class='misc1'><td width='20%' align='right'>Username:</td><td>[% c.user.username %] ( <a href='/profile/change_username'>Change Username</a>, <a href='/profile/change_password'>Change Password</a>, <a href='/profile/change_email'>Change Email</a>)
 	</td></tr>
     <tr class='misc1'><td align='right'>Nickname:</td><td><input type='text' name='nickname' size='24' />
 	[% IF c.form.error('nickname') %]

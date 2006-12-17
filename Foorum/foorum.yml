@@ -102,8 +102,8 @@ per_page:
   message: 8
 
 dir:
-  js: 'http://fayland:3000/js'
-  images: 'http://fayland:3000/images'
+  js: 
+  images: 
 
 # For Foorum pm using
 mail:

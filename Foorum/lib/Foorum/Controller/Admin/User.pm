@@ -64,6 +64,11 @@ sub edit : Local {
             next if ($key eq 'user_id');
             # user has this column
             if (grep { $_ eq $key } @columns) {
+                if ($key eq 'username') {
+                    # validate
+                    my $ERROR_USERNAME = $c->model('Profile')->check_valid_username($c, $query->{username});
+                    next if ($ERROR_USERNAME);
+                }
                 push @update_cols, ($key, $query->{$key});
             }
         }

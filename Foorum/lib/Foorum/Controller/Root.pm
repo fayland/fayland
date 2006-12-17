@@ -51,14 +51,10 @@ sub index : Private {
     $c->forward('Foorum::Controller::Forum', 'board');
 }
 
-sub end : Private {
+sub end : ActionClass('PathLogger') {
     my ( $self, $c ) = @_;
 
-    if ($c->res->body) {
-        my $loadtime = tv_interval( $c->stash->{start_t0}, [gettimeofday] );
-        $c->model('Log')->log_path($c, $loadtime);
-        return 1;
-    }
+    return if ($c->res->body);
 
     if ($c->res->location) {
         # for login using!
@@ -67,13 +63,16 @@ sub end : Private {
             $location .= '?' . uri_escape($c->req->uri->query) if ($c->req->uri->query);
             $c->res->location($location);
         }
-        my $loadtime = tv_interval( $c->stash->{start_t0}, [gettimeofday] );
-        $c->model('Log')->log_path($c, $loadtime);
         return 1;
     }
 
     # template international
     $c->stash->{additional_template_paths} = [ $c->path_to('templates', $c->stash->{lang}) ];
+    
+    # you can configure them in foorum.yml to some domain else
+    # like http://static.1313s.com/images
+    $c->config->{dir}->{js} = $c->req->base . 'js' unless ($c->config->{dir}->{js});
+    $c->config->{dir}->{images} = $c->req->base . 'images' unless ($c->config->{dir}->{images});
 
     if ($c->stash->{template} =~ /^simple\//) {
         $c->stash->{simple_wrapper} = 1;
@@ -86,9 +85,6 @@ sub end : Private {
         $c->stash->{elapsed_time} = tv_interval( $c->stash->{start_t0}, [gettimeofday] );
     }
     $c->forward( $c->view('TT') );
-    my $loadtime = tv_interval( $c->stash->{start_t0}, [gettimeofday] );
-    $c->model('Log')->log_path($c, $loadtime);
-    return 1;
 }
 
 =pod

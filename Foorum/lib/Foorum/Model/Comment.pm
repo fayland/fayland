@@ -29,7 +29,7 @@ sub get_comments_by_object {
 	$c->stash->{comments_pager} = $it->pager;
 }
 
-sub create_a_comment {
+sub create {
     my ($self, $c, $info) = @_;
     
     my $object_type = $info->{object_type};
@@ -50,7 +50,16 @@ sub create_a_comment {
         forum_id    => $forum_id,
         upload_id   => $info->{upload_id} || 0,
     } );
+    return $comment;
+}
+
+sub remove {
+    my ($self, $c, $comment) = @_;
     
+    if ($comment->upload_id) {
+        $c->model('Upload')->remove_file_by_upload_id($c, $comment->upload_id);
+    }
+    $c->model('DBIC::Comment')->search( { comment_id => $comment->comment_id } )->delete;
 }
 
 =pod

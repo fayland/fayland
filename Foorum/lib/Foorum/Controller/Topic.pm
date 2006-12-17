@@ -90,16 +90,9 @@ sub create : Regex('^forum/(\d+)/topic/new$') {
     $c->clear_cached_page( '/forum/recent/elite' );
     $c->clear_cached_page( '/forum/recent/elite/rss' );
     
-    my $comment = $c->model('DBIC')->resultset('Comment')->create( {
+    my $comment = $c->model('Comment')->create($c, {
         object_type => 'thread',
         object_id   => $topic->topic_id,
-        author_id   => $c->user->user_id,
-        title       => $c->req->param('title'),
-        text        => $c->req->param('text'),
-        formatter   => 'text',
-        post_on     => \"NOW()",
-        post_ip     => $c->req->address,
-        reply_to    => 0,
         forum_id    => $forum_id,
         upload_id   => $upload_id,
     } );
@@ -160,18 +153,12 @@ sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
     }
     
     $comment_id = $topic_id unless ($comment_id);
-    my $comment = $c->model('DBIC')->resultset('Comment')->create( {
+    my $comment = $c->model('Comment')->create($c, {
         object_type => 'thread',
         object_id   => $topic_id,
-        author_id   => $c->user->user_id,
-        title       => $c->req->param('title'),
-        text        => $c->req->param('text'),
-        formatter   => 'text',
-        post_on     => \"NOW()",
-        post_ip     => $c->req->address,
-        reply_to    => $comment_id,
         forum_id    => $forum_id,
         upload_id   => $upload_id,
+        reply_to    => $comment_id,
     } );
 
     # update forum and topic
@@ -210,14 +197,21 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
     my $topic = $c->forward('/get/topic', [ $forum_id, $topic_id ]);
     my $comment_id = $c->req->snippets->[2];
     my $comment  = $c->forward('/get/comment', [ $comment_id, 'thread', $topic_id ] );
-    
+
     # permission
     if ($c->user->user_id != $comment->author_id and not $c->model('Policy')->is_moderator($c, $forum_id)) {
         $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
     }
     
     $c->stash->{template} = 'comment/edit.html';
-    
+
+    # edit upload
+    my $old_upload;
+    if ($comment->upload_id) {
+        $old_upload = $c->model('DBIC::Upload')->find( { upload_id => $comment->upload_id } );
+    }
+    $c->stash->{upload} = $old_upload;
+        
     return unless ($c->req->method eq 'POST');
     
     # execute validation.
@@ -228,14 +222,31 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
 
     return if ($c->form->has_error);
 
+    my $new_upload = $c->req->upload('upload');
+    my $upload_id = $comment->upload_id;
+    if (($c->req->param('attachment_action') eq 'delete') or $new_upload) {
+        # delete old upload
+        if ($old_upload) {
+            $c->model('Upload')->remove_by_upload( $c, $old_upload );
+            $upload_id = 0;
+        }
+        if ($new_upload) {
+            $upload_id = $c->model('Upload')->add_file($c, $new_upload, { forum_id => $comment->forum_id } );
+            unless ($upload_id) {
+                return $c->set_invalid_form( upload => $c->stash->{upload_error} );
+            }
+        }
+    }
+
     $comment->update( {
         title       => $c->req->param('title'),
         text        => $c->req->param('text'),
         formatter   => 'text',
         update_on   => \"NOW()",
         post_ip     => $c->req->address,
+        upload_id   => $upload_id,
     } );
-    
+
     if ($comment->reply_to == 0 and $topic->title ne $c->req->param('title')) {
         $topic->update( {
             title => $c->req->param('title'),
@@ -258,38 +269,17 @@ sub delete : Regex('^forum/(\d+)/(\d+)/(\d+)/delete$') {
     my $comment  = $c->forward('/get/comment', [ $comment_id, 'thread', $topic_id ] );
     
     # permission
-    if ($c->user->user_id =! $comment->author_id and not $c->model('Policy')->is_moderator($c, $forum_id)) {
+    if ($c->user->user_id != $comment->author_id and not $c->model('Policy')->is_moderator($c, $forum_id)) {
         $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
     }
     
     my $uri;
     if ($comment->reply_to == 0) {
-        # delete topic
-        my $delete_count = $c->model('DBIC')->resultset('Comment')->search( {
-            object_type => 'thread',
-            object_id   => $topic_id,
-        } )->delete;
-        
-        $c->log->debug("Delete count:" . Dumper($delete_count));
-        
+        $c->model('Topic')->remove($c, $forum_id, $topic_id);
         $uri = "/forum/$forum_id";
-        
-        # update last
-        my $lastest = $c->model('DBIC')->resultset('Topic')->find( {
-            forum_id => $forum_id
-        }, {
-            order_by => 'last_update_date DESC',
-        } );
-        my @extra_cols = ($lastest)?(last_post_id => $lastest->topic_id):(last_post_id => '');
-        $forum->update( {
-            total_topics => $forum->total_topics - 1,
-            @extra_cols,
-        } );
     } else {
         # delete comment
-        my $comment = $c->model('DBIC')->resultset('Comment')->search( {
-            comment_id => $comment_id,
-        } )->delete;
+        $c->model('Comment')->remove($c, $comment);
         
         $uri = "/forum/$forum_id/$topic_id";
         

@@ -30,7 +30,7 @@ sub _static_info {
     
     if ($type_id) {
         $type_id =~ s/\W+//isg;
-        my $help_template = $c->path_to('templates', $c->stash->{lang}, $type, "$type_id.html");
+        my $help_template = $c->path_to('templates', $c->stash->{lang}, $type, "$type_id.html")->stringify;
         if (-e $help_template) {
             $c->stash->{template} = "$type/$type_id.html";
         } else {

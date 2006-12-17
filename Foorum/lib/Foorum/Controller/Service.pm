@@ -6,7 +6,7 @@ use base 'Catalyst::Controller';
 use IP::QQWry;
 use Data::Dumper;
 use vars qw/$qqwry/;
-$qqwry = IP::QQWry->new( Foorum->path_to('root', 'data', 'QQWry.Dat') );
+$qqwry = IP::QQWry->new( Foorum->path_to('root', 'data', 'QQWry.Dat')->stringify );
 
 sub query_ip : Local {
     my ($self, $c) = @_;

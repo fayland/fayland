@@ -46,6 +46,8 @@ sub lock_or_top_or_elite : Regex('^forum/(\d+)/(\d+)/(un)?(top|elite|lock)$') {
         $update_col => $status,
     } );
     
+    $c->model('Log')->log_action($c, { action => "$is_un$action", object_type => 'topic', object_id => $topic_id } );
+    
     $c->forward('/print_message', [ {
         msg => 'OK',
         uri => "/forum/$forum_id",

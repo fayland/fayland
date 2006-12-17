@@ -23,6 +23,7 @@ __PACKAGE__->load_classes(qw/
     Star
     Upload
     LogPath
+    LogAction
 /);
 
 =pod

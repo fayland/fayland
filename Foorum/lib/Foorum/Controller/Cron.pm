@@ -4,19 +4,16 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 
-
+sub begin : Private {
+    my ($self, $c) = @_;
+    
+    $c->res->body('Cron is running');
+}
 
 sub remove_sessions : Local {
     my ( $self, $c ) = @_;
     
     $c->delete_expired_sessions;
-}
-
-# override Root.pm end
-sub end : Private {
-    my ($self, $c) = @_;
-    
-    $c->res->body('Cron is running');
 }
 
 =pod

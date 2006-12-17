@@ -116,7 +116,7 @@ sub style : Chained('forum_for_admin') Args(0) {
     $c->stash->{template} = 'forumadmin/style.html';
     
     # style.yml and style.css
-    my $yml = $c->path_to('style', 'custom', "forum$forum_id\.yml");
+    my $yml = $c->path_to('style', 'custom', "forum$forum_id\.yml")->stringify;
 
     unless ($c->req->method eq 'POST') {
         if (-e $yml) {
@@ -157,7 +157,7 @@ sub style : Chained('forum_for_admin') Args(0) {
     return if ($c->form->has_error);
 
     # save the style.yml and style.css
-    my $css = $c->path_to('root', 'css', 'custom', "forum$forum_id\.css");
+    my $css = $c->path_to('root', 'css', 'custom', "forum$forum_id\.css")->stringify;
     
     my $style = $c->req->params;
     
@@ -194,8 +194,8 @@ sub del_style : Chained('forum_for_admin') Args(0) {
     my $forum = $c->stash->{forum};
     my $forum_id = $forum->forum_id;
     
-    my $yml = $c->path_to('style', 'custom', "forum$forum_id\.yml");
-    my $css = $c->path_to('root', 'css', 'custom', "forum$forum_id\.css");
+    my $yml = $c->path_to('style', 'custom', "forum$forum_id\.yml")->stringify;
+    my $css = $c->path_to('root', 'css', 'custom', "forum$forum_id\.css")->stringify;
     
     unlink $yml if (-e $yml);
     unlink $css if (-e $css);

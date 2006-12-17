@@ -46,9 +46,10 @@ sub loadstyle : Local {
     
     my $output;
     
-    return unless (-e $c->path_to('style', 'system', "$style\.yml"));
+    my $style_file = $c->path_to('style', 'system', "$style\.yml")->stringify;
+    return unless (-e $style_file);
     
-    $style = LoadFile($c->path_to('style', 'system', "$style\.yml"));
+    $style = LoadFile($style_file);
     
     foreach (keys %{$style}) {
         my $background = qq~\$('$_').style.background = "$style->{$_}";~ if ($style->{$_} =~ /^\#/);
@@ -84,27 +85,11 @@ sub validate_username : Local {
     my ($self, $c) = @_;
     
     my $username = $c->req->param('username');
-    
-    if (length($username) < 6 or length($username) > 20) {
-        return $c->res->body('LENGTH');
-    }
+
     my $ERROR = $c->model('Profile')->check_valid_username($c, $username);
     return $c->res->body($ERROR) if ($ERROR);
 
-    # unique
-    my $cnt = $c->model('DBIC::User')->count( {
-        username => $username,
-    } );
-    return $c->res->body('DBIC_UNIQUE') if ($cnt);
-    
     $c->res->body('OK');
-}
-
-# override Root.pm
-sub end : Private {
-    my ($self, $c) = @_;
-    
-
 }
 
 =pod

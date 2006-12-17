@@ -8,6 +8,8 @@ use Data::Dumper;
 sub check_valid_username {
     my ($self, $c, $username) = @_;
     
+    return 'LENGTH' if (length($username) < 6 or length($username) > 20);
+    
     my @reserved_username = @{ $c->config->{reserved_username} };
     
     for ($username) {
@@ -17,6 +19,13 @@ sub check_valid_username {
             return 'HAS_RESERVED';
         }
     }
+    
+    # unique
+    my $cnt = $c->model('DBIC::User')->count( {
+        username => $username,
+    } );
+    return 'DBIC_UNIQUE' if ($cnt);
+    
     return;
 }
 

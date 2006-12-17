@@ -30,6 +30,20 @@ sub log_path {
     } );
 }
 
+sub log_action {
+    my ($self, $c, $info) = @_;
+
+    my $user_id = $c->user_exists ? $c->user->user_id : 0;
+    
+    $c->model('DBIC::LogAction')->create( {
+        user_id => $user_id,
+        action  => $info->{action} || 'kiss',
+        object_type => $info->{object_type} || 'ass',
+        object_id   => $info->{object_id}   || 0, # times
+        time    => time(),
+    } );
+}
+
 =pod
 
 =head2 AUTHOR
