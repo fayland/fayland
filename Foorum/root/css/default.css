@@ -78,14 +78,15 @@ A:link { color: #333333 }
 .tabnav {
     margin-bottom: 5px;
     margin-left: 2%;
+    
 }
 
 .tabnav ul {
-    list-style:none;
     margin: 0px;
 }
  
 .tabnav ul li {
+    list-style-type: none;
     display:inline;
     background:#FFFBEC;
     margin-left:10px;
@@ -95,6 +96,7 @@ A:link { color: #333333 }
     
 }
 
-.tabnav ul .selected {
+.tabnav ul li.selected {
     background:#F5DEB3;
 }
+
