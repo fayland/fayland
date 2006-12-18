@@ -2,15 +2,22 @@ package Foorum::View::TT;
 
 use strict;
 use base 'Catalyst::View::TT';
+use Template::Stash::XS;
+use File::Spec;
 #use Template::Constants qw( :debug );
 use NEXT;
 use Email::Obfuscate qw(obfuscate_email_address);
+
+my $tmpdir = File::Spec->tmpdir();
 
 __PACKAGE__->config(
     #DEBUG        => DEBUG_PARSER | DEBUG_PROVIDER,
     INCLUDE_PATH => [
         Foorum->path_to( 'templates' ), 
     ],
+    COMPILE_DIR => $tmpdir . "/ttcache/$<",
+	COMPILE_EXT => '.ttp1', 
+	STASH       => Template::Stash::XS->new,
     FILTERS      => {
         'email_obfuscate' => sub { obfuscate_email_address(shift) },
     }
