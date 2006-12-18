@@ -8,9 +8,8 @@ use Data::Dumper;
 sub send_activation {
     my ($self, $c, $email, $username, $active_code) = @_;
     
-    my $email_body = $c->view('TT')->render($c, 'email/activation.html', {
+    my $email_body = $c->view('TT')->render($c, $c->stash->{lang} . '/email/activation.html', {
         no_wrapper => 1,
-        additional_template_paths => [ $c->path_to('templates', $c->stash->{lang}) ],
         username => $username,
         active_code => $active_code,
     } );
@@ -27,9 +26,8 @@ sub send_activation {
 sub send_forget_password {
     my ($self, $c, $email, $username, $password) = @_;
 
-    my $email_body = $c->view('TT')->render($c, 'email/forget_password.html', {
+    my $email_body = $c->view('TT')->render($c, $c->stash->{lang} . '/email/forget_password.html', {
         no_wrapper => 1,
-        additional_template_paths => [ $c->path_to('templates', $c->stash->{lang}) ],
         username => $username,
         password => $password,
     } );

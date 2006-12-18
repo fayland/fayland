@@ -24,8 +24,9 @@ sub auto : Private {
 #    if ($c->req->headers->{'accept-language'} =~ /zh\-cn/) {
 #        $c->stash->{lang} = 'cn';
 #    } else {
-        $c->stash->{lang} = 'en';
+        $c->stash->{lang} = $c->req->param('lang') || 'en';
 #    }
+    $c->languages( [ $c->stash->{lang} ] );
 
 	my $path = $c->req->path;	
 	# for maintain, but admin can login and do something
@@ -66,9 +67,6 @@ sub end : ActionClass('PathLogger') {
         return 1;
     }
 
-    # template international
-    $c->stash->{additional_template_paths} = [ $c->path_to('templates', $c->stash->{lang}) ];
-    
     # you can configure them in foorum.yml to some domain else
     # like http://static.1313s.com/images
     $c->config->{dir}->{js} = $c->req->base . 'js' unless ($c->config->{dir}->{js});

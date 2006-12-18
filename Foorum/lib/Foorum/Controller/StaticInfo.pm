@@ -28,6 +28,9 @@ sub info : Global {
 sub _static_info {
     my ($c, $type, $type_id) = @_;
     
+    # help/info templates in under its own templates/$lang/help
+    # since too many text needs translation.
+    $c->stash->{additional_template_paths} = [ $c->path_to('templates', $c->stash->{lang}) ];
     if ($type_id) {
         $type_id =~ s/\W+//isg;
         my $help_template = $c->path_to('templates', $c->stash->{lang}, $type, "$type_id.html")->stringify;

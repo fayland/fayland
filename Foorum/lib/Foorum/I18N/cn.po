@@ -1,0 +1,35 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/en/forum/board.html:8
+msgid "Forum Name"
+msgstr "论坛名称"
+
+#: templates/en/forum/board.html:12
+msgid "Last Update"
+msgstr "最后更新"
+
+#: templates/en/forum/board.html:9
+msgid "Moderators"
+msgstr "版主"
+
+#: templates/en/forum/board.html:11
+msgid "Replies"
+msgstr "回复"
+
+#: templates/en/forum/board.html:7
+msgid "Status"
+msgstr "状态"
+
+#: templates/en/forum/board.html:10
+msgid "Threads"
+msgstr "主题"

@@ -161,9 +161,8 @@ sub style : Chained('forum_for_admin') Args(0) {
     
     my $style = $c->req->params;
     
-    my $css_content = $c->view('TT')->render($c, 'common/style.css', {
+    my $css_content = $c->view('TT')->render($c, 'style/style.css', {
         no_wrapper => 1,
-        additional_template_paths => [ $c->path_to('templates', $c->stash->{lang}) ],
         style => $style,
     } );
 #    write_file($css, $css_content);
@@ -173,9 +172,8 @@ sub style : Chained('forum_for_admin') Args(0) {
         close(FH);
     }
     
-    my $yml_content = $c->view('TT')->render($c, 'common/style.yml', {
+    my $yml_content = $c->view('TT')->render($c, 'style/style.yml', {
         no_wrapper => 1,
-        additional_template_paths => [ $c->path_to('templates', $c->stash->{lang}) ],
         style => $style,
     } );
 #    write_file($yml, $yml_content);

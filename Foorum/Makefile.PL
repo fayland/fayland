@@ -27,6 +27,7 @@ requires 'Catalyst::Plugin::FormValidator::Simple';
 requires 'Catalyst::Plugin::Scheduler';
 requires 'Catalyst::Plugin::Email';
 requires 'Catalyst::Plugin::Captcha';
+requires 'Catalyst::Plugin::I18N';
 requires 'Template::Plugin::FillInForm';
 requires 'Template::Plugin::Dumper';
 requires 'Template::Plugin::Date';
