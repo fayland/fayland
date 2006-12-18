@@ -4,12 +4,12 @@
 <div class='one'>
 <table height='28' align='center'>
 	<tr class="title" align='center'>
-	<td width='42'>Status</td>
-	<td width='*'>Forum Name</td>
-	<td width='80'>Moderators</td>
-	<td width='60'>Threads</td>
-	<td width='60'>Replies</td>
-	<td width='190'>Last Update</td>
+	<td width='42'>[% c.loc("Status") %]</td>
+	<td width='*'>[% c.loc("Forum Name") %]</td>
+	<td width='80'>[% c.loc("Moderators") %]</td>
+	<td width='60'>[% c.loc("Threads") %]</td>
+	<td width='60'>[% c.loc("Replies") %]</td>
+	<td width='190'>[% c.loc("Last Update") %]</td>
 	</tr>
 </table>
 [% mytime = date.now - 86000 %]
