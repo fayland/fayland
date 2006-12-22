@@ -40,12 +40,12 @@
     <script type="text/javascript" src="[% c.config.dir.js %]/utils.js"></script>
 <!--    <script type="text/javascript" src="/site/message.js"></script> -->
     <span id='new_message'></span> 
-     | <a href='/profile/edit'>Edit Profile</a> | <a href='/logout'>Log out</a>
+     | <a href='/profile/edit'>[% c.loc("Edit Profile") %]</a> | <a href='/logout'>[% c.loc("Log out") %]</a>
     [% ELSE %]
-    <a href='/register'>Register</a>  | <a href='/login'>Log in</a> | <a href='/profile/forget_password'>Forget password?</a>
+    <a href='/register'>[% c.loc("Register") %]</a>  | <a href='/login'>[% c.loc("Log in") %]</a> | <a href='/profile/forget_password'>[% c.loc("Forget password?") %]</a>
     [% END %]
     [% UNLESS forum %]
-     | <a href='/forum/recent'>Recent Topics</a>
+     | <a href='/forum/recent'>[% c.loc("Recent Topics") %]</a>
     [% END %]
     [% IF forum.forum_id AND c.user_exists AND roles.is_admin %]
     | <a href='/forumadmin/[% forum.forum_id %]'>Forum Admin</a>

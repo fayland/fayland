@@ -14,12 +14,12 @@
 <table height='28' align='center'>
 	<tr class="title" align='center'>
 	<td width='200'>Forum</td>
-	<td width='42'>Status</td>
-	<td width='*'>Subject</td>
-	<td width='80'>Author</td>
-	<td width='40'>Reply</td>
-	<td width='40'>Hit</td>
-	<td width='190'>Last Update</td>
+	<td width='42'>[% c.loc("Status") %]</td>
+	<td width='*'>[% c.loc("Subject") %]</td>
+	<td width='80'>[% c.loc("Author") %]</td>
+	<td width='40'>[% c.loc("Reply") %]</td>
+	<td width='40'>[% c.loc("Hit") %]</td>
+	<td width='190'>[% c.loc("Last Update") %]</td>
 	</tr>
 </table>
 [% FOREACH t IN topics %]

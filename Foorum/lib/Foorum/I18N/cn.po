@@ -10,26 +10,53 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: templates/en/forum/board.html:8
 msgid "Forum Name"
 msgstr "论坛名称"
 
-#: templates/en/forum/board.html:12
 msgid "Last Update"
 msgstr "最后更新"
 
-#: templates/en/forum/board.html:9
 msgid "Moderators"
 msgstr "版主"
 
-#: templates/en/forum/board.html:11
 msgid "Replies"
 msgstr "回复"
 
-#: templates/en/forum/board.html:7
+msgid "Reply"
+msgstr "回复"
+
+msgid "Hit"
+msgstr "点击"
+
 msgid "Status"
 msgstr "状态"
 
-#: templates/en/forum/board.html:10
 msgid "Threads"
 msgstr "主题"
+
+msgid "Poll"
+msgstr "投票"
+
+msgid "Author"
+msgstr "作者"
+
+msgid "Subject"
+msgstr "标题"
+
+msgid "Register"
+msgstr "注册"
+
+msgid "Log in"
+msgstr "登录"
+
+msgid "Log out"
+msgstr "退出"
+
+msgid "Edit Profile"
+msgstr "编辑个人资料"
+
+msgid "Forget password?"
+msgstr "忘记密码"
+
+msgid "Recent Topics"
+msgstr "最近新帖"

@@ -3,7 +3,7 @@
 [% IF forum.policy == 'private' %]
 <div class='one'>
 <table align='center'>
-<tr><td class='title' width='40'>Status</td><td class='forum1'>We have <a href='/forum/[% forum.forum_id %]/members'>[% forum.total_members %] users</a> and <a href='/forum/[% forum.forum_id %]/members/pending'>[% pending_count %] pending users</a>.
+<tr><td class='title' width='40'>[% c.loc("Status") %]</td><td class='forum1'>We have <a href='/forum/[% forum.forum_id %]/members'>[% forum.total_members %] users</a> and <a href='/forum/[% forum.forum_id %]/members/pending'>[% pending_count %] pending users</a>.
 [% IF pending_count AND roles.is_moderator %]
 <div class='highlight' style='font-weight: bolder'>Tips: You need approval the <a href='/forum/[% forum.forum_id %]/members/pending'>pending requests</a></div>
 [% END %]
@@ -33,9 +33,9 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 <div class='one'>
 <table align='center'>
 	<tr class='title' align='center'>
-	<td>Subject</td>
-	<td>Author</td>
-	<td>Poll</td>
+	<td>[% c.loc("Subject") %]</td>
+	<td>[% c.loc("Author") %]</td>
+	<td>[% c.loc("Poll") %]</td>
 	</tr>
 [% FOREACH poll IN polls %]
 <tr align='center'>
@@ -54,12 +54,12 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 <div class='one'>
 <table height='28' align='center'>
 	<tr class="title" align='center'>
-	<td width='42'>Status</td>
-	<td width='*'>Subject</td>
-	<td width='80'>Author</td>
-	<td width='40'>Reply</td>
-	<td width='40'>Hit</td>
-	<td width='190'>Last Update</td>
+	<td width='42'>[% c.loc("Status") %]</td>
+	<td width='*'>[% c.loc("Subject") %]</td>
+	<td width='80'>[% c.loc("Author") %]</td>
+	<td width='40'>[% c.loc("Reply") %]</td>
+	<td width='40'>[% c.loc("Hit") %]</td>
+	<td width='190'>[% c.loc("Last Update") %]</td>
 	</tr>
 </table>
 [% FOREACH t IN topics %]
