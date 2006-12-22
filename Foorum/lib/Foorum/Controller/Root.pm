@@ -20,6 +20,9 @@ sub auto : Private {
 	# in case (begin : Private) is overrided
 	$c->stash->{start_t0} = [gettimeofday] unless ($c->stash->{start_t0});
 	
+	# set debug for DBIx::Class
+    $ENV{DBIX_CLASS_STORAGE_DBI_DEBUG} = 1 if ($c->debug);
+	
 	# internationalization
 #    if ($c->req->headers->{'accept-language'} =~ /zh\-cn/) {
 #        $c->stash->{lang} = 'cn';
