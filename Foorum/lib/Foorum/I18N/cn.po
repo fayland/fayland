@@ -1,11 +1,10 @@
-
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Foorum beta\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2006-12-22 05:32-0000\n"
+"Last-Translator: Fayland Lam <fayland@gmail.com>\n"
+"Language-Team: Foorum Team <fayland@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -60,3 +59,4 @@ msgstr "忘记密码"
 
 msgid "Recent Topics"
 msgstr "最近新帖"
+
