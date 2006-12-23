@@ -27,7 +27,7 @@ sub auto : Private {
 #    if ($c->req->headers->{'accept-language'} =~ /zh\-cn/) {
 #        $c->stash->{lang} = 'cn';
 #    } else {
-        $c->stash->{lang} = $c->req->param('lang') || 'en';
+        $c->stash->{lang} = $c->req->cookie('pref_lang') || $c->config->{default_pref_lang} || 'en';
 #    }
     $c->languages( [ $c->stash->{lang} ] );
 

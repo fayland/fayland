@@ -96,6 +96,8 @@ reserved_username:
   - system
   - root  
 
+default_pref_lang: cn
+
 per_page:
   forum: 20
   topic: 10

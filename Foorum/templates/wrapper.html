@@ -42,17 +42,19 @@
 
 <span style='float:right'>
     [% IF c.user_exists %]
-    <a href='/message'>Message</a>
     <script>
         JSAN.use('Widget.Lightbox');
         JSAN.use("Effect.RoundedCorners");
         var box = new Widget.Lightbox();
         box.effects('RoundedCorners', 'Appear');
-        box.content("<div class='lightbox'><h3>My Panel</h3><ul><li><a href='/my/starred'>My Starred Items</a></li></ul><div style='text-align:right'><a href='javascript:box.hide()'>Close it</a></div></div>");
+        box.content("<div class='lightbox'><h3>[% c.loc('My Panel') %]</h3><ul>" + 
+            "<li><a href='/message'>[% c.loc('Message') %]</a></li>" + 
+            "<li><a href='/my/starred'><img src='http://mail.google.com/mail/images/star_on_2.gif' /> My Starred Items</a></li>" + 
+            "<li><a href='/profile/edit'>[% c.loc('Edit Profile') %]</a></li>" + 
+            "</ul><div style='text-align:right'><a href='javascript:box.hide()'>Close it</a></div></div>");
     </script>
     <span id='new_message'></span> 
-     | <a href='/profile/edit'>[% c.loc("Edit Profile") %]</a> 
-     | <a href='javascript:box.show();'>My Panel</a> 
+       <a href='javascript:box.show();'>[% c.loc('My Panel') %]</a> 
      | <a href='/logout'>[% c.loc("Log out") %]</a> 
     [% ELSE %]
     <a href='/register'>[% c.loc("Register") %]</a>  | <a href='/login'>[% c.loc("Log in") %]</a> | <a href='/profile/forget_password'>[% c.loc("Forget password?") %]</a>

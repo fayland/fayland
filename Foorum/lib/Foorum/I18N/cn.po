@@ -51,6 +51,9 @@ msgstr "登录"
 msgid "Log out"
 msgstr "退出"
 
+msgid "Message"
+msgstr "我的消息"
+
 msgid "Edit Profile"
 msgstr "编辑个人资料"
 
@@ -60,3 +63,5 @@ msgstr "忘记密码"
 msgid "Recent Topics"
 msgstr "最近新帖"
 
+msgid "My Panel"
+msgstr "我的控制面板"
