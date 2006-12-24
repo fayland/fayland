@@ -1,23 +1,25 @@
-[% ERRORS = {
-    'PERMISSION_DENIED' => 'Permission Denied.',
-    'ALL_REQUIRED'      => 'ALL is required.',
-    'USER_NON_EXSIT'    => 'User non-exist',
-    'USER_BLOCKED'      => 'User blocked',
-    'USER_PENDING'      => 'Your status is pending',
-    'USER_REJECTED'     => 'Your status is rejected',
-    'WRONG_VISIT'       => 'URL WRONG HERE',
-    'EMAIL_OFF'         => 'Email function is disabled',
-    'TITLE_LENGTH'      => 'Title should be 1 ~ 80 chars',
-    'TEXT_REQUIRED'     => 'Text is required',
-    'CLOSED'            => "IT'S CLOSED",
-    'REGISTER_CLOSED'   => "For some reasons, Register is closed.",
-    'ILLEGAL_REQUEST'   => 'Illegal Request.',
-    '404'               => 'The requested URL is not found on this server.',
-} %]
-
 [% IF (matches = error.msg.match('ERROR_(\w+)'));
-    IF ERRORS.${matches.0};
-       error.msg = ERRORS.${matches.0};
+    SWITCH matches.0;
+    CASE 'PERMISSION_DENIED';
+    error.msg = c.loc("Permission Denied.");
+    CASE 'USER_NON_EXSIT';
+    error.msg = c.loc("User non-exist");
+    CASE 'USER_BLOCKED';
+    error.msg = c.loc("User is blocked");
+    CASE 'USER_PENDING';
+    error.msg = c.loc("Your status is pending");
+    CASE 'USER_REJECTED';
+    error.msg = c.loc("Your status is rejected");
+    CASE 'WRONG_VISIT';
+    error.msg = c.loc("URL WRONG HERE");
+    CASE 'EMAIL_OFF';
+    error.msg = c.loc("Email function is disabled");
+    CASE 'CLOSED';
+    error.msg = c.loc("IT'S CLOSED");
+    CASE 'ILLEGAL_REQUEST';
+    error.msg = c.loc("Illegal Request.");
+    CASE '404';
+    error.msg = c.loc("The requested URL is not found on this server.");
     END;
    END %]
 

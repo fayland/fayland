@@ -7,6 +7,7 @@ use File::Spec;
 #use Template::Constants qw( :debug );
 use NEXT;
 use Email::Obfuscate qw(obfuscate_email_address);
+use Foorum::Utils qw/decodeHTML/;
 
 my $tmpdir = File::Spec->tmpdir();
 
@@ -19,7 +20,8 @@ __PACKAGE__->config(
 	COMPILE_EXT => '.ttp1', 
 	STASH       => Template::Stash::XS->new,
     FILTERS      => {
-        'email_obfuscate' => sub { obfuscate_email_address(shift) },
+        email_obfuscate => sub { obfuscate_email_address(shift) },
+        decodeHTML      => sub { decodeHTML(shift) },
     }
 );
 

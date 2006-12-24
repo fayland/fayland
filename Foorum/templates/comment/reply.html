@@ -10,7 +10,7 @@
   [% IF comment %]
   <tr class='forum2'><td colspan='2' align='center'>
     <table style='width:80%'>
-        <tr><td colspan='2' class='title'>[% comment.title | html %]</td></tr>
+        <tr><td colspan='2' class='title'>[% comment.title %]</td></tr>
         <tr class='forum1'><td width='150'>
             [% INCLUDE 'include/user_profile_simple.html' user = comment.author %]
         </td><td>

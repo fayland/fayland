@@ -3,6 +3,7 @@ package Foorum::Controller::Poll;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
+use Foorum::Utils qw/encodeHTML/;
 
 sub create : Regex('^forum/(\d+)/poll/new$') {
     my ($self, $c) = @_;
@@ -25,6 +26,10 @@ sub create : Regex('^forum/(\d+)/poll/new$') {
     my $now = time();
     $duration = $now + $duration * 86400; # 86400 = 24 * 60 * 60, means 1 day
 
+    # we prefer [% | html %] now because of my bad memory in TT html
+    my $title = $c->req->param('title');
+    $title = encodeHTML($title);
+
     # insert record into table
     my $poll = $c->model('DBIC::Poll')->create( {
         forum_id  => $forum_id,
@@ -34,7 +39,7 @@ sub create : Regex('^forum/(\d+)/poll/new$') {
         vote_no   => 0,
         time      => $now,
         duration  => $duration,
-        title     => $c->req->param('title'),
+        title     => $title,
     } );
     my $poll_id = $poll->poll_id;
     # get all options

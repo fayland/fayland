@@ -1,8 +1,9 @@
 [% USE FillInForm %]
 
 [% UNLESS c.req.method == 'POST';
+    comment_title = comment.title | decodeHTML;
     filldata = {
-        title => comment.title,
+        title => comment_title,
         text  => comment.text,
     };
 END; %]

@@ -29,7 +29,7 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 [% FOREACH poll IN polls %]
 <tr align='center'>
 	<td class='forum1'>[% IF poll.duration < date.now %]Locked[% END %]</td>
-	<td class='forum2'><a href='/forum/[% forum.forum_id %]/poll/[% poll.poll_id %]'>[% poll.title | html %]</a></td>
+	<td class='forum2'><a href='/forum/[% forum.forum_id %]/poll/[% poll.poll_id %]'>[% poll.title %]</a></td>
 	<td class='forum1'><a href='/u/[% poll.author.username %]'>[% poll.author.nickname %]</a></td>
 	<td class='forum2'>[% poll.vote_no %]</td>
 	<td class='forum1'>[% date.format(poll.time, '%Y-%m-%d %H:%M:%S') %]</td>

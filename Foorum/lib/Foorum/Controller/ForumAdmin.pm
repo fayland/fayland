@@ -5,7 +5,7 @@ use warnings;
 use base 'Catalyst::Controller';
 use File::Slurp;
 use YAML::Syck;
-use Foorum::Utils qw/is_color/;
+use Foorum::Utils qw/is_color encodeHTML/;
 use Data::Dumper;
 
 sub forum_for_admin : PathPart('forumadmin') Chained('/') CaptureArgs(1) {
@@ -81,6 +81,9 @@ sub basic : Chained('forum_for_admin') Args(0) {
         }
         push @moderator_users, $moderator_user;
     }
+    
+    # escape html for name and description
+    $name = encodeHTML($name); $description = encodeHTML($description);
     
     # insert data into table.
     my $policy = ($private == 1)?'private':'public';

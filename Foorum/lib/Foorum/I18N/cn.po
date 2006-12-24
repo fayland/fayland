@@ -39,6 +39,9 @@ msgstr "投票"
 msgid "Author"
 msgstr "作者"
 
+msgid "User"
+msgstr "用户"
+
 msgid "Subject"
 msgstr "标题"
 
@@ -65,3 +68,46 @@ msgstr "最近新帖"
 
 msgid "My Panel"
 msgstr "我的控制面板"
+
+msgid "Close"
+msgstr "关闭"
+
+
+
+
+
+
+
+
+
+
+# error message
+msgid "Illegal Request."
+msgstr "非法访问"
+
+msgid "Permission Denied."
+msgstr "权限禁止"
+
+msgid "User non-exist"
+msgstr "用户不存在"
+
+msgid "User is blocked"
+msgstr "用户被禁"
+
+msgid "Your status is pending"
+msgstr "你的状态为“等待批准”"
+
+msgid "Your status is rejected"
+msgstr "你的状态为“被拒绝”"
+
+msgid "URL WRONG HERE"
+msgstr "URL 地址错误"
+
+msgid "Email function is disabled"
+msgstr "邮件功能不可用"
+
+msgid "IT'S CLOSED"
+msgstr "已关闭"
+
+msgid "The requested URL is not found on this server."
+msgstr "您访问的地址不存在"

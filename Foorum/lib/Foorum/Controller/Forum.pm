@@ -122,15 +122,17 @@ sub members : LocalRegex('^(\d+)/members(/(\w+))?(/page=(\d+))?$') {
     my @user_roles = $rs->all;
     my @all_user_ids = map { $_->user_id } @user_roles;
     
-    my @members = $c->model('DBIC::User')->search( {
-        user_id => { 'IN', \@all_user_ids },
-    }, {
-        columns => ['user_id', 'username', 'nickname', 'gender', 'register_on'],
-    } )->all;
-    my %members = map { $_->user_id => $_ } @members;
-    
-    $c->log->debug('we have members: ' . scalar @members);
-    
+    my @members;
+    my %members;
+    if (scalar @all_user_ids) {
+        @members = $c->model('DBIC::User')->search( {
+            user_id => { 'IN', \@all_user_ids },
+        }, {
+            columns => ['user_id', 'username', 'nickname', 'gender', 'register_on'],
+        } )->all;
+        %members = map { $_->user_id => $_ } @members;
+    }
+ 
     $c->stash( {
         template => 'forum/members.html',
         member_type => $member_type,

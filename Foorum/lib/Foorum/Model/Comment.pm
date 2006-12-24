@@ -3,7 +3,7 @@ package Foorum::Model::Comment;
 use strict;
 use warnings;
 use base 'Catalyst::Model';
-use Foorum::Utils qw/get_page_no_from_url/;
+use Foorum::Utils qw/get_page_no_from_url encodeHTML/;
 use Data::Dumper;
 
 sub get_comments_by_object {
@@ -37,11 +37,15 @@ sub create {
     my $forum_id    = $info->{forum_id} || 0;
     my $reply_to    = $info->{reply_to} || 0;
     
+    # we prefer [% | html %] now because of my bad memory in TT html
+    my $title = $c->req->param('title');
+    $title = encodeHTML($title);
+    
     my $comment = $c->model('DBIC')->resultset('Comment')->create( {
         object_type => $object_type,
         object_id   => $object_id,
         author_id   => $c->user->user_id,
-        title       => $c->req->param('title'),
+        title       => $title,
         text        => $c->req->param('text'),
         formatter   => 'text',
         post_on     => \"NOW()",

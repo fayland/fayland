@@ -39,7 +39,7 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 	</tr>
 [% FOREACH poll IN polls %]
 <tr align='center'>
-	<td class='forum2'><a href='/forum/[% forum.forum_id %]/poll/[% poll.poll_id %]'>[% poll.title | html %]</a></td>
+	<td class='forum2'><a href='/forum/[% forum.forum_id %]/poll/[% poll.poll_id %]'>[% poll.title %]</a></td>
 	<td class='forum1'><a href='/u/[% poll.author.username %]'>[% poll.author.nickname %]</a></td>
 	<td class='forum2'>[% poll.vote_no %]</td>
 </tr>
@@ -74,7 +74,7 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 			    [% IF t.elite %]
 			    <a href='/forum/[% forum.forum_id %]/elite'><span class='highlight'>[Elite]</span></a> 
 			    [% END %]
-			    <a href='/forum/[% forum.forum_id %]/[% t.topic_id %]'><span class='semilight'>[% t.title | html %]</span></a>
+			    <a href='/forum/[% forum.forum_id %]/[% t.topic_id %]'><span class='semilight'>[% t.title %]</span></a>
 			</td>
 			</tr>
     	</table>

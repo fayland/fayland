@@ -65,6 +65,7 @@ sub edit : Local {
     
     $c->form(
         gender   => [ ['REGEX', qr/^(M|F)?$/ ] ],
+        lang     => [ ['REGEX', qr/^\w{2}$/  ] ],
         @extra_valid,
         homepage => [ 'HTTP_URL' ],
         nickname => [ qw/NOT_BLANK/, [qw/LENGTH 4 20/] ],
@@ -76,6 +77,7 @@ sub edit : Local {
         gender   => $c->req->param('gender') || '',
         @extra_insert,
         homepage => $c->req->param('homepage') || '',
+        lang     => $c->req->param('lang') || $c->config->{default_pref_lang},
     } );
     
     $c->res->redirect('/u/' . $c->user->username);

@@ -5,45 +5,42 @@ use warnings;
 use base 'Exporter';
 use vars qw/@EXPORT_OK/;
 @EXPORT_OK = qw/
-    encodeHTML decodeHTML unhtml
+    encodeHTML decodeHTML
     is_color
     generate_random_word
     get_page_no_from_url
 /;
 
-use HTML::Entities ();
-
-sub encodeHTML($) {
-	local $_ = $_[0];
-	if(defined $_) {
-		$_ = HTML::Entities::encode($_);
-		s/'/&apos;/g;
-		s/([^\x20-\x7E])/sprintf "&#x%X;", ord($1)/eg;
-	}
-	return $_;
-}
-
-sub decodeHTML($) {
-	return HTML::Entities::decode($_[0]);
-}
-
 =pod
 
-=item unhtml
+=item encodeHTML/decodeHTML
 
-convert &<" to accordding stuff
+Convert any '<', '>' or '&' characters to the HTML equivalents, '&lt;', '&gt;' and '&amp;', respectively. 
+
+encodeHTML is the same as TT filter 'html'
 
 =cut
 
-sub unhtml {
-	my ($s) = @_;
-	return ('') if (! defined($s));
-	$s =~ s/\&/\&amp;/gs;
-	$s =~ s/>/\&gt;/gs;
-	$s =~ s/</\&lt;/gs;
-	$s =~ s/"/\&quot;/gs;
-	$s =~ s/'/\&apos;/g;
-	return $s;
+sub encodeHTML {
+	my $text = shift;
+    for ($text) {
+        s/&/&amp;/g;
+        s/</&lt;/g;
+        s/>/&gt;/g;
+        s/"/&quot;/g;
+    }
+    return $text;
+}
+
+sub decodeHTML {
+    my $text = shift;
+    for ($text) {
+        s/\&amp;/\&/g;
+        s/\&gt;/>/g;
+        s/\&lt;/</g;
+        s/\&quot;/"/g;
+    }
+    return $text;
 }
 
 =pod

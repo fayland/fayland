@@ -51,7 +51,7 @@
             "<li><a href='/message'>[% c.loc('Message') %]</a></li>" + 
             "<li><a href='/my/starred'><img src='http://mail.google.com/mail/images/star_on_2.gif' /> My Starred Items</a></li>" + 
             "<li><a href='/profile/edit'>[% c.loc('Edit Profile') %]</a></li>" + 
-            "</ul><div style='text-align:right'><a href='javascript:box.hide()'>Close it</a></div></div>");
+            "</ul><div style='text-align:right'><a href='javascript:box.hide()'>[% c.loc('Close') %]</a></div></div>");
     </script>
     <span id='new_message'></span> 
        <a href='javascript:box.show();'>[% c.loc('My Panel') %]</a> 
@@ -68,8 +68,8 @@
 </span>
 
     <a href='/forum'>[% c.config.name %]</a>
-    [% IF forum %] → <a href='/forum/[% forum.forum_id %]'>[% forum.name | html %]</a> [% END %]
-    [% IF topic %] → [% topic.title | html %] [% END %]
+    [% IF forum %] -> <a href='/forum/[% forum.forum_id %]'>[% forum.name %]</a> [% END %]
+    [% IF topic %] -> [% topic.title %] [% END %]
 
 </td></tr>
 </table> 
@@ -88,6 +88,7 @@
 
 <div id='footer'>
     <p>
+    <div>Languages: <a href='[% c.req.uri_with( { set_lang => 'en' } ) %]'>English</a> | <a href='[% c.req.uri_with( { set_lang => 'cn' } ) %]'>简体中文</a></div>
     [% UNLESS forum %]<a href='/info/about_us'>About Us</a> | <a href='/info/contact_us'>Contact Us</a> | <a href='/help'>Help Center</a><br />[% END %]
     Copyright &copy; 2006 All Rights Reserved. Powered by <a href='/info/powered_by'>Foorum beta.</a>
     </p>

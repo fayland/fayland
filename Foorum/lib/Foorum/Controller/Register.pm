@@ -71,6 +71,7 @@ sub default : Private {
         register_on => \"NOW()",
         register_ip => $c->req->address,
         @extra_columns,
+        lang => $c->config->{default_pref_lang},
     });
     
     # redirect or forward

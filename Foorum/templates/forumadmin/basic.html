@@ -2,9 +2,11 @@
 
 [% USE FillInForm %]
 [% UNLESS c.req.method == 'POST';
+    forum_name = forum.name | decodeHTML;
+    forum_description = forum.description | decodeHTML;
     data = {
-        name  => forum.name,
-        description  => forum.description,
+        name  => forum_name,
+        description  => forum_description,
         private    => private,
         moderators => moderators,
     };
@@ -17,7 +19,7 @@ END; %]
     [% IF c.form.error('name') %]
 	the length of forum name should be more than 1 and less than 40
 	[% END %]</td></tr>
-    <tr class='forum2'><td>Forum Description</td><td><textarea name='description'></textarea>
+    <tr class='forum2'><td>Forum Description</td><td><textarea name='description' rows='9' cols='40'></textarea>
     [% IF c.form.error('description') %]
 	<br />description cann't be null.
 	[% END %]

@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
+use Foorum::Utils qw/encodeHTML/;
 
 sub topic : Regex('^forum/(\d+)/(\d+)(/page=(\d+))?$') {
     my ( $self, $c ) = @_;
@@ -75,10 +76,14 @@ sub create : Regex('^forum/(\d+)/topic/new$') {
         }
     }
     
+    # we prefer [% | html %] now because of my bad memory in TT html
+    my $title = $c->req->param('title');
+    $title = encodeHTML($title);
+    
     # create record 
     my $topic = $c->model('DBIC')->resultset('Topic')->create( {
         forum_id  => $forum_id,
-        title     => $c->req->param('title'),
+        title     => $title,
         author_id => $c->user->user_id,
         last_updator_id  => $c->user->user_id,
         last_update_date => \"NOW()",

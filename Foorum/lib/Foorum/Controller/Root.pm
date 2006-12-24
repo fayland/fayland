@@ -24,11 +24,16 @@ sub auto : Private {
     $ENV{DBIX_CLASS_STORAGE_DBI_DEBUG} = 1 if ($c->debug);
 	
 	# internationalization
-#    if ($c->req->headers->{'accept-language'} =~ /zh\-cn/) {
-#        $c->stash->{lang} = 'cn';
-#    } else {
-        $c->stash->{lang} = $c->req->cookie('pref_lang') || $c->config->{default_pref_lang} || 'en';
-#    }
+    $c->stash->{lang} = $c->req->cookie('pref_lang')->value if ($c->req->cookie('pref_lang'));
+    $c->stash->{lang} ||= $c->user->lang if ($c->user_exists);
+    $c->stash->{lang} ||= $c->config->{default_pref_lang};
+    if (my $lang = $c->req->param('set_lang')) {
+        $lang =~ s/\W+//isg;
+        if (length($lang) == 2) {
+            $c->res->cookies->{pref_lang} = { value => $lang };
+            $c->stash->{lang} = $lang;
+        }
+    }
     $c->languages( [ $c->stash->{lang} ] );
 
 	my $path = $c->req->path;	
