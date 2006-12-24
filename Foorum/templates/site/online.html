@@ -6,9 +6,9 @@
 <table align='center'>
 	<tr class="title" align='center'>
 	<td>[% c.loc("User") %]</td>
-	<td>Path</td>
-	<td>Visit Time</td>
-	<td>Active Time</td>
+	<td>[% c.loc('Path') %]</td>
+	<td>[% c.loc('Visit Time') %]</td>
+	<td>[% c.loc('Active Time') %]</td>
 	[% IF roles.is_admin %]<td>IP</td>[% END %]
 	</tr>
 [% FOREACH r IN results %]

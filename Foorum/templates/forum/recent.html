@@ -1,19 +1,19 @@
 [% IF recent_type == 'elite' %]
-[% title = 'Recent Elite Topics' %]
+[% title = c.loc('Recent Elite Topics') %]
 [% ELSE %]
-[% title = 'Recent Topics' %]
+[% title = c.loc('Recent Topics') %]
 [% END %]
 
 <div class='tabnav'>
     <ul>
-        <li[% IF recent_type != 'elite' %] class='selected'[% END %]><a href='/forum/recent'>Recent Topics</a></li>
-        <li[% IF recent_type == 'elite' %] class='selected'[% END %]><a href='/forum/recent/elite'>Recent Elite Topics</a></li>
+        <li[% IF recent_type != 'elite' %] class='selected'[% END %]><a href='/forum/recent'>[% c.loc('Recent Topics')</a></li>
+        <li[% IF recent_type == 'elite' %] class='selected'[% END %]><a href='/forum/recent/elite'>[% c.loc('Recent Elite Topics')</a></li>
     </ul>
 </div>
 <div class='one'>
 <table height='28' align='center'>
 	<tr class="title" align='center'>
-	<td width='200'>Forum</td>
+	<td width='200'>[% c.loc('Forum' %]</td>
 	<td width='42'>[% c.loc("Status") %]</td>
 	<td width='*'>[% c.loc("Subject") %]</td>
 	<td width='80'>[% c.loc("Author") %]</td>

@@ -73,11 +73,11 @@ sub recent_rss : Regex('^forum/recent(/elite)?/rss$') {
     
     my $is_elite = $c->req->snippets->[0];
     my @extra_cols;
-    my $title = 'Recent Topics';
+    my $title = $c->loc('Recent Topics');
     my $url_prefix = $c->req->base . 'forum/recent';
     if ($is_elite) {
         @extra_cols = ('elite', 1);
-        $title = 'Recent Elite Topics';
+        $title = $c->loc('Recent Elite Topics');
         $url_prefix .= '/elite'
     }
     my @topics = $c->model('DBIC::Topic')->search( {

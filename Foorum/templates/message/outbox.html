@@ -2,7 +2,7 @@
 
 <div class='one'> 
 <table align='center'>
-<tr class="title"><td>To</td><td>Subject</td><td>Date</td></tr>
+<tr class="title"><td>[% c.loc('To') %]</td><td>[% c.loc('Subject') %]</td><td>[% c.loc('Date') %]</td></tr>
 [% FOREACH message IN messages %]
 <tr class="[% IF loop.count % 2 == 0 %]misc1[% ELSE %]misc2[% END %]">
 <td><a href='/u/[% message.recipient.username %]'>[% message.recipient.nickname %]</a></td><td><a href='/message/[% message.message_id %]'>[% message.title %]</a></td><td>[% message.post_on %]</td>

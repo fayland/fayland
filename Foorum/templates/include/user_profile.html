@@ -1,10 +1,10 @@
 [% IF user %]
  <a href='/u/[% user.username %]'>[% user.nickname %]</a><br />
- [% SWITCH user.gender; CASE 'M';'Male';CASE 'F';'Female';CASE;'Secret';END; %][% IF user.gender %] &nbsp;<img src='[% c.config.dir.images %]/site/gender_[% user.gender %].gif' width='20' height='14' align='absmiddle' />[% END %]<br />
- [% IF user.status %]Status: [% user.status %]<br />[% END %]
- Threads: [% user.threads %]<br />
- Replies: [% user.replies %]<br />
- Register on: [% user.register_on %]<br />
+ [% IF user.gender %] &nbsp;<img src='[% c.config.dir.images %]/site/gender_[% user.gender %].gif' width='20' height='14' align='absmiddle' />[% END %]<br />
+ [% IF user.status %][% c.loc('Status:') %] [% user.status %]<br />[% END %]
+ [% c.loc('Threads:') %] [% user.threads %]<br />
+ [% c.loc('Replies:') %] [% user.replies %]<br />
+ [% c.loc('Register on:') %] [% user.register_on %]<br />
 [% ELSE %]
  Anonymous
 [% END %]

@@ -6,9 +6,9 @@
 <div class='one'> 
 <form method='post'>
 <table align='center'>
-<tr><td class="title" colspan='4'><b>Compose Message</b></td></tr>
+<tr><td class="title" colspan='4'><b>[% c.loc('Compose Message') %]</b></td></tr>
 <tr>
-<td class='misc1'><b>Rept.</b></td>
+<td class='misc1'><b>[% c.loc('Rept.') %]</b></td>
 <td class='misc1' colspan='3'><input type='text' name='to' size='16'> 　<select name=friend OnChange="friendls()"><option>Friends List</option></select> 
 [% IF c.form.error('to') %]
 [% IF c.form.error('to', 'USER_NONEXIST') %] 
