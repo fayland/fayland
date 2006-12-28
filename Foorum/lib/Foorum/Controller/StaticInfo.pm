@@ -5,14 +5,6 @@ use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
 
-sub begin : Private {
-    my ($self, $c) = @_;
-    
-    $c->stash( {
-        no_online_view => 1,
-    } );
-}
-
 sub help : Global {
     my ($self, $c, $help_id) = @_;
     

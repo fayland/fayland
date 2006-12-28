@@ -7,14 +7,6 @@ use Digest ();
 use Foorum::Utils qw/generate_random_word/;
 use Data::Dumper;
 
-sub begin : Private {
-    my ($self, $c) = @_;
-
-    $c->stash( {
-        no_online_view => 1,
-    } );
-}
-
 sub default : Private {
     my ( $self, $c ) = @_;
     

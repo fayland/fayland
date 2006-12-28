@@ -12,9 +12,7 @@ sub auto : Private {
 		$c->res->redirect('/login');
 		return 0;
 	}
-	
-	$c->stash->{no_online_view} = 1;
-	
+
 	return 1;
 }
 

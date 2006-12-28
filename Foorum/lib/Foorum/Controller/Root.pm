@@ -84,7 +84,7 @@ sub end : ActionClass('PathLogger') {
         $c->stash->{simple_wrapper} = 1;
     } else {
         # get whos view this page?
-        unless ($c->stash->{no_online_view}) {
+        if ($c->stash->{whos_view_this_page}) {
             my $results = $c->model('Online')->whos_view_this_page($c);
             $c->stash->{whos_view_this_page} = $results;
         }

@@ -41,6 +41,7 @@ sub topic : Regex('^forum/(\d+)/(\d+)(/page=(\d+))?$') {
         page => $page_no,
     } );
 
+    $c->stash->{whos_view_this_page} = 1;
     $c->stash->{template} = 'topic/index.html';
 }
 

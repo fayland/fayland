@@ -22,6 +22,7 @@ sub board : Path {
     my $roles = $c->model('Policy')->get_forum_moderators( $c, \@forum_ids );
     $c->stash->{roles} = $roles;
 
+    $c->stash->{whos_view_this_page} = 1;
     $c->stash->{forums} = \@forums;
     $c->stash->{template} = 'forum/board.html';
 
@@ -100,6 +101,7 @@ sub forum : LocalRegex('^(\d+)(/elite)?(/page=(\d+))?$') {
     # Pager
     my $pager = $it->pager;
 
+    $c->stash->{whos_view_this_page} = 1;
     $c->stash->{topics} = \@topics;
     $c->stash->{pager} = $pager;
     $c->stash->{template} = 'forum/forum.html';
@@ -147,12 +149,13 @@ sub members : LocalRegex('^(\d+)/members(/(\w+))?(/page=(\d+))?$') {
         } )->all;
         %members = map { $_->user_id => $_ } @members;
     }
- 
+
     $c->stash( {
         template => 'forum/members.html',
         member_type => $member_type,
         pager => $rs->pager,
         user_roles => \@user_roles,
+        whos_view_this_page => 1,
         members    => \%members,
     } );
 }

@@ -19,7 +19,6 @@ sub forum_for_admin : PathPart('forumadmin') Chained('/') CaptureArgs(1) {
 
     $c->stash( {
         forum => $forum,
-        no_online_view => 1,
     } );     
 }
 

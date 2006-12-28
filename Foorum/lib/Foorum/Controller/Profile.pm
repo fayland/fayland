@@ -6,16 +6,6 @@ use base 'Catalyst::Controller';
 use Foorum::Utils qw/generate_random_word/;
 use Digest ();
 
-sub begin : Private {
-    my ($self, $c) = @_;
-
-    if ($c->action ne 'profile/forget_password') {
-        $c->stash( {
-            no_online_view => 1,
-        } );
-    }
-}
-
 sub profile : Regex('^u/(\w{6,20})$') {
     my ( $self, $c ) = @_;
     
@@ -32,6 +22,7 @@ sub profile : Regex('^u/(\w{6,20})$') {
         } );
         
         $c->stash->{user} = $user;
+        $c->stash->{whos_view_this_page} = 1;
         $c->stash->{template} = 'user/profile.html';
     } else {
         $c->forward('/print_error', [ 'ERROR_USER_NON_EXSIT' ] );

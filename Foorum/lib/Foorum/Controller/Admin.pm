@@ -8,10 +8,6 @@ use Data::Dumper;
 
 sub auto : Private {
     my ($self, $c) = @_;
-    
-    $c->stash( {
-        no_online_view => 1, # avoid another connection of database for Admin.
-    } );
 
     unless ($c->user_exists) {
         $c->res->redirect('/login');
