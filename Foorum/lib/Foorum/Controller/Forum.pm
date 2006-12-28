@@ -67,6 +67,17 @@ sub forum : LocalRegex('^(\d+)(/elite)?(/page=(\d+))?$') {
                 pending_count => $pending_count,
             } );
         }
+        # check announcement
+        my $ann_cookie = $c->req->cookie("ann_$forum_id");
+        unless ($ann_cookie and $ann_cookie->value) {
+            $c->stash->{announcement} = $c->model('DBIC::Comment')->find( {
+                object_type => 'announcement',
+                object_id   => $forum_id,
+            }, {
+                columns => ['title', 'text'],
+            } );
+            $c->res->cookies->{"ann_$forum_id"} = { value => 1 };
+        }
     }
 
     my @extra_cols = ('elite', 1) if ($is_elite);

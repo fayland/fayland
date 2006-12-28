@@ -223,13 +223,14 @@ sub announcement : Chained('forum_for_admin') Args(0) {
         return;
     }
     
-    my $text  = $c->req->param('announcement');
     my $title = $c->req->param('title');
-    
+    my $text  = $c->req->param('text');
+
     # if no text is typed, delete the record.
     # or else, save it.
     if (length($text) and length($title)) {
         if ($announce) {
+            $title = encodeHTML($title);
             $announce->update( {
                 text        => $text,
                 update_on   => \"NOW()",
@@ -237,14 +238,10 @@ sub announcement : Chained('forum_for_admin') Args(0) {
                 title       => $title,
             } );
         } else {
-            $c->model('DBIC::Comment')->create( {
-                object_id   => $forum_id,
+            $c->model('Comment')->create($c, {
                 object_type => 'announcement',
+                object_id   => $forum_id,
                 forum_id    => $forum_id,
-                text        => $text,
-                post_on     => \"NOW()",
-                author_id   => $c->user->user_id,
-                title       => $title,
             } );
         }
     } else {

@@ -248,8 +248,10 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
         }
     }
 
+    my $title = $c->req->param('title');
+    $title = encodeHTML($title);
     $comment->update( {
-        title       => $c->req->param('title'),
+        title       => $title,
         text        => $c->req->param('text'),
         formatter   => 'text',
         update_on   => \"NOW()",

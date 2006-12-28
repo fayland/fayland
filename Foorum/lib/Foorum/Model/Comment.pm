@@ -46,7 +46,7 @@ sub create {
         object_id   => $object_id,
         author_id   => $c->user->user_id,
         title       => $title,
-        text        => $c->req->param('text'),
+        text        => $c->req->param('text') || '',
         formatter   => 'text',
         post_on     => \"NOW()",
         post_ip     => $c->req->address,
