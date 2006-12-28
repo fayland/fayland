@@ -19,10 +19,10 @@
     </table>
   </td></tr>
   [% END %]
-  <tr class='forum1'><td>Subject</td><td><input type='text' size='60' maxlength='80' name='title' />
+  <tr class='forum1'><td align='right'>[% c.loc('Title') %]</td><td><input type='text' size='60' maxlength='80' name='title' />
   [% IF c.form.error('title') %]title should be 1-80 chars.[% END %]
 </td></tr>
-  <tr class='forum2'><td>Text</td><td>
+  <tr class='forum2'><td align='right'>[% c.loc('Content') %]</td><td>
 
     [% WRAPPER 'format/bbcode.html' %]
 
@@ -32,10 +32,10 @@
 	[% END %]
 
   </td></tr>
-  <tr class='forum1'><td align='right'>Upload Attachment:</td><td>
+  <tr class='forum1'><td align='right'>[% c.loc('Upload Attachment') %]</td><td>
     [% INCLUDE upload/input.html %]
   </td></tr>
-  <tr class='forum2'><td colspan='2'><input type='submit' /></td></tr>
+  <tr class='forum2'><td></td><td><input type='submit' /></td></tr>
 </table>
 </form>
 </div>

@@ -22,13 +22,13 @@ please spec a rept.
 </td>
 </tr>
 <tr class='misc1'>
-<td valign='top'><b>Title: </b></td>
+<td valign='top' align='right'>[% c.loc('Title') %]</td>
 <td colspan='3'><input type='text' name='title' size='36' maxlength='80'>
 [% IF c.form.error('title') %]title should be 1-80 chars.[% END %]
 </td>
 </tr>
 <tr class='misc1'>
-<td valign='top'><b>Text: </b></td>
+<td valign='top' align='right'>[% c.loc('Content') %]</td>
 <td colspan='3'>
     <textarea cols='70' rows='8' name='text'></textarea>
 [% IF c.form.error('text') %]text is required.[% END %]

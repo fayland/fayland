@@ -24,8 +24,8 @@
 <div class='one'>
 <table align='center'>
     <tr><td class="misc1" colspan='2'>Reply</td></tr>
-    <tr><td class="misc2">Subject </td><td><input type='text' name='title' size='32' value='Re: [% message.title %]' /></td></tr>
-    <tr><td class="misc1">Text: </td><td><textarea cols='70' rows='8' name='text'></textarea></td></tr>
+    <tr><td class="misc2" align='right'>[% c.loc('Title') %]</td><td><input type='text' name='title' size='32' value='Re: [% message.title %]' /></td></tr>
+    <tr><td class="misc1" align='right'>[% c.loc('Content') %]</td><td><textarea cols='70' rows='8' name='text'></textarea></td></tr>
     <tr><td class="misc2" colspan='2'><input type='submit' /></td></tr>
 </table>
 </div>

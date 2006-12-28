@@ -13,7 +13,7 @@
 <form method="post">
 <table align='center' border='1' cellpadding='6'>
   <tr class='title'><td colspan='2'>Create a new POLL</td></tr>
-  <tr class='forum1'><td>Subject</td><td><input type='text' size='60' maxlength='80' name='title' />
+  <tr class='forum1'><td align='right'>[% c.loc('Title') %]</td><td><input type='text' size='60' maxlength='80' name='title' />
   [% IF c.form.error('title') %]title should be 1-80 chars.[% END %]
 </td></tr>
   <tr class='forum2'><td>Options:</td><td>

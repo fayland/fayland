@@ -49,13 +49,13 @@
       <br>
       <hr class='horizontal'>
        [% UNLESS topic.closed %]
-       <a href='[% url_prefix %]/[% comment.comment_id %]/reply'><img src='[% c.config.dir.images %]/replynow.gif' width='16' height='15' align='absmiddle'> Reply</a>
+       <a href='[% url_prefix %]/[% comment.comment_id %]/reply'><img src='[% c.config.dir.images %]/replynow.gif' width='16' height='15' align='absmiddle'> [% c.loc('Reply') %]</a>
        [% END %]
        [% IF roles.is_moderator OR comment.author.user_id == c.user.user_id %]
-       <a href='[% url_prefix %]/[% comment.comment_id %]/edit'><img src='[% c.config.dir.images %]/edit.gif' width='16' height='15' align='absmiddle'> Edit</a>
+       <a href='[% url_prefix %]/[% comment.comment_id %]/edit'><img src='[% c.config.dir.images %]/edit.gif' width='16' height='15' align='absmiddle'> [% c.loc('Edit') %]</a>
        [%# END %]
        [%# IF roles.is_moderator %]
-       <a href='[% url_prefix %]/[% comment.comment_id %]/delete'><img src='[% c.config.dir.images %]/del.gif' width='16' height='15' align='absmiddle'> Delete</a>
+       <a href='[% url_prefix %]/[% comment.comment_id %]/delete'><img src='[% c.config.dir.images %]/del.gif' width='16' height='15' align='absmiddle'> [% c.loc('Delete') %]</a>
        [% END %]
        <img src='[% c.config.dir.images %]/posttime.gif' width='16' height='15' align='absmiddle'> [% comment.post_on %]
     </td>
@@ -87,13 +87,13 @@
 <div class='one'>
 <form method='post' action='[% url_prefix %]/reply' enctype="multipart/form-data">
 <table align='center'>
-    <tr class='title'><td colspan='2'>Reply</td></tr>
-    <tr class='misc1'><td>Title</td><td><input type='text' name='title' size='64' maxlength='80' /></td></tr>
-    <tr class='misc2'><td>Text</td><td><textarea name='text' style='width: 100%' rows="15"></textarea></td></tr>
-    <tr class='misc1'><td align='right'>Upload Attachment:</td><td>
+    <tr class='title'><td colspan='2'>[% c.loc('Reply') %]</td></tr>
+    <tr class='misc1'><td align='right'>[% c.loc('Title') %]</td><td><input type='text' name='title' size='64' maxlength='80' /></td></tr>
+    <tr class='misc2'><td align='right'>[% c.loc('Content') %]</td><td><textarea name='text' style='width: 100%' rows="15"></textarea></td></tr>
+    <tr class='misc1'><td align='right'>[% c.loc('Upload Attachment') %]</td><td>
     [% INCLUDE upload/input.html %]
     </td></tr>
-    <tr class='misc2'><td colspan='2'><input type='submit' /></td></tr>
+    <tr class='misc2'><td></td><td><input type='submit' /></td></tr>
 </table>
 </form>
 </div>

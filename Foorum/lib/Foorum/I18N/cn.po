@@ -24,6 +24,12 @@ msgstr "回复"
 msgid "Reply"
 msgstr "回复"
 
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Delete"
+msgstr "删除"
+
 msgid "Hit"
 msgstr "点击"
 
@@ -44,6 +50,15 @@ msgstr "用户"
 
 msgid "Subject"
 msgstr "标题"
+
+msgid "Title"
+msgstr "标题"
+
+msgid "Content"
+msgstr "内容"
+
+msgid "Upload Attachment"
+msgstr "上传附件"
 
 msgid "Date"
 msgstr "日期"
@@ -146,3 +161,13 @@ msgstr "会员设置"
 
 msgid "Announcement Setting"
 msgstr "公告设置"
+
+# topic page
+msgid "Threads:"
+msgstr "发新帖数："
+
+msgid "Replies:"
+msgstr "回复帖数："
+
+msgid "Register on:"
+msgstr "注册时间："
