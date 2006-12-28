@@ -1,10 +1,10 @@
 [% url_base = '/forumadmin/' _ forum.forum_id %]
 
 <table align='center' class='tablewidth'>
-<tr><td valign='top' align='left'>
+<tr><td valign='top' align='left' width='200'>
 <div class='one'>
 <table>
-<tr><td class='title'>Menu</td></tr>
+<tr><td class='title'>[% c.loc('Menu') %]</td></tr>
 <tr><td class='forum1'><a href='[% url_base %]/basic'>[% c.loc('Basic Setting') %]</a></td></tr>
 <tr><td class='forum2'><a href='[% url_base %]/style'>[% c.loc('Style Setting') %]</a></td></tr>
 [% TRY %]
@@ -19,6 +19,6 @@
 <tr><td class='forum1'><a href='[% url_base %]/announcement'>[% c.loc('Announcement Setting') %]</a></td></tr>
 </table>
 </div>
-</td><td valign='top'>
+</td><td valign='top' width='*'>
 [% content %]
 </td></tr></table>

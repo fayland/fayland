@@ -2,7 +2,7 @@
 
 <div class='one'>
 <table align='center'>
-<tr align='center' class='title'><td width='20'>Star</td><td align='left'>Title</td><td width='180'>Author</td><td width='180'>Last Updated</td></tr>
+<tr align='center' class='title'><td width='20'>[% c.loc("Star") %]</td><td align='left'>[% c.loc("Subject") %]</td><td width='180'>[% c.loc("Author") %]</td><td width='180'>[% c.loc("Last Update") %]</td></tr>
 [% FOREACH item IN starred_items %]
 <tr align='center' class='misc[% IF loop.count mod 2 %]1[% ELSE %]2[% END %]'>
 

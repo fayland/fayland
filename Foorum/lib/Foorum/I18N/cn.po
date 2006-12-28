@@ -45,6 +45,9 @@ msgstr "用户"
 msgid "Subject"
 msgstr "标题"
 
+msgid "Date"
+msgstr "日期"
+
 msgid "Register"
 msgstr "注册"
 
@@ -53,6 +56,9 @@ msgstr "登录"
 
 msgid "Log out"
 msgstr "退出"
+
+msgid "Forum Admin"
+msgstr "管理论坛"
 
 msgid "Message"
 msgstr "我的消息"
@@ -72,8 +78,8 @@ msgstr "我的控制面板"
 msgid "Close"
 msgstr "关闭"
 
-
-
+msgid "Who is viewing this Page?"
+msgstr "谁在查看这个页面？"
 
 
 
@@ -111,3 +117,32 @@ msgstr "已关闭"
 
 msgid "The requested URL is not found on this server."
 msgstr "您访问的地址不存在"
+
+# message page
+msgid "Menu"
+msgstr "菜单"
+
+msgid "Compose New Message"
+msgstr "撰写新的短消息"
+
+msgid "Inbox"
+msgstr "收件箱"
+
+msgid "Outbox"
+msgstr "发件箱"
+
+# forumadmin page
+msgid "Basic Setting"
+msgstr "基本设置"
+
+msgid "Style Setting"
+msgstr "风格设置"
+
+msgid "Delete Style"
+msgstr "删除风格"
+
+msgid "Members Settings"
+msgstr "会员设置"
+
+msgid "Announcement Setting"
+msgstr "公告设置"
