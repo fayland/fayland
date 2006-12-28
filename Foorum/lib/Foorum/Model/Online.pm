@@ -5,11 +5,6 @@ use warnings;
 use base 'Catalyst::Model';
 use Data::Dumper;
 
-use vars qw/$last_15_min/;
-# get the last 15 minites' data
-# 15 * 60 = 900
-$last_15_min = time() + Foorum->config->{session}->{expires} - 900;
-
 sub get_data {
     my ($self, $c, $forum_id, $attr) = @_;
     
@@ -26,6 +21,9 @@ sub get_data {
         ] );
     }
 
+    # get the last 15 minites' data
+    # 15 * 60 = 900
+    my $last_15_min = time() + $c->config->{session}->{expires} - 900;
     my $rs = $c->model('DBIC::Session')->search( {
         expires =>  { '>', $last_15_min }, 
         @extra_cols,
@@ -44,6 +42,9 @@ sub get_data {
 sub whos_view_this_page {
     my ($self, $c) = @_;
     
+    # get the last 15 minites' data
+    # 15 * 60 = 900
+    my $last_15_min = time() + $c->config->{session}->{expires} - 900;
     my @session = $c->model('DBIC::Session')->search( {
         expires =>  { '>', $last_15_min },
         path    => $c->req->path,
