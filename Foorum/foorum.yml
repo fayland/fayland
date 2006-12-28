@@ -21,6 +21,7 @@ page_cache:
   expires: 300
   set_http_headers: 1
   debug: 1
+  auto_check_user: 1
 
 authentication:
   dbic:

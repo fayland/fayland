@@ -14,7 +14,7 @@ sub board : Path {
         prefetch => ['last_post'],
     } )->all;
 
-    $c->cache_page( '300' ) unless ($c->user_exists);
+    $c->cache_page( '300' );
 
     # get all moderators
     my @forum_ids;
@@ -205,7 +205,7 @@ sub recent : Local {
         $url_prefix .= '/elite'
     }
     
-    $c->cache_page( '300' ) unless ($c->user_exists);
+    $c->cache_page( '300' );
     
     my $page = get_page_no_from_url($c->req->path);
     my $rs = $c->model('DBIC::Topic')->search( {
