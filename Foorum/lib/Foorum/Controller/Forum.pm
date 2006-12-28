@@ -82,6 +82,10 @@ sub forum : LocalRegex('^(\d+)(/elite)?(/page=(\d+))?$') {
     } );
 
     my @topics  = $it->all;
+    if ($c->user_exists) {
+        my @all_topic_ids = map { $_->topic_id } @topics;
+        $c->stash->{is_visited} = $c->model('Visit')->is_visited($c, 'thread', \@all_topic_ids) if (scalar @all_topic_ids);
+    }
     # Pager
     my $pager = $it->pager;
 

@@ -24,6 +24,7 @@ __PACKAGE__->load_classes(qw/
     Upload
     LogPath
     LogAction
+    Visit
 /);
 
 =pod

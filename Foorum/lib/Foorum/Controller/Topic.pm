@@ -22,15 +22,17 @@ sub topic : Regex('^forum/(\d+)/(\d+)(/page=(\d+))?$') {
     $topic->update( {
         hit => $topic->hit + 1,
     } );
-    
-    # 'star' status
+
     if ($c->user_exists) {
+        # 'star' status
         $c->stash->{has_star} = $c->model('DBIC::Star')->count( {
             user_id => $c->user->user_id,
             object_type => 'topic',
             object_id   => $topic_id,
         } );
-    }        
+        # 'visit'
+        $c->model('Visit')->make_visited($c, 'thread', $topic_id);
+    }
     
     # get comments
     $c->model('Comment')->get_comments_by_object($c, {
@@ -94,6 +96,9 @@ sub create : Regex('^forum/(\d+)/topic/new$') {
     $c->clear_cached_page( '/forum/recent/rss' );
     $c->clear_cached_page( '/forum/recent/elite' );
     $c->clear_cached_page( '/forum/recent/elite/rss' );
+    
+    # clear visit
+    $c->model('Visit')->make_un_visited($c, 'thread', $topic->topic_id);
     
     my $comment = $c->model('Comment')->create($c, {
         object_type => 'thread',

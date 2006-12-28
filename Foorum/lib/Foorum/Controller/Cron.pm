@@ -16,6 +16,13 @@ sub remove_sessions : Local {
     $c->delete_expired_sessions;
 }
 
+sub remove_visits : Local {
+    my ($self, $c) = @_;
+    
+    # 2592000 = 30 * 24 * 60 * 60
+    $c->model('Visit')->remove_records_for_cron($c, 2592000);
+}
+
 =pod
 
 =head2 AUTHOR

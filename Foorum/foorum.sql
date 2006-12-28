@@ -227,6 +227,14 @@ CREATE TABLE `user_role` (
   `field` varchar(32) default NULL
 );
 
+DROP TABLE IF EXISTS `visit`;
+CREATE TABLE `visit` (
+  `user_id` int(11) unsigned NOT NULL,
+  `object_type` varchar(12) default NULL,
+  `object_id` int(11) default NULL,
+  `time` int(10) default NULL
+);
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
