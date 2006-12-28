@@ -1,3 +1,5 @@
 ---
 - at: '0 * * * *'
   event: /cron/remove_sessions
+- at: '0 0 * * *'
+  event: /cron/remove_visits

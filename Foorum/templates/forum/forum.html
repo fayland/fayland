@@ -86,7 +86,7 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 <div class='multi'>
 <table align='center'>
 	<tr align='center'>
-	<td class='forum1' width='42'>[% IF t.sticky %]TOP[% ELSIF t.closed %]<img src='[% c.config.dir.images %]/site/locked.gif' />[% END %]</td>
+	<td class='forum1' width='42'>[% IF t.sticky %]<img src='[% c.config.dir.images %]/site/top.gif' />[% ELSIF t.closed %]<img src='[% c.config.dir.images %]/site/locked.gif' />[% END %]</td>
 	<td class='forum2' valign='top' width='*'>
 		<table>
 			<tr>
