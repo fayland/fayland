@@ -5,6 +5,7 @@ use warnings;
 use base 'Catalyst::Model';
 use Data::Dumper;
 use File::Remove qw(remove);
+use File::Path;
 use Foorum::Utils qw/generate_random_word/;
 
 sub remove_for_forum {
@@ -91,17 +92,9 @@ sub add_file {
     my $upload_id = $upload_rs->upload_id;
     
     my $directory_1 = int($upload_id/3200/3200);
-    my $dir1 = $c->path_to('root', 'upload', $directory_1)->stringify;
-    unless (-d $dir1) {
-        mkdir $dir1, 0777;
-        chmod 0777, $dir1;
-    }
     my $directory_2 = int($upload_id/3200);
-    my $dir2 = $c->path_to('root', 'upload', $directory_1, $directory_2)->stringify;
-    unless (-d $dir2) {
-        mkdir $dir2, 0777;
-        chmod 0777, $dir2;
-    }
+    my $upload_dir = $c->path_to('root', 'upload', $directory_1, $directory_2)->stringify;
+    mkpath([$upload_dir], 0, 0777); # mkdir -k
     
     my $target = $c->path_to('root', 'upload', $directory_1, $directory_2, $basename)->stringify;
     

@@ -37,6 +37,7 @@ requires 'File::Remove';
 requires 'IP::QQWry';
 requires 'Email::Obfuscate';
 requires 'Switch';
+requires 'File::Path';
 
 catalyst;
 
