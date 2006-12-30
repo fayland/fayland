@@ -1,7 +1,7 @@
 use inc::Module::Install;
 
 name 'Foorum';
-all_from 'lib\Foorum.pm';
+all_from 'lib/Foorum.pm';
 
 requires 'Template';
 requires 'DBIx::Class';
