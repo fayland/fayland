@@ -225,6 +225,19 @@ sub parse {
       }
    }
    $self->{html} = join('', @{$self->{_stack}});
+   
+   # emot
+   my $html = $self->{html};
+   return $html unless ($html =~ /\:\w{2,9}\:/s);
+   my @emot_icon = ('wink', 'sad', 'biggrin', 'cheesy', 'confused', 'cool', 'angry', 'sads', 'smile', 'smiled', 'unhappy', 'dozingoff', 'blink', 'blush', 'crazy', 'cry', 'bigsmile', 'inlove', 'notify', 'shifty', 'sick', 'sleeping', 'sneaky2', 'tounge', 'unsure', 'wacko', 'why', 'wow', 'mad', 'Oo');
+   my $emot_url = '/images/bbcode/emot';
+   foreach my $em (@emot_icon) {
+        next unless ($html =~ /\:$em\:/s);
+        $html =~ s/\:$em\:/\<img src=\"$emot_url\/$em.gif\"\>/sg;
+        last unless ($html =~ /\:\w{2,9}\:/s);
+   }
+   $self->{html} = $html;
+   
    return $self->{html};
 }
 
@@ -363,6 +376,7 @@ controls="ImageWindow,StatusBar,ControlPanel" width='352' height='288' border='0
       $content =~ s|javascript:||g if($self->{options}->{no_jslink});
       $html = sprintf($self->{options}->{html_tags}->{$tag}, $content);
    }
+
    # Return ...
    return $html;
 }

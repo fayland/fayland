@@ -23,7 +23,7 @@
 	[% IF failure_login_times > 2 %]
     <tr class='misc2'><td align='right'>Captcha:</td><td><input type='text' name='captcha' size='12' /><img src='/captcha' /></td></tr>
     [% END %]
-	<tr class='misc2'><td> </td><td><input type='checkbox' name='remember_me' value='1' /> Remember me?</td></tr>
+	<tr class='misc2'><td> </td><td><input type='checkbox' name='remember_me' id='remember_me' value='1' /> <label for='remember_me'>Remember me?</label></td></tr>
 	<tr class='misc2'><td> </td><td><input type='submit' /></td></tr>
 	</form>
 	</tbody>

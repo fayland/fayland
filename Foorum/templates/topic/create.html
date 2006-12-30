@@ -9,7 +9,10 @@
   <tr class='forum1'><td align='right'>[% c.loc('Title') %]</td><td><input type='text' size='60' maxlength='80' name='title' />
   [% IF c.form.error('title') %]title should be 1-80 chars.[% END %]
   </td></tr>
-  <tr class='forum2'><td align='right'>[% c.loc('Content') %]</td><td>
+  <tr class='forum2'>
+    <td align='center' valign='middle'>
+    [% INCLUDE format/emot.html %]
+    </td><td>
 
     [% WRAPPER 'format/bbcode.html' %]
 
