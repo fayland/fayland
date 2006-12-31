@@ -1,8 +1,7 @@
-[% USE Dumper %]
 [% USE FillInForm %]
 [% UNLESS c.req.method == 'POST';
     data = {
-        homepage  => c.user.homepage,
+        homepage  => user_details.homepage,
         nickname  => c.user.nickname,
         gender    => c.user.gender,
         lang      => c.user.lang,

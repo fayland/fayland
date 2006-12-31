@@ -11,7 +11,11 @@ sub profile : Regex('^u/(\w{6,20})$') {
     
     my $username = $c->req->snippets->[0];
     
-    my $user = $c->model('DBIC')->resultset('User')->single( { username => $username } );
+    my $user = $c->model('DBIC')->resultset('User')->find( {
+        username => $username
+    }, {
+        prefetch => ['details', 'last_post'],
+    } );
     
     if ($user) {
         
@@ -37,13 +41,15 @@ sub edit : Local {
     $c->stash->{template} = 'user/profile/edit.html';
     
     unless ($c->req->method eq 'POST') {
-        if ($c->user->birthday and $c->user->birthday =~ /^(\d+)\-(\d+)\-(\d+)$/) {
+        my $rs = $c->model('DBIC::UserDetails')->find( { user_id => $c->user->user_id } );
+        if ($rs and $rs->birthday and $rs->birthday =~ /^(\d+)\-(\d+)\-(\d+)$/) {
             $c->stash( {
                 year  => $1,
                 month => $2,
                 day   => $3,
             } );
         }
+        $c->stash->{user_details} = $rs;
         return;
     }
     
@@ -66,9 +72,13 @@ sub edit : Local {
     $c->user->update( {
         nickname => $c->req->param('nickname') || $c->user->username,
         gender   => $c->req->param('gender') || '',
-        @extra_insert,
-        homepage => $c->req->param('homepage') || '',
         lang     => $c->req->param('lang') || $c->config->{default_pref_lang},
+    } );
+    
+    $c->model('DBIC::UserDetails')->update_or_create( {
+        user_id => $c->user->user_id,
+        homepage => $c->req->param('homepage') || '',
+        @extra_insert,
     } );
     
     $c->res->redirect('/u/' . $c->user->username);

@@ -27,7 +27,7 @@ CREATE TABLE `board` (
 DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
   `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) character set latin1 collate latin1_general_ci default NULL,
+  `name` varchar(255) default NULL,
   `parent_id` int(11) default NULL,
   `level` tinyint(4) default NULL,
   PRIMARY KEY  (`id`)
@@ -37,15 +37,15 @@ DROP TABLE IF EXISTS `comment`;
 CREATE TABLE `comment` (
   `comment_id` int(11) NOT NULL auto_increment,
   `reply_to` int(11) NOT NULL default '0',
-  `text` text character set latin1 collate latin1_general_ci,
+  `text` text,
   `post_on` datetime default NULL,
   `update_on` datetime default NULL,
-  `post_ip` varchar(32) character set latin1 collate latin1_general_ci default NULL,
-  `formatter` varchar(16) character set latin1 collate latin1_general_ci default 'plain',
-  `object_type` varchar(30) character set latin1 collate latin1_general_ci NOT NULL,
+  `post_ip` varchar(32) default NULL,
+  `formatter` varchar(16) default 'plain',
+  `object_type` varchar(30) NOT NULL,
   `object_id` int(11) NOT NULL,
   `author_id` int(11) default NULL,
-  `title` varchar(255) character set latin1 collate latin1_general_ci NOT NULL,
+  `title` varchar(255) NOT NULL,
   `forum_id` int(11) default NULL,
   `upload_id` int(11) NOT NULL,
   PRIMARY KEY  (`comment_id`)
@@ -54,18 +54,18 @@ CREATE TABLE `comment` (
 DROP TABLE IF EXISTS `email_setting`;
 CREATE TABLE `email_setting` (
   `user_id` int(11) NOT NULL,
-  `object_type` enum('comment','topic') collate latin1_general_ci NOT NULL,
-  `frequence` enum('daily','weekly','none') collate latin1_general_ci NOT NULL,
+  `object_type` enum('comment','topic') NOT NULL,
+  `frequence` enum('daily','weekly','none') NOT NULL,
   PRIMARY KEY  (`user_id`,`object_type`)
 );
 
 DROP TABLE IF EXISTS `forum`;
 CREATE TABLE `forum` (
   `forum_id` int(11) NOT NULL auto_increment,
-  `name` varchar(100) collate latin1_general_ci default NULL,
-  `description` varchar(100) collate latin1_general_ci default NULL,
-  `type` varchar(16) collate latin1_general_ci default NULL,
-  `policy` enum('public','private','protected') collate latin1_general_ci NOT NULL default 'public',
+  `name` varchar(100) default NULL,
+  `description` varchar(100) default NULL,
+  `type` varchar(16) default NULL,
+  `policy` enum('public','private','protected') NOT NULL default 'public',
   `total_members` int(8) unsigned NOT NULL,
   `total_topics` int(11) NOT NULL default '0',
   `total_replies` int(11) NOT NULL default '0',
@@ -114,7 +114,7 @@ CREATE TABLE `message_unread` (
 DROP TABLE IF EXISTS `page`;
 CREATE TABLE `page` (
   `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate latin1_general_ci default NULL,
+  `name` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
 );
 
@@ -151,11 +151,11 @@ CREATE TABLE `poll_result` (
 
 DROP TABLE IF EXISTS `session`;
 CREATE TABLE `session` (
-  `id` char(72) collate latin1_general_ci NOT NULL,
-  `session_data` text collate latin1_general_ci,
+  `id` char(72) NOT NULL,
+  `session_data` text,
   `expires` int(11) default '0',
   `user_id` int(11) default NULL,
-  `path` varchar(255) collate latin1_general_ci default NULL,
+  `path` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
 );
 
@@ -171,10 +171,10 @@ DROP TABLE IF EXISTS `topic`;
 CREATE TABLE `topic` (
   `topic_id` int(11) NOT NULL auto_increment,
   `forum_id` int(4) default NULL,
-  `title` varchar(255) collate latin1_general_ci default NULL,
-  `closed` enum('0','1') collate latin1_general_ci NOT NULL default '0',
-  `sticky` enum('0','1') collate latin1_general_ci NOT NULL default '0',
-  `elite` enum('0','1') collate latin1_general_ci NOT NULL,
+  `title` varchar(255) default NULL,
+  `closed` enum('0','1') NOT NULL default '0',
+  `sticky` enum('0','1') NOT NULL default '0',
+  `elite` enum('0','1') NOT NULL,
   `hit` int(11) NOT NULL default '0',
   `last_updator_id` int(11) default NULL,
   `last_update_date` datetime NOT NULL,
@@ -197,27 +197,37 @@ CREATE TABLE `upload` (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` int(11) NOT NULL auto_increment,
-  `username` varchar(32) collate latin1_general_ci default NULL,
-  `password` varchar(32) collate latin1_general_ci default NULL,
-  `nickname` varchar(100) collate latin1_general_ci default NULL,
-  `gender` enum('F','M','') collate latin1_general_ci default NULL,
-  `birthday` date default NULL,
-  `email` varchar(255) collate latin1_general_ci default NULL,
+  `username` varchar(32) default NULL,
+  `password` varchar(32) default NULL,
+  `nickname` varchar(100) default NULL,
+  `gender` enum('F','M','') default NULL,
+  `email` varchar(255) default NULL,
   `register_on` date default NULL,
-  `register_ip` varchar(32) collate latin1_general_ci default NULL,
-  `active_code` char(10) collate latin1_general_ci default NULL,
+  `register_ip` varchar(32) default NULL,
+  `active_code` char(10) default NULL,
   `last_login_on` datetime default NULL,
-  `last_login_ip` varchar(32) collate latin1_general_ci default NULL,
+  `last_login_ip` varchar(32) default NULL,
   `has_actived` smallint(1) default NULL,
   `login_times` int(11) default '1',
-  `homepage` varchar(255) collate latin1_general_ci default NULL,
-  `status` varchar(16) collate latin1_general_ci default NULL,
+  `status` varchar(16) default NULL,
   `threads` int(11) NOT NULL default '0',
   `replies` int(11) NOT NULL default '0',
   `last_post_id` int(11) default NULL,
-  `lang` char(2) collate latin1_general_ci default 'cn',
+  `lang` char(2) default 'cn',
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `username` (`username`)
+);
+
+CREATE TABLE user_details (
+  user_id int(11)  DEFAULT '0'  ,
+  qq varchar(14)    ,
+  msn varchar(64)    ,
+  yahoo varchar(64)    ,
+  skype varchar(64)    ,
+  gtalk varchar(64)    ,
+  homepage varchar(255)    ,
+  birthday date    ,
+  PRIMARY KEY (user_id)
 );
 
 DROP TABLE IF EXISTS `user_role`;
