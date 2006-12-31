@@ -60,12 +60,24 @@ sub edit : Local {
         @extra_insert = ( birthday => $birthday );
     }
     
+    # be compatible with Yahoo! ID and email
+    foreach my $param ('gtalk', 'yahoo', 'skype') {
+        if ($c->req->param($param) =~ /^(\w+)\@/) {
+            $c->req->param($param, $1); # only need the username before @
+        }
+    }
+    
     $c->form(
         gender   => [ ['REGEX', qr/^(M|F)?$/ ] ],
         lang     => [ ['REGEX', qr/^\w{2}$/  ] ],
         @extra_valid,
         homepage => [ 'HTTP_URL' ],
         nickname => [ qw/NOT_BLANK/, [qw/LENGTH 4 20/] ],
+        'qq'       => [ ['REGEX', qr/^\d{6,14}$/  ]],
+        msn      => [qw/EMAIL_LOOSE/, [qw/LENGTH 5 64/] ],
+        gtalk    => [['REGEX', qr/^\w{2,64}$/  ]],
+        yahoo    => [['REGEX', qr/^\w{2,64}$/  ]],
+        skype    => [['REGEX', qr/^\w{2,64}$/  ]],
     );
     return if ($c->form->has_error);
 
@@ -78,6 +90,11 @@ sub edit : Local {
     $c->model('DBIC::UserDetails')->update_or_create( {
         user_id => $c->user->user_id,
         homepage => $c->req->param('homepage') || '',
+        'qq'  => $c->req->param('qq') || '',
+        msn => $c->req->param('msn') || '',
+        gtalk => $c->req->param('gtalk') || '',
+        yahoo => $c->req->param('yahoo') || '',
+        skype => $c->req->param('skype') || '',
         @extra_insert,
     } );
     
@@ -168,7 +185,7 @@ sub change_email : Local {
     
     # execute validation.
     $c->form(
-        email     => [qw/NOT_BLANK EMAIL_LOOSE/, [qw/LENGTH 5 20/], [ 'DBIC_UNIQUE', $c->model('DBIC')->resultset('User'), 'email' ] ],
+        email     => [qw/NOT_BLANK EMAIL_LOOSE/, [qw/LENGTH 5 64/], [ 'DBIC_UNIQUE', $c->model('DBIC')->resultset('User'), 'email' ] ],
     );
     return if ($c->form->has_error);
     

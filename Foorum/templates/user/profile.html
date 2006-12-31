@@ -1,3 +1,8 @@
+
+[% UNLESS c.user_exists %]
+[% ERROR_LOGIN_FIRST = 'You need login first' %]
+[% END %]
+
 <div class='one'>
 <table align='center'>
 	<tbody>
@@ -19,6 +24,16 @@
 	[% IF user.details.homepage %]
 	<tr class='misc2'><td align='right'>Birthday:</td><td><a href='[% user.details.homepage %]' target='_blank'>[% user.details.homepage %]</a></td></tr>
 	[% END %]
+	
+	[% IF user.details.qq OR user.details.msn OR user.details.gtalk OR user.details.skype OR user.details.yahoo %]
+	<tr class='title'><td colspan='2'>Contact Information</td></tr>
+	<tr class='misc2'><td align='right'>QQ:</td><td>[% user.details.qq %]</td></tr>
+	<tr class='misc1'><td align='right'>MSN:</td><td>[% ERROR_LOGIN_FIRST || user.details.msn %]</td></tr>
+	<tr class='misc2'><td align='right'>Gtalk:</td><td>[% ERROR_LOGIN_FIRST || user.details.gtalk %]</td></tr>
+	<tr class='misc1'><td align='right'>Yahoo! ID:</td><td>[% user.details.yahoo %]</td></tr>
+	<tr class='misc2'><td align='right'>Skype:</td><td>[% user.details.skype %]</td></tr>
+	[% END %]
+	
 	</tbody>
 </table>
 </div>
