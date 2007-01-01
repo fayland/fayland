@@ -24,7 +24,7 @@
 	[% IF user.details.qq OR user.details.msn OR user.details.gtalk OR user.details.skype OR user.details.yahoo %]
 	<tr class='title'><td colspan='2'>Contact Information</td></tr>
 	<tr class='misc1'><td align='right'>Email:</td><td>
-	    [% user.email | email_obfuscate %] <a href='/help/email'><img src='[% c.config.dir.images %]/site/help.gif' width='16' height='16' align='absmiddle' /></a>
+	    <img src='[% c.config.dir.images %]/myprofile/mail.png' width='20' height='20' align='absmiddle' /> [% user.email | email_obfuscate %] <a href='/help/email'><img src='[% c.config.dir.images %]/site/help.gif' width='16' height='16' align='absmiddle' /></a>
 	</td></tr>
 	<tr class='misc2'><td align='right'>QQ:</td><td>
 	    <a target='_blank' href='tencent://message/?uin=[% user.details.qq %]&Site=Foorum&Menu=yes'><img border="0" src="http://wpa.qq.com/pa?p=1:[% user.details.qq %]:4" align='absmiddle' /> [% user.details.qq %]</a>
