@@ -21,6 +21,7 @@ use Catalyst qw/
 	Email
 	Scheduler
 	Captcha
+	DBIC::Schema::Profiler
 /;
 
 our $VERSION = '0.01';

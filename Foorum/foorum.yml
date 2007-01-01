@@ -37,6 +37,9 @@ session:
   verify_address: 0
   param: sid
 
+DBIC::Schema::Profiler:
+  MODEL_NAME: DBIC
+
 static:
   dirs:
    - js
