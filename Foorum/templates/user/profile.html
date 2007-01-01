@@ -1,7 +1,4 @@
-
-[% UNLESS c.user_exists %]
-[% ERROR_LOGIN_FIRST = 'You need login first' %]
-[% END %]
+[% STOP_FROM_SPAM = 'You need login first' %]
 
 <div class='one'>
 <table align='center'>
@@ -9,7 +6,6 @@
 	<tr class='title'><td colspan='2'>User profile</td></tr>
 	<tr class='misc1'><td width='20%' align='right'>Username:</td><td>[% user.username %]</td></tr>
 	<tr class='misc2'><td align='right'>Nickname:</td><td>[% user.nickname %]</td></tr>
-	<tr class='misc2'><td align='right'>Email:</td><td>[% user.email | email_obfuscate %] <a href='/help/email'><img src='[% c.config.dir.images %]/site/help.gif' width='16' height='16' align='absmiddle' /></a></td></tr>
 	<tr class='misc1'><td align='right'>Gender:</td><td>
 	    [% SWITCH user.gender; CASE 'M';'Male';CASE 'F';'Female';CASE;'Secret';END; %]
 	    [% IF user.gender %] &nbsp;<img src='[% c.config.dir.images %]/site/gender_[% user.gender %].gif' width='20' height='14' align='absmiddle' />[% END %]
@@ -27,11 +23,28 @@
 	
 	[% IF user.details.qq OR user.details.msn OR user.details.gtalk OR user.details.skype OR user.details.yahoo %]
 	<tr class='title'><td colspan='2'>Contact Information</td></tr>
-	<tr class='misc2'><td align='right'>QQ:</td><td>[% user.details.qq %]</td></tr>
-	<tr class='misc1'><td align='right'>MSN:</td><td>[% ERROR_LOGIN_FIRST || user.details.msn %]</td></tr>
-	<tr class='misc2'><td align='right'>Gtalk:</td><td>[% ERROR_LOGIN_FIRST || user.details.gtalk %]</td></tr>
-	<tr class='misc1'><td align='right'>Yahoo! ID:</td><td>[% user.details.yahoo %]</td></tr>
-	<tr class='misc2'><td align='right'>Skype:</td><td>[% user.details.skype %]</td></tr>
+	<tr class='misc1'><td align='right'>Email:</td><td>
+	    [% user.email | email_obfuscate %] <a href='/help/email'><img src='[% c.config.dir.images %]/site/help.gif' width='16' height='16' align='absmiddle' /></a>
+	</td></tr>
+	<tr class='misc2'><td align='right'>QQ:</td><td>
+	    <a target='_blank' href='tencent://message/?uin=[% user.details.qq %]&Site=Foorum&Menu=yes'><img border="0" src="http://wpa.qq.com/pa?p=1:[% user.details.qq %]:4" align='absmiddle' /> [% user.details.qq %]</a>
+	</td></tr>
+	<tr class='misc1'><td align='right'>MSN:</td><td>
+	    [% UNLESS c.user_exists;STOP_FROM_SPAM;ELSE %]
+	    <a href="http://members.msn.com/[% user.details.msn %]" target='_blank'><img src='[% c.config.dir.images %]/myprofile/msn.png' width='20' height='20' align='absmiddle' /> [% user.details.msn %]</a>
+	    [% END %]
+	</td></tr>
+	<tr class='misc2'><td align='right'>Gtalk:</td><td>
+	    [% UNLESS c.user_exists;STOP_FROM_SPAM;ELSE %]
+	    <img src='[% c.config.dir.images %]/myprofile/gtalk.png' width='20' height='20' align='absmiddle' /> [% user.details.gtalk %]
+	    [% END %]
+	</td></tr>
+	<tr class='misc1'><td align='right'>Yahoo! ID:</td><td>
+	    <a href='http://messenger.yahoo.com/edit/send/?.target=[% user.details.yahoo %]&.src=pg' target='_blank'><img src='[% c.config.dir.images %]/myprofile/yahoo.png' width='20' height='20' align='absmiddle' /> [% user.details.yahoo %]</a>
+	</td></tr>
+	<tr class='misc2'><td align='right'>Skype:</td><td>
+	    <img src='[% c.config.dir.images %]/myprofile/skype.png' width='20' height='20' align='absmiddle' /> [% user.details.skype %]
+	</td></tr>
 	[% END %]
 	
 	</tbody>

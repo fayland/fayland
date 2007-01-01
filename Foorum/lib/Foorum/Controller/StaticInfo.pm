@@ -20,19 +20,17 @@ sub info : Global {
 sub _static_info {
     my ($c, $type, $type_id) = @_;
     
+    $c->stash->{template} = "$type/index.html";
+    $c->stash->{additional_template_paths} = [ $c->path_to('templates', $c->stash->{lang}), $c->path_to('templates', 'en') ];
     # help/info templates in under its own templates/$lang/help
     # since too many text needs translation.
-    $c->stash->{additional_template_paths} = [ $c->path_to('templates', $c->stash->{lang}) ];
     if ($type_id) {
         $type_id =~ s/\W+//isg;
-        my $help_template = $c->path_to('templates', $c->stash->{lang}, $type, "$type_id.html")->stringify;
-        if (-e $help_template) {
+        if (-e $c->path_to('templates', $c->stash->{lang}, $type, "$type_id.html")
+        or  ($c->stash->{lang} ne 'en' and -e $c->path_to('templates', 'en', $type, "$type_id.html"))
+        ) {
             $c->stash->{template} = "$type/$type_id.html";
-        } else {
-            $c->stash->{template} = "$type/index.html";
         }
-    } else {
-        $c->stash->{template} = "$type/index.html";
     }
 }
 
