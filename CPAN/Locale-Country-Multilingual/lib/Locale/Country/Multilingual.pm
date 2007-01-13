@@ -6,7 +6,7 @@ use vars qw/$VERSION/;
 use File::Spec;
 use Carp;
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 sub new {
 	my $class = shift;
@@ -89,6 +89,7 @@ sub _load_data {
 	while (<FH>) {
 	    chomp;
 		my ($alpha2, $alpha3, $numeric, @countries) = split(/:/, $_);
+		next unless ($alpha2);
 		$self->{$lang}->{CODES}->{LOCALE_CODE_ALPHA_2}->{$alpha2} = $countries[0];
 		$self->{$lang}->{CODES}->{LOCALE_CODE_ALPHA_3}->{$alpha3} = $countries[0] if ($alpha3);
 		$self->{$lang}->{CODES}->{LOCALE_CODE_NUMERIC}->{$numeric} = $countries[0] if ($numeric);

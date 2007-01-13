@@ -14,5 +14,5 @@ my $builder = Module::Build->new(
     },
     add_to_cleanup      => [ 'Locale-Country-Multilingual-*' ],
 );
-
+$builder->add_build_element('dat');
 $builder->create_build_script();
