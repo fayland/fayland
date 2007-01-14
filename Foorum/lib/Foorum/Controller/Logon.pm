@@ -10,7 +10,7 @@ sub login : Global {
     $c->stash->{template} = 'user/login.html';
     return unless ($c->req->method eq 'POST');
 
-    my $username = $c->req->param("username");
+    my $username = $c->req->param('username');
     $username =~ s/\W+//isg;
     # check if we need captcha
     # for login password wrong more than 3 times, we create a captcha.
@@ -18,7 +18,7 @@ sub login : Global {
     my $failure_login_times = $c->cache->get($mem_key);
     $c->log->debug("failure_login_times is $failure_login_times");
 
-    if ($username and my $password = $c->req->param("password") ) {
+    if ($username and my $password = $c->req->param('password') ) {
         
         my $can_login = 0;
         my $captcha_ok = ($failure_login_times > 2 and $c->validate_captcha($c->req->param('captcha')));
@@ -40,7 +40,7 @@ sub login : Global {
 
             # login_times++
             $c->user->update( {
-                login_times   => $c->user->login_times + 1,
+                login_times   => \'login_times + 1',
                 last_login_on => \'NOW()',
                 last_login_ip => $c->req->address,
             } );

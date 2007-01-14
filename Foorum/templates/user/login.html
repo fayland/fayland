@@ -18,10 +18,10 @@
 	[% END %]
 	</span></td></tr>
 	[% END %]
-	<tr class='misc1'><td width='20%' align='right'><label for="username">Username:</label></td><td><input type='text' name='username' value='[% c.req.param('username') %]' size='12' /></td></tr>
-	<tr class='misc1'><td align='right'><label for="password">Password:</label></td><td><input type='password' name='password' size='12' /> <a href='/profile/forget_password'>Forget password?</a></td></tr>
+	<tr class='misc1'><td width='20%' align='right'><label for="username">[% c.loc('Username') %]</label></td><td><input type='text' name='username' value='[% c.req.param('username') %]' size='12' /></td></tr>
+	<tr class='misc1'><td align='right'><label for="password">[% c.loc('Password') %]</label></td><td><input type='password' name='password' size='12' /> <a href='/profile/forget_password'>[% c.loc('Forget password?') %]</a></td></tr>
 	[% IF failure_login_times > 2 %]
-    <tr class='misc2'><td align='right'>Captcha:</td><td><input type='text' name='captcha' size='12' /><img src='/captcha' /></td></tr>
+    <tr class='misc2'><td align='right'>[% c.loc('Captcha') %]</td><td><input type='text' name='captcha' size='12' /><img src='/captcha' /></td></tr>
     [% END %]
 	<tr class='misc2'><td> </td><td><input type='checkbox' name='remember_me' id='remember_me' value='1' /> <label for='remember_me'>Remember me?</label></td></tr>
 	<tr class='misc2'><td> </td><td><input type='submit' /></td></tr>

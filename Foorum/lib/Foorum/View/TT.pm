@@ -8,6 +8,10 @@ use File::Spec;
 use NEXT;
 use Email::Obfuscate qw(obfuscate_email_address);
 use Foorum::Utils qw/decodeHTML/;
+use Locale::Country::Multilingual;
+use Encode qw/decode/;
+use vars qw/$lcm/;
+$lcm = Locale::Country::Multilingual->new();
 
 my $tmpdir = File::Spec->tmpdir();
 
@@ -22,8 +26,18 @@ __PACKAGE__->config(
     FILTERS      => {
         email_obfuscate => sub { obfuscate_email_address(shift) },
         decodeHTML      => sub { decodeHTML(shift) },
+        code2country    => [ \&code2country, 1 ],
     }
 );
+
+sub code2country {
+    my ($context, $lang) = @_;
+    $lcm->set_lang($lang);
+    return sub {
+        my $code = shift;
+        return decode('utf8', $lcm->code2country($code));
+    }
+}
 
 sub render {
     my $self  = shift;

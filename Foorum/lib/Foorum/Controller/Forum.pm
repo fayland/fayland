@@ -199,10 +199,13 @@ sub recent : Local {
     my ($slef, $c, $recent_type) = @_;
     
     my @extra_cols;
-    my $url_prefix = '/forum/recent';
+    my $url_prefix;
     if ($recent_type eq 'elite') {
         @extra_cols = ('elite', 1);
-        $url_prefix .= '/elite'
+        $url_prefix .= '/forum/recent/elite';
+    } else {
+        $recent_type = 'site';
+        $url_prefix = '/forum/recent';
     }
     
     $c->cache_page( '300' );

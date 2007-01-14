@@ -5,6 +5,10 @@ use warnings;
 use base 'Catalyst::Controller';
 use Foorum::Utils qw/generate_random_word/;
 use Digest ();
+use Encode qw/decode/;
+use Locale::Country::Multilingual;
+use vars qw/$lcm/;
+$lcm = Locale::Country::Multilingual->new();
 
 sub profile : Regex('^u/(\w{6,20})$') {
     my ( $self, $c ) = @_;
@@ -39,6 +43,15 @@ sub edit : Local {
     return $c->res->redirect('/login') unless ($c->user_exists);
     
     $c->stash->{template} = 'user/profile/edit.html';
+    
+    # get all countries code
+    $lcm->set_lang($c->stash->{lang});
+    my @codes   = $lcm->all_country_codes();
+    my %countries;
+    foreach (@codes) {
+        $countries{$_} = decode('utf8', $lcm->code2country($_));
+    }
+    $c->stash->{countries} = \%countries;
     
     unless ($c->req->method eq 'POST') {
         my $rs = $c->model('DBIC::UserDetails')->find( { user_id => $c->user->user_id } );
@@ -78,13 +91,19 @@ sub edit : Local {
         gtalk    => [['REGEX', qr/^\w{2,64}$/  ]],
         yahoo    => [['REGEX', qr/^\w{2,64}$/  ]],
         skype    => [['REGEX', qr/^\w{2,64}$/  ]],
+        country  => [['REGEX', qr/^\w{2}$/  ]],
     );
     return if ($c->form->has_error);
 
+    # validate country
+    unless ($lcm->code2country($c->req->param('country'))) {
+        $c->req->param('country', '');
+    }
     $c->user->update( {
         nickname => $c->req->param('nickname') || $c->user->username,
         gender   => $c->req->param('gender') || '',
         lang     => $c->req->param('lang') || $c->config->{default_pref_lang},
+        country  => $c->req->param('country') || '',
     } );
     
     $c->model('DBIC::UserDetails')->update_or_create( {

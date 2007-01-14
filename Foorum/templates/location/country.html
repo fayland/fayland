@@ -1,0 +1,7 @@
+Country: [% country.name %]
+
+<ul>
+    [% FOREACH member IN members %]
+    <li><a href='/u/[% member.username %]'>[% member.nickname %]</a></li>
+    [% END %]
+</ul>

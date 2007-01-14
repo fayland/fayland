@@ -87,8 +87,14 @@ msgstr "忘记密码"
 msgid "Recent Topics"
 msgstr "最近新帖"
 
+msgid "Recent Elite Topics"
+msgstr "最近精华帖"
+
 msgid "My Panel"
 msgstr "我的控制面板"
+
+msgid "My Recent Topics"
+msgstr "我发表的最新帖子"
 
 msgid "Close"
 msgstr "关闭"
@@ -96,11 +102,15 @@ msgstr "关闭"
 msgid "Who is viewing this Page?"
 msgstr "谁在查看这个页面？"
 
+# footer
+msgid "About Us"
+msgstr "关于我们"
 
+msgid "Contact Us"
+msgstr "联系我们"
 
-
-
-
+msgid "Help Center"
+msgstr "帮助中心"
 
 # error message
 msgid "Illegal Request."
@@ -171,3 +181,34 @@ msgstr "回复帖数："
 
 msgid "Register on:"
 msgstr "注册时间："
+
+# login/profile
+msgid "Username"
+msgstr "用户名"
+
+msgid "Nickname"
+msgstr "昵称"
+
+msgid "Gender"
+msgstr "性别"
+
+msgid "Birthday"
+msgstr "生日"
+
+msgid "Homepage"
+msgstr "主页"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Captcha"
+msgstr "验证码"
+
+msgid "Country"
+msgstr "国家"
+
+msgid "Location Information"
+msgstr "地区信息"
+
+msgid "Contact Information"
+msgstr "联系信息"

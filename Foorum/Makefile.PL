@@ -36,6 +36,7 @@ requires 'Template::Plugin::String::Compare';
 requires 'File::Remove';
 requires 'IP::QQWry';
 requires 'Email::Obfuscate';
+requires 'Locale::Country::Multilingual';
 
 catalyst;
 

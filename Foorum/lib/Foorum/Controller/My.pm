@@ -5,11 +5,19 @@ use warnings;
 use base 'Catalyst::Controller';
 use Foorum::Utils qw/get_page_no_from_url/;
 
-sub starred : Local {
+sub auto : Private {
     my ($self, $c) = @_;
     
-    return $c->res->redirect('/login') unless ($c->user_exists);
-    
+    unless ($c->user_exists) {
+        $c->res->redirect('/login');
+        return 0;
+    }
+    return 1;
+}
+
+sub starred : Local {
+    my ($self, $c) = @_;
+
     my $page = get_page_no_from_url($c->req->path);
     
     my $rs = $c->model('DBIC::Star')->search( {
@@ -35,6 +43,29 @@ sub starred : Local {
         starred_items => \@starred_items,
         pager => $rs->pager,
         url_prefix => '/my/starred',
+    } );
+}
+
+sub topics : Local {
+    my ($self, $c) = @_;
+    
+    my $page = get_page_no_from_url($c->req->path);
+    my $rs = $c->model('DBIC::Topic')->search( {
+        author_id => $c->user->user_id,
+    }, {
+        order_by => \'last_update_date DESC',
+        prefetch => ['last_updator', 'forum'],
+        join => [qw/forum/],
+        rows => 20,
+        page => $page,
+    } );
+    
+    $c->stash( {
+        template => 'forum/recent.html',
+        topics   => [ $rs->all ],
+        pager    => $rs->pager,
+        recent_type => 'my',
+        url_prefix  => '/my/topics',
     } );
 }
 
