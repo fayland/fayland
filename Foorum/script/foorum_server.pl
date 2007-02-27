@@ -1,4 +1,4 @@
-#!C:\usr\bin\perl.exe -w
+#!/usr/bin/perl -w
 
 BEGIN { 
     $ENV{CATALYST_ENGINE} ||= 'HTTP';
