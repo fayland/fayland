@@ -6,7 +6,7 @@ use vars qw/$VERSION/;
 use File::Spec;
 use WWW::Mechanize;
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 sub new {
     my $class = shift;
@@ -65,6 +65,12 @@ sub upload {
             SourceFile_1 => $upload_file,
         },
     );
+    
+    # remove tmpfile
+    if ($upload->{url}) {
+        unlink $upload_file;
+    }
+    
     return 1;
 }
 
