@@ -1,6 +1,6 @@
 ---
 name: WWW-Zorpia-Upload
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: upload photos to www.zorpia.com
@@ -14,8 +14,8 @@ build_requires:
 provides:
   WWW::Zorpia::Upload:
     file: lib/WWW/Zorpia/Upload.pm
-    version: 0.01
-generated_by: Module::Build version 0.2801
+    version: 0.02
+generated_by: Module::Build version 0.2807
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2

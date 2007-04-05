@@ -57,6 +57,11 @@ sub upload {
     return 0 unless (-e $upload_file);
     
     my $upload_url = 'http://www.zorpia.com/photo/html_form/' . $album_id;
+    
+    if ($upload->{group_code}) {
+        $upload_url .= '/' . $upload->{group_code};
+    }
+    
     $self->{ua}->get($upload_url);
     return 0 unless ($self->{ua}->success);
     $self->{ua}->submit_form(
@@ -72,6 +77,13 @@ sub upload {
     }
     
     return 1;
+}
+
+sub upload_for_group {
+    my ($self, $upload) = @_;
+    
+    return 0 unless ($upload->{group_code});
+    return $self->upload($upload);
 }
 
 1;
@@ -99,6 +111,13 @@ WWW::Zorpia::Upload - upload photos to www.zorpia.com
     $zorpia->upload( {
         url => 'http://www.fayland.org/images/camel/kiss.jpg',
         album_id => -1, # optional, the same as above
+    } );
+    
+    # upload a photo to a group
+    $zorpia->upload_for_group( {
+        file => 'E:/Fayland/love.jpg',
+        album_id => '780190',
+        group_code => 'faylands_group',
     } );
 
 =head1 AUTHOR
