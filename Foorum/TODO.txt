@@ -26,6 +26,12 @@ and all word would have a forum then like 'Stock', 'DengXiaoPing'. URL would lik
 
 =cut
 
+=item forum code instead of forum_id
+
+I think /forum/happy is better than /forum/1
+
+=cut
+
 =item Style/CSS Rebuild
 
 CSS rebuild for forum. need more #class and .id
@@ -38,7 +44,11 @@ CSS rebuild for forum. need more #class and .id
 
 =cut
 
-=pod
+=item memcached support for session
+
+well, DBIC session is just too frequnce to load. we need add a thin memcached support for that.
+
+=cut
 
 =pod Trivial
 
