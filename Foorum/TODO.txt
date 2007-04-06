@@ -18,6 +18,14 @@ in my opionion, every country or state or city would have a forum. URL would be 
 
 =cut
 
+=item word forum
+
+and all word would have a forum then like 'Stock', 'DengXiaoPing'. URL would like:
+
+/w/$word
+
+=cut
+
 =item Style/CSS Rebuild
 
 CSS rebuild for forum. need more #class and .id
