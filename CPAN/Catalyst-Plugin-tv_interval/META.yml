@@ -1,0 +1,21 @@
+---
+name: Catalyst-Plugin-tv_interval
+version: 0.1
+author:
+  - 'Fayland <fayland@gmail.com>'
+abstract: call tv_interval of Time::HiRes to ease profiling.
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+build_requires:
+  Catalyst: 0
+  Test::More: 0
+  Time::HiRes: 0
+provides:
+  Catalyst::Plugin::tv_interval:
+    file: lib/Catalyst/Plugin/tv_interval.pm
+    version: 0.1
+generated_by: Module::Build version 0.2807
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
