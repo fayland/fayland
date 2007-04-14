@@ -1,5 +1,9 @@
 Revision history for Catalyst-Plugin-tv_interval
 
-0.01    Date/time
+0.2    2007/4/14 11:45
+        * POD improvement
+        * add sub clear_marked_point
+
+0.1    2007/4/14
         First version, released on an unsuspecting world.
 

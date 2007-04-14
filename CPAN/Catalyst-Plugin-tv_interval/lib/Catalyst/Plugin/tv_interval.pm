@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Time::HiRes qw( gettimeofday tv_interval );
 use vars qw/$VERSION/;
-$VERSION='0.1';
+$VERSION = '0.2';
 
 sub tv_mark_point {
     my ($c) = @_;
@@ -31,6 +31,12 @@ sub tv_mark_point {
     $c->stash->{__tv_interval} = { name => $new_name, line => $new_line, time => [gettimeofday] };
 }
 
+sub clear_marked_point {
+    my ($c) = @_;
+    
+    delete $c->stash->{__tv_interval};
+}
+
 1; # mummy happy
 
 __END__
@@ -48,18 +54,41 @@ Catalyst::Plugin::tv_interval - call tv_interval of Time::HiRes to ease profilin
         my ($self, $c) = @_;
         
         $c->tv_mark_point;
+        # CODE { do something }
+        $c->tv_mark_point; # print debug log how long this CODE takes
         
-        # do something
-        
+        $c->clear_marked_point; # now it looks like we never call ->tv_mark_point before
+        $c->tv_mark_point;
+        # CODE { do something else }
         $c->tv_mark_point;
     }
 
 =head1 DESCRIPTION
 
-This module uses the functions of tv_interval and [gettimeofday] in L<Time::HiRes>. and print debug logs like as follows:
+This module uses the functions of tv_interval and [gettimeofday] in L<Time::HiRes>. and print debug log like as follows:
 
     [debug] tv_interval: MyApp::Controller::Test from line 12 to 16 takes 0.013818
     [debug] tv_interval: MyApp::Controller::Test from line 16 to 22 takes 1.000408
+
+=head1 INTERFACE
+
+=head2 tv_mark_point
+
+if this is no 'ponit' before, mark a point and remember the file name, line and the [gettimeofday]. or else, compare the 'point' now with the old 'point' and print debug log.
+
+=head2 clear_marked_point
+
+clear the old 'point'
+
+=head1 DEPENDENCIES & SEE ALSO
+
+=over 4
+
+=item L<Catalyst> - The Elegant MVC Web Application Framework
+
+=item L<Time::HiRes> - High resolution alarm, sleep, gettimeofday, interval timers
+
+=back
 
 =head1 AUTHOR
 
