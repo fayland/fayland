@@ -6,10 +6,10 @@
 <div class='one'> 
 <form method='post'>
 <table align='center'>
-<tr><td class="title" colspan='4'><b>[% c.loc('Compose Message') %]</b></td></tr>
-<tr>
-<td class='misc1'><b>[% c.loc('Rept.') %]</b></td>
-<td class='misc1' colspan='3'><input type='text' name='to' size='16'> 　<select name=friend OnChange="friendls()"><option>Friends List</option></select> 
+<tr><td class="title" colspan='2'><b>[% c.loc('Compose New Message') %]</b></td></tr>
+<tr class='misc1'>
+<td><b>[% c.loc('Rept.') %]</b></td>
+<td><input type='text' name='to' size='16'> <select name=friend OnChange="friendls()"><option>Friends List</option></select> 
 [% IF c.form.error('to') %]
 [% IF c.form.error('to', 'USER_NONEXIST') %] 
 NO such user.
@@ -21,20 +21,20 @@ please spec a rept.
 [% END %]
 </td>
 </tr>
-<tr class='misc1'>
+<tr class='misc2'>
 <td valign='top' align='right'>[% c.loc('Title') %]</td>
-<td colspan='3'><input type='text' name='title' size='36' maxlength='80'>
+<td><input type='text' name='title' size='36' maxlength='80'>
 [% IF c.form.error('title') %]title should be 1-80 chars.[% END %]
 </td>
 </tr>
 <tr class='misc1'>
 <td valign='top' align='right'>[% c.loc('Content') %]</td>
-<td colspan='3'>
+<td>
     <textarea cols='70' rows='8' name='text'></textarea>
 [% IF c.form.error('text') %]text is required.[% END %]
 </td>
 </tr>
-<tr><td class='misc2' colspan='4' align='center'><input type='submit' /> <input type='reset' /></td></tr>
+<tr class='misc2'><td>&nbsp;</td><td><input type='submit' /> <input type='reset' /></td></tr>
 </table>
 </form>
 </div>

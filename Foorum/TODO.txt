@@ -4,7 +4,6 @@
 
 for all tables and check for what SQL is used most.
 
-=cut
 
 =pod High
 
@@ -16,46 +15,29 @@ in my opionion, every country or state or city would have a forum. URL would be 
 /country/$country_name/state/$state_name
 /country/$country_name/state/$state_name/city/$city_name
 
-=cut
-
 =item word forum
 
 and all word would have a forum then like 'Stock', 'DengXiaoPing'. URL would like:
 
 /w/$word
 
-=cut
-
-=item forum code instead of forum_id
-
-I think /forum/happy is better than /forum/1
-
-=cut
-
 =item Style/CSS Rebuild
 
 CSS rebuild for forum. need more #class and .id
 
-=cut
 
 =pod Normal
 
 =item try Catalyst::Plugin::I18N::DBIC stead of Catalyst::Plugin::I18N
 
-=cut
 
 =item memcached support for session
 
 well, DBIC session is just too frequnce to load. we need add a thin memcached support for that.
 
-=cut
 
 =pod Trivial
 
 =item try Window_JS instead of popup window or alert.
 
 http://prototype-window.xilinus.com/index.html
-
-=cut
-
-=cut

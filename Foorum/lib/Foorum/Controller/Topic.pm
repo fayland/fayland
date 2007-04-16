@@ -4,18 +4,19 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
-use Foorum::Utils qw/encodeHTML/;
+use Foorum::Utils qw/encodeHTML get_page_no_from_url/;
 
-sub topic : Regex('^forum/(\d+)/(\d+)(/page=(\d+))?$') {
+sub topic : Regex('^forum/(\w+)/(\d+)$') {
     my ( $self, $c ) = @_;
     
-    my $forum_id = $c->req->snippets->[0];
+    my $forum_code = $c->req->snippets->[0];
     my $topic_id = $c->req->snippets->[1];
-    my $page_no  = $c->req->snippets->[3];
+    my $page_no  = get_page_no_from_url($c->req->path);
     $page_no = 1 unless ($page_no and $page_no =~ /^\d+$/);
     
     # get the forum information
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum_id = $forum->forum_id;
     
     # get the topic
     my $topic = $c->forward('/get/topic', [ $forum_id, $topic_id ]);
@@ -45,15 +46,16 @@ sub topic : Regex('^forum/(\d+)/(\d+)(/page=(\d+))?$') {
     $c->stash->{template} = 'topic/index.html';
 }
 
-sub create : Regex('^forum/(\d+)/topic/new$') {
+sub create : Regex('^forum/(\w+)/topic/new$') {
     my ( $self, $c ) = @_;
     
     return $c->res->redirect('/login') unless ($c->user_exists);
     
     &_check_policy($self, $c);
     
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    my $forum_code = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum_id = $forum->forum_id;
     
     $c->stash( {
         template => 'topic/create.html',
@@ -120,18 +122,20 @@ sub create : Regex('^forum/(\d+)/topic/new$') {
         last_post_id => $topic->topic_id,
     } );
 
-    $c->res->redirect("/forum/$forum_id/" . $topic->topic_id);
+    my $forum_code = $forum->forum_code;
+    $c->res->redirect($forum->{forum_url} . '/' . $topic->topic_id);
 }
 
-sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
+sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
     my ( $self, $c ) = @_;
     
     return $c->res->redirect('/login') unless ($c->user_exists);
     
     &_check_policy( $self, $c );
     
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    my $forum_code = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum_id = $forum->forum_id;
     my $topic_id = $c->req->snippets->[1];
     my $topic = $c->forward('/get/topic', [ $forum_id, $topic_id ]);
     my $comment_id = $c->req->snippets->[3];
@@ -195,15 +199,16 @@ sub reply : Regex('^forum/(\d+)/(\d+)(/(\d+))?/reply$') {
     } ] );
 }
 
-sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
+sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
     my ( $self, $c ) = @_;
     
     return $c->res->redirect('/login') unless ($c->user_exists);
     
     &_check_policy($self, $c);
     
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    my $forum_code = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum_id = $forum->forum_id;
     my $topic_id = $c->req->snippets->[1];
     my $topic = $c->forward('/get/topic', [ $forum_id, $topic_id ]);
     my $comment_id = $c->req->snippets->[2];
@@ -272,11 +277,12 @@ sub edit : Regex('^forum/(\d+)/(\d+)/(\d+)/edit$') {
     } ] );
 }
 
-sub delete : Regex('^forum/(\d+)/(\d+)/(\d+)/delete$') {
+sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
     my ( $self, $c ) = @_;
     
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    my $forum_code = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum_id = $forum->forum_id;
     my $topic_id = $c->req->snippets->[1];
     my $comment_id = $c->req->snippets->[2];
     my $comment  = $c->forward('/get/comment', [ $comment_id, 'thread', $topic_id ] );

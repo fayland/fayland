@@ -5,15 +5,32 @@ use warnings;
 use base 'Catalyst::Controller';
 
 sub forum : Private {
-    my ( $self, $c, $forum_id ) = @_;
+    my ( $self, $c, $forum_code, $attr ) = @_;
     
-    my $forum = $c->model('DBIC')->resultset('Forum')->single( {
-        forum_id => $forum_id,
-    });
+    my $RaiseError = (exists $attr->{RaiseError}) ? $attr->{RaiseError} : 1;
+    my $forum_type = $attr->{forum_type} || 'classical';
+    
+    # if $forum_code is all numberic, that's forum_id
+    # or else, it's forum_code
+    my $where = ($forum_code =~ /^\d+$/) ? { forum_id => $forum_code } : 
+                { forum_code => $forum_code, forum_type => $forum_type };
+    
+    my $forum = $c->model('DBIC')->resultset('Forum')->find( $where );
+    
+    if ($forum) {
+        my $forum_url = '/forum/' . $forum->forum_code;
+        if ($forum_type eq 'country') {
+            $forum_url = '/country/' . $forum->forum_code;
+        }
+        $forum->{forum_url} = $forum_url;
+    }
+    
+    return $forum if ($RaiseError == 0);
     
     # print error if the forum_id is non-exist
     $c->detach('/print_error', [ 'Non-existent forum' ]) unless ($forum);
     
+    my $forum_id = $forum->forum_id;
     # check policy
     if ($c->user_exists and $c->model('Policy')->is_blocked( $c, $forum_id )) {
         $c->detach('/print_error', [ 'ERROR_USER_BLOCKED' ]);
@@ -30,7 +47,7 @@ sub forum : Private {
             } elsif ($c->model('Policy')->is_rejected($c, $forum_id)) {
                 $c->detach('/print_error', [ 'ERROR_USER_REJECTED' ]);
             } else {
-                $c->detach('/forum/join_us', [ $forum_id ]);
+                $c->detach('/forum/join_us', [ $forum ]);
             }
         }
     }

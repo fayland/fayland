@@ -24,7 +24,10 @@ use Catalyst qw/
 	DBIC::Schema::Profiler
 /;
 
-our $VERSION = '0.02';
+use vars qw/$VERSION/;
+$VERSION = '0.02';
+
+__PACKAGE__->config( { VERSION => $VERSION } );
 
 # Log4perl
 #use Catalyst::Log::Log4perl;

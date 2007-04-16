@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
+use Foorum::Utils qw/get_page_no_from_url/;
 
 sub auto : Private {
     my ( $self, $c ) = @_;
@@ -59,6 +60,8 @@ sub compose : Local {
         text    => $c->req->param('text'),
         post_on => \"NOW()",
         post_ip => $c->req->address,
+        from_status => 'open',
+        to_status => 'open',
     } );
     
     # add unread
@@ -71,16 +74,12 @@ sub compose : Local {
 }
 
 sub inbox : Local {
-    my ($self, $c, $page) = @_;
+    my ($self, $c) = @_;
     
-    # get page_no
-    my $page_no = 1;
-    if ($page and $page =~ /^page=(\d+)$/) {
-        $page_no = $1;
-    }
-    
+    my $page_no = get_page_no_from_url($c->req->path);
     my $it = $c->model('DBIC')->resultset('Message')->search( {
         to_id => $c->user->user_id,
+        to_status => 'open',
     } , {
         columns => [ 'message_id', 'title', 'post_on', ],
         prefetch => ['sender'],
@@ -92,20 +91,20 @@ sub inbox : Local {
     $c->stash->{messages} = \@messages;
     $c->stash->{pager} = $it->pager;
     
+    my @all_message_ids;
+    push @all_message_ids, $_->message_id foreach (@messages);
+    $c->stash->{unread} = $c->model('Message')->are_messages_unread($c, \@all_message_ids) if (scalar @all_message_ids);
+    
     $c->stash->{template} = 'message/inbox.html';
 }
 
 sub outbox : Local {
-    my ($self, $c, $page) = @_;
+    my ($self, $c) = @_;
     
-    # get page_no
-    my $page_no = 1;
-    if ($page and $page =~ /^page=(\d+)$/) {
-        $page_no = $1;
-    }
-    
+    my $page_no = get_page_no_from_url($c->req->path);
     my $it = $c->model('DBIC')->resultset('Message')->search( {
         from_id => $c->user->user_id,
+        from_status => 'open',
     } , {
         columns => [ 'message_id', 'title', 'post_on', ],
         prefetch => ['recipient'],
@@ -125,11 +124,11 @@ sub message : LocalRegex('^(\d+)$') {
     
     my $message_id = $c->req->snippets->[0];
     
-    my $message = $c->model('DBIC')->resultset('Message')->search( {
+    my $message = $c->model('DBIC')->resultset('Message')->find( {
         message_id => $message_id,
     }, {
         prefetch => ['sender', 'recipient'],
-    } )->first;
+    } );
     $c->stash->{message} = $message;
     
     # mark as read
@@ -139,6 +138,37 @@ sub message : LocalRegex('^(\d+)$') {
     } )->delete;
     
     $c->stash->{template} = 'message/message.html';
+}
+
+sub delete : LocalRegex('^(\d+)/delete$') {
+    my ($self, $c) = @_;
+    
+    my $message_id = $c->req->snippets->[0];
+    
+    my $message = $c->model('DBIC')->resultset('Message')->find( {
+        message_id => $message_id,
+    } );
+    
+    # both inbox and outbox.
+    # we set 'from_status' as 'deleted' when from_id delete it
+    # we set 'to_status' as 'deleted' when to_id delete it
+    # if both 'from_status' and 'to_status' eq 'deleted', we remove it from db
+    
+    if ($c->user->user_id == $message->from_id) { # outbox
+        if ($message->to_status eq 'deleted') {
+            $c->model('Message')->remove_from_db($c, $message_id);
+        } else {
+            $message->update( { from_status => 'deleted' } );
+        }
+        $c->res->redirect('/message/outbox');
+    } elsif ($c->user->user_id == $message->to_id) { # inbox
+        if ($message->from_status eq 'deleted') {
+            $c->model('Message')->remove_from_db($c, $message_id);
+        } else {
+            $message->update( { to_status => 'deleted' } );
+        }
+        $c->res->redirect('/message/inbox');
+    }
 }
 
 =pod

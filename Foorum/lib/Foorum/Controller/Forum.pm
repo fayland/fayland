@@ -28,24 +28,26 @@ sub board : Path {
 
 }
 
-sub forum : LocalRegex('^(\d+)(/elite)?(/page=(\d+))?$') {
-    my ($self, $c) = @_;
 
-    my $forum_id = $c->req->snippets->[0];
-    my $is_elite = $c->req->snippets->[1];
-    my $page_no  = $c->req->snippets->[3];
-    if ($page_no and $page_no =~ /^\d+$/) {
-        # set session
-        $c->session->{'forum'}->{$forum_id}->{page} = $page_no;
-    } else {
-        $page_no = $c->session->{'forum'}->{$forum_id}->{page} || 1;
-    }
+sub forum : PathPart('forum') Chained('/') CaptureArgs(1) {
+    my ( $self, $c, $forum_code ) = @_;
 
     # get the forum information
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+}
+
+sub list : LocalRegex('^(\w+)(/elite)?$') {
+    my ($self, $c) = @_;
+
+    my $forum_code = $c->req->snippets->[0];
+    my $is_elite = $c->req->snippets->[1];
+    my $page_no  = get_page_no_from_url($c->req->path);
+
+    # get the forum information
+    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum_id = $forum->forum_id;
     # get all moderators
     $c->stash->{forum_roles} = $c->model('Policy')->get_forum_moderators( $c, $forum_id );
-
 
     # for page 1 and normal mode
     if ($page_no == 1 and not $is_elite) {
@@ -107,19 +109,19 @@ sub forum : LocalRegex('^(\d+)(/elite)?(/page=(\d+))?$') {
     $c->stash->{template} = 'forum/forum.html';
 }
 
-sub members : LocalRegex('^(\d+)/members(/(\w+))?(/page=(\d+))?$') {
+sub members : LocalRegex('^(\w+)/members(/(\w+))?$') {
     my ($self, $c) = @_;
 
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    my $forum_code = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum_id = $forum->forum_id;
     
     my $member_type = $c->req->snippets->[2] || 'all';
     if ($member_type ne 'pending' and $member_type ne 'blocked' and $member_type ne 'rejected') {
         $member_type = 'user';
     }
     
-    my $page_no  = $c->req->snippets->[4];
-    $page_no = 1 unless ($page_no and $page_no =~ /^\d+$/);
+    my $page_no  = get_page_no_from_url($c->req->path);
     
     my (@query_cols, @attr_cols);
     if ($member_type eq 'user') {
@@ -161,9 +163,11 @@ sub members : LocalRegex('^(\d+)/members(/(\w+))?(/page=(\d+))?$') {
 }
 
 sub join_us : Private {
-    my ($self, $c, $forum_id) = @_;
+    my ($self, $c, $forum) = @_;
     
     return $c->res->redirect('/login') unless ($c->user_exists);
+    
+    my $forum_id = $forum->forum_id;
     
     if ($c->req->method eq 'POST') {
         my $rs = $c->model('DBIC::UserRole')->find( {
@@ -174,7 +178,7 @@ sub join_us : Private {
         } );
         if ($rs) {
             if ($rs->role eq 'user' or $rs->role eq 'moderator' or $rs->role eq 'admin') {
-                return $c->res->redirect("/forum/$forum_id");
+                return $c->res->redirect($forum->{forum_url});
             } elsif ($rs->role eq 'blocked' or $rs->role eq 'pending' or $rs->role eq 'rejected') {
                 my $role = uc($rs->role);
                 $c->detach('/print_error', [ "ERROR_USER_$role" ]);

@@ -64,7 +64,7 @@ CREATE TABLE `forum` (
   `forum_id` int(11) NOT NULL auto_increment,
   `name` varchar(100) default NULL,
   `description` varchar(100) default NULL,
-  `type` varchar(16) default NULL,
+  `forum_type` varchar(16) default NULL,
   `policy` enum('public','private','protected') NOT NULL default 'public',
   `total_members` int(8) unsigned NOT NULL,
   `total_topics` int(11) NOT NULL default '0',
@@ -102,6 +102,8 @@ CREATE TABLE `message` (
   `text` text NOT NULL,
   `post_on` datetime NOT NULL,
   `post_ip` varchar(32) NOT NULL,
+  from_status enum('open','deleted') NOT NULL DEFAULT 'open'  ,
+  to_status enum('open','deleted') NOT NULL DEFAULT 'open'  ,
   PRIMARY KEY  (`message_id`)
 );
 

@@ -6,18 +6,16 @@ use base 'Catalyst::Model';
 use Data::Dumper;
 
 sub get_data {
-    my ($self, $c, $forum_id, $attr) = @_;
+    my ($self, $c, $forum_code, $attr) = @_;
     
     $attr->{page} = 1 unless ($attr->{page});
     $attr->{order_by} = 'expires' unless($attr->{order_by});
     
     my @extra_cols; 
-    if ($forum_id) {
+    if ($forum_code) {
         @extra_cols = ( -or => [
-            'path' => { 'like', "forum/$forum_id/%" },
-            'path' => { 'like', "forum/$forum_id" },
-            'path' => { 'like', "forumadmin/$forum_id/%" },
-            'path' => { 'like', "forumadmin/$forum_id" },
+            'path' => { 'like', "forum/$forum_code/%" },
+            'path' => { 'like', "forum/$forum_code" },
         ] );
     }
 

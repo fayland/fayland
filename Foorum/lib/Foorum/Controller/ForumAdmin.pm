@@ -55,9 +55,19 @@ sub basic : Chained('forum_for_admin') Args(0) {
     # validate
     $c->form(
         name => [qw/NOT_BLANK/,             [qw/LENGTH 1 40/] ],
+#        forum_code  => [qw/NOT_BLANK/,      [qw/LENGTH 6 20/], ['REGEX', qr/[A-Za-z]+/ ], ['REGEX', qr/^[A-Za-z0-9\_]+$/ ], [ 'DBIC_UNIQUE', $c->model('DBIC::Forum'), 'forum_code' ] ],
 #        description  => [qw/NOT_BLANK/ ],
     );
     return if ($c->form->has_error);
+    
+    # check forum_code reserve
+#    my $cnt = $c->model('DBIC::FilterWord')->count( {
+#        word => $c->req->param('forum_code'),
+#        type => 'forum_code_reserved',
+#    } );
+#    if ($cnt) {
+#        return $c->set_invalid_form( forum_code => 'HAS_RESERVED' );
+#    }
     
     my $name  = $c->req->param('name');
     my $description = $c->req->param('description');
@@ -89,6 +99,7 @@ sub basic : Chained('forum_for_admin') Args(0) {
     $forum->update( {
         name => $name,
         description => $description,
+#        forum_code => $c->req->param('forum_code'),
 #        type => 'classical',
         policy => $policy,
     } );
@@ -106,7 +117,7 @@ sub basic : Chained('forum_for_admin') Args(0) {
         } );
     }
     
-    $c->res->redirect("/forum/$forum_id");
+    $c->res->redirect($forum->{forum_url});
 }
 
 sub style : Chained('forum_for_admin') Args(0) {
@@ -185,7 +196,7 @@ sub style : Chained('forum_for_admin') Args(0) {
         close(FH);
     }
     
-    $c->res->redirect("/forum/$forum_id");
+    $c->res->redirect($forum->{forum_url});
 }
 
 sub del_style : Chained('forum_for_admin') Args(0) {
@@ -200,7 +211,7 @@ sub del_style : Chained('forum_for_admin') Args(0) {
     unlink $yml if (-e $yml);
     unlink $css if (-e $css);
     
-    $c->res->redirect("/forum/$forum_id");
+    $c->res->redirect($forum->{forum_url});
 }
 
 sub announcement : Chained('forum_for_admin') Args(0) {
@@ -250,7 +261,7 @@ sub announcement : Chained('forum_for_admin') Args(0) {
         } )->delete;
     }
     
-    $c->res->redirect("/forum/$forum_id");
+    $c->res->redirect($forum->{forum_url});
 }
 
 # it's an ajax request

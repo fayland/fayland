@@ -204,7 +204,7 @@ sub change_email : Local {
     
     # execute validation.
     $c->form(
-        email     => [qw/NOT_BLANK EMAIL_LOOSE/, [qw/LENGTH 5 64/], [ 'DBIC_UNIQUE', $c->model('DBIC')->resultset('User'), 'email' ] ],
+        email     => [qw/NOT_BLANK EMAIL_LOOSE/, [qw/LENGTH 5 64/], [ 'DBIC_UNIQUE', $c->model('DBIC::User'), 'email' ] ],
     );
     return if ($c->form->has_error);
     

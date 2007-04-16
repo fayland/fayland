@@ -8,7 +8,7 @@ use Data::Dumper;
 sub log_path {
     my ($self, $c, $loadtime) = @_;
     
-    # sometimes we won't logger path because it expand the table so quick
+    # sometimes we won't logger path because it expand the table so quickly
     return unless ($c->config->{logger}->{path});
     # but sometimes we want to know which url is causing more than $PATH_LOAD_TIME_MORE_THAN
     return if ($loadtime < $c->config->{logger}->{path_load_time_more_than});

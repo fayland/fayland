@@ -5,8 +5,8 @@
 <div class='none'>
 <table align='center'>
 <tr><td>
-<a href='/forum/[% forum.forum_id %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle' /></a> 
-<a href='/forum/[% forum.forum_id %]/poll/new'><img src='[% c.config.dir.images %]/newpoll.gif' width='99' height='25' align='absmiddle' /></a> 
+<a href='/forum/[% forum.forum_code %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle' /></a> 
+<a href='/forum/[% forum.forum_code %]/poll/new'><img src='[% c.config.dir.images %]/newpoll.gif' width='99' height='25' align='absmiddle' /></a> 
 </td><td align='right' valign='bottom'>
 Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_roles.${forum.forum_id}.admin.nickname %]</a>
 [% FOREACH moderator IN forum_roles.${forum.forum_id}.moderator %]
@@ -19,17 +19,17 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 <div class='one'>
 <table align='center'>
 	<tr class='title' align='center'>
-	<td>Status</td>
-	<td>Subject</td>
-	<td>Author</td>
-	<td>Poll</td>
-	<td>Start Time</td>
-	<td>Close Time</td>
+	<td width='42'>Status</td>
+	<td align='left'>Subject</td>
+	<td width='100'>Author</td>
+	<td width='40'>Poll</td>
+	<td width='120'>Start Time</td>
+	<td width='120'>Close Time</td>
 	</tr>
 [% FOREACH poll IN polls %]
 <tr align='center'>
 	<td class='forum1'>[% IF poll.duration < date.now %]Locked[% END %]</td>
-	<td class='forum2'><a href='/forum/[% forum.forum_id %]/poll/[% poll.poll_id %]'>[% poll.title %]</a></td>
+	<td align='left' class='forum2'><a href='/forum/[% forum.forum_code %]/poll/[% poll.poll_id %]'>[% poll.title %]</a></td>
 	<td class='forum1'><a href='/u/[% poll.author.username %]'>[% poll.author.nickname %]</a></td>
 	<td class='forum2'>[% poll.vote_no %]</td>
 	<td class='forum1'>[% date.format(poll.time, '%Y-%m-%d %H:%M:%S') %]</td>
@@ -42,6 +42,6 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 
 <div class='none'>
 <table align='center'>
-    <tr><td>[% INCLUDE 'sub/pager.html' url_prefix = '/forum/' _ forum.forum_id _ '/polls' %]</td></tr>
+    <tr><td>[% INCLUDE 'sub/pager.html' url_prefix = '/forum/' _ forum.forum_code _ '/polls' %]</td></tr>
 </table>
 </div>

@@ -87,18 +87,13 @@ upload:
 
 logger:
   path: 1
-  path_load_time_more_than: 0
+  path_load_time_more_than: 2
+
+site:
+  copy_rights_start_year: 2006
 
 maintain: 0
 register: 1
-reserved_username:
-  - anonymous
-  - guest
-  - administrator
-  - admin
-  - moderator
-  - system
-  - root  
 
 default_pref_lang: cn
 

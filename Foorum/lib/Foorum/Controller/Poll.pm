@@ -3,15 +3,16 @@ package Foorum::Controller::Poll;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use Foorum::Utils qw/encodeHTML/;
+use Foorum::Utils qw/encodeHTML get_page_no_from_url/;
 
-sub create : Regex('^forum/(\d+)/poll/new$') {
+sub create : Regex('^forum/(\w+)/poll/new$') {
     my ($self, $c) = @_;
 
     return $c->res->redirect('/login') unless ($c->user_exists);
 
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->controller('Get')->forum($c, $forum_id);
+    my $forum_code = $c->req->snippets->[0];
+    my $forum = $c->controller('Get')->forum($c, $forum_code);
+    my $forum_id = $forum->forum_id;
 
     $c->stash->{template} = 'poll/new.html';
     return unless ($c->req->method eq 'POST');
@@ -55,14 +56,15 @@ sub create : Regex('^forum/(\d+)/poll/new$') {
         } );
     }
 
-    $c->res->redirect("/forum/$forum_id/poll/$poll_id");
+    $c->res->redirect($forum->{forum_url} . "/poll/$poll_id");
 }
 
-sub poll : Regex('^forum/(\d+)/poll/(\d+)$') {
+sub poll : Regex('^forum/(\w+)/poll/(\d+)$') {
     my ($self, $c) = @_;
 
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->controller('Get')->forum($c, $forum_id);
+    my $forum_code = $c->req->snippets->[0];
+    my $forum = $c->controller('Get')->forum($c, $forum_code);
+    my $forum_id = $forum->forum_id;
     my $poll_id  = $c->req->snippets->[1];
 
     my $poll = $c->model('DBIC::Poll')->find( {
@@ -93,12 +95,13 @@ sub poll : Regex('^forum/(\d+)/poll/(\d+)$') {
     } );
 }
 
-sub view_polls : Regex('^forum/(\d+)/poll(/page=(\d+))?$') {
+sub view_polls : Regex('^forum/(\w+)/poll$') {
     my ($self, $c) = @_;
 
-    my $forum_id = $c->req->snippets->[0];
-    my $forum    = $c->controller('Get')->forum($c, $forum_id);
-    my $page     = $c->req->snippets->[2] || 1;
+    my $forum_code = $c->req->snippets->[0];
+    my $forum    = $c->controller('Get')->forum($c, $forum_code);
+    my $forum_id = $forum->forum_id;
+    my $page     = get_page_no_from_url($c->req->path);
 
     # get all moderators
     $c->stash->{forum_roles} = $c->model('Policy')->get_forum_moderators( $c, $forum_id );

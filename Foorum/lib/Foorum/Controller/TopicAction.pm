@@ -5,11 +5,12 @@ use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
 
-sub lock_or_top_or_elite : Regex('^forum/(\d+)/(\d+)/(un)?(top|elite|lock)$') {
+sub lock_or_top_or_elite : Regex('^forum/(\w+)/(\d+)/(un)?(top|elite|lock)$') {
     my ( $self, $c ) = @_;
     
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    my $forum_code = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum_id = $forum->forum_id;
     my $topic_id = $c->req->snippets->[1];
     my $is_un    = $c->req->snippets->[2];
     my $action   = $c->req->snippets->[3];

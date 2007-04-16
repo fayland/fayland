@@ -15,6 +15,20 @@ END; %]
 <div class='one'>
 <form method='post'>
 <table align='center'>
+<!--    <tr class='forum2'><td>Forum Code:</td><td><input type='text' name='forum_code' />
+    [% IF c.form.error('forum_code') %]
+	    [% IF c.form.error('forum_code', 'HAS_BLANK') %]
+	    don't put blank in your forum_code.
+	    [% ELSIF c.form.error('forum_code', 'REGEX') %]
+	    only A-Z, a-z, 0-9, -, _ is allowed.
+	    [% ELSIF c.form.error('forum_code', 'HAS_RESERVED') %]
+	    this forum_code is reserved.
+	    [% ELSIF c.form.error('forum_code', 'DBIC_UNIQUE') %]
+	    This forum_code is used by another one.
+	    [% ELSE %]
+	    forum_code should be 6-20 chars.
+	    [% END %]
+	[% END %]</td></tr> -->
     <tr class='forum1'><td>Forum Name:</td><td><input type='text' name='name' />
     [% IF c.form.error('name') %]
 	the length of forum name should be more than 1 and less than 40

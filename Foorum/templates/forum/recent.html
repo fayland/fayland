@@ -29,7 +29,7 @@
 <div class='multi'>
 <table align='center'>
 	<tr align='center'>
-	<td class='forum2' width='200'><a href='/forum/[% t.forum.forum_id %]'>[% t.forum.name %]</a></td>
+	<td class='forum2' width='200'><a href='/forum/[% t.forum.forum_code %]'>[% t.forum.name %]</a></td>
 	<td class='forum1' width='42'>[% IF t.sticky %]<img src='[% c.config.dir.images %]/site/top.gif' />[% ELSIF t.closed %]<img src='[% c.config.dir.images %]/site/locked.gif' />[% END %]</td>
 	<td class='forum2' valign='top' width='*'>
 		<table>
@@ -38,7 +38,7 @@
 			    [% IF t.elite %]
 			    <span class='highlight'>[Elite]</a> 
 			    [% END %]
-			    <a href='/forum/[% forum.forum_id %]/[% t.topic_id %]'><span class='semilight'>[% t.title %]</span></a>
+			    <a href='/forum/[% forum.forum_code %]/[% t.topic_id %]'><span class='semilight'>[% t.title %]</span></a>
 			</td>
 			</tr>
     	</table>

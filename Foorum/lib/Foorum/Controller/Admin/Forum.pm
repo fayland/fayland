@@ -41,9 +41,19 @@ sub create : Local {
     
     $c->form(
         name => [qw/NOT_BLANK/,             [qw/LENGTH 1 40/] ],
+        forum_code  => [qw/NOT_BLANK/,      [qw/LENGTH 6 20/], ['REGEX', qr/[A-Za-z]+/ ], ['REGEX', qr/^[A-Za-z0-9\_]+$/ ], [ 'DBIC_UNIQUE', $c->model('DBIC::Forum'), 'forum_code' ] ],
 #        description  => [qw/NOT_BLANK/ ],
     );
     return if ($c->form->has_error);
+    
+    # check forum_code reserve
+    my $cnt = $c->model('DBIC::FilterWord')->count( {
+        word => $c->req->param('forum_code'),
+        type => 'forum_code_reserved',
+    } );
+    if ($cnt) {
+        return $c->set_invalid_form( forum_code => 'HAS_RESERVED' );
+    }
     
     my $name  = $c->req->param('name');
     my $admin = $c->req->param('admin');
@@ -75,8 +85,9 @@ sub create : Local {
     my $policy = ($private == 1)?'private':'public';
     my $forum = $c->model('DBIC::Forum')->create( {
         name => $name,
+        forum_code => $c->req->param('forum_code'),
         description => $description,
-        type => 'classical',
+        forum_type => 'classical',
         policy => $policy,
         total_members => $total_members,
     } );

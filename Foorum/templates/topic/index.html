@@ -1,16 +1,16 @@
 [% USE HTML::BBCode( 'bbcode_unlimited' ) %]
 [% title = topic.title _ ' : ' _ forum.name %]
 
-[% url_prefix = '/forum/' _ forum.forum_id _ '/' _ topic.topic_id %]
+[% url_prefix = '/forum/' _ forum.forum_code _ '/' _ topic.topic_id %]
 
 <div class='none'>
 <table align='center'>
 <tr><td>
-<a href='/forum/[% forum.forum_id %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle'></a> 
+<a href='/forum/[% forum.forum_code %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle'></a> 
 [% IF topic.closed %]
 <img src='[% c.config.dir.images %]/disreply.gif' width='99' height='25' align='absmiddle'>
 [% ELSE %]
-<a href='/forum/[% forum.forum_id %]/[% topic.topic_id %]/reply'><img src='[% c.config.dir.images %]/newreply.gif' width='99' height='25' align='absmiddle'></a> 
+<a href='/forum/[% forum.forum_code %]/[% topic.topic_id %]/reply'><img src='[% c.config.dir.images %]/newreply.gif' width='99' height='25' align='absmiddle'></a> 
 [% END %]
 </td></tr>
 </table>

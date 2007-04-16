@@ -2,12 +2,12 @@
 
 <div class='one'> 
 <table align='center'>
-<tr class="title"><td width='30%'>From</td><td>Subject</td></tr>
+<tr class="title"><td width='30%'>[% c.loc('From') %]</td><td>[% c.loc('Subject') %]</td></tr>
 <tr class="misc1">
 <td>
-    From: <a href='/u/[% message.sender.username %]'>[% message.sender.nickname %]</a><br />
-    To:   <a href='/u/[% message.recipient.username %]'>[% message.recipient.nickname %]</a><br />
-    Post on [% message.post_on %]
+    [% c.loc('From') %]: <a href='/u/[% message.sender.username %]'>[% message.sender.nickname %]</a><br />
+    [% c.loc('To') %]:   <a href='/u/[% message.recipient.username %]'>[% message.recipient.nickname %]</a><br />
+    [% c.loc('Post on') %]&nbsp;[% message.post_on %]
 </td>
 <td>
     <strong>[% message.title %]</strong><br />
@@ -23,10 +23,10 @@
 <input type='hidden' name='to' value='[% message.sender.username %]' />
 <div class='one'>
 <table align='center'>
-    <tr><td class="misc1" colspan='2'>Reply</td></tr>
-    <tr><td class="misc2" align='right'>[% c.loc('Title') %]</td><td><input type='text' name='title' size='32' value='Re: [% message.title %]' /></td></tr>
-    <tr><td class="misc1" align='right'>[% c.loc('Content') %]</td><td><textarea cols='70' rows='8' name='text'></textarea></td></tr>
-    <tr><td class="misc2" colspan='2'><input type='submit' /></td></tr>
+    <tr><td class="title" colspan='2'>[% c.loc('Reply') %]</td></tr>
+    <tr class="misc2"><td align='right'>[% c.loc('Title') %]</td><td><input type='text' name='title' size='32' value='Re: [% message.title %]' /></td></tr>
+    <tr class="misc1"><td align='right'>[% c.loc('Content') %]</td><td><textarea cols='70' rows='8' name='text'></textarea></td></tr>
+    <tr class="misc2"><td>&nbsp;</td><td><input type='submit' /></td></tr>
 </table>
 </div>
 [% END %]

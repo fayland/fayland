@@ -6,11 +6,11 @@ use base 'Catalyst::Controller';
 use Data::Dumper;
 
 sub default : Private {
-    my ($self, $c, undef, $forum_id) = @_;
+    my ($self, $c, undef, $forum_code) = @_;
 
     $c->cache_page( '300' );
 
-    my ($results, $pager) = $c->model('Online')->get_data($c, $forum_id);
+    my ($results, $pager) = $c->model('Online')->get_data($c, $forum_code);
 
     $c->stash( {
         results  => $results,

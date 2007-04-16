@@ -15,7 +15,7 @@
 	    [% IF c.form.error('new_username', 'HAS_BLANK') %]
 	    don't put blank in your username.
 	    [% ELSIF c.form.error('new_username', 'HAS_SPECAIL_CHAR') %]
-	    only A-Z, a-z, 0-9, -, _ is allowed.
+	    only A-Z, a-z, 0-9, - is allowed.
 	    [% ELSIF c.form.error('new_username', 'HAS_RESERVED') %]
 	    this username is reserved.
 	    [% ELSIF c.form.error('new_username', 'DBIC_UNIQUE') %]

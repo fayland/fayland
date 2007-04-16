@@ -5,10 +5,10 @@
 <div class='one'>
 <table align='center'>
 	<tr class="title" align='center'>
-	<td>[% c.loc("User") %]</td>
+	<td width='100'>[% c.loc("User") %]</td>
 	<td>[% c.loc('Path') %]</td>
-	<td>[% c.loc('Visit Time') %]</td>
-	<td>[% c.loc('Active Time') %]</td>
+	<td width='120'>[% c.loc('Visit Time') %]</td>
+	<td width='120'>[% c.loc('Active Time') %]</td>
 	[% IF roles.is_admin %]<td>IP</td>[% END %]
 	</tr>
 [% FOREACH r IN results %]

@@ -33,7 +33,7 @@
 	<td class='forum2' valign='top' width='*'>
 		<table>
 			<tr>
-			<td align="left"><a href='/forum/[% f.forum_id %]'><span class='semilight'>[% f.name %]</span></a></td>
+			<td align="left"><a href='/forum/[% f.forum_code %]'><span class='semilight'>[% f.name %]</span></a></td>
 			</tr>
 			<tr>
 			<td align="left">[% f.description %]</td>
@@ -64,7 +64,7 @@
         [% IF f.policy == 'private' %]
         Private
         [% ELSE %]
-        <a href='/forum/[% f.forum_id _ '/' _ f.last_post.topic_id %]'>[% f.last_post.title | truncate(20) %]</a><br /><a href='/u/[% f.last_post.last_updator.username %]'>[% f.last_post.last_updator.nickname %]</a><br />[% f.last_post.last_update_date %]
+        <a href='/forum/[% f.forum_code _ '/' _ f.last_post.topic_id %]'>[% f.last_post.title | truncate(20) %]</a><br /><a href='/u/[% f.last_post.last_updator.username %]'>[% f.last_post.last_updator.nickname %]</a><br />[% f.last_post.last_update_date %]
         [% END %]
     </td>
 	</tr>

@@ -14,11 +14,11 @@
 [% CATCH File %]
 [% END %]
 [% IF forum.policy == 'private' %]
-<tr><td class='forum2'><a href='/forum/[% forum.forum_id %]/members'>[% c.loc('Members Settings') %]</a></td></tr>
+<tr><td class='forum2'><a href='/forum/[% forum.forum_code %]/members'>[% c.loc('Members Settings') %]</a></td></tr>
 [% END %]
 <tr><td class='forum1'><a href='[% url_base %]/announcement'>[% c.loc('Announcement Setting') %]</a></td></tr>
 </table>
 </div>
-</td><td valign='top' width='100%'>
+</td><td valign='top' width='*'>
 [% content %]
 </td></tr></table>

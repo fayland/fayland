@@ -7,20 +7,17 @@ use Data::Dumper;
 use XML::RSS;
 use Date::Manip;
 
-sub forum : Regex('^forum/(\d+)/rss$') {
+sub forum : Regex('^forum/(\w+)/rss$') {
     my ($self, $c) = @_;
     
-    my $forum_id = $c->req->snippets->[0];
-    my $forum = $c->model('DBIC::Forum')->find( {
-        forum_id => $forum_id,
-    }, {
-        columns => ['policy', 'name', 'description'],
-    } );
+    my $forum_code = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $forum_code, { RaiseError => 0 } ]);
     return unless ($forum);
     return if ($forum->policy eq 'private');
 
     $c->cache_page( '600' );
     
+    my $forum_id = $forum->forum_id;
     my @topics = $c->model('DBIC')->resultset('Topic')->search( {
         forum_id => $forum_id,
     }, {
@@ -29,7 +26,7 @@ sub forum : Regex('^forum/(\d+)/rss$') {
         page => 1,
     } )->all;
     
-    my $forum_url = $c->req->base . 'forum/' . $forum_id;
+    my $forum_url = $c->req->base . $forum->{forum_url};
     my $rss = new XML::RSS (version => '2.0');
     $rss->channel(
         title          => $forum->name,
