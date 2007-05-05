@@ -1,8 +1,0 @@
-Changes
-Makefile.PL
-MANIFEST
-README
-t/Business-CN-IdentityCard.t
-lib/Business/CN/IdentityCard.pm
-lib/Business/CN/IdentityCard/District.pm
-META.yml                                 Module meta-data (added by MakeMaker)

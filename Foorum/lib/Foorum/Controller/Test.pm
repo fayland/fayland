@@ -9,12 +9,9 @@ use Time::HiRes qw( gettimeofday tv_interval );
 sub test : Global {
     my ( $self, $c ) = @_;
 
-    $c->stash( {
-        use_Multilingual => 1,
-        no_wrapper => 1,
-        template => 'test/index.html',
-        language => $c->req->param('lang') || 'en',
-    } );
+    my @column_names = $c->model('DBIC')->source('User')->columns;
+    
+    $c->res->body( Dumper \@column_names );
 }
 
 
