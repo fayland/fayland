@@ -14,10 +14,10 @@ sub _get_page_cache_key {
     my $lang = $c->req->cookie('pref_lang')->value if ($c->req->cookie('pref_lang'));
     $lang ||= $c->user->lang if ($c->user_exists);
     $lang ||= $c->config->{default_pref_lang};
-    if (my $lang = $c->req->param('set_lang')) {
-        $lang =~ s/\W+//isg;
-        if (length($lang) == 2) {
-            $lang = $lang;
+    if (my $set_lang = $c->req->param('set_lang')) {
+        $set_lang =~ s/\W+//isg;
+        if (length($set_lang) == 2) {
+            $lang = $set_lang;
         }
     }
     $key .= '#' . $lang if ($lang);
