@@ -118,13 +118,9 @@ sub add_file {
 
 sub change_for_forum {
     my ($self, $c, $info) = @_;
-    
-    $c->log->debug('1100022220');
-    
+
     my $from_id = $info->{form_id} or return 0;
     my $to_id   = $info->{to_id} or return 0;
-
-    $c->log->debug('11000333330');
 
     $c->model('DBIC::Upload')->search( {
         forum_id => $from_id,

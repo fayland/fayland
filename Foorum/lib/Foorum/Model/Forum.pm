@@ -79,9 +79,7 @@ sub remove_forum {
 
 sub merge_forums {
     my ($self, $c, $info) = @_;
-    
-    $c->log->debug('110000');
-    
+
     my $from_id = $info->{from_id} or return 0;
     my $to_id   = $info->{to_id} or return 0;
 
