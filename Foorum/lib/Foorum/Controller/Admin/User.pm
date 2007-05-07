@@ -42,11 +42,14 @@ sub edit : Local {
     
     my $user_id = $c->req->param('user_id');
     my $username = $c->req->param('username');
+    my $email = $c->req->param('email');
     my @query_cols;
     if ($user_id) {
         @query_cols = ('user_id', $user_id);
     } elsif ($username) {
         @query_cols = ('username', $username);
+    } elsif ($email) {
+        @query_cols = ('email', $email);
     } else {
         return;
     }

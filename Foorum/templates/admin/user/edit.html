@@ -17,7 +17,12 @@ No such user.
 [% END %]
 
 <form method='get' action='/admin/user/edit'>
-UserID: <input type='text' name='user_id' /> OR Username: <input type='text' name='username' /> <input type='submit' />
+<table border='0'>
+<tr><td>&nbsp;</td><td>UserID</td><td><input type='text' name='user_id' /></td></tr>
+<tr><td>OR</td><td>Username</td><td><input type='text' name='username' /></td></tr>
+<tr><td>OR</td><td>Email</td><td><input type='text' name='email' /></td></tr>
+<tr><td colspan='3'><input type='submit' /></td></tr>
+</table>
 </form>
 
 [% IF user %]
