@@ -11,6 +11,7 @@ sub lock_or_top_or_elite : Regex('^forum/(\w+)/(\d+)/(un)?(top|elite|lock)$') {
     my $forum_code = $c->req->snippets->[0];
     my $forum = $c->forward('/get/forum', [ $forum_code ]);
     my $forum_id = $forum->forum_id;
+    $forum_code = $forum->forum_code;
     my $topic_id = $c->req->snippets->[1];
     my $is_un    = $c->req->snippets->[2];
     my $action   = $c->req->snippets->[3];
@@ -48,6 +49,12 @@ sub lock_or_top_or_elite : Regex('^forum/(\w+)/(\d+)/(un)?(top|elite|lock)$') {
     } );
     
     $c->model('Log')->log_action($c, { action => "$is_un$action", object_type => 'topic', object_id => $topic_id } );
+    
+    $c->clear_cached_page( "/forum/$forum_id" );
+    $c->clear_cached_page( "/forum/$forum_code" ) if ($forum_code);
+    if ($action eq 'elite') {
+        $c->model('ClearCachedPage')->clear_when_topic_elite($c, $forum);
+    }
     
     $c->forward('/print_message', [ {
         msg => 'OK',

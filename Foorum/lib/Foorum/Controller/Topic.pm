@@ -93,13 +93,8 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
         last_updator_id  => $c->user->user_id,
         last_update_date => \"NOW()",
     } );
-    $c->clear_cached_page( '/forum');
-    $c->clear_cached_page( "/forum/$forum_id/rss" );
-    $c->clear_cached_page( '/forum/recent' );
-    $c->clear_cached_page( '/forum/recent/rss' );
-    $c->clear_cached_page( '/forum/recent/elite' );
-    $c->clear_cached_page( '/forum/recent/elite/rss' );
-    
+    $c->model('ClearCachedPage')->clear_when_topic_changes($c, $forum);
+
     # clear visit
     $c->model('Visit')->make_un_visited($c, 'thread', $topic->topic_id);
     
@@ -192,6 +187,8 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
         last_post_id => $topic_id,
     } );
     
+    $c->model('ClearCachedPage')->clear_when_topic_changes($c, $forum);
+    
     $c->forward('/print_message', [ {
         msg => 'Post Reply OK',
         uri => "/forum/$forum_id/$topic_id",
@@ -268,6 +265,7 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
         $topic->update( {
             title => $c->req->param('title'),
         } );
+        $c->model('ClearCachedPage')->clear_when_topic_changes($c, $forum);
     }
     
     $c->forward('/print_message', [ {
@@ -295,6 +293,7 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
     if ($comment->reply_to == 0) {
         $c->model('Topic')->remove($c, $forum_id, $topic_id);
         $uri = "/forum/$forum_id";
+        $c->model('ClearCachedPage')->clear_when_topic_changes($c, $forum);
     } else {
         # delete comment
         $c->model('Comment')->remove($c, $comment);

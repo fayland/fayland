@@ -84,6 +84,8 @@ sub list : LocalRegex('^(\w+)(/elite)?$') {
             $c->res->cookies->{"ann_$forum_id"} = { value => 1 };
         }
     }
+    
+    $c->cache_page( '300' );
 
     my @extra_cols = ('elite', 1) if ($is_elite);
 
