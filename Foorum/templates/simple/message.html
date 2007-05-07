@@ -6,7 +6,7 @@
     [% message.msg %]
 	[% IF message.uri %]
 	    <br><br>
-		(<a href="[% message.uri %]"><u>Please click <a href='[% message.uri %]'>here</a> if the page doesn't reload in [% message.refresh_time || 4 %] seconds!</u>)</a>
+		(<a href="[% message.uri %]"><u>Please click here if the page doesn't reload in [% message.refresh_time || 4 %] seconds!</u>)</a>
 	[% END %]
 </div>
 [% IF message.uri %]
