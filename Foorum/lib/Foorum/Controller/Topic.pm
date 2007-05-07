@@ -122,7 +122,6 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
         last_post_id => $topic->topic_id,
     } );
 
-    my $forum_code = $forum->forum_code;
     $c->res->redirect($forum->{forum_url} . '/' . $topic->topic_id);
 }
 
