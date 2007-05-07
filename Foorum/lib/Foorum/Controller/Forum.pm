@@ -9,7 +9,9 @@ use Data::Dumper;
 sub board : Path {
     my ($self, $c) = @_;
 
-    my @forums = $c->model('DBIC')->resultset('Forum')->search( { }, {
+    my @forums = $c->model('DBIC')->resultset('Forum')->search( {
+        forum_type => 'classical',
+    }, {
         order_by => 'me.forum_id',
         prefetch => ['last_post'],
     } )->all;
