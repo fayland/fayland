@@ -77,6 +77,47 @@ sub remove_forum {
     $c->model('Upload')->remove_for_forum($c, $forum_id);
 }
 
+sub merge_forums {
+    my ($self, $c, $info) = @_;
+    
+    my $from_id = $info->{form_id} or return 0;
+    my $to_id   = $info->{to_id} or return 0;
+    
+    $c->model('DBIC::Forum')->search( {
+        forum_id => $from_id,
+    } )->update( {
+        forum_id => $to_id,
+    } );
+    
+    $c->model('DBIC::UserRole')->search( {
+        field => $from_id,
+    } )->delete;
+    
+    # topics
+    $c->model('DBIC::Topic')->search( {
+        forum_id => $from_id,
+    } )->update( {
+        forum_id => $to_id,
+    } );
+    
+    # get all poll_ids
+    $c->model('DBIC::Poll')->search( {
+        forum_id => $from_id,
+    } )->update( {
+        forum_id => $to_id,
+    } );
+    
+    # comment and star
+    $c->model('DBIC::Comment')->search( {
+        forum_id => $from_id,
+    } )->update( {
+        forum_id => $to_id,
+    } );
+    
+    # for upload
+    $c->model('Upload')->change_for_forum($c, $info);
+}
+
 =pod
 
 =head2 AUTHOR

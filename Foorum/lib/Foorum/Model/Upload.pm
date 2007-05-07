@@ -116,6 +116,19 @@ sub add_file {
     return $upload_id;
 }
 
+sub change_for_forum {
+    my ($self, $c, $info) = @_;
+    
+    my $from_id = $info->{form_id} or return 0;
+    my $to_id   = $info->{to_id} or return 0;
+
+    $c->model('DBIC::Upload')->search( {
+        forum_id => $from_id,
+    } )->update( {
+        forum_id => $to_id,
+    } );
+}
+
 =pod
 
 =head2 AUTHOR
