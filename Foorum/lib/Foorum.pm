@@ -16,7 +16,7 @@ use Catalyst qw/
 	Session::Store::DBIC
 	Session::State::Cookie
 	I18N
-	PageCache
+	PageCacheWithI18N
 	FormValidator::Simple
 	Email
 	Scheduler
