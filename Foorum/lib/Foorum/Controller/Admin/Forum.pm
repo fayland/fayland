@@ -121,6 +121,19 @@ sub remove : Local {
     $c->forward('/print_message', [ 'OK' ] );
 }
 
+sub merge_forums : Local {
+    my ($self, $c) = @_;
+    
+    my $from_id = $c->req->param('from_id');
+    my $to_id   = $c->req->param('to_id');
+    
+    $c->stash->{template} = 'admin/forum/merge_forums.html';
+    return unless ($from_id and $to_id);
+    
+    my $message = $c->model('Forum')->merge_forums($c, { from_id => $from_id, to_id => $to_id } );
+    $c->stash->{message} = ($message) ? 'OK' : 'FAIL';
+}
+
 =pod
 
 =head2 AUTHOR

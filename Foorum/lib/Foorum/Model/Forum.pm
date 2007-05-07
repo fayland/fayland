@@ -80,15 +80,33 @@ sub remove_forum {
 sub merge_forums {
     my ($self, $c, $info) = @_;
     
-    my $from_id = $info->{form_id} or return 0;
-    my $to_id   = $info->{to_id} or return 0;
+    $c->log->debug('110000');
     
+    my $from_id = $info->{from_id} or return 0;
+    my $to_id   = $info->{to_id} or return 0;
+
+    my $old_forum = $c->model('DBIC::Forum')->find( { forum_id => $from_id } );
+    return unless ($old_forum);
+    my $new_forum = $c->model('DBIC::Forum')->find( { forum_id => $to_id } );
+    return unless ($new_forum);
     $c->model('DBIC::Forum')->search( {
         forum_id => $from_id,
-    } )->update( {
+    } )->delete;
+    # update new
+    my $total_topics = $old_forum->total_topics;
+    my $total_replies = $old_forum->total_replies;
+    my $total_members = $old_forum->total_members;
+    my @extra_cols;
+    if ($new_forum->policy eq 'private') {
+        @extra_cols = ('total_members', \"total_members + $total_members");
+    }
+    $c->model('DBIC::Forum')->search( {
         forum_id => $to_id,
+    } )->update( {
+        total_topics  => \"total_topics  + $total_topics",
+        total_replies => \"total_replies + $total_replies",
+        @extra_cols,
     } );
-    
     $c->model('DBIC::UserRole')->search( {
         field => $from_id,
     } )->delete;
@@ -116,6 +134,8 @@ sub merge_forums {
     
     # for upload
     $c->model('Upload')->change_for_forum($c, $info);
+    
+    return 1;
 }
 
 =pod
