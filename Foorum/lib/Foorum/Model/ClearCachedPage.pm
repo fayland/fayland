@@ -17,6 +17,7 @@ sub clear_when_topic_changes {
     $c->clear_cached_page( "/forum/$forum_code/rss" ) if ($forum_code);
     $c->clear_cached_page( '/forum/recent' );
     $c->clear_cached_page( '/forum/recent/rss' );
+    clear_when_topic_elite($self, $c, $forum);
 }
 
 sub clear_when_topic_elite {
