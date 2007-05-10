@@ -105,12 +105,12 @@ sub basic : Chained('forum_for_admin') Args(0) {
     } );
 
     # delete before create
-    $c->model('DBIC::UserRole')->search( {
+    $c->model('Policy')->remove_user_role( {
         role    => 'moderator',
         field   => $forum->forum_id,
     } )->delete;
     foreach (@moderator_users) {
-        $c->model('DBIC::UserRole')->create( {
+        $c->model('Policy')->create_user_role( {
             user_id => $_->user_id,
             role    => 'moderator',
             field   => $forum->forum_id,
@@ -281,7 +281,7 @@ sub change_membership : Chained('forum_for_admin') Args(0) {
         return $c->res->body('Illegal request');
     }
     
-    my $rs = $c->model('DBIC::UserRole')->find( {
+    my $rs = $c->model('DBIC::UserRole')->count( {
         field => $forum_id,
         user_id => $user_id,
         role  => $from,

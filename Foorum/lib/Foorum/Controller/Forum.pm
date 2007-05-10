@@ -188,7 +188,7 @@ sub join_us : Private {
                 $c->detach('/print_error', [ "ERROR_USER_$role" ]);
             }
         } else {
-            $c->model('DBIC::UserRole')->create( {
+            $c->model('Policy')->create_user_role( {
                 user_id => $c->user->user_id,
                 field   => $forum_id,
                 role    => 'pending',

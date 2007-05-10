@@ -236,7 +236,9 @@ DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE `user_role` (
   `user_id` int(11) default NULL,
   `role` enum('admin','moderator','user','blocked','pending','rejected') default 'user',
-  `field` varchar(32) default NULL
+  `field` varchar(32) default NULL,
+  KEY user_id (user_id),
+  KEY field (field)
 );
 
 DROP TABLE IF EXISTS `visit`;

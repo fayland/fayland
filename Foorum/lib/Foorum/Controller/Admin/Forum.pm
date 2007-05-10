@@ -91,13 +91,13 @@ sub create : Local {
         policy => $policy,
         total_members => $total_members,
     } );
-    $c->model('DBIC::UserRole')->create( {
+    $c->model('Policy')->create_user_role( {
         user_id => $admin_user->user_id,
         role    => 'admin',
         field   => $forum->forum_id,
     } );
     foreach (@moderator_users) {
-        $c->model('DBIC::UserRole')->create( {
+        $c->model('Policy')->create_user_role( {
             user_id => $_->user_id,
             role    => 'moderator',
             field   => $forum->forum_id,

@@ -16,7 +16,6 @@ sub login : Global {
     # for login password wrong more than 3 times, we create a captcha.
     my $mem_key = "captcha|login|username=$username";
     my $failure_login_times = $c->cache->get($mem_key);
-    $c->log->debug("failure_login_times is $failure_login_times");
 
     if ($username and my $password = $c->req->param('password') ) {
         
