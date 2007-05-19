@@ -27,27 +27,46 @@ sub board : Path {
     $c->stash->{whos_view_this_page} = 1;
     $c->stash->{forums} = \@forums;
     $c->stash->{template} = 'forum/board.html';
-
 }
 
-
-sub forum : PathPart('forum') Chained('/') CaptureArgs(1) {
-    my ( $self, $c, $forum_code ) = @_;
-
-    # get the forum information
+sub forum : Regex('^forum/(\w+)$') {
+    my ($self, $c) = @_;
+    
+    my $forum_code = $c->req->snippets->[0];
     my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    $c->forward('forum_dispatch', [ $forum ] );
 }
 
-sub list : LocalRegex('^(\w+)(/elite)?$') {
+sub word : Regex('^word/(\w+)$') {
     my ($self, $c) = @_;
 
-    my $forum_code = $c->req->snippets->[0];
-    my $is_elite = $c->req->snippets->[1];
+    my $word = $c->req->snippets->[0];
+    my $forum = $c->forward('/get/forum', [ $word, { forum_type => 'word' } ]);
+    $c->forward('forum_dispatch', [ $forum ] );
+}
+
+sub forum_dispatch : Private {
+    my ($self, $c, $forum) = @_;
+
+    my $path = $c->req->path;
+    my @args = split(/\//, $path);
+    $c->log->debug(join(', ', @args));
+    if (scalar @args == 2 or $args[2] =~ /page=/) {
+        $c->forward('forum_list', [ $forum ] );
+    } elsif ($args[2] eq 'members') {
+        $c->forward('members', [ $forum, $args[3] ] );
+    }
+}
+
+sub forum_list : Private {
+    my ($self, $c, $forum) = @_;
+
+    my $is_elite = ($c->req->path =~ /\/elite(\/|$)/) ? 1 : 0;
     my $page_no  = get_page_no_from_url($c->req->path);
 
     # get the forum information
-    my $forum = $c->forward('/get/forum', [ $forum_code ]);
     my $forum_id = $forum->forum_id;
+    my $forum_code = $forum->forum_code;
     # get all moderators
     $c->stash->{forum_roles} = $c->model('Policy')->get_forum_moderators( $c, $forum_id );
 
@@ -113,14 +132,12 @@ sub list : LocalRegex('^(\w+)(/elite)?$') {
     $c->stash->{template} = 'forum/forum.html';
 }
 
-sub members : LocalRegex('^(\w+)/members(/(\w+))?$') {
-    my ($self, $c) = @_;
+sub members : Private {
+    my ($self, $c, $forum, $member_type) = @_;
 
-    my $forum_code = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum_code = $forum->forum_code;
     my $forum_id = $forum->forum_id;
     
-    my $member_type = $c->req->snippets->[2] || 'all';
     if ($member_type ne 'pending' and $member_type ne 'blocked' and $member_type ne 'rejected') {
         $member_type = 'user';
     }
@@ -188,12 +205,12 @@ sub join_us : Private {
                 $c->detach('/print_error', [ "ERROR_USER_$role" ]);
             }
         } else {
-            $c->model('Policy')->create_user_role( {
+            $c->model('Policy')->create_user_role( $c, {
                 user_id => $c->user->user_id,
                 field   => $forum_id,
                 role    => 'pending',
             } );
-            $c->detach('/print_message', [ 'Successfully Request. You need wait for admin\'s approval' ]);
+            $c->detach('/print_message', [ 'Successfully Requested. You need wait for admin\'s approval' ]);
         }
     } else {
         $c->stash( {
@@ -201,42 +218,6 @@ sub join_us : Private {
             template => 'forum/join_us.html',
         } );
     }
-}
-
-sub recent : Local {
-    my ($slef, $c, $recent_type) = @_;
-    
-    my @extra_cols;
-    my $url_prefix;
-    if ($recent_type eq 'elite') {
-        @extra_cols = ('elite', 1);
-        $url_prefix .= '/forum/recent/elite';
-    } else {
-        $recent_type = 'site';
-        $url_prefix = '/forum/recent';
-    }
-    
-    $c->cache_page( '300' );
-    
-    my $page = get_page_no_from_url($c->req->path);
-    my $rs = $c->model('DBIC::Topic')->search( {
-        'forum.policy' => 'public',
-        @extra_cols,
-    }, {
-        order_by => 'last_update_date desc',
-        prefetch => ['author', 'last_updator', 'forum'],
-        join => [qw/forum/],
-        rows => 20,
-        page => $page,
-    } );
-
-    $c->stash( {
-        template => 'forum/recent.html',
-        topics   => [ $rs->all ],
-        pager    => $rs->pager,
-        recent_type => $recent_type,
-        url_prefix  => $url_prefix,
-    } );
 }
 
 =pod

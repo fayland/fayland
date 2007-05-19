@@ -13,14 +13,16 @@ sub send_activation {
         username => $username,
         active_code => $active_code,
     } );
-    $c->email(
-        header => [
-            From    => $c->config->{mail}->{from_email},
-            To      => $email,
-            Subject => 'Your Activation Code In ' . $c->config->{name},
-        ],
-        body => $email_body,
-    );
+    
+    $c->model('DBIC')->resultset('ScheduledEmail')->create( {
+        email_type => 'activation',
+        from_email => $c->config->{mail}->{from_email},
+        to_email   => $email,
+        subject    => 'Your Activation Code In ' . $c->config->{name},
+        plain_body => $email_body,
+        time       => \'NOW()',
+        processed  => 'N',
+    } );
 }
 
 sub send_forget_password {
@@ -31,14 +33,16 @@ sub send_forget_password {
         username => $username,
         password => $password,
     } );
-    $c->email(
-        header => [
-            From    => $c->config->{mail}->{from_email},
-            To      => $email,
-            Subject => 'Your Password For ' . $username . ' In ' . $c->config->{name},
-        ],
-        body => $email_body,
-    );
+    
+    $c->model('DBIC')->resultset('ScheduledEmail')->create( {
+        email_type => 'forget_password',
+        from_email => $c->config->{mail}->{from_email},
+        to_email   => $email,
+        subject    => 'Your Password For ' . $username . ' In ' . $c->config->{name},
+        plain_body => $email_body,
+        time       => \'NOW()',
+        processed  => 'N',
+    } );
 }    
 
 =pod

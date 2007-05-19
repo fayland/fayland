@@ -15,9 +15,7 @@ sub print_message : Private {
     my ($self, $c, $msg) = @_;
     
     if (ref($msg) ne 'HASH') {
-        $msg = {
-            msg => $msg,
-        };
+        $msg = { msg => $msg };
     }
     
     $c->stash->{message}  = $msg;
@@ -28,9 +26,7 @@ sub print_error : Private {
     my ( $self, $c, $error ) = @_;
 
     if (ref($error) ne 'HASH') {
-        $error = {
-            msg => $error,
-        };
+        $error = { msg => $error };
     }
     
     $c->stash->{error}    = $error;

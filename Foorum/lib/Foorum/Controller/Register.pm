@@ -10,7 +10,7 @@ use Data::Dumper;
 sub default : Private {
     my ( $self, $c ) = @_;
     
-    unless ($c->config->{register}) {
+    if ($c->config->{register}->{closed}) {
         $c->detach('/print_error', [ 'ERROR_REGISTER_CLOSED' ]);
     }
     
@@ -67,13 +67,13 @@ sub default : Private {
     });
     
     # redirect or forward
-    if ($c->config->{mail}->{on}) {
+    if ($c->config->{mail}->{on} and $c->config->{register}->{activation}) {
         $c->res->redirect("/register/activation/$username"); # to activation
     } else {
         $c->login($username, $password);
         $c->forward('/print_message', [ { 
             msg => 'register success!',
-            uri => '/',
+            url => '/',
         } ] );
     }
 }

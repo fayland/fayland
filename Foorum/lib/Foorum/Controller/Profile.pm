@@ -10,31 +10,31 @@ use Locale::Country::Multilingual;
 use vars qw/$lcm/;
 $lcm = Locale::Country::Multilingual->new();
 
-sub profile : Regex('^u/(\w{6,20})$') {
-    my ( $self, $c ) = @_;
-    
-    my $username = $c->req->snippets->[0];
-    
-    my $user = $c->model('DBIC')->resultset('User')->find( {
+sub user_profile : PathPart('u') Chained('/') CaptureArgs(1) {
+    my ( $self, $c, $username ) = @_;
+
+    $c->stash->{user} = $c->model('DBIC')->resultset('User')->find( {
         username => $username
     }, {
         prefetch => ['details', 'last_post'],
     } );
     
-    if ($user) {
+    $c->detach('/print_error', [ 'ERROR_USER_NON_EXSIT' ] ) unless ($c->stash->{user});
+}
+
+sub home : PathPart('') Chained('user_profile') Args(0) {
+    my ( $self, $c ) = @_;
+    
+    my $user = $c->stash->{user};
+
+    # get comments
+    $c->model('Comment')->get_comments_by_object($c, {
+        object_type => 'user_profile',
+        object_id   => $user->user_id,
+    } );
         
-        # get comments
-        $c->model('Comment')->get_comments_by_object($c, {
-            object_type => 'user_profile',
-            object_id   => $user->user_id,
-        } );
-        
-        $c->stash->{user} = $user;
-        $c->stash->{whos_view_this_page} = 1;
-        $c->stash->{template} = 'user/profile.html';
-    } else {
-        $c->forward('/print_error', [ 'ERROR_USER_NON_EXSIT' ] );
-    }
+    $c->stash->{whos_view_this_page} = 1;
+    $c->stash->{template} = 'user/profile.html';
 }
 
 sub edit : Local {
@@ -175,7 +175,7 @@ sub forget_password : Local {
     return $c->stash->{ERROR_NOT_MATCH} = 1 if ($user->email ne $email);
     
     # create a random password
-    my $random_password = &generate_random_word(10);
+    my $random_password = &generate_random_word(8);
     my $d = Digest->new( $c->config->{authentication}->{dbic}->{password_hash_type} );
     $d->add($random_password);
     my $computed = $d->digest;
@@ -184,7 +184,11 @@ sub forget_password : Local {
     $c->model('Email')->send_forget_password($c, $email, $username, $random_password);
     $c->log->debug("PASSWORD: $random_password");
     $user->update( { password => $computed } );
-    $c->res->redirect('/login');
+    $c->detach('/print_message', [ {
+        msg => 'Your Password is Sent to Your Email, Please have a check',
+        url => '/login',
+        stay_in_page => 1,
+    } ] );
 }
 
 sub change_email : Local {

@@ -5,13 +5,13 @@ use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
 
-sub post_comment : Local {
+sub post : Local {
     my ( $self, $c ) = @_;
 
     return $c->res->redirect('/login') unless ($c->user_exists);
     
     # get object_type and object_id from c.req.referer
-    my $path = $c->req->referer;
+    my $path = $c->req->referer || '/';
     my ($object_id, $object_type, $forum_id) = $c->model('Object')->get_object_from_url($c, $path);
     return $c->res->redirect($path) unless ($object_id and $object_type);
     
@@ -82,7 +82,7 @@ sub reply : LocalRegex('^(\d+)/reply$') {
     
     $c->forward('/print_message', [ {
         msg => 'Post Reply OK',
-        uri => $path,
+        url => $path,
     } ] );
 }
 
@@ -95,7 +95,7 @@ sub edit : LocalRegex('^(\d+)/edit$') {
     my $comment  = $c->forward('/get/comment', [ $comment_id ] );
     
     # permission
-    if ($c->user->user_id =! $comment->author_id and not $c->model('Policy')->is_moderator($c, 'site')) {
+    if ($c->user->user_id != $comment->author_id and not $c->model('Policy')->is_moderator($c, 'site')) {
         $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
     }
     
@@ -155,7 +155,7 @@ sub edit : LocalRegex('^(\d+)/edit$') {
     
     $c->forward('/print_message', [ {
         msg => 'Edit Reply OK',
-        uri => $path,
+        url => $path,
     } ] );
 }
 
@@ -166,7 +166,7 @@ sub delete : LocalRegex('^(\d+)/delete$') {
     my $comment  = $c->forward('/get/comment', [ $comment_id ] );
     
     # permission
-    if ($c->user->user_id =! $comment->author_id and not $c->model('Policy')->is_moderator($c, 'site')) {
+    if ($c->user->user_id != $comment->author_id and not $c->model('Policy')->is_moderator($c, 'site')) {
         $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
     }
     
@@ -184,7 +184,7 @@ sub delete : LocalRegex('^(\d+)/delete$') {
     
     $c->forward('/print_message', [ {
         msg => 'Delete Reply OK',
-        uri => $path,
+        url => $path,
     } ] );
 }
 

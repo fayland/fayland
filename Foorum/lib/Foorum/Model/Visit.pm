@@ -46,15 +46,6 @@ sub is_visited {
     return $visit;
 }
 
-# we need remove some records in table 'visit' to avoid the expanding of this table
-sub remove_records_for_cron {
-    my ($self, $c, $how_long_ago) = @_;
-    
-    $c->model('DBIC::Visit')->search( {
-        time => { '<', time() - $how_long_ago }
-    } )->delete;
-}
-
 =pod
 
 =head2 AUTHOR

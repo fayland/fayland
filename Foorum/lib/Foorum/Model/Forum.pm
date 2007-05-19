@@ -11,9 +11,9 @@ sub remove_forum {
     $c->model('DBIC::Forum')->search( {
         forum_id => $forum_id,
     } )->delete;
-    $c->model('Policy')->remove_user_role( {
+    $c->model('Policy')->remove_user_role( $c, {
         field => $forum_id,
-    } )->delete;
+    } );
     
     # get all topic_ids
     my @topic_ids;
@@ -105,9 +105,9 @@ sub merge_forums {
         total_replies => \"total_replies + $total_replies",
         @extra_cols,
     } );
-    $c->model('Policy')->remove_user_role( {
+    $c->model('Policy')->remove_user_role( $c, {
         field => $from_id,
-    } )->delete;
+    } );
     
     # topics
     $c->model('DBIC::Topic')->search( {

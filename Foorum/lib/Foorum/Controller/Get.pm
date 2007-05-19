@@ -21,6 +21,8 @@ sub forum : Private {
         my $forum_url = '/forum/' . $forum->forum_code;
         if ($forum_type eq 'country') {
             $forum_url = '/country/' . $forum->forum_code;
+        } elsif ($forum_type eq 'word') {
+            $forum_url = '/word/' . $forum->forum_code;
         }
         $forum->{forum_url} = $forum_url;
     }

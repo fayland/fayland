@@ -35,7 +35,7 @@ sub auto : Private {
 
 	my $path = $c->req->path;
 	# for maintain, but admin can login and do something
-	if ($c->config->{maintain} and $path !~ /^(admin|login)\//) {
+	if ($c->config->{site}->{maintain} and $path !~ /^(admin|login)\//) {
         $c->stash->{template} = 'simple/maintain.html';
         return 0;
 	}

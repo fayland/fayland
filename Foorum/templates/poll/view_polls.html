@@ -5,8 +5,8 @@
 <div class='none'>
 <table align='center'>
 <tr><td>
-<a href='/forum/[% forum.forum_code %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle' /></a> 
-<a href='/forum/[% forum.forum_code %]/poll/new'><img src='[% c.config.dir.images %]/newpoll.gif' width='99' height='25' align='absmiddle' /></a> 
+<a href='[% forum.forum_url %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle' /></a> 
+<a href='[% forum.forum_url %]/poll/new'><img src='[% c.config.dir.images %]/newpoll.gif' width='99' height='25' align='absmiddle' /></a> 
 </td><td align='right' valign='bottom'>
 Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_roles.${forum.forum_id}.admin.nickname %]</a>
 [% FOREACH moderator IN forum_roles.${forum.forum_id}.moderator %]
@@ -29,7 +29,7 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 [% FOREACH poll IN polls %]
 <tr align='center'>
 	<td class='forum1'>[% IF poll.duration < date.now %]Locked[% END %]</td>
-	<td align='left' class='forum2'><a href='/forum/[% forum.forum_code %]/poll/[% poll.poll_id %]'>[% poll.title %]</a></td>
+	<td align='left' class='forum2'><a href='[% forum.forum_url %]/poll/[% poll.poll_id %]'>[% poll.title %]</a></td>
 	<td class='forum1'><a href='/u/[% poll.author.username %]'>[% poll.author.nickname %]</a></td>
 	<td class='forum2'>[% poll.vote_no %]</td>
 	<td class='forum1'>[% date.format(poll.time, '%Y-%m-%d %H:%M:%S') %]</td>

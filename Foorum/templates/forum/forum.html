@@ -1,4 +1,7 @@
-[% USE HTML::BBCode( 'bbcode_unlimited' ) %]
+[% USE HTML::BBCode( 'bbcode_unlimited'
+    no_html = 1
+    linebreaks = 1
+ ) %]
 
 [% IF announcement %]
 [% UNLESS c.user_exists %]
@@ -23,9 +26,9 @@
 [% IF forum.policy == 'private' %]
 <div class='one'>
 <table align='center'>
-<tr><td class='title' width='40'>[% c.loc("Status") %]</td><td class='forum1'>We have <a href='/forum/[% forum.forum_code %]/members'>[% forum.total_members %] users</a> and <a href='/forum/[% forum.forum_code %]/members/pending'>[% pending_count %] pending users</a>.
+<tr><td class='title' width='40'>[% c.loc("Status") %]</td><td class='forum1'>We have <a href='[% forum.forum_url %]/members'>[% forum.total_members %] users</a> and <a href='[% forum.forum_url %]/members/pending'>[% pending_count %] pending users</a>.
 [% IF pending_count AND roles.is_moderator %]
-<div class='highlight' style='font-weight: bolder'>Tips: You need approval the <a href='/forum/[% forum.forum_code %]/members/pending'>pending requests</a></div>
+<div class='highlight' style='font-weight: bolder'>Tips: You need approval the <a href='[% forum.forum_url %]/members/pending'>pending requests</a></div>
 [% END %]
 </td></tr>
 </table>
@@ -35,16 +38,16 @@
 <div class='none'>
 <table align='center'>
 <tr><td>
-<a href='/forum/[% forum.forum_code %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle' /></a> 
-<a href='/forum/[% forum.forum_code %]/poll/new'><img src='[% c.config.dir.images %]/newpoll.gif' width='99' height='25' align='absmiddle' /></a> 
+<a href='[% forum.forum_url %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle' /></a> 
+<a href='[% forum.forum_url %]/poll/new'><img src='[% c.config.dir.images %]/newpoll.gif' width='99' height='25' align='absmiddle' /></a> 
 </td><td align='right' valign='bottom'>
 Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_roles.${forum.forum_id}.admin.nickname %]</a>
 [% FOREACH moderator IN forum_roles.${forum.forum_id}.moderator %]
 [% IF loop.first %], [% END %]<a href='/u/[% moderator.username %]'>[% moderator.nickname %]</a>[% UNLESS loop.last %], [% END %]
 [% END %]
 [% IF forum.policy == 'public' %]
- &nbsp; <a href='/forum/[% forum.forum_code %]/rss'><img src='[% c.config.dir.images %]/site/feed-icon-16x16.gif' width='16' height='16' align='absmiddle' /></a> 
-<link rel="alternate" type="application/rss+xml" title="[% title %]" href="/forum/[% forum.forum_code %]/rss" />
+ &nbsp; <a href='[% forum.forum_url %]/rss'><img src='[% c.config.dir.images %]/site/feed-icon-16x16.gif' width='16' height='16' align='absmiddle' /></a> 
+<link rel="alternate" type="application/rss+xml" title="[% title %]" href="[% forum.forum_url %]/rss" />
 [% END %]
 <td></tr>
 </table>
@@ -61,13 +64,13 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 [% END %]
 [% FOREACH poll IN polls %]
 <tr align='center'>
-	<td class='forum2'><a href='/forum/[% forum.forum_code %]/poll/[% poll.poll_id %]'>[% poll.title %]</a></td>
+	<td class='forum2'><a href='[% forum.forum_url %]/poll/[% poll.poll_id %]'>[% poll.title %]</a></td>
 	<td class='forum1'><a href='/u/[% poll.author.username %]'>[% poll.author.nickname %]</a></td>
 	<td class='forum2'>[% poll.vote_no %]</td>
 </tr>
 [% END %]
 <tr>
-	<td colspan='3' align='right' class='forum2'><a href='/forum/[% forum.forum_code %]/poll'>View ALL POLLs</a></td>
+	<td colspan='3' align='right' class='forum2'><a href='[% forum.forum_url %]/poll'>View ALL POLLs</a></td>
 </tr>
 </table>
 </div>
@@ -94,9 +97,9 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 			<tr>
 			<td align="left">
 			    [% IF t.elite %]
-			    <a href='/forum/[% forum.forum_code %]/elite'><img src='[% c.config.dir.images %]/site/elite.gif' /></a> 
+			    <a href='[% forum.forum_url %]/elite'><img src='[% c.config.dir.images %]/site/elite.gif' /></a> 
 			    [% END %]
-			    <a href='/forum/[% forum.forum_code %]/[% t.topic_id %]'><span class='semilight'>[% t.title %]</span></a>
+			    <a href='[% forum.forum_url %]/[% t.topic_id %]'><span class='semilight'>[% t.title %]</span></a>
 			    [% IF c.user_exists AND NOT is_visited.thread.${t.topic_id} %]
 			    <img src='[% c.config.dir.images %]/site/new.gif' />
 			    [% END %]
@@ -115,6 +118,6 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 
 <div class='none'>
 <table align='center'>
-    <tr><td>[% INCLUDE 'sub/pager.html' url_prefix = '/forum/' _ forum.forum_code %]</td></tr>
+    <tr><td>[% INCLUDE 'sub/pager.html' url_prefix = forum.forum_url %]</td></tr>
 </table>
 </div>

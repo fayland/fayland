@@ -1,4 +1,7 @@
-[% USE HTML::BBCode( 'bbcode_unlimited' ) %]
+[% USE HTML::BBCode( 'bbcode_unlimited'
+    no_html = 1
+    linebreaks = 1
+ ) %]
 
 [% FOREACH comment IN comments %]
 <div class='multi'>
@@ -20,7 +23,7 @@
 	    [% IF comment.upload %]
 	    [% INCLUDE upload/upload.html upload = comment.upload %]
 	    [% END %]
-	    [% comment.text | html | bbcode_unlimited %]
+	    [% comment.text | bbcode_unlimited %]
 	  [% END %]
 	  </span>
       </td></tr>

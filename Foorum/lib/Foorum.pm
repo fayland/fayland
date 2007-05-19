@@ -18,10 +18,7 @@ use Catalyst qw/
 	I18N
 	PageCacheWithI18N
 	FormValidator::Simple
-	Email
-	Scheduler
 	Captcha
-	DBIC::Schema::Profiler
 /;
 
 use vars qw/$VERSION/;

@@ -1,7 +1,7 @@
 [% WRAPPER 'admin/bar.html' %]
 
 [% IF is_ok == 1 %]
-<a href='/forum/[% forum.forum_code %]'>Visit here to access the forum ( [% forum.name %] )</a>
+<a href='[% forum.forum_url %]'>Visit here to access the forum ( [% forum.name %] )</a>
 [% ELSE %]
 [% USE FillInForm %]
 [% FILTER fillinform fdat => data || c.req.params %]

@@ -58,7 +58,7 @@ sub lock_or_top_or_elite : Regex('^forum/(\w+)/(\d+)/(un)?(top|elite|lock)$') {
     
     $c->forward('/print_message', [ {
         msg => 'OK',
-        uri => "/forum/$forum_id",
+        url => "/forum/$forum_id",
     } ] );
 }
 

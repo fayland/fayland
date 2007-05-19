@@ -95,9 +95,11 @@ logger:
 
 site:
   copy_rights_start_year: 2006
+  maintain: 0
 
-maintain: 0
-register: 1
+register:
+  closed: 0
+  activation: 1
 
 default_pref_lang: cn
 
@@ -112,23 +114,8 @@ dir:
 
 # For Foorum pm using
 mail:
-  on: 0
+  on: 1
   from_email: 'fayland@gmail.com'
-
-# For plugin Email using
-email:
-  - SMTP
-  - smtp.gmail.com
-  - tls
-  - 1
-  - Hello
-  - 'www.fayland.org'
-  - Port
-  - 587
-  - User
-  - 'fayland@gmail.com'
-  - Password
-  - unkown
 
 extra:
   urchin_account: UA-65008-1

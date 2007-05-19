@@ -4,30 +4,7 @@ use strict;
 use warnings;
 use base qw/DBIx::Class::Schema/;
 
-__PACKAGE__->load_classes(qw/
-    User
-    UserRole
-    UserDetails
-    Forum
-    Topic
-    Comment
-    Session
-    Category
-    Board
-    Page
-    EmailSetting
-    Message
-    MessageUnread
-    Poll
-    PollOption
-    PollResult
-    Star
-    Upload
-    LogPath
-    LogAction
-    Visit
-    FilterWord
-/);
+__PACKAGE__->load_classes();
 
 =pod
 

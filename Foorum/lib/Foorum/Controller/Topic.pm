@@ -191,7 +191,7 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
     
     $c->forward('/print_message', [ {
         msg => 'Post Reply OK',
-        uri => "/forum/$forum_id/$topic_id",
+        url => "/forum/$forum_id/$topic_id",
     } ] );
 }
 
@@ -270,7 +270,7 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
     
     $c->forward('/print_message', [ {
         msg => 'Edit Reply OK',
-        uri => "/forum/$forum_id/$topic_id",
+        url => "/forum/$forum_id/$topic_id",
     } ] );
 }
 
@@ -289,16 +289,16 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
         $c->detach('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
     }
     
-    my $uri;
+    my $url;
     if ($comment->reply_to == 0) {
         $c->model('Topic')->remove($c, $forum_id, $topic_id);
-        $uri = "/forum/$forum_id";
+        $url = "/forum/$forum_id";
         $c->model('ClearCachedPage')->clear_when_topic_changes($c, $forum);
     } else {
         # delete comment
         $c->model('Comment')->remove($c, $comment);
         
-        $uri = "/forum/$forum_id/$topic_id";
+        $url = "/forum/$forum_id/$topic_id";
         
         # update topic
         my $lastest = $c->model('DBIC')->resultset('Comment')->find( {
@@ -335,7 +335,7 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
     
     $c->forward('/print_message', [ {
         msg => 'Delete Reply OK',
-        uri => $uri,
+        url => $url,
     } ] );
 }
 

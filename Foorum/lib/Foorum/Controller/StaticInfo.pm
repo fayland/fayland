@@ -3,21 +3,20 @@ package Foorum::Controller::StaticInfo;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use Data::Dumper;
 
 sub help : Global {
     my ($self, $c, $help_id) = @_;
     
-    _static_info($c, 'help', $help_id);
+    __serve_static_info($c, 'help', $help_id);
 }
 
 sub info : Global {
     my ($self, $c, $info_id) = @_;
     
-    _static_info($c, 'info', $info_id);
+    __serve_static_info($c, 'info', $info_id);
 }
 
-sub _static_info {
+sub __serve_static_info {
     my ($c, $type, $type_id) = @_;
     
     $c->stash->{template} = "$type/index.html";

@@ -40,7 +40,7 @@ sub log_action {
         action  => $info->{action} || 'kiss',
         object_type => $info->{object_type} || 'ass',
         object_id   => $info->{object_id}   || 0, # times
-        time    => time(),
+        time    => \'NOW()',
     } );
 }
 

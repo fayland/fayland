@@ -6,8 +6,8 @@
 
 <div class='tabnav'>
     <ul>
-        <li[% IF recent_type == 'site' %] class='selected'[% END %]><a href='/forum/recent'>[% c.loc('Recent Topics') %]</a></li>
-        <li[% IF recent_type == 'elite' %] class='selected'[% END %]><a href='/forum/recent/elite'>[% c.loc('Recent Elite Topics') %]</a></li>
+        <li[% IF recent_type == 'site' %] class='selected'[% END %]><a href='/site/recent'>[% c.loc('Recent Topics') %]</a></li>
+        <li[% IF recent_type == 'elite' %] class='selected'[% END %]><a href='/site/recent/elite'>[% c.loc('Recent Elite Topics') %]</a></li>
         <li[% IF recent_type == 'my' %] class='selected'[% END %]><a href='/my/topics'>[% c.loc('My Recent Topics') %]</a></li>
     </ul>
 </div>
@@ -54,10 +54,17 @@
 </div>
 [% END %]
 
+[% IF recent_type != 'my' %]
 <link rel="alternate" type="application/rss+xml" title="[% title %]" href="[% url_prefix %]/rss" />
+[% END %]
 
 <div class='none'>
 <table align='center'>
-    <tr><td>[% INCLUDE 'sub/pager.html' %]</td><td align='right'><a href='[% url_prefix %]/rss'><img src='[% c.config.dir.images %]/site/feed-icon-16x16.gif' width='16' height='16' align='absmiddle' /></a></td></tr>
+    <tr>
+        <td>[% INCLUDE 'sub/pager.html' %]</td>
+        [% IF recent_type != 'my' %]
+        <td align='right'><a href='[% url_prefix %]/rss'><img src='[% c.config.dir.images %]/site/feed-icon-16x16.gif' width='16' height='16' align='absmiddle' /></a></td>
+        [% END %]
+    </tr>
 </table>
 </div>

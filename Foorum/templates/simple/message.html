@@ -4,11 +4,11 @@
 </style>
 <div class='message'>
     [% message.msg %]
-	[% IF message.uri %]
+	[% IF message.url %]
 	    <br><br>
-		(<a href="[% message.uri %]"><u>Please click here if the page doesn't reload in [% message.refresh_time || 4 %] seconds!</u>)</a>
+		(<a href="[% message.url %]"><u>Please click here[% IF NOT message.stay_in_page %] if the page doesn't reload in [% message.refresh_time || 4 %] seconds[% ELSE %] to countinue[% END %]!</u></a>)
 	[% END %]
 </div>
-[% IF message.uri %]
-<meta http-equiv="refresh" content="[% message.refresh_time || 4 %]; url=[% message.uri %]">
+[% IF message.url AND NOT message.stay_in_page %]
+<meta http-equiv="refresh" content="[% message.refresh_time || 4 %]; url=[% message.url %]">
 [% END %]

@@ -1,5 +1,8 @@
 [% USE FillInForm %]
-[% USE HTML::BBCode( 'bbcode_unlimited' ) %]
+[% USE HTML::BBCode( 'bbcode_unlimited'
+    no_html = 1
+    linebreaks = 1
+ ) %]
 
 [% FILTER fillinform fdat => c.req.params %]
 
@@ -11,10 +14,10 @@
   <tr class='forum2'><td colspan='2' align='center'>
     <table style='width:80%'>
         <tr><td colspan='2' class='title'>[% comment.title %]</td></tr>
-        <tr class='forum1'><td width='150'>
+        <tr class='forum1'><td width='150' valign='top'>
             [% INCLUDE 'include/user_profile_simple.html' user = comment.author %]
         </td><td>
-            [% comment.text | html | bbcode_unlimited %]
+            [% comment.text | bbcode_unlimited %]
         </td></tr>
     </table>
   </td></tr>

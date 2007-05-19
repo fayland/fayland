@@ -61,7 +61,7 @@ sub topics : Local {
     } );
     
     $c->stash( {
-        template => 'forum/recent.html',
+        template => 'site/recent.html',
         topics   => [ $rs->all ],
         pager    => $rs->pager,
         recent_type => 'my',

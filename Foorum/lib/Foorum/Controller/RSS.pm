@@ -63,7 +63,7 @@ sub forum : Regex('^forum/(\w+)/rss$') {
     $c->res->body($rss->as_string);
 }
 
-sub recent_rss : Regex('^forum/recent(/elite)?/rss$') {
+sub recent_rss : Regex('^site/recent(/elite)?/rss$') {
     my ($self, $c) = @_;
 
     $c->cache_page( '600' );
@@ -71,7 +71,7 @@ sub recent_rss : Regex('^forum/recent(/elite)?/rss$') {
     my $is_elite = $c->req->snippets->[0];
     my @extra_cols;
     my $title = $c->loc('Recent Topics');
-    my $url_prefix = $c->req->base . 'forum/recent';
+    my $url_prefix = $c->req->base . 'site/recent';
     if ($is_elite) {
         @extra_cols = ('elite', 1);
         $title = $c->loc('Recent Elite Topics');

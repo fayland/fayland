@@ -50,7 +50,6 @@ sub remove_by_upload {
     my $directory_1 = int($upload->upload_id/3200/3200);
     my $directory_2 = int($upload->upload_id/3200);
     my $file = $c->path_to('root', 'upload', $directory_1, $directory_2, $upload->filename)->stringify;
-    $c->log->debug("file is $file");
     remove( $file );
     $c->model('DBIC::Upload')->search( { upload_id => $upload->upload_id } )->delete;
 }
