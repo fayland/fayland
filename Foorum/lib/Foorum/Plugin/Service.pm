@@ -1,4 +1,4 @@
-package Foorum::Controller::Service;
+package Foorum::Plugin::Service;
 
 use strict;
 use warnings;
