@@ -17,7 +17,7 @@ use Data::Dumper;
 sub new_message : Local {
     my ($self, $c) = @_;
     
-    return unless ($c->user_exists);
+    return $c->res->body(' ') unless ($c->user_exists);
     
     my $count = $c->model('DBIC::MessageUnread')->count( {
         user_id => $c->user->user_id,
@@ -25,8 +25,9 @@ sub new_message : Local {
     
     if ($count) {
         $c->res->body("<span style='color:red'>You have new messages ($count)</span>");
+    } else {
+        return $c->res->body(' ');
     }
-    
 }
 
 =pod

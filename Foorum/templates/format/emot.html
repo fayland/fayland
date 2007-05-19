@@ -6,7 +6,7 @@ function emot(smilietext) {
 		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? smilietext + ' ' : smilietext;
 		$('text').focus();
 	} else {
-		new Insertion.Bottom('text', smilietext);
+		$('text').value += smilietext;
 		$('text').focus();
 	}
 }
