@@ -26,10 +26,6 @@ $VERSION = '0.03';
 
 __PACKAGE__->config( { VERSION => $VERSION } );
 
-# Log4perl
-#use Catalyst::Log::Log4perl;
-#__PACKAGE__->log(Catalyst::Log::Log4perl->new('../logger.conf'));
-
 __PACKAGE__->setup;
 
 1;
