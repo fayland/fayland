@@ -74,8 +74,9 @@ sub end : ActionClass('PathLogger') {
 
     # you can configure them in foorum.yml to some domain else
     # like http://static.1313s.com/images
-    $c->config->{dir}->{js} = $c->req->base . 'js' unless ($c->config->{dir}->{js});
-    $c->config->{dir}->{images} = $c->req->base . 'images' unless ($c->config->{dir}->{images});
+    $c->config->{dir}->{js} = $c->req->base . 'static/js' unless ($c->config->{dir}->{js});
+    $c->config->{dir}->{images} = $c->req->base . 'static/images' unless ($c->config->{dir}->{images});
+    $c->config->{dir}->{static} = $c->req->base . 'static' unless ($c->config->{dir}->{static});
 
     if ($c->stash->{template} =~ /^simple\//) {
         $c->stash->{simple_wrapper} = 1;
