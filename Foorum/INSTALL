@@ -1,0 +1,10 @@
+
+Steps:
+
+    * mysql -uroot -p
+      mysql>CREATE DATABASE Foorum;
+      mysql>exit;
+      mysql -uroot -p Foorum < Foorum.sql
+    * cp foorum.yml foorum_local.yml
+    * vi foorum_local.yml and change the 'dsn_pwd' config etc.
+    * run `perl bin/foorum_server.pl` to test

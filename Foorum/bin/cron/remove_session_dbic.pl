@@ -8,11 +8,13 @@ use Data::Dumper;
 use FindBin qw/$Bin/;
 use lib "$Bin/../../lib";
 
-use Proc::PID::File;
-
-# If already running, then exit
-if (Proc::PID::File->running()) {
-    exit(0);
+# for both Linux/Win32
+my $has_proc_pid_file = eval "use Proc::PID::File; 1;";
+if ($has_proc_pid_file) {
+    # If already running, then exit
+    if (Proc::PID::File->running()) {
+        exit(0);
+    }
 }
 
 use YAML qw(LoadFile);
@@ -38,4 +40,6 @@ my $status = $schema->resultset('Session')->search( {
     expires => { '<', time() },
 } )->delete;
 
-error_log($schema, 'info', "$0 - status: $status \@ " . localtime() . "\n");
+error_log($schema, 'info', "$0 - status: $status");
+
+1;

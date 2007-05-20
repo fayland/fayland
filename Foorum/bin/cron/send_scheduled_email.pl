@@ -8,12 +8,13 @@ use Data::Dumper;
 use FindBin qw/$Bin/;
 use lib "$Bin/../../lib";
 
-use Proc::Daemon;
-use Proc::PID::File;
-
-# If already running, then exit
-if (Proc::PID::File->running()) {
-    exit(0);
+# for both Linux/Win32
+my $has_proc_pid_file = eval "use Proc::PID::File; 1;";
+if ($has_proc_pid_file) {
+    # If already running, then exit
+    if (Proc::PID::File->running()) {
+        exit(0);
+    }
 }
 
 use YAML qw(LoadFile);
@@ -34,8 +35,10 @@ my $schema = Foorum::Schema->connect(
     { AutoCommit => 1, RaiseError => 1, PrintError => 1 },
 );
 
+# for both Win32/Linux
+my $has_proc_daemon = eval "use Proc::Daemon; 1;";
 # Daemonize
-Proc::Daemon::Init();
+Proc::Daemon::Init() if ($has_proc_daemon);
 
 while (1) {
 
@@ -57,7 +60,7 @@ while (1) {
     my $cost_time = time() - $start_time;
     
     if ($handled) {
-        error_log($schema, 'info', "$0 - sent: $handled \@ " . localtime() . "\n");
+        error_log($schema, 'info', "$0 - sent: $handled");
     }
 
     if ($cost_time < 30) {
