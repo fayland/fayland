@@ -7,7 +7,14 @@ use warnings;
 use Data::Dumper;
 use FindBin qw/$Bin/;
 use lib "$Bin/../../lib";
+
 use Proc::Daemon;
+use Proc::PID::File;
+
+# If already running, then exit
+if (Proc::PID::File->running()) {
+    exit(0);
+}
 
 use YAML qw(LoadFile);
 use Foorum::Schema; # DB Schema
