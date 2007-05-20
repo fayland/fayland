@@ -17,6 +17,7 @@ if (Proc::PID::File->running()) {
 
 use YAML qw(LoadFile);
 use Foorum::Schema; # DB Schema
+use Foorum::Log qw/error_log/;
 
 # load foorum.yml and foorum_local.yml
 # and merge as $config
@@ -37,4 +38,4 @@ my $status = $schema->resultset('Visit')->search( {
     time => { '<', time() - 2592000 }
 } )->delete;
 
-print "$0 - status: $status \@ " . localtime() . "\n";
+error_log($schema, 'info', "$0 - status: $status \@ " . localtime() . "\n");

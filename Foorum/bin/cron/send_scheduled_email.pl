@@ -18,6 +18,7 @@ if (Proc::PID::File->running()) {
 
 use YAML qw(LoadFile);
 use Foorum::Schema; # DB Schema
+use Foorum::Log qw/error_log/;
 
 # load foorum.yml and foorum_local.yml
 # and merge as $config
@@ -42,6 +43,7 @@ while (1) {
 
     my $rs = $schema->resultset('ScheduledEmail')->search( { processed => 'N' } );
     
+    my $handled = 0;
     while (my $rec = $rs->next) {
         
         print 'To: ' . $rec->to_email . ' Subject: ' . $rec->subject . "\n";
@@ -49,11 +51,16 @@ while (1) {
         
         # update processed
         $rec->update( { processed => 'Y' } );
+        $handled++;
     }
     
-    my $end_time = time();
+    my $cost_time = time() - $start_time;
+    
+    if ($handled) {
+        error_log($schema, 'info', "$0 - sent: $handled \@ " . localtime() . "\n");
+    }
 
-    if ($end_time - $start_time < 30) {
+    if ($cost_time < 30) {
         sleep 30;
     } else {
         sleep 5;

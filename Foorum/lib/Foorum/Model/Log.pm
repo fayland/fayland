@@ -4,12 +4,14 @@ use strict;
 use warnings;
 use base 'Catalyst::Model';
 use Data::Dumper;
+use Foorum::Log qw/error_log/;
 
 sub log_path {
     my ($self, $c, $loadtime) = @_;
     
     # sometimes we won't logger path because it expand the table so quickly
     return unless ($c->config->{logger}->{path});
+    return if ($c->stash->{donot_log_path});
     # but sometimes we want to know which url is causing more than $PATH_LOAD_TIME_MORE_THAN
     return if ($loadtime < $c->config->{logger}->{path_load_time_more_than});
     
@@ -42,6 +44,13 @@ sub log_action {
         object_id   => $info->{object_id}   || 0, # times
         time    => \'NOW()',
     } );
+}
+
+sub log_error {
+    my ($self, $c, $level, $error) = @_;
+    
+    # thin wrapper for Foorum::Log sub error_log
+    error_log($c->model('DBIC'), $level, $error);
 }
 
 =pod

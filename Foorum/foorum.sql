@@ -200,6 +200,17 @@ CREATE TABLE `log_path` (
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+CREATE TABLE log_error (
+    error_id INT(11) NOT NULL AUTO_INCREMENT,
+    level ENUM('info','debug','warn','error','fatal') NOT NULL DEFAULT 'debug' ,
+    text TEXT NOT NULL ,
+    time TIMESTAMP NOT NULL DEFAULT 'CURRENT_TIMESTAMP' , 
+    PRIMARY KEY (error_id),
+    KEY `level` (`level`)
+);
+
+
 --
 -- Table structure for table `message`
 --

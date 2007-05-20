@@ -17,6 +17,8 @@ use Data::Dumper;
 sub new_message : Local {
     my ($self, $c) = @_;
     
+    $c->stash->{donot_log_path} = 1;
+    
     return $c->res->body(' ') unless ($c->user_exists);
     
     my $count = $c->model('DBIC::MessageUnread')->count( {
