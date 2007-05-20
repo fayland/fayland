@@ -109,8 +109,9 @@ per_page:
   message: 8
 
 dir:
-  js: 
-  images: 
+  js: /static/js
+  images: /static/images
+  static: /static
 
 # For Foorum pm using
 mail:
