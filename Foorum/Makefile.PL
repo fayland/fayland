@@ -15,6 +15,10 @@ requires 'Cache::Memcached';
 requires 'XML::RSS';
 requires 'MIME::Entity';
 requires 'Mail::Mailer';
+requires 'Catalyst::View::TT';
+requires 'Catalyst::Model::DBIC::Schema';
+requires 'Catalyst::Plugin::Static::Simple';
+requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Cache::Memcached';
 requires 'Catalyst::Plugin::PageCache';
 requires 'Catalyst::Plugin::Authentication';
@@ -26,7 +30,6 @@ requires 'Catalyst::Plugin::Session::Store::DBIC';
 requires 'Catalyst::Plugin::Session::DynamicExpiry';
 requires 'Catalyst::Plugin::FormValidator::Simple';
 requires 'Catalyst::Plugin::Captcha';
-requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::I18N';
 requires 'Catalyst::Plugin::DBIC::Schema::Profiler';
 requires 'Template::Plugin::FillInForm';
@@ -37,6 +40,7 @@ requires 'File::Remove';
 requires 'IP::QQWry';
 requires 'Email::Obfuscate';
 requires 'Locale::Country::Multilingual';
+requires 'FormValidator::Simple::Plugin::DBIC::Unique';
 
 catalyst;
 
