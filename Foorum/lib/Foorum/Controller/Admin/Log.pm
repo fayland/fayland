@@ -17,7 +17,7 @@ sub error_log : Local {
     }
     if (my $text = $c->req->param('text')) {
         push @extra_cols, ('text', { LIKE => "%$text%" } );
-        $c->stash->{url_postfix} .= ($c->stash->{url_postfix} ? '&' : '?';
+        $c->stash->{url_postfix} .= ($c->stash->{url_postfix}) ? '&' : '?';
         $c->stash->{url_postfix} .= 'text=' . $text;
     }
     
