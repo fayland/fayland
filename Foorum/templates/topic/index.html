@@ -1,8 +1,3 @@
-[% USE HTML::BBCode( 'bbcode_unlimited'
-    no_html = 1
-    linebreaks = 1
- ) %]
- 
 [% title = topic.title _ ' : ' _ forum.name %]
 
 [% url_prefix = forum.forum_url _ '/' _ topic.topic_id %]
@@ -50,7 +45,7 @@
 	    [% IF comment.upload %]
 	    [% INCLUDE upload/upload.html upload = comment.upload %]
 	    [% END %]
-	    [% comment.text | bbcode_unlimited %]
+	    [% comment.text %]
 	  [% END %]
 	  </span>
       </td></tr>

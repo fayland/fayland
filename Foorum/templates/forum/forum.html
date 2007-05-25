@@ -1,8 +1,3 @@
-[% USE HTML::BBCode( 'bbcode_unlimited'
-    no_html = 1
-    linebreaks = 1
- ) %]
-
 [% IF announcement %]
 [% UNLESS c.user_exists %]
 <script type='text/javascript' src="[% c.config.dir.js %]/JSAN/JSAN.js"></script>
@@ -16,7 +11,7 @@
     
     var ann_box = new Widget.Lightbox();
     ann_box.effects('RoundedCorners');
-    ann_box.content("<div class='lightbox'><h3>[% announcement.title %]</h3>[% announcement.text | bbcode_unlimited | replace('"', "'") %]<div style='text-align:right'><a href='javascript:ann_box.hide()'>[% c.loc('Close') %]</a></div></div>");
+    ann_box.content("<div class='lightbox'><h3>[% announcement.title %]</h3>[% announcement.text | replace('"', "'") %]<div style='text-align:right'><a href='javascript:ann_box.hide()'>[% c.loc('Close') %]</a></div></div>");
     ann_box.show();
 </script>
 [% END %]

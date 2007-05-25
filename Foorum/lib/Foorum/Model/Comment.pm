@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Model';
 use Foorum::Utils qw/get_page_no_from_url encodeHTML/;
+use Foorum::Filter qw/filter_format/;
 use Data::Dumper;
 
 sub get_comments_by_object {
@@ -21,10 +22,23 @@ sub get_comments_by_object {
         order_by => 'post_on',
         rows => $c->config->{per_page}->{topic},
         page => $page,
-        prefetch => ['author', 'upload'],
+        prefetch => ['upload', 'author'],
     } );
     
-    my @comments = $it->all;
+    my @comments;
+    while (my $rec = $it->next) {
+        my $upload = ($rec->upload) ? $rec->upload : undef;
+        my $author = ($rec->author) ? $rec->author : undef;
+        $rec = $rec->{_column_data}; # for memcached using
+        $rec->{upload} = $upload->{_column_data} if ($upload);
+        $rec->{author} = $author->{_column_data} if ($author);
+        
+        # filter format by Foorum::Filter
+        $c->log->debug("text is $rec->{text} and formatter is $rec->{formatter}");
+        $rec->{text} = filter_format( $rec->{text}, { format => $rec->{formatter} } );
+        
+        push @comments, $rec;
+    }
     $c->stash->{comments} = \@comments;
 	$c->stash->{comments_pager} = $it->pager;
 }
@@ -47,7 +61,7 @@ sub create {
         author_id   => $c->user->user_id,
         title       => $title,
         text        => $c->req->param('text') || '',
-        formatter   => 'text',
+        formatter   => 'ubb',
         post_on     => \"NOW()",
         post_ip     => $c->req->address,
         reply_to    => $reply_to,
