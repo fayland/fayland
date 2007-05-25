@@ -8,6 +8,8 @@ sub login : Global {
     my ( $self, $c ) = @_;
     
     $c->stash->{template} = 'user/login.html';
+    my $url_base = $c->req->base;
+    $c->req->param('referer', $c->req->referer) if (not $c->req->param('referer') and $c->req->referer =~ /$url_base/);
     return unless ($c->req->method eq 'POST');
 
     my $username = $c->req->param('username');
