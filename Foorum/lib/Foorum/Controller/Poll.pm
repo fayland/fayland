@@ -11,7 +11,7 @@ sub create : Regex('^forum/(\w+)/poll/new$') {
     return $c->res->redirect('/login') unless ($c->user_exists);
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum = $c->controller('Get')->forum($c, $forum_code);
+    my $forum = $c->model('Forum')->get($c, $forum_code);
     my $forum_id = $forum->forum_id;
 
     $c->stash->{template} = 'poll/new.html';
@@ -63,7 +63,7 @@ sub poll : Regex('^forum/(\w+)/poll/(\d+)$') {
     my ($self, $c) = @_;
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum = $c->controller('Get')->forum($c, $forum_code);
+    my $forum = $c->model('Forum')->get($c, $forum_code);
     my $forum_id = $forum->forum_id;
     my $poll_id  = $c->req->snippets->[1];
 
@@ -99,7 +99,7 @@ sub view_polls : Regex('^forum/(\w+)/poll$') {
     my ($self, $c) = @_;
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum    = $c->controller('Get')->forum($c, $forum_code);
+    my $forum    = $c->model('Forum')->get($c, $forum_code);
     my $forum_id = $forum->forum_id;
     my $page     = get_page_no_from_url($c->req->path);
 

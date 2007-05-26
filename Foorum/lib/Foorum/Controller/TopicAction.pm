@@ -9,7 +9,7 @@ sub lock_or_top_or_elite : Regex('^forum/(\w+)/(\d+)/(un)?(top|elite|lock)$') {
     my ( $self, $c ) = @_;
     
     my $forum_code = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum = $c->model('Forum')->get($c, $forum_code);
     my $forum_id = $forum->forum_id;
     $forum_code = $forum->forum_code;
     my $topic_id = $c->req->snippets->[1];

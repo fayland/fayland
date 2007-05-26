@@ -47,12 +47,8 @@ sub login : Global {
             } );
             
             # redirect
-            my $referer = $c->req->param('referer');
-            if ($referer) {
-                $c->res->redirect($referer);
-            } else {
-                $c->res->redirect('/');
-            }
+            my $referer = $c->req->param('referer') || '/';
+            $c->res->redirect($referer);
         } else {
             $failure_login_times = 0 unless ($failure_login_times);
             $failure_login_times++;

@@ -15,11 +15,11 @@ sub topic : Regex('^forum/(\w+)/(\d+)$') {
     $page_no = 1 unless ($page_no and $page_no =~ /^\d+$/);
     
     # get the forum information
-    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum = $c->model('Forum')->get($c, $forum_code);
     my $forum_id = $forum->forum_id;
     
     # get the topic
-    my $topic = $c->forward('/get/topic', [ $forum_id, $topic_id ]);
+    my $topic = $c->model('Topic')->get($c, $forum_id, $topic_id);
     $topic->update( {
         hit => $topic->hit + 1,
     } );
@@ -54,7 +54,7 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
     &_check_policy($self, $c);
     
     my $forum_code = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum = $c->model('Forum')->get($c, $forum_code);
     my $forum_id = $forum->forum_id;
     
     $c->stash( {
@@ -65,12 +65,7 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
     return unless ($c->req->method eq 'POST');
     
     # execute validation.
-    $c->form(
-        title => [qw/NOT_BLANK/,             [qw/LENGTH 1 80/] ],
-        text  => [qw/NOT_BLANK/ ],
-    );
-
-    return if ($c->form->has_error);
+    $c->model('Validation')->validate_comment($c);
 
     my $upload = $c->req->upload('upload');
     my $upload_id = 0;
@@ -128,10 +123,10 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
     &_check_policy( $self, $c );
     
     my $forum_code = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum = $c->model('Forum')->get($c, $forum_code);
     my $forum_id = $forum->forum_id;
     my $topic_id = $c->req->snippets->[1];
-    my $topic = $c->forward('/get/topic', [ $forum_id, $topic_id ]);
+    my $topic = $c->model('Topic')->get($c, $forum_id, $topic_id);
     my $comment_id = $c->req->snippets->[3];
     
     # topic is closed or not
@@ -140,15 +135,12 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
     $c->stash->{template} = 'comment/reply.html';
     
     unless ($c->req->method eq 'POST') {
-        my $comment  = $c->forward('/get/comment', [ $comment_id, 'thread', $topic_id ] ) if ($comment_id);
+        my $comment  = $c->model('Comment')->get($c, $comment_id, { object_type => 'thread', object_id => $topic_id, with_author => 1, with_text => 1 } );
         return;
     }
     
     # execute validation.
-    $c->form(
-        title => [qw/NOT_BLANK/,             [qw/LENGTH 1 80/] ],
-        text  => [qw/NOT_BLANK/ ],
-    );
+    $c->model('Validation')->validate_comment($c);
 
     return if ($c->form->has_error);
     
@@ -191,7 +183,7 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
     
     $c->forward('/print_message', [ {
         msg => 'Post Reply OK',
-        url => "/forum/$forum_id/$topic_id",
+        url => $forum->{forum_url} . "/$topic_id",
     } ] );
 }
 
@@ -203,12 +195,12 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
     &_check_policy($self, $c);
     
     my $forum_code = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum = $c->model('Forum')->get($c, $forum_code);
     my $forum_id = $forum->forum_id;
     my $topic_id = $c->req->snippets->[1];
-    my $topic = $c->forward('/get/topic', [ $forum_id, $topic_id ]);
+    my $topic = $c->model('Topic')->get($c, $forum_id, $topic_id);
     my $comment_id = $c->req->snippets->[2];
-    my $comment  = $c->forward('/get/comment', [ $comment_id, 'thread', $topic_id ] );
+    my $comment  = $c->model('Comment')->get($c, $comment_id, { object_type => 'thread', object_id => $topic_id } );
 
     # permission
     if ($c->user->user_id != $comment->author_id and not $c->model('Policy')->is_moderator($c, $forum_id)) {
@@ -227,10 +219,7 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
     return unless ($c->req->method eq 'POST');
     
     # execute validation.
-    $c->form(
-        title => [qw/NOT_BLANK/,             [qw/LENGTH 1 80/] ],
-        text  => [qw/NOT_BLANK/ ],
-    );
+    $c->model('Validation')->validate_comment($c);
 
     return if ($c->form->has_error);
 
@@ -255,8 +244,8 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
     $comment->update( {
         title       => $title,
         text        => $c->req->param('text'),
-        formatter   => 'text',
-        update_on   => \"NOW()",
+        formatter   => 'ubb',
+        update_on   => \'NOW()',
         post_ip     => $c->req->address,
         upload_id   => $upload_id,
     } );
@@ -268,9 +257,12 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
         $c->model('ClearCachedPage')->clear_when_topic_changes($c, $forum);
     }
     
+    my $cache_key   = "comment|object_type=thread|object_id=$topic_id";
+    $c->cache->delete($cache_key);
+    
     $c->forward('/print_message', [ {
         msg => 'Edit Reply OK',
-        url => "/forum/$forum_id/$topic_id",
+        url => $forum->{forum_url} . "/$topic_id",
     } ] );
 }
 
@@ -278,11 +270,11 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
     my ( $self, $c ) = @_;
     
     my $forum_code = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_code ]);
+    my $forum = $c->model('Forum')->get($c, $forum_code);
     my $forum_id = $forum->forum_id;
     my $topic_id = $c->req->snippets->[1];
     my $comment_id = $c->req->snippets->[2];
-    my $comment  = $c->forward('/get/comment', [ $comment_id, 'thread', $topic_id ] );
+    my $comment  = $c->model('Comment')->get($c, $comment_id, { object_type => 'thread', object_id => $topic_id } );
     
     # permission
     if ($c->user->user_id != $comment->author_id and not $c->model('Policy')->is_moderator($c, $forum_id)) {
@@ -292,13 +284,13 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
     my $url;
     if ($comment->reply_to == 0) {
         $c->model('Topic')->remove($c, $forum_id, $topic_id);
-        $url = "/forum/$forum_id";
+        $url = $forum->{forum_url};
         $c->model('ClearCachedPage')->clear_when_topic_changes($c, $forum);
     } else {
         # delete comment
         $c->model('Comment')->remove($c, $comment);
         
-        $url = "/forum/$forum_id/$topic_id";
+        $url = $forum->{forum_url} . "/$topic_id";
         
         # update topic
         my $lastest = $c->model('DBIC')->resultset('Comment')->find( {

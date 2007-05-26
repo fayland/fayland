@@ -7,7 +7,6 @@ use vars qw/@EXPORT_OK $has_text_textile $has_ubb_code/;
 @EXPORT_OK = qw/
     filter
     filter_format
-    filter_bad_words
 /;
 $has_text_textile = eval "use Text::Textile; 1;";
 $has_ubb_code = eval "use HTML::BBCode; 1;";
@@ -18,6 +17,8 @@ sub filter {
     if ($params->{format}) {
         $text = filter_format($text, $params);
     }
+
+    return $text;
 }
 
 sub filter_format {
@@ -35,14 +36,13 @@ sub filter_format {
             linebreaks   => 1,
         } );
         $text = $formatter->parse( $text );
+    } else {
+        $text =~ s|<|&lt;|gs; # no_html
+        $text =~ s|>|&gt;|gs;
+        $text =~ s|\n|<br />\n|gs; # linebreaks
     }
     
     return $text;
-}
-
-sub filter_bad_words {
-    my ($text, $params) = @_;
-
 }
 
 =pod

@@ -182,7 +182,6 @@ sub forget_password : Local {
     
     # send email
     $c->model('Email')->send_forget_password($c, $email, $username, $random_password);
-    $c->log->debug("PASSWORD: $random_password");
     $user->update( { password => $computed } );
     $c->detach('/print_message', [ {
         msg => 'Your Password is Sent to Your Email, Please have a check',
@@ -200,17 +199,15 @@ sub change_email : Local {
     
     return unless ($c->req->method eq 'POST');
     
+    # validation
     my $email = $c->req->param('email');
     if ($email eq $c->user->email) {
-        $c->set_invalid_form( email => 'EMAIL_DUPLICATION' );
-        return;
+        return $c->set_invalid_form( email => 'EMAIL_DUPLICATION' );
     }
-    
-    # execute validation.
-    $c->form(
-        email     => [qw/NOT_BLANK EMAIL_LOOSE/, [qw/LENGTH 5 64/], [ 'DBIC_UNIQUE', $c->model('DBIC::User'), 'email' ] ],
-    );
-    return if ($c->form->has_error);
+    my $err = $c->model('Validation')->validate_email($c, $email);
+    if ($err) {
+        return $c->set_invalid_form( email => $err );
+    }
     
     my @extra_columns;
     if ($c->config->{email}->{on}) {
@@ -256,9 +253,9 @@ sub change_username : Local {
     return if ($c->form->has_error);
     
     my $new_username = $c->req->param('new_username');
-    my $ERROR_USERNAME = $c->model('Profile')->check_valid_username($c, $new_username);
-    if ($ERROR_USERNAME) {
-        $c->set_invalid_form( new_username => $ERROR_USERNAME );
+    my $err = $c->model('Validation')->validate_username($c, $new_username);
+    if ($err) {
+        $c->set_invalid_form( new_username => $err );
         return;
     }
     

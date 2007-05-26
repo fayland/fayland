@@ -15,8 +15,13 @@ sub post : Local {
     my ($object_id, $object_type, $forum_id) = $c->model('Object')->get_object_from_url($c, $path);
     return $c->res->redirect($path) unless ($object_id and $object_type);
     
+    if ($forum_id) { # maybe that's a ForumCode
+        my $forum = $c->model('Forum')->get($c, $forum_id);
+        $forum_id = $forum->forum_id;
+    }
+    
     # execute validation.
-    _validate($c);
+    $c->model('Validation')->validate_comment($c);
     
     my $upload = $c->req->upload('upload');
     my $upload_id = 0;
@@ -45,17 +50,12 @@ sub reply : LocalRegex('^(\d+)/reply$') {
     $c->stash->{template} = 'comment/reply.html';
     
     my $comment_id = $c->req->snippets->[0];
-    my $comment  = $c->forward('/get/comment', [ $comment_id ] );
+    my $comment  = $c->model('Comment')->get($c, $comment_id, { with_author => 1, with_text => 1 } ); # show up
     
     return unless ($c->req->method eq 'POST');
     
     # execute validation.
-    $c->form(
-        title => [qw/NOT_BLANK/,             [qw/LENGTH 1 80/] ],
-        text  => [qw/NOT_BLANK/ ],
-    );
-
-    return if ($c->form->has_error);
+    $c->model('Validation')->validate_comment($c);
     
     my $upload = $c->req->upload('upload');
     my $upload_id = 0;
@@ -92,7 +92,7 @@ sub edit : LocalRegex('^(\d+)/edit$') {
     return $c->res->redirect('/login') unless ($c->user_exists);
 
     my $comment_id = $c->req->snippets->[0];
-    my $comment  = $c->forward('/get/comment', [ $comment_id ] );
+    my $comment  = $c->model('Comment')->get( $c, $comment_id );
     
     # permission
     if ($c->user->user_id != $comment->author_id and not $c->model('Policy')->is_moderator($c, 'site')) {
@@ -111,12 +111,7 @@ sub edit : LocalRegex('^(\d+)/edit$') {
     return unless ($c->req->method eq 'POST');
     
     # execute validation.
-    $c->form(
-        title => [qw/NOT_BLANK/,             [qw/LENGTH 1 80/] ],
-        text  => [qw/NOT_BLANK/ ],
-    );
-
-    return if ($c->form->has_error);
+    $c->model('Validation')->validate_comment($c);
 
     my $new_upload = $c->req->upload('upload');
     my $upload_id = $comment->upload_id;
@@ -138,12 +133,12 @@ sub edit : LocalRegex('^(\d+)/edit$') {
     $comment->update( {
         title       => $c->req->param('title'),
         text        => $c->req->param('text'),
-        formatter   => 'text',
-        update_on   => \"NOW()",
+        formatter   => 'ubb',
+        update_on   => \'NOW()',
         post_ip     => $c->req->address,
         upload_id   => $upload_id,
     } );
-    
+
     my ($object_id, $object_type, $forum_id) = 
        ($comment->object_id, $comment->object_type, $comment->forum_id);
     my $info = {
@@ -152,6 +147,9 @@ sub edit : LocalRegex('^(\d+)/edit$') {
         forum_id    => $forum_id,
     };
     my $path = $c->model('Object')->get_url_from_object($c, $info);
+
+    my $cache_key   = "comment|object_type=$object_type|object_id=$object_id";
+    $c->cache->delete($cache_key);
     
     $c->forward('/print_message', [ {
         msg => 'Edit Reply OK',
@@ -163,7 +161,7 @@ sub delete : LocalRegex('^(\d+)/delete$') {
     my ( $self, $c ) = @_;
 
     my $comment_id = $c->req->snippets->[0];
-    my $comment  = $c->forward('/get/comment', [ $comment_id ] );
+    my $comment  = $c->model('Comment')->get( $c, $comment_id );
     
     # permission
     if ($c->user->user_id != $comment->author_id and not $c->model('Policy')->is_moderator($c, 'site')) {
@@ -173,12 +171,10 @@ sub delete : LocalRegex('^(\d+)/delete$') {
     # delete comment
     $c->model('Comment')->remove($c, $comment);
     
-    my ($object_id, $object_type, $forum_id) = 
-       ($comment->object_id, $comment->object_type, $comment->forum_id);
     my $info = {
-        object_type => $object_type,
-        object_id   => $object_id,
-        forum_id    => $forum_id,
+        object_type => $comment->object_type,
+        object_id   => $comment->object_id,
+        forum_id    => $comment->forum_id,
     };
     my $path = $c->model('Object')->get_url_from_object($c, $info);
     
@@ -186,19 +182,6 @@ sub delete : LocalRegex('^(\d+)/delete$') {
         msg => 'Delete Reply OK',
         url => $path,
     } ] );
-}
-
-sub _validate {
-    my ( $c ) = @_;
-
-    my $title = $c->req->param('title');
-    my $text  = $c->req->param('text');
-    unless ($title and length($title) < 80) {
-        $c->detach('/print_error', [ 'ERROR_TITLE_LENGTH' ]);
-    }
-    unless ($text) {
-        $c->detach('/print_error', [ 'ERROR_TEXT_REQUIRED' ]);
-    }
 }
 
 =pod

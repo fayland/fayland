@@ -41,18 +41,16 @@ sub create : Local {
     
     $c->form(
         name => [qw/NOT_BLANK/,             [qw/LENGTH 1 40/] ],
-        forum_code  => [qw/NOT_BLANK/,      [qw/LENGTH 6 20/], ['REGEX', qr/[A-Za-z]+/ ], ['REGEX', qr/^[A-Za-z0-9\_]+$/ ], [ 'DBIC_UNIQUE', $c->model('DBIC::Forum'), 'forum_code' ] ],
 #        description  => [qw/NOT_BLANK/ ],
     );
     return if ($c->form->has_error);
     
-    # check forum_code reserve
-    my $cnt = $c->model('DBIC::FilterWord')->count( {
-        word => $c->req->param('forum_code'),
-        type => 'forum_code_reserved',
-    } );
-    if ($cnt) {
-        return $c->set_invalid_form( forum_code => 'HAS_RESERVED' );
+    # check forum_code
+    my $forum_code = $c->req->param('forum_code');
+    my $err = $c->model('Validation')->validate_forum_code($c, $forum_code);
+    if ($err) {
+        $c->set_invalid_form( forum_code => $err );
+        return;
     }
     
     my $name  = $c->req->param('name');
@@ -85,7 +83,7 @@ sub create : Local {
     my $policy = ($private == 1)?'private':'public';
     my $forum = $c->model('DBIC::Forum')->create( {
         name => $name,
-        forum_code => $c->req->param('forum_code'),
+        forum_code => $forum_code,
         description => $description,
         forum_type => 'classical',
         policy => $policy,
@@ -115,7 +113,7 @@ sub remove : Local {
     
     my $forum_id = $c->req->param('forum_id');
     # get the forum information
-    # my $forum = $c->forward('/get/forum', [ $forum_id ]);
+    # my $forum = $c->model('Forum')->get($c, $forum_code);
     
     $c->model('Forum')->remove_forum($c, $forum_id);
     $c->forward('/print_message', [ 'OK' ] );

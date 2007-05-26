@@ -5,6 +5,27 @@ use warnings;
 use base 'Catalyst::Model';
 use Data::Dumper;
 
+sub get {
+    my ( $self, $c, $forum_id, $topic_id, $attrs ) = @_;
+    
+    my @extra_attrs;
+    push @extra_attrs, ( prefetch => ['author'] ) if ($attrs->{with_author});
+    
+    my $topic = $c->model('DBIC')->resultset('Topic')->search( {
+        topic_id => $topic_id,
+        forum_id => $forum_id,
+    }, {
+        @extra_attrs,
+    } )->first;
+    
+    # print error if the topic is non-exist
+    $c->detach('/print_error', [ 'Non-existent topic' ]) unless ($topic);
+    
+    $c->stash->{topic} = $topic;
+    
+    return $topic;
+}
+
 sub remove {
     my ($self, $c, $forum_id, $topic_id) = @_;
     

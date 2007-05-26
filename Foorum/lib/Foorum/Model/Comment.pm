@@ -5,6 +5,7 @@ use warnings;
 use base 'Catalyst::Model';
 use Foorum::Utils qw/get_page_no_from_url encodeHTML/;
 use Foorum::Filter qw/filter_format/;
+use Data::Page;
 use Data::Dumper;
 
 sub get_comments_by_object {
@@ -12,35 +13,84 @@ sub get_comments_by_object {
     
     my $object_type = $info->{object_type};
     my $object_id   = $info->{object_id};
-    my $page        = $info->{page};
-    $page = &get_page_no_from_url($c->req->path) unless ($page);
+    my $page        = $info->{page} || get_page_no_from_url($c->req->path);
     
-    my $it = $c->model('DBIC')->resultset('Comment')->search( {
-        object_type => $object_type,
-        object_id   => $object_id,
-    }, {
-        order_by => 'post_on',
-        rows => $c->config->{per_page}->{topic},
-        page => $page,
-        prefetch => ['upload', 'author'],
-    } );
+    my $cache_key   = "comment|object_type=$object_type|object_id=$object_id";
+    my $cache_value = $c->cache->get($cache_key);
     
     my @comments;
-    while (my $rec = $it->next) {
-        my $upload = ($rec->upload) ? $rec->upload : undef;
-        my $author = ($rec->author) ? $rec->author : undef;
-        $rec = $rec->{_column_data}; # for memcached using
-        $rec->{upload} = $upload->{_column_data} if ($upload);
-        $rec->{author} = $author->{_column_data} if ($author);
+    if ($cache_value) {
+        $c->log->debug('Cache: get comments');
+        @comments = @{ $cache_value->{comments} };
+    } else {
+        my $it = $c->model('DBIC')->resultset('Comment')->search( {
+            object_type => $object_type,
+            object_id   => $object_id,
+        }, {
+            order_by => 'post_on',
+            prefetch => ['upload', 'author'],
+        } );
         
-        # filter format by Foorum::Filter
-        $c->log->debug("text is $rec->{text} and formatter is $rec->{formatter}");
-        $rec->{text} = filter_format( $rec->{text}, { format => $rec->{formatter} } );
-        
-        push @comments, $rec;
+        while (my $rec = $it->next) {
+            my $upload = ($rec->upload) ? $rec->upload : undef;
+            my $author = ($rec->author) ? $rec->author : undef;
+            $rec = $rec->{_column_data}; # for memcached using
+            $rec->{upload} = $upload->{_column_data} if ($upload);
+            $rec->{author} = $author->{_column_data} if ($author);
+            
+            # filter format by Foorum::Filter
+            $rec->{title} = $c->model('FilterWord')->convert_offensive_word($c, $rec->{title});
+            $rec->{text} = $c->model('FilterWord')->convert_offensive_word($c, $rec->{text});
+            $rec->{text} = filter_format( $rec->{text}, { format => $rec->{formatter} } );
+            
+            push @comments, $rec;
+        }
+        $cache_value = { comments => \@comments };
+        $c->cache->set($cache_key, $cache_value);
+        $c->log->debug('Cache: set comments');
     }
+    
+    my $rows = $c->config->{per_page}->{topic} || 10;
+    my $pager = Data::Page->new();
+    $pager->current_page($page);
+    $pager->entries_per_page($rows);
+    $pager->total_entries(scalar @comments);
+    
+    @comments = splice(@comments, ($page - 1) * $rows, $rows);
+    
     $c->stash->{comments} = \@comments;
-	$c->stash->{comments_pager} = $it->pager;
+	$c->stash->{comments_pager} = $pager;
+}
+
+sub get {
+    my ( $self, $c, $comment_id, $attrs ) = @_;
+    
+    my @extra_where;
+    push @extra_where, ( object_type => $attrs->{object_type} ) if ($attrs->{object_type});
+    push @extra_where, ( object_id   => $attrs->{object_id} ) if ($attrs->{object_id});
+    
+    my @extra_attrs;
+    push @extra_attrs, ( prefetch => ['author'] ) if ($attrs->{with_author});
+    
+    my $comment = $c->model('DBIC')->resultset('Comment')->search( {
+        comment_id => $comment_id,
+        @extra_where,
+    }, {
+        @extra_attrs,
+    } )->first;
+    
+    # print error if the comment is non-exist
+    $c->detach('/print_error', [ 'Non-existent comment' ]) unless ($comment);
+    
+    if ($attrs->{with_text}) {
+        # filter format by Foorum::Filter
+        $comment->{_column_data}->{text} = $c->model('FilterWord')->convert_offensive_word($c, $comment->{_column_data}->{text});
+        $comment->{_column_data}->{text} = filter_format( $comment->{_column_data}->{text}, { format => $comment->formatter } );
+    }
+    
+    $c->stash->{comment} = $comment;
+    
+    return $comment;
 }
 
 sub create {
@@ -62,12 +112,16 @@ sub create {
         title       => $title,
         text        => $c->req->param('text') || '',
         formatter   => 'ubb',
-        post_on     => \"NOW()",
+        post_on     => \'NOW()',
         post_ip     => $c->req->address,
         reply_to    => $reply_to,
         forum_id    => $forum_id,
         upload_id   => $info->{upload_id} || 0,
     } );
+    
+    my $cache_key   = "comment|object_type=$object_type|object_id=$object_id";
+    $c->cache->delete($cache_key);
+    
     return $comment;
 }
 
@@ -78,6 +132,10 @@ sub remove {
         $c->model('Upload')->remove_file_by_upload_id($c, $comment->upload_id);
     }
     $c->model('DBIC::Comment')->search( { comment_id => $comment->comment_id } )->delete;
+    
+    my $object_type = $comment->object_type; my $object_id = $comment->object_id;
+    my $cache_key   = "comment|object_type=$object_type|object_id=$object_id";
+    $c->cache->delete($cache_key);
 }
 
 =pod

@@ -9,11 +9,10 @@ use Switch;
 sub get_object_from_url {
     my ($self, $c, $path) = @_;
     
-    my ($object_id, $object_type);
-    my $forum_id = 0;
-    # 1. poll, eg: /forum/1/poll/2
-    if ($path =~ /\/forum\/(\d+)\/poll\/(\d+)/) {
-        $forum_id  = $1;
+    my ($object_id, $object_type, $forum_code);
+    # 1. poll, eg: /forum/ForumName/poll/2
+    if ($path =~ /\/forum\/(\w+)\/poll\/(\d+)/) {
+        $forum_code = $1;
         $object_id = $2; # poll_id
         $object_type = 'poll';
     }
@@ -24,7 +23,7 @@ sub get_object_from_url {
         $object_type = 'user_profile';
     }
     
-    return ($object_id, $object_type, $forum_id);
+    return ($object_id, $object_type, $forum_code);
 }
 
 sub get_url_from_object {

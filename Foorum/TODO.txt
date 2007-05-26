@@ -7,19 +7,6 @@ for all tables and check for what SQL is used most.
 
 =pod High
 
-=item Country/State/City forum
-
-in my opionion, every country or state or city would have a forum. URL would be something like
-
-/country/$country_name
-/country/$country_name/state/$state_name
-/country/$country_name/state/$state_name/city/$city_name
-
-=item word forum
-
-and all word would have a forum then like 'Stock', 'DengXiaoPing'. URL would like:
-
-/w/$word
 
 =item Style/CSS Rebuild
 

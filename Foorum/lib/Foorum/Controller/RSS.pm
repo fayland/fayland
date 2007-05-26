@@ -11,7 +11,7 @@ sub forum : Regex('^forum/(\w+)/rss$') {
     my ($self, $c) = @_;
     
     my $forum_code = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_code, { RaiseError => 0 } ]);
+    my $forum = $c->model('Forum')->get($c, $forum_code, { level => 'data' } );
     return unless ($forum);
     return if ($forum->policy eq 'private');
 

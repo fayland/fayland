@@ -21,17 +21,22 @@ sub default : Private {
     $c->form(
         username  => [qw/NOT_BLANK/ ],
         password  => [qw/NOT_BLANK/,             [qw/LENGTH 6 20/] ],
-        email     => [qw/NOT_BLANK EMAIL_LOOSE/, [qw/LENGTH 5 64/], [ 'DBIC_UNIQUE', $c->model('DBIC::User'), 'email' ] ],
         { passwords => ['password', 'confirm_password'] } => ['DUPLICATION'],
     );
     return if ($c->form->has_error);
     
     # username
     my $username = $c->req->param('username');
-    my $ERROR_USERNAME = $c->model('Profile')->check_valid_username($c, $username);
-    if ($ERROR_USERNAME) {
-        $c->set_invalid_form( username => $ERROR_USERNAME );
-        return;
+    my $err = $c->model('Validation')->validate_username($c, $username);
+    if ($err) {
+        return $c->set_invalid_form( username => $err );
+    }
+
+    # email
+    my $email = $c->req->param('email');
+    $err = $c->model('Validation')->validate_email($c, $email);
+    if ($err) {
+        return $c->set_invalid_form( email => $err );
     }
     
     # password
@@ -39,9 +44,6 @@ sub default : Private {
     my $d = Digest->new( $c->config->{authentication}->{dbic}->{password_hash_type} );
     $d->add($password);
     my $computed = $d->digest;
-    
-    # email
-    my $email = $c->req->param('email');
     
     my @extra_columns;
     if ($c->config->{mail}->{on}) {

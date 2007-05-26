@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use Foorum::Utils qw/get_page_no_from_url/;
+use Foorum::Filter qw/filter_format/;
 use Data::Dumper;
 
 sub board : Path {
@@ -29,44 +30,17 @@ sub board : Path {
     $c->stash->{template} = 'forum/board.html';
 }
 
-sub forum : Regex('^forum/(\w+)$') {
+sub forum_list : Regex('^forum/(\w+)$') {
     my ($self, $c) = @_;
-    
-    my $forum_code = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $forum_code ]);
-    $c->forward('forum_dispatch', [ $forum ] );
-}
-
-sub word : Regex('^word/(\w+)$') {
-    my ($self, $c) = @_;
-
-    my $word = $c->req->snippets->[0];
-    my $forum = $c->forward('/get/forum', [ $word, { forum_type => 'word' } ]);
-    $c->forward('forum_dispatch', [ $forum ] );
-}
-
-sub forum_dispatch : Private {
-    my ($self, $c, $forum) = @_;
-
-    my $path = $c->req->path;
-    my @args = split(/\//, $path);
-    $c->log->debug(join(', ', @args));
-    if (scalar @args == 2 or $args[2] =~ /page=/) {
-        $c->forward('forum_list', [ $forum ] );
-    } elsif ($args[2] eq 'members') {
-        $c->forward('members', [ $forum, $args[3] ] );
-    }
-}
-
-sub forum_list : Private {
-    my ($self, $c, $forum) = @_;
 
     my $is_elite = ($c->req->path =~ /\/elite(\/|$)/) ? 1 : 0;
     my $page_no  = get_page_no_from_url($c->req->path);
 
     # get the forum information
+    my $forum_code = $c->req->snippets->[0];
+    my $forum = $c->model('Forum')->get($c, $forum_code);
     my $forum_id = $forum->forum_id;
-    my $forum_code = $forum->forum_code;
+    $forum_code = $forum->forum_code;
     # get all moderators
     $c->stash->{forum_roles} = $c->model('Policy')->get_forum_moderators( $c, $forum_id );
 
@@ -94,12 +68,15 @@ sub forum_list : Private {
         # check announcement
         my $ann_cookie = $c->req->cookie("ann_$forum_id");
         unless ($ann_cookie and $ann_cookie->value) {
-            $c->stash->{announcement} = $c->model('DBIC::Comment')->find( {
+            my $announcement = $c->model('DBIC::Comment')->find( {
                 object_type => 'announcement',
                 object_id   => $forum_id,
             }, {
                 columns => ['title', 'text'],
             } );
+            # filter format by Foorum::Filter
+            $announcement->{_column_data}->{text} = filter_format( $announcement->{_column_data}->{text}, { format => 'ubb' } ) if ($announcement);
+            $c->stash->{announcement} = $announcement;
             $c->res->cookies->{"ann_$forum_id"} = { value => 1 };
         }
     }
@@ -132,10 +109,13 @@ sub forum_list : Private {
     $c->stash->{template} = 'forum/forum.html';
 }
 
-sub members : Private {
-    my ($self, $c, $forum, $member_type) = @_;
+sub members : Regex('^forum/(\w+)/members(/(\w+))$') {
+    my ($self, $c) = @_;
 
-    my $forum_code = $forum->forum_code;
+    my $forum_code = $c->req->snippets->[0];
+    my $member_type = $c->req->snippets->[2];
+    my $forum = $c->model('Forum')->get($c, $forum_code);
+    $forum_code = $forum->forum_code;
     my $forum_id = $forum->forum_id;
     
     if ($member_type ne 'pending' and $member_type ne 'blocked' and $member_type ne 'rejected') {

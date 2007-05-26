@@ -89,7 +89,7 @@ sub validate_username : Local {
     
     my $username = $c->req->param('username');
 
-    my $ERROR = $c->model('Profile')->check_valid_username($c, $username);
+    my $ERROR = $c->model('Validation')->validate_username($c, $username);
     return $c->res->body($ERROR) if ($ERROR);
 
     $c->res->body('OK');

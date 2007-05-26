@@ -39,7 +39,6 @@ requires 'File::Remove';
 requires 'IP::QQWry';
 requires 'Email::Obfuscate';
 requires 'Locale::Country::Multilingual';
-requires 'FormValidator::Simple::Plugin::DBIC::Unique';
 requires 'YAML::Syck';
 requires 'File::Slurp';
 

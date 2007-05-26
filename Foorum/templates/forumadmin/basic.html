@@ -9,13 +9,15 @@
         description  => forum_description,
         private    => private,
         moderators => moderators,
+        forum_code => forum.forum_code,
     };
 END; %]
 [% FILTER fillinform fdat => data || c.req.params %]
 <div class='one'>
 <form method='post'>
 <table align='center'>
-<!--    <tr class='forum2'><td>Forum Code:</td><td><input type='text' name='forum_code' />
+  [% IF is_site_admin %]
+    <tr class='forum2'><td>Forum Code:</td><td><input type='text' name='forum_code' />
     [% IF c.form.error('forum_code') %]
 	    [% IF c.form.error('forum_code', 'HAS_BLANK') %]
 	    don't put blank in your forum_code.
@@ -28,7 +30,8 @@ END; %]
 	    [% ELSE %]
 	    forum_code should be 6-20 chars.
 	    [% END %]
-	[% END %]</td></tr> -->
+	[% END %]</td></tr>
+  [% END %]
     <tr class='forum1'><td>Forum Name:</td><td><input type='text' name='name' />
     [% IF c.form.error('name') %]
 	the length of forum name should be more than 1 and less than 40
