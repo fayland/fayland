@@ -1,0 +1,32 @@
+119c119
+< our @bbcode_tags = qw(code quote b u i color size list url email img);
+---
+> our @bbcode_tags = qw(code quote b u i color size list url email img font align flash music);
+145c145,146
+<      size       => '<span style="font-size: %spx">%s</span>',
+---
+>      size       => '<span style="font-size: %spt">%s</span>',
+>      font       => '<span style="font-family: %s">%s</span>',
+151a153,154
+>      align      => '<div style="text-align: %s">%s</div>',
+>      flash      => q!<div class='flash'><embed src='%s' width='480' height='360'></embed></div>!,
+337a341,353
+>    } elsif ($tag eq 'music') {
+>       # patch for music
+>       if ($content =~ /\.(ram|rmm|mp3|mp2|mpa|ra|mpga)$/) {
+>          $html = qq!<div><embed name="rplayer" type="audio/x-pn-realaudio-plugin" src="$content" 
+> controls="StatusBar,ControlPanel" width='320' height='70' border='0' autostart='flase'></embed></div>!;
+>       } elsif ($content =~ /\.(rm|mpg|mpv|mpeg|dat)$/) {
+>          $html = qq!<div><embed name="rplayer" type="audio/x-pn-realaudio-plugin" src="$content" 
+> controls="ImageWindow,StatusBar,ControlPanel" width='352' height='288' border='0' autostart='flase'></embed></div>!;
+>       } elsif ($content =~ /\.(wma|mpa)$/) {
+>          $html = qq!<div><embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/Downloads/Contents/Products/MediaPlayer/" src="$content" name="realradio" showcontrols='1' ShowDisplay='0' ShowStatusBar='1' width='480' height='70' autostart='0'></embed></div>!;
+>       } elsif ($content =~ /\.(asf|asx|avi|wmv)$/) {
+>          $html = qq!<div><object id="videowindow1" width="480" height="330" classid="CLSID:6BF52A52-394A-11D3-B153-00C04F79FAA6"><param NAME="URL" value="$content"><param name="AUTOSTART" value="0"></object></div>!;
+>       }
+339a356,360
+>       # specail treat for size
+>       if ($tag eq 'size') {
+>         $attr = 8  if ($attr < 8);
+>         $attr = 16 if ($attr > 16);
+>       }
