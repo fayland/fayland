@@ -58,7 +58,7 @@ sub fill_user_role {
         $roles->{is_rejected} = 1;
     }
     
-    $c->cache->set($mem_key, $roles);
+    $c->cache->set($mem_key, $roles, );
     
     $c->stash->{roles} = $roles;
 }
@@ -120,15 +120,15 @@ sub is_blocked {
 sub get_forum_moderators {
     my ( $self, $c, $forum_id ) = @_;
     
-    my $mem_key;
-    if (ref $forum_id eq 'ARRAY') {
-        $mem_key = 'policy|user_role|forum_id=' . join(',', @$forum_id);
-    } else {
-        $mem_key = "policy|user_role|forum_id=$forum_id";
-    }
+    # for forum_id is an ARRAYREF: [1,2], we don't cache it because
+    # when remove_user_role, we don't know how to clear all forum1's keys.
     
-    my $mem_val = $c->cache->get($mem_key);
-    return $mem_val if ($mem_val);
+    my $mem_key;
+    if ($forum_id =~ /^\d+$/) {
+        $mem_key = "policy|user_role|forum_id=$forum_id";
+        my $mem_val = $c->cache->get($mem_key);
+        return $mem_val if ($mem_val);
+    }
     
     my @users = $c->model('DBIC')->resultset('UserRole')->search( {
         role  => ['admin', 'moderator'],
@@ -152,7 +152,7 @@ sub get_forum_moderators {
         }
     }
     
-    $c->cache->set($mem_key, $roles);
+    $c->cache->set($mem_key, $roles) if ($mem_key);
     
     return $roles;
 }
@@ -190,6 +190,12 @@ sub remove_user_role {
     push @wheres, ( field => $info->{field} ) if ($info->{field});
     push @wheres, ( role => $info->{role} ) if ($info->{role});
 
+    return unless (scalar @wheres);
+
+    $c->model('DBIC::UserRole')->search( {
+        @wheres,
+    } )->delete;
+
     clear_cached_policy($self, $c, $info);
 }
 
@@ -202,9 +208,9 @@ sub clear_cached_policy {
     
     # field_id != 'site'
     if (  $info->{field} =~ /^\d+$/ and 
-         ($info->{field} eq 'admin' or $info->{field} eq 'moderator')
+         (not $info->{role} or $info->{role} eq 'admin' or $info->{role} eq 'moderator')
        ) {
-        $info->{forum_id} = $info->{field}
+        $info->{forum_id} = $info->{field};
     }
     
     if ($info->{forum_id}) {

@@ -209,21 +209,16 @@ sub change_email : Local {
         return $c->set_invalid_form( email => $err );
     }
     
-    my @extra_columns;
-    if ($c->config->{email}->{on}) {
-    	my $active_code = &generate_random_word(10);
-    	@extra_columns = ( active_code => $active_code, has_actived => 0 );
-    	
+    if ($c->config->{mail}->{on} and $c->config->{register}->{activation}) {
     	# send activation code
-    	$c->model('Email')->send_activation($c, $email, $c->user->username, $active_code);
-    }
-    
-    $c->user->update( {
-        email => $email,
-        @extra_columns,
-    } );
-    
-    $c->res->redirect('/register/activation/' . $c->user->username);
+    	$c->model('Email')->send_activation($c, $c->user, $email);
+    	$c->res->redirect('/register/activation/' . $c->user->username);
+    } else {
+        $c->user->update( {
+            email => $email,
+        } );
+        $c->res->redirect('/profile/edit');
+    }    
 }
 
 sub change_username : Local {

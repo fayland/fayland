@@ -27,8 +27,8 @@ sub login : Global {
         
         if ( $can_login and $c->login( $username, $password ) ) {
 
-            # check if he is actived
-            if ($c->user->active_code) {
+            # check if he is activated
+            if ($c->config->{mail}->{on} and $c->config->{register}->{activation} and $c->user->status eq 'unauthorized') {
                 my $username = $c->user->username;
                 $c->logout;
                 return $c->res->redirect("/register/activation/$username");

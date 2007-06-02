@@ -31,7 +31,7 @@ No such user.
 <input type='hidden' name='user_id' value='[% user.user_id %]' />
 <table>
 <tr class='misc2'><td align='right'>UserID</td><td>[% user.user_id %]</td></tr>
-[% FOREACH col IN ['username', 'email', 'nickname', 'active_code', 'threads', 'replies'] %]
+[% FOREACH col IN ['username', 'email', 'nickname', 'threads', 'replies'] %]
 <tr class='misc[% IF loop.count mod 2;'2';ELSE;'1';END; %]'><td align='right'>[% col %]</td><td><input type='text' name='[% col %]' value='[% user.${col} %]' /></td></tr>
 [% END %]
 <tr class='misc2'><td></td><td><input type='submit' /></td></tr>

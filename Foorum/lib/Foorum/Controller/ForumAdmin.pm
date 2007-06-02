@@ -63,7 +63,7 @@ sub basic : Chained('forum_for_admin') Args(0) {
     
     # check forum_code
     my $forum_code = $c->req->param('forum_code');
-    my $err = $c->model('Validation')->validate_forum_code($c, $forum_code) if ($forum_code);
+    my $err = $c->model('Validation')->validate_forum_code($c, $forum_code) if ($forum_code and $forum_code ne $forum->forum_code);
     if ($err) {
         $c->set_invalid_form( forum_code => $err );
         return;

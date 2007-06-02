@@ -17,7 +17,7 @@ sub get_data {
     my @rs = $c->model('DBIC::FilterWord')->search( { type => $type } )->all;
     push @value, $_->word foreach (@rs);
     $cache_value = { value => \@value };
-    $c->cache->set($cache_key, $cache_value, 1200);
+    $c->cache->set($cache_key, $cache_value, 3600); # 1 hour
     
     return wantarray? @value : \@value;
 }

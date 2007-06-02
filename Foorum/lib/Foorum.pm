@@ -20,6 +20,7 @@ use Catalyst qw/
 	FormValidator::Simple
 	Captcha
 /;
+#	DBIC::Schema::Profiler
 
 use vars qw/$VERSION/;
 $VERSION = '0.04';

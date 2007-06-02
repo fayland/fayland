@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use Digest ();
-use Foorum::Utils qw/generate_random_word/;
 use Data::Dumper;
 
 sub default : Private {
@@ -44,32 +43,22 @@ sub default : Private {
     my $d = Digest->new( $c->config->{authentication}->{dbic}->{password_hash_type} );
     $d->add($password);
     my $computed = $d->digest;
-    
-    my @extra_columns;
-    if ($c->config->{mail}->{on}) {
-    	my $active_code = &generate_random_word(10);
-    	@extra_columns = ( active_code => $active_code, has_actived => 0, );
-    	
-    	# send activation code
-    	$c->model('Email')->send_activation($c, $email, $username, $active_code);
-        
-    } else {
-        @extra_columns = ( has_actived => 1, );
-    }
-    
-    $c->model('DBIC')->resultset('User')->create({
+
+    my $user = $c->model('DBIC')->resultset('User')->create({
         username  => $username,
         nickname  => $c->req->param('nickname') || $username,
         password  => $computed,
         email     => $email,
         register_on => \"NOW()",
         register_ip => $c->req->address,
-        @extra_columns,
         lang => $c->config->{default_pref_lang},
+        status => 'unauthorized',
     });
-    
+
     # redirect or forward
     if ($c->config->{mail}->{on} and $c->config->{register}->{activation}) {
+        # send activation code
+    	$c->model('Email')->send_activation($c, $user);
         $c->res->redirect("/register/activation/$username"); # to activation
     } else {
         $c->login($username, $password);
@@ -81,27 +70,46 @@ sub default : Private {
 }
 
 sub activation : Local {
-    my ($self, $c, $username, $active_code) = @_;
+    my ($self, $c, $username, $activation_code) = @_;
+    
+    # two situations:
+    # 1, new account to activate
+    # 2, new email to confirm
     
     $username = $c->req->param('username') unless ($username);
-    $active_code = $c->req->param('active_code') unless ($active_code);
+    $activation_code = $c->req->param('activation_code') unless ($activation_code);
     
     $c->stash( {
         template => 'register/activation.html',
         username => $username,
     } );
-    return unless ($username and $active_code);
+    return unless ($username and $activation_code);
     
     my $user = $c->model('DBIC::User')->find( { username => $username } );
-    
     $c->detach('/print_error', [ 'ERROR_USER_NON_EXIST' ] ) unless ($user);
     
-    # validator it
-    if (!$user->active_code or $user->active_code eq $active_code) {
+    my $activation_rs = $c->model('DBIC')->resultset('UserActivation')->find( { user_id => $user->user_id } );
+    unless ($activation_rs) {
+        if ($user->status eq 'unauthorized') { # new account
+            $c->model('Email')->send_activation($c, $user);
+            return $c->res->redirect('/register/activation/' . $user->username);
+        } else {
+            return $c->res->redirect('/profile/edit');
+        }
+    }
+    
+    # validate it
+    if ($activation_rs->activation_code eq $activation_code) {
+        my @extra_update;
+        if ($activation_rs->new_email) {
+            @extra_update = ('email', $activation_rs->new_email);
+        }
         $user->update( {
-            active_code => '',
-            has_actived => 1,
+            status => 'authorized',
+            @extra_update,
         } );
+        $activation_rs->delete;
+        
         # login will be failed since the $user->password is SHA1 Hashed.
         # $c->login( $username, $user->password );
         $c->res->redirect('/profile/edit');

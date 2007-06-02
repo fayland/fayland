@@ -46,7 +46,7 @@ sub get_comments_by_object {
             push @comments, $rec;
         }
         $cache_value = { comments => \@comments };
-        $c->cache->set($cache_key, $cache_value);
+        $c->cache->set($cache_key, $cache_value, 3600); # 1 hour
         $c->log->debug('Cache: set comments');
     }
     
