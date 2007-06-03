@@ -283,6 +283,18 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
     
     my $url;
     if ($comment->reply_to == 0) {
+        
+        # u can only delete 5 topics one day
+        my $most_deletion_per_day = $c->config->{topic}->{most_deletion_per_day} || 5;
+        my $deleted_count = $c->model('DBIC')->resultset('LogAction')->count( {
+            forum_id => $forum_id,
+            action   => 'delete',
+            time     => \"> DATE_SUB(NOW(), INTERVAL 1 DAY)"
+        } );
+        if ($deleted_count >= $most_deletion_per_day) {
+            $c->detach('/print_error', [ "For security reason, you can't delete more than $most_deletion_per_day topics in one day" ]);
+        }
+        
         $c->model('Topic')->remove($c, $forum_id, $topic_id, { log_text => $comment->title } );
         $url = $forum->{forum_url};
         $c->model('ClearCachedPage')->clear_when_topic_changes($c, $forum);
