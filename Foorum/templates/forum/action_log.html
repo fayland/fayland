@@ -3,20 +3,27 @@
 <div class='one'>
 <table align='center'>
 	<tr class='title' align='center'>
-	<td>[% c.loc('Operator') %]</td>
-	<td>[% c.loc('Action') %]</td>
-	<td>[% c.loc('Date') %]</td>
+	<td width='80'>[% c.loc('Operator') %]</td>
+	<td width='50'>[% c.loc('Action') %]</td>
+	<td align='left'>[% c.loc('Object') %]</td>
+	<td width='120'>[% c.loc('Date') %]</td>
 	</tr>
 [% FOREACH log IN logs %]
 <tr align='center'>
 	<td class='forum2'><a href='/u/[% log.operator.username %]'>[% log.operator.nickname %]</a></td>
 	<td class='forum1'>[% log.action | ucfirst %]</td>
-	<td class='forum2'>[% log.time %]</td>
-	<td class='forum1'>[% members.${user.user_id}.register_on %]</td>
+	<td class='forum2' align='left'>
+	    [% IF log.object_type == 'topic' AND log.action != 'delete' %]
+	    <a href='[% forum.forum_url %]/topic/[% log.object_id %]'>[% log.text %]</a>
+	    [% ELSE %]
+	    [% log.text %]
+	    [% END %]
+	</td>
+	<td class='forum1'>[% log.time %]</td>
 </tr>
 [% END %]
-<tr class='forum2'>
-	<td colspan='3' align='right'>
+<tr class='forum1'>
+	<td colspan='4' align='right'>
 	[% INCLUDE 'sub/pager.html' url_prefix = forum.forum_url _ '/action_log' %]
 	</td>
 </tr>

@@ -27,7 +27,7 @@ sub get {
 }
 
 sub remove {
-    my ($self, $c, $forum_id, $topic_id) = @_;
+    my ($self, $c, $forum_id, $topic_id, $info) = @_;
     
     # delete topic
     $c->model('DBIC::Topic')->search( { topic_id => $topic_id } )->delete;
@@ -44,7 +44,7 @@ sub remove {
     }
         
     # log action
-    $c->model('Log')->log_action($c, { action => 'delete', object_type => 'topic', object_id => $topic_id, forum_id => $forum_id } );
+    $c->model('Log')->log_action($c, { action => 'delete', object_type => 'topic', object_id => $topic_id, forum_id => $forum_id, text => $info->{log_text} } );
         
     # update last
     my $lastest = $c->model('DBIC')->resultset('Topic')->find( {

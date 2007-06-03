@@ -43,6 +43,7 @@ sub log_action {
         object_type => $info->{object_type} || 'ass',
         object_id   => $info->{object_id}   || 0, # times
         time    => \'NOW()',
+        text    => $info->{text} || '',
         forum_id => $info->{forum_id} || 0,
     } );
 }

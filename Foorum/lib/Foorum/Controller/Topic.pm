@@ -283,7 +283,7 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
     
     my $url;
     if ($comment->reply_to == 0) {
-        $c->model('Topic')->remove($c, $forum_id, $topic_id);
+        $c->model('Topic')->remove($c, $forum_id, $topic_id, { log_text => $comment->title } );
         $url = $forum->{forum_url};
         $c->model('ClearCachedPage')->clear_when_topic_changes($c, $forum);
     } else {

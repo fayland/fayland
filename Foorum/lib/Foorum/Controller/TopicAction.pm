@@ -20,7 +20,7 @@ sub lock_or_sticky_or_elite : Regex('^forum/(\w+)/(\d+)/(un)?(sticky|elite|lock)
         topic_id => $topic_id,
         forum_id => $forum_id,
     }, {
-        columns => ['author_id'],
+        columns => ['author_id', 'title'],
     } );
     
     $c->detach('/print_error', [ 'Non-existent topic' ]) unless ($topic);
@@ -48,7 +48,7 @@ sub lock_or_sticky_or_elite : Regex('^forum/(\w+)/(\d+)/(un)?(sticky|elite|lock)
         $update_col => $status,
     } );
     
-    $c->model('Log')->log_action($c, { action => "$is_un$action", object_type => 'topic', object_id => $topic_id, forum_id => $forum_id } );
+    $c->model('Log')->log_action($c, { action => "$is_un$action", object_type => 'topic', object_id => $topic_id, forum_id => $forum_id, text => $topic->title } );
     
     $c->clear_cached_page( "/forum/$forum_id" );
     $c->clear_cached_page( "/forum/$forum_code" ) if ($forum_code);

@@ -92,7 +92,7 @@ CREATE TABLE `comment` (
 
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
 LOCK TABLES `comment` WRITE;
-INSERT INTO `comment` VALUES (69,31,'sdasdsad','2006-12-24 10:45:38',NULL,'127.0.0.1','ubb','thread',31,11,'&lt;i&gt;sdasd&lt;/i&gt;',5,0),(57,0,'caxsc222222222222','2006-12-06 19:54:06',NULL,'222.137.241.70','ubb','thread',27,11,'xc2',6,0),(58,0,'33333333333333333','2006-12-06 19:54:14',NULL,'222.137.241.70','ubb','thread',28,11,'3',5,0),(59,0,'attachment a jpgds','2006-12-10 13:13:58','2006-12-17 09:18:57','127.0.0.1','ubb','thread',29,11,'attachment',5,0),(60,59,'xxxx','2006-12-10 13:52:34',NULL,'127.0.0.1','ubb','thread',29,11,'reply with attachment',5,3),(61,29,'xxxxxxxxxxxxx','2006-12-10 13:53:01',NULL,'127.0.0.1','ubb','thread',29,11,'xxxxxx',5,0),(62,29,'bbbbbbbbbbbbbbbbsdadsadsadsad','2006-12-10 14:04:44','2006-12-17 09:17:40','127.0.0.1','ubb','thread',29,11,'bbbbbbbasdddddddd',5,9),(63,0,'hi, all','2006-12-10 14:05:39',NULL,'127.0.0.1','ubb','user_profile',11,11,'hello',0,5),(64,0,'xxx','2006-12-10 14:10:20',NULL,'127.0.0.1','ubb','poll',1,11,'xx',6,6),(65,29,'sdaaaaaaa(with upload)4225','2006-12-16 11:46:11','2006-12-17 09:13:26','127.0.0.1','ubb','thread',29,11,'sdaaaaaaa(with upload)4645',5,0),(68,0,'<h1>hello</h1>','2006-12-24 10:43:46',NULL,'127.0.0.1','ubb','thread',31,11,'&lt;b&gt;new post&lt;/b&gt;',5,0),(70,0,'dsads','2006-12-24 10:45:58',NULL,'127.0.0.1','ubb','thread',32,11,'&lt;i&gt;sdasd&lt;/i&gt;',5,0),(71,0,'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx','2006-12-24 11:27:49',NULL,'127.0.0.1','ubb','thread',33,11,'xxxxxxxxxxxxxxx',6,0),(72,31,'xxxxxxxxxxxxxxxxxxxxx','2006-12-28 14:33:38',NULL,'222.137.238.67','ubb','thread',31,11,'xxxxxxxxxx',5,0),(73,0,'fdsfsddddddddddddxcxvcxcxcvvxcvxcvxcvxcvxcvxcvxcxcvvxcvxcvcx','2006-12-28 14:46:14',NULL,'222.137.238.67','ubb','announcement',5,11,'AAAXXXX',5,0),(74,0,' :bigsmile:  :inlove:  :sneaky2:  :Oo:  :mad:  :wow:  :sleeping: ','2006-12-30 14:26:15',NULL,'222.137.238.244','ubb','thread',34,11,'smile',6,0),(75,34,'xxxxxxxxxxx','2006-12-30 14:48:19',NULL,'222.137.238.244','ubb','thread',34,11,'xxxxxxxx',6,0),(76,0,'MMMMMMMMMMMMMMMMM :inlove:  :inlove:  :inlove: ','2007-05-07 20:04:40','2007-05-07 20:27:51','222.137.49.203','ubb','thread',35,11,'MMMMMMMMMMMMMMMMMM',5,10),(77,0,'test text.','2007-05-19 14:47:07',NULL,'127.0.0.1','ubb','user_profile',11,11,'test title',0,0),(78,0,'we have 2 ways to call. and 4 params.\r\n\r\nexamples:\r\n\r\n$c->detach(\'/print_message\', [ \'Error\' ] );\r\n\r\n\r\n# this way, fresh_time is the seconds to wait to reload\r\n$c->detach(\'/print_message\', [ { msg => \'Error\', url => $url, refresh_time => 10 } ]);\r\n\r\n\r\n# if we have stay_in_page, we don\'t reload the page automatically.\r\n$c->detach(\'/print_message\', [ { msg => \'Error\', url => $url, stay_in_page => 1 } ] );\r\n\r\n\r\nenjoy!\r\n\r\n:inlove:\r\n','2007-05-19 15:40:44',NULL,'127.0.0.1','ubb','thread',36,11,'print_message calling',10,0),(79,36,'print_error ways:\r\n\r\n$c->detach(\'/print_error\', [ \'Error\' ] );\r\n\r\n$c->detach(\'/print_error\', [ { msg => $msg } ]);','2007-05-19 15:52:11',NULL,'127.0.0.1','ubb','thread',36,11,'print_error',10,0),(80,0,'Scalable is the most important thing for Foorum.\r\n\r\nwe are planning to use some amazing technology to develop Foorum:\r\n\r\n* Memcached for backend caching \r\n* MogileFS  for uploaded images\r\n* Perlbal for load balance\r\n* Gearman for cron scripts\r\n\r\nyup, all technologies from grat LiveJournal.','2007-05-19 16:00:42','2007-05-19 16:01:05','127.0.0.1','ubb','thread',37,11,'our aim of Foorum',11,0),(81,37,'L18N, standard .po file\r\n\r\ncountry/$countryname Forum\r\ncountry/$countryname/state/$statename\r\ncountry/$countryname/state/$statename/city/$cityname\r\n\r\nword/$word\r\npeople/$people\r\n\r\nwell, somehow it\'s a bit complex.','2007-05-19 16:03:32',NULL,'127.0.0.1','ubb','thread',37,11,'the functions of Foorum in plan',11,0),(82,0,'ubb [b]ubb[/b]\r\n[url=http://fayland.org]fayland.org[/url]','2007-05-26 07:37:42',NULL,'222.137.49.203','ubb','thread',38,11,'ubb',5,0),(83,0,'hey baby, that\'s a new topic.\r\n\r\n\r\n :dozingoff:  :inlove:  :tounge: \r\n\r\n[b]haha[/b]','2007-05-26 13:22:33','2007-05-26 13:27:48','127.0.0.1','text','thread',39,11,'new topic',5,11),(84,83,'fuck you!  :inlove: ','2007-05-26 13:33:51',NULL,'127.0.0.1','ubb','thread',39,11,'boy, fuck you',5,0),(85,39,'FLG','2007-05-26 13:34:21',NULL,'127.0.0.1','ubb','thread',39,11,'FLG',5,0),(86,0,'hey','2007-05-26 13:51:15',NULL,'127.0.0.1','ubb','user_profile',7,11,'hello kitty',0,0),(87,37,'the functions are changed now.\r\n\r\nwe are not going to develop country/* stuff and word/$word and people/$people any more.','2007-05-26 13:58:14',NULL,'127.0.0.1','ubb','thread',37,11,'mmm',11,0);
+INSERT INTO `comment` VALUES (69,31,'sdasdsad','2006-12-24 10:45:38',NULL,'127.0.0.1','ubb','thread',31,11,'&lt;i&gt;sdasd&lt;/i&gt;',5,0),(57,0,'caxsc222222222222','2006-12-06 19:54:06',NULL,'222.137.241.70','ubb','thread',27,11,'xc2',6,0),(59,0,'attachment a jpgds','2006-12-10 13:13:58','2006-12-17 09:18:57','127.0.0.1','ubb','thread',29,11,'attachment',5,0),(60,59,'xxxx','2006-12-10 13:52:34',NULL,'127.0.0.1','ubb','thread',29,11,'reply with attachment',5,3),(61,29,'xxxxxxxxxxxxx','2006-12-10 13:53:01',NULL,'127.0.0.1','ubb','thread',29,11,'xxxxxx',5,0),(62,29,'bbbbbbbbbbbbbbbbsdadsadsadsad','2006-12-10 14:04:44','2006-12-17 09:17:40','127.0.0.1','ubb','thread',29,11,'bbbbbbbasdddddddd',5,9),(63,0,'hi, all','2006-12-10 14:05:39',NULL,'127.0.0.1','ubb','user_profile',11,11,'hello',0,5),(64,0,'xxx','2006-12-10 14:10:20',NULL,'127.0.0.1','ubb','poll',1,11,'xx',6,6),(65,29,'sdaaaaaaa(with upload)4225','2006-12-16 11:46:11','2006-12-17 09:13:26','127.0.0.1','ubb','thread',29,11,'sdaaaaaaa(with upload)4645',5,0),(68,0,'<h1>hello</h1>','2006-12-24 10:43:46',NULL,'127.0.0.1','ubb','thread',31,11,'&lt;b&gt;new post&lt;/b&gt;',5,0),(70,0,'dsads','2006-12-24 10:45:58',NULL,'127.0.0.1','ubb','thread',32,11,'&lt;i&gt;sdasd&lt;/i&gt;',5,0),(71,0,'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx','2006-12-24 11:27:49',NULL,'127.0.0.1','ubb','thread',33,11,'xxxxxxxxxxxxxxx',6,0),(72,31,'xxxxxxxxxxxxxxxxxxxxx','2006-12-28 14:33:38',NULL,'222.137.238.67','ubb','thread',31,11,'xxxxxxxxxx',5,0),(73,0,'fdsfsddddddddddddxcxvcxcxcvvxcvxcvxcvxcvxcvxcvxcxcvvxcvxcvcx','2006-12-28 14:46:14',NULL,'222.137.238.67','ubb','announcement',5,11,'AAAXXXX',5,0),(74,0,' :bigsmile:  :inlove:  :sneaky2:  :Oo:  :mad:  :wow:  :sleeping: ','2006-12-30 14:26:15',NULL,'222.137.238.244','ubb','thread',34,11,'smile',6,0),(75,34,'xxxxxxxxxxx','2006-12-30 14:48:19',NULL,'222.137.238.244','ubb','thread',34,11,'xxxxxxxx',6,0),(76,0,'MMMMMMMMMMMMMMMMM :inlove:  :inlove:  :inlove: ','2007-05-07 20:04:40','2007-05-07 20:27:51','222.137.49.203','ubb','thread',35,11,'MMMMMMMMMMMMMMMMMM',5,10),(77,0,'test text.','2007-05-19 14:47:07',NULL,'127.0.0.1','ubb','user_profile',11,11,'test title',0,0),(78,0,'we have 2 ways to call. and 4 params.\r\n\r\nexamples:\r\n\r\n$c->detach(\'/print_message\', [ \'Error\' ] );\r\n\r\n\r\n# this way, fresh_time is the seconds to wait to reload\r\n$c->detach(\'/print_message\', [ { msg => \'Error\', url => $url, refresh_time => 10 } ]);\r\n\r\n\r\n# if we have stay_in_page, we don\'t reload the page automatically.\r\n$c->detach(\'/print_message\', [ { msg => \'Error\', url => $url, stay_in_page => 1 } ] );\r\n\r\n\r\nenjoy!\r\n\r\n:inlove:\r\n','2007-05-19 15:40:44',NULL,'127.0.0.1','ubb','thread',36,11,'print_message calling',10,0),(79,36,'print_error ways:\r\n\r\n$c->detach(\'/print_error\', [ \'Error\' ] );\r\n\r\n$c->detach(\'/print_error\', [ { msg => $msg } ]);','2007-05-19 15:52:11',NULL,'127.0.0.1','ubb','thread',36,11,'print_error',10,0),(80,0,'Scalable is the most important thing for Foorum.\r\n\r\nwe are planning to use some amazing technology to develop Foorum:\r\n\r\n* Memcached for backend caching \r\n* MogileFS  for uploaded images\r\n* Perlbal for load balance\r\n* Gearman for cron scripts\r\n\r\nyup, all technologies from grat LiveJournal.','2007-05-19 16:00:42','2007-05-19 16:01:05','127.0.0.1','ubb','thread',37,11,'our aim of Foorum',11,0),(81,37,'L18N, standard .po file\r\n\r\ncountry/$countryname Forum\r\ncountry/$countryname/state/$statename\r\ncountry/$countryname/state/$statename/city/$cityname\r\n\r\nword/$word\r\npeople/$people\r\n\r\nwell, somehow it\'s a bit complex.','2007-05-19 16:03:32',NULL,'127.0.0.1','ubb','thread',37,11,'the functions of Foorum in plan',11,0),(82,0,'ubb [b]ubb[/b]\r\n[url=http://fayland.org]fayland.org[/url]','2007-05-26 07:37:42',NULL,'222.137.49.203','ubb','thread',38,11,'ubb',5,0),(83,0,'hey baby, that\'s a new topic.\r\n\r\n\r\n :dozingoff:  :inlove:  :tounge: \r\n\r\n[b]haha[/b]','2007-05-26 13:22:33','2007-05-26 13:27:48','127.0.0.1','text','thread',39,11,'new topic',5,11),(84,83,'fuck you!  :inlove: ','2007-05-26 13:33:51',NULL,'127.0.0.1','ubb','thread',39,11,'boy, fuck you',5,0),(85,39,'FLG','2007-05-26 13:34:21',NULL,'127.0.0.1','ubb','thread',39,11,'FLG',5,0),(86,0,'hey','2007-05-26 13:51:15',NULL,'127.0.0.1','ubb','user_profile',7,11,'hello kitty',0,0),(87,37,'the functions are changed now.\r\n\r\nwe are not going to develop country/* stuff and word/$word and people/$people any more.','2007-05-26 13:58:14',NULL,'127.0.0.1','ubb','thread',37,11,'mmm',11,0);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 
@@ -165,7 +165,7 @@ CREATE TABLE `forum` (
 
 /*!40000 ALTER TABLE `forum` DISABLE KEYS */;
 LOCK TABLES `forum` WRITE;
-INSERT INTO `forum` VALUES (6,'FoorumPrivate','Foorum Private Foorum Testing','It\'s a Private Forum.','classical','private',3,3,1,34),(5,'FoorumTest','Foorum Testing','Foorum Testing Forum.','classical','public',2,6,9,39),(8,'cn','China','China','country','public',0,0,0,0),(11,'FoorumDiscussion','Foorum Discussion','discuss all about Foorum','classical','public',1,1,2,37),(10,'FoorumSupport','Foorum Support','plugins, code explaination','classical','public',1,1,1,36),(12,'Stock','Stock Duscussion','damn it','word','public',0,0,0,0);
+INSERT INTO `forum` VALUES (6,'FoorumPrivate','Foorum Private Foorum Testing','It\'s a Private Forum.','classical','private',3,3,1,34),(5,'FoorumTest','Foorum Testing','Foorum Testing Forum.','classical','public',2,5,9,39),(8,'cn','China','China','country','public',0,0,0,0),(11,'FoorumDiscussion','Foorum Discussion','discuss all about Foorum','classical','public',1,1,2,37),(10,'FoorumSupport','Foorum Support','plugins, code explaination','classical','public',1,1,1,36),(12,'Stock','Stock Duscussion','damn it','word','public',0,0,0,0);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `forum` ENABLE KEYS */;
 
@@ -180,7 +180,10 @@ CREATE TABLE `log_action` (
   `object_type` varchar(12) default NULL,
   `object_id` int(11) default NULL,
   `time` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  KEY `user_id` (`user_id`)
+  `text` text,
+  `forum_id` int(11) NOT NULL,
+  KEY `user_id` (`user_id`),
+  KEY `forum_id` (`forum_id`)
 ) DEFAULT CHARSET=utf8;
 
 --
@@ -190,7 +193,7 @@ CREATE TABLE `log_action` (
 
 /*!40000 ALTER TABLE `log_action` DISABLE KEYS */;
 LOCK TABLES `log_action` WRITE;
-INSERT INTO `log_action` VALUES (11,'lock','topic',35,'2007-05-19 05:21:46');
+INSERT INTO `log_action` VALUES (11,'lock','topic',35,'2007-05-19 05:21:46',NULL,0),(11,'top','topic',37,'2007-06-03 01:14:25',NULL,0),(11,'lock','topic',37,'2007-06-03 01:36:05',NULL,0),(11,'elite','topic',37,'2007-06-03 01:36:14',NULL,0),(11,'unsticky','topic',37,'2007-06-03 01:36:30',NULL,0),(11,'sticky','topic',37,'2007-06-03 01:36:38',NULL,0),(11,'elite','topic',39,'2007-06-03 06:50:23',NULL,5),(11,'lock','topic',38,'2007-06-03 06:50:32',NULL,5),(11,'unelite','topic',39,'2007-06-03 07:03:59',NULL,5),(11,'unlock','topic',38,'2007-06-03 07:04:07',NULL,5),(11,'delete','topic',28,'2007-06-03 07:04:41',NULL,5),(11,'elite','topic',39,'2007-06-03 07:05:06','new topic',5),(11,'lock','topic',38,'2007-06-03 07:05:14','ubb',5),(11,'delete','topic',40,'2007-06-03 07:05:35','tesd',5);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `log_action` ENABLE KEYS */;
 
@@ -244,7 +247,7 @@ CREATE TABLE `log_path` (
 
 /*!40000 ALTER TABLE `log_path` DISABLE KEYS */;
 LOCK TABLES `log_path` WRITE;
-INSERT INTO `log_path` VALUES ('34',33,'32313','2323','23','2007-05-20 13:49:10',231.00),('7dc0244087dd919a2cea2985f78625bfce20c758',0,'index',NULL,'','2007-05-22 00:50:48',5.65),('28421a13484ab87ca492e2222b6d60211a532417',0,'index',NULL,'','2007-05-22 00:56:41',2.39),('142adcde8cf5bea4b1aa3ccad25aae9a6839f5cf',0,'index',NULL,'','2007-05-25 09:48:22',2.87),('1dc58c8725f8df3b066d8737346cde8608f9d863',11,'forum/forumname/38',NULL,'','2007-05-26 01:04:39',2.03);
+INSERT INTO `log_path` VALUES ('34',33,'32313','2323','23','2007-05-20 13:49:10',231.00),('7dc0244087dd919a2cea2985f78625bfce20c758',0,'index',NULL,'','2007-05-22 00:50:48',5.65),('28421a13484ab87ca492e2222b6d60211a532417',0,'index',NULL,'','2007-05-22 00:56:41',2.39),('142adcde8cf5bea4b1aa3ccad25aae9a6839f5cf',0,'index',NULL,'','2007-05-25 09:48:22',2.87),('1dc58c8725f8df3b066d8737346cde8608f9d863',11,'forum/forumname/38',NULL,'','2007-05-26 01:04:39',2.03),('5022610fb4f2c6c0d5f01edfbe3073c12009c4f4',0,'index',NULL,'','2007-06-03 01:01:09',2.65);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `log_path` ENABLE KEYS */;
 
@@ -273,7 +276,7 @@ CREATE TABLE `message` (
 
 /*!40000 ALTER TABLE `message` DISABLE KEYS */;
 LOCK TABLES `message` WRITE;
-INSERT INTO `message` VALUES (1,1,2,'test','test','2006-05-23 14:16:43','10.163.81.54','open','open'),(2,1,2,'test2222222','test222222222222','2006-05-23 14:17:55','10.163.81.54','open','open'),(3,1,2,'test222222244','test2222222222224444444444','2006-05-23 14:20:55','10.163.81.54','open','open'),(4,2,2,'Re: test222222244','tesr','2006-05-29 12:50:52','169.254.232.205','open','open'),(5,2,1,'Re: test222222244','test','2006-05-29 12:53:13','169.254.232.205','open','open'),(6,1,2,'Re: Re: test222222244','åˆå£å‘¼çœ‹è§å¥½çœ‹','2006-05-29 12:53:38','169.254.232.205','open','open'),(7,4,4,'test','test','2006-08-06 03:17:13','10.163.89.142','open','open'),(8,4,2,'tttttttttt','ttttttttttttte','2006-08-06 04:38:58','10.163.89.142','open','open'),(10,11,12,'fayland','fayland','2007-04-15 13:21:54','127.0.0.1','open','open'),(11,12,11,'new','new messages.','2007-04-15 13:50:16','127.0.0.1','open','open');
+INSERT INTO `message` VALUES (1,1,2,'test','test','2006-05-23 14:16:43','10.163.81.54','open','open'),(2,1,2,'test2222222','test222222222222','2006-05-23 14:17:55','10.163.81.54','open','open'),(3,1,2,'test222222244','test2222222222224444444444','2006-05-23 14:20:55','10.163.81.54','open','open'),(4,2,2,'Re: test222222244','tesr','2006-05-29 12:50:52','169.254.232.205','open','open'),(5,2,1,'Re: test222222244','test','2006-05-29 12:53:13','169.254.232.205','open','open'),(6,1,2,'Re: Re: test222222244','åˆå£å‘¼çœ‹è§å¥½çœ‹','2006-05-29 12:53:38','169.254.232.205','open','open'),(7,4,4,'test','test','2006-08-06 03:17:13','10.163.89.142','open','open'),(8,4,2,'tttttttttt','ttttttttttttte','2006-08-06 04:38:58','10.163.89.142','open','open'),(10,11,12,'fayland','fayland','2007-04-15 13:21:54','127.0.0.1','deleted','open'),(11,12,11,'new','new messages.','2007-04-15 13:50:16','127.0.0.1','open','open');
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `message` ENABLE KEYS */;
 
@@ -421,6 +424,7 @@ CREATE TABLE `scheduled_email` (
 
 /*!40000 ALTER TABLE `scheduled_email` DISABLE KEYS */;
 LOCK TABLES `scheduled_email` WRITE;
+INSERT INTO `scheduled_email` VALUES (1,'activation','N','fayland@gmail.com','fayland+62@gmail.com','Your Activation Code In Foorum (Be Together)','file error - cn/email/activation.html: not found',NULL,'2007-06-02 13:02:38'),(2,'activation','N','fayland@gmail.com','fayland+63@gmail.com','Your Activation Code In Foorum (Be Together)','file error - cn/email/activation.html: not found',NULL,'2007-06-02 13:03:58');
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `scheduled_email` ENABLE KEYS */;
 
@@ -446,7 +450,7 @@ CREATE TABLE `session` (
 
 /*!40000 ALTER TABLE `session` DISABLE KEYS */;
 LOCK TABLES `session` WRITE;
-INSERT INTO `session` VALUES ('session:9a91a8e7de4b6476ac8badfd97aa859b7c2454b5','BQcDAAAAAglGV3NdAAAACV9fY3JlYXRlZAlGV3NdAAAACV9fdXBkYXRlZA==\n',1180741197,NULL,'forum/forumname/38'),('session:1dc58c8725f8df3b066d8737346cde8608f9d863','BQcDAAAABAoHZGVmYXVsdAAAAAxfX3VzZXJfc3RvcmUKB2ZheWxhbmQAAAAGX191c2VyCUZXcG8A\nAAAJX19jcmVhdGVkCUZXcyIAAAAJX191cGRhdGVk\n',1180763917,11,'profile/edit'),('session:28421a13484ab87ca492e2222b6d60211a532417','BQcDAAAAAglGUj/HAAAACV9fY3JlYXRlZAlGUj/JAAAACV9fdXBkYXRlZA==\n',1180400608,NULL,'forum'),('session:142adcde8cf5bea4b1aa3ccad25aae9a6839f5cf','BQcDAAAABAoHZGVmYXVsdAAAAAxfX3VzZXJfc3RvcmUKB2ZheWxhbmQAAAAGX191c2VyCUZWsOUA\nAAAJX19jcmVhdGVkCUZWsQ0AAAAJX191cGRhdGVk\n',1180693183,11,'ajax/new_message'),('session:7dc0244087dd919a2cea2985f78625bfce20c758','BQcDAAAAAglGUj5mAAAACV9fY3JlYXRlZAlGUj5oAAAACV9fdXBkYXRlZA==\n',1180399846,NULL,NULL),('session:1f79b0ce9d10c2ca8c2321dad29ddceb76d1601a','BQcDAAAABAoHZGVmYXVsdAAAAAxfX3VzZXJfc3RvcmUKB2ZheWxhbmQAAAAGX191c2VyCUZQOvwA\nAAAJX19jcmVhdGVkCUZQSNYAAAAJX191cGRhdGVk\n',1180274423,11,'ajax/new_message'),('session:b65c93a81f4382ac44ea0ca0673fcce3e8350752','BQcDAAAABAoHZGVmYXVsdAAAAAxfX3VzZXJfc3RvcmUKB2ZheWxhbmQAAAAGX191c2VyCUZOnXIA\nAAAJX19jcmVhdGVkCUZOnYsAAAAJX191cGRhdGVk\n',1180176879,11,'ajax/new_message');
+INSERT INTO `session` VALUES ('session:9a91a8e7de4b6476ac8badfd97aa859b7c2454b5','BQcDAAAAAglGV3NdAAAACV9fY3JlYXRlZAlGV3NdAAAACV9fdXBkYXRlZA==\n',1180741197,NULL,'forum/forumname/38'),('session:1dc58c8725f8df3b066d8737346cde8608f9d863','BQcDAAAABAoHZGVmYXVsdAAAAAxfX3VzZXJfc3RvcmUKB2ZheWxhbmQAAAAGX191c2VyCUZXcG8A\nAAAJX19jcmVhdGVkCUZXcyIAAAAJX191cGRhdGVk\n',1180768615,11,'test'),('session:28421a13484ab87ca492e2222b6d60211a532417','BQcDAAAAAglGUj/HAAAACV9fY3JlYXRlZAlGUj/JAAAACV9fdXBkYXRlZA==\n',1180400608,NULL,'forum'),('session:142adcde8cf5bea4b1aa3ccad25aae9a6839f5cf','BQcDAAAABAoHZGVmYXVsdAAAAAxfX3VzZXJfc3RvcmUKB2ZheWxhbmQAAAAGX191c2VyCUZWsOUA\nAAAJX19jcmVhdGVkCUZWsQ0AAAAJX191cGRhdGVk\n',1180693183,11,'ajax/new_message'),('session:7dc0244087dd919a2cea2985f78625bfce20c758','BQcDAAAAAglGUj5mAAAACV9fY3JlYXRlZAlGUj5oAAAACV9fdXBkYXRlZA==\n',1180399846,NULL,NULL),('session:1f79b0ce9d10c2ca8c2321dad29ddceb76d1601a','BQcDAAAABAoHZGVmYXVsdAAAAAxfX3VzZXJfc3RvcmUKB2ZheWxhbmQAAAAGX191c2VyCUZQOvwA\nAAAJX19jcmVhdGVkCUZQSNYAAAAJX191cGRhdGVk\n',1180274423,11,'ajax/new_message'),('session:b65c93a81f4382ac44ea0ca0673fcce3e8350752','BQcDAAAABAoHZGVmYXVsdAAAAAxfX3VzZXJfc3RvcmUKB2ZheWxhbmQAAAAGX191c2VyCUZOnXIA\nAAAJX19jcmVhdGVkCUZOnYsAAAAJX191cGRhdGVk\n',1180176879,11,'ajax/new_message'),('session:22d53a8706a6972b1e1914741bddb3a223f72b92','BQcDAAAABAoHZGVmYXVsdAAAAAxfX3VzZXJfc3RvcmUKB2ZheWxhbmQAAAAGX191c2VyCUZhY1AA\nAAAJX19jcmVhdGVkCUZhbbgAAAAJX191cGRhdGVk\n',1181396137,11,'forum'),('session:5022610fb4f2c6c0d5f01edfbe3073c12009c4f4','BQcDAAAABAoHZGVmYXVsdAAAAAxfX3VzZXJfc3RvcmUKB2ZheWxhbmQAAAAGX191c2VyCUZiEtQA\nAAAJX19jcmVhdGVkCUZiEuMAAAAJX191cGRhdGVk\n',1181459390,11,'forum');
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `session` ENABLE KEYS */;
 
@@ -500,7 +504,7 @@ CREATE TABLE `topic` (
 
 /*!40000 ALTER TABLE `topic` DISABLE KEYS */;
 LOCK TABLES `topic` WRITE;
-INSERT INTO `topic` VALUES (34,6,'smile','1','0','0',9,11,'2006-12-30 14:48:19',11,1),(35,5,'MMMMMMMMMMMMMMMMMM','1','0','0',11,11,'2007-05-07 20:04:40',11,0),(39,5,'new topic','0','0','0',8,11,'2007-05-26 13:34:21',11,2),(38,5,'ubb','0','0','0',6,11,'2007-05-26 07:37:42',11,0),(37,11,'our aim of Foorum','0','0','0',8,11,'2007-05-26 13:58:15',11,2),(36,10,'print_message calling','0','0','0',9,11,'2007-05-19 15:52:11',11,1),(33,6,'xxxxxxxxxxxxxxx','0','0','0',5,11,'2006-12-24 11:27:49',11,0),(29,5,'attachment','0','0','1',89,11,'2006-12-16 11:46:11',11,4),(28,5,'3','1','0','0',8,11,'2006-12-06 19:54:14',11,0),(27,6,'xc2','0','0','0',2,11,'2006-12-06 19:54:06',11,0),(31,5,'<b>new post</b>','0','1','0',30,11,'2006-12-28 14:33:38',11,2),(32,5,'&lt;i&gt;sdasd&lt;/i&gt;','0','0','0',13,11,'2006-12-24 10:45:58',11,0);
+INSERT INTO `topic` VALUES (34,6,'smile','1','0','0',9,11,'2006-12-30 14:48:19',11,1),(35,5,'MMMMMMMMMMMMMMMMMM','1','0','0',11,11,'2007-05-07 20:04:40',11,0),(39,5,'new topic','0','0','1',9,11,'2007-05-26 13:34:21',11,2),(38,5,'ubb','1','0','0',6,11,'2007-05-26 07:37:42',11,0),(37,11,'our aim of Foorum','1','1','1',9,11,'2007-05-26 13:58:15',11,2),(36,10,'print_message calling','0','0','0',10,11,'2007-05-19 15:52:11',11,1),(33,6,'xxxxxxxxxxxxxxx','0','0','0',5,11,'2006-12-24 11:27:49',11,0),(29,5,'attachment','0','0','1',89,11,'2006-12-16 11:46:11',11,4),(27,6,'xc2','0','0','0',2,11,'2006-12-06 19:54:06',11,0),(31,5,'<b>new post</b>','0','1','0',36,11,'2006-12-28 14:33:38',11,2),(32,5,'&lt;i&gt;sdasd&lt;/i&gt;','0','0','0',13,11,'2006-12-24 10:45:58',11,0);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `topic` ENABLE KEYS */;
 
@@ -544,10 +548,8 @@ CREATE TABLE `user` (
   `email` varchar(255) NOT NULL,
   `register_on` date default NULL,
   `register_ip` varchar(32) default NULL,
-  `active_code` char(10) default NULL,
   `last_login_on` datetime default NULL,
   `last_login_ip` varchar(32) default NULL,
-  `has_actived` smallint(1) default NULL,
   `login_times` int(11) default '1',
   `status` varchar(16) default NULL,
   `threads` int(11) NOT NULL default '0',
@@ -569,9 +571,31 @@ CREATE TABLE `user` (
 
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 LOCK TABLES `user` WRITE;
-INSERT INTO `user` VALUES (11,'fayland','p5/AÚOóÃ\"	JðhºpÃ³‹','fayland_lam','M','fayland@gmail.com','2006-08-27','222.137.238.13','','2007-05-26 07:37:06','222.137.49.203',1,49,NULL,822,124,37,'cn','cn',NULL,NULL),(6,'testman','M±Ú²x2%Ìe”\'Äæiíö™°Î','testman',NULL,'testman@gmail.com','2006-08-18','127.0.0.1','','2006-12-24 10:54:00','127.0.0.1',1,2,NULL,0,0,NULL,'en',NULL,NULL,NULL),(7,'shelly','p5/AÚOóÃ\"	JðhºpÃ³‹','sheyll',NULL,'shellybaby@gmai.com','2006-08-18','127.0.0.1','','2006-08-18 13:21:11','127.0.0.1',1,2,NULL,0,0,NULL,'en',NULL,NULL,NULL),(12,'faylandxx','p5/AÚOóÃ\"	JðhºpÃ³‹','faylandxx',NULL,'faylandxx@gmail.com','2006-11-18','222.137.238.177',NULL,'2007-04-15 13:49:42','127.0.0.1',1,5,NULL,0,0,NULL,'en',NULL,NULL,NULL),(13,'damnyuruihua','p5/AÚOóÃ\"	JðhºpÃ³‹','hahaha',NULL,'faylandda@gmail.com','2006-12-03','127.0.0.1',NULL,NULL,NULL,1,1,NULL,0,0,NULL,'en',NULL,NULL,NULL);
+INSERT INTO `user` VALUES (11,'fayland','p5/AÚOóÃ\"	JðhºpÃ³‹','fayland_lam','M','fayland@gmail.com','2006-08-27','222.137.238.13','2007-06-03 09:01:23','127.0.0.1',51,NULL,823,124,40,'cn','cn',NULL,NULL),(6,'testman','M±Ú²x2%Ìe”\'Äæiíö™°Î','testman',NULL,'testman@gmail.com','2006-08-18','127.0.0.1','2006-12-24 10:54:00','127.0.0.1',2,NULL,0,0,NULL,'en',NULL,NULL,NULL),(7,'shelly','p5/AÚOóÃ\"	JðhºpÃ³‹','sheyll',NULL,'shellybaby@gmai.com','2006-08-18','127.0.0.1','2006-08-18 13:21:11','127.0.0.1',2,NULL,0,0,NULL,'en',NULL,NULL,NULL),(12,'faylandxx','p5/AÚOóÃ\"	JðhºpÃ³‹','faylandxx',NULL,'faylandxx@gmail.com','2006-11-18','222.137.238.177','2007-04-15 13:49:42','127.0.0.1',5,NULL,0,0,NULL,'en',NULL,NULL,NULL),(13,'damnyuruihua','p5/AÚOóÃ\"	JðhºpÃ³‹','hahaha',NULL,'faylandda@gmail.com','2006-12-03','127.0.0.1',NULL,NULL,1,NULL,0,0,NULL,'en',NULL,NULL,NULL),(14,'fayland61','p5/AÚOóÃ\"	JðhºpÃ³‹','fayland 61',NULL,'fayland+61@gmail.com','2007-06-02','127.0.0.1',NULL,NULL,1,'unauthorized',0,0,NULL,'cn',NULL,NULL,NULL),(15,'fayland62','p5/AÚOóÃ\"	JðhºpÃ³‹','fayland 62',NULL,'fayland+62@gmail.com','2007-06-02','127.0.0.1',NULL,NULL,1,'unauthorized',0,0,NULL,'cn',NULL,NULL,NULL),(16,'fayland63','p5/AÚOóÃ\"	JðhºpÃ³‹','fayland 63',NULL,'fayland+63@gmail.com','2007-06-02','127.0.0.1',NULL,NULL,1,'authorized',0,0,NULL,'cn',NULL,NULL,NULL);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+
+--
+-- Table structure for table `user_activation`
+--
+
+DROP TABLE IF EXISTS `user_activation`;
+CREATE TABLE `user_activation` (
+  `user_id` int(11) NOT NULL,
+  `activation_code` varchar(12) default NULL,
+  `new_email` varchar(255) default NULL,
+  PRIMARY KEY  (`user_id`)
+) DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `user_activation`
+--
+
+
+/*!40000 ALTER TABLE `user_activation` DISABLE KEYS */;
+LOCK TABLES `user_activation` WRITE;
+UNLOCK TABLES;
+/*!40000 ALTER TABLE `user_activation` ENABLE KEYS */;
 
 --
 -- Table structure for table `user_details`
@@ -621,7 +645,7 @@ CREATE TABLE `user_role` (
 
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
 LOCK TABLES `user_role` WRITE;
-INSERT INTO `user_role` VALUES (3,'admin','site'),(4,'admin','site'),(11,'admin','site'),(11,'admin','5'),(7,'admin','6'),(12,'moderator','6'),(6,'moderator','6'),(13,'moderator','5'),(11,'admin','10'),(11,'admin','11'),(13,'moderator','5'),(13,'moderator','5'),(12,'moderator','6'),(6,'moderator','6');
+INSERT INTO `user_role` VALUES (3,'admin','site'),(4,'admin','site'),(11,'admin','site'),(11,'admin','5'),(7,'admin','6'),(11,'admin','10'),(11,'admin','11'),(13,'moderator','5'),(12,'moderator','6'),(6,'moderator','6');
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 
@@ -644,7 +668,7 @@ CREATE TABLE `visit` (
 
 /*!40000 ALTER TABLE `visit` DISABLE KEYS */;
 LOCK TABLES `visit` WRITE;
-INSERT INTO `visit` VALUES (11,'thread',31,1178540684),(11,'thread',35,1179571211),(11,'thread',32,1179561959),(11,'thread',33,1179564301),(11,'thread',29,1180087087),(11,'thread',36,1180088376),(11,'thread',37,1180159099),(11,'thread',38,1180142873),(11,'thread',39,1180158988);
+INSERT INTO `visit` VALUES (11,'thread',31,1180833522),(11,'thread',35,1179571211),(11,'thread',32,1179561959),(11,'thread',33,1179564301),(11,'thread',29,1180087087),(11,'thread',36,1180832757),(11,'thread',37,1180834584),(11,'thread',38,1180142873),(11,'thread',39,1180854260),(11,'thread',28,1180854278),(11,'thread',40,1180854332);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `visit` ENABLE KEYS */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
