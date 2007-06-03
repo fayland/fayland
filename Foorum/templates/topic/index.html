@@ -33,8 +33,8 @@
         [% INCLUDE include/user_profile.html user = comment.author %]
     </td>
 	<td valign='top' width='*'>
-	  [% comment.title %]
-	  <hr class='horizontal'>
+	  <div><b>[% comment.title %]</b></div>
+	  <div class='horizontal'></div>
 	  <table width='100%' cellpadding='0' cellspacing='0' height='120' style="TABLE-LAYOUT: fixed">
 	  <tr valign='top'><td class="textbody">
 	  <span class="postclass">
@@ -50,7 +50,7 @@
       </td></tr>
       </table>
       <br>
-      <hr class='horizontal'>
+      <div class='horizontal'></div>
        [% UNLESS topic.closed %]
        <a href='[% url_prefix %]/[% comment.comment_id %]/reply'><img src='[% c.config.dir.images %]/replynow.gif' width='16' height='15' align='absmiddle'> [% c.loc('Reply') %]</a>
        [% END %]

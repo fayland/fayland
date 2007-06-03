@@ -72,11 +72,11 @@ A:link { color: #333333 }
 }
 
 /* topic */
-.plumbline { width: 1px; height: 100%;background:#90c8ff }
-.horizontal { width: 99%; height: 1px;border-top:1px solid #90c8ff }
+.plumbline { width: 1px; height: 100%; background:#F5DEB3 }
+.horizontal { width: 100%; height: 1px; border-top:1px solid #F5DEB3; margin: 4px; }
 
 /* header bar */
-.barline { border-top:1px solid #90c8ff; font-size:0; height:1px; position:absolute; right:0; top:26px; width:110% }
+.barline { border-top:1px solid #F5DEB3; font-size:0; height:1px; position:absolute; right:0; top:26px; width:110% }
 
 
 .tabnav {
