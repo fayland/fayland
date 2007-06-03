@@ -58,7 +58,7 @@ sub lock_or_sticky_or_elite : Regex('^forum/(\w+)/(\d+)/(un)?(sticky|elite|lock)
     
     $c->forward('/print_message', [ {
         msg => 'OK',
-        url => "/forum/$forum_id",
+        url => $forum->{forum_url},
     } ] );
 }
 
