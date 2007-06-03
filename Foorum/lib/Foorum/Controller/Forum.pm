@@ -109,7 +109,7 @@ sub forum_list : Regex('^forum/(\w+)$') {
     $c->stash->{template} = 'forum/forum.html';
 }
 
-sub members : Regex('^forum/(\w+)/members(/(\w+))$') {
+sub members : LocalRegex('^(\w+)/members(/(\w+))?$') {
     my ($self, $c) = @_;
 
     my $forum_code = $c->req->snippets->[0];
@@ -167,7 +167,7 @@ sub members : Regex('^forum/(\w+)/members(/(\w+))$') {
     } );
 }
 
-sub action_log : Regex('^forum/(\w+)/action_log(/(\w+))$') {
+sub action_log : LocalRegex('^(\w+)/action_log(/(\w+))?$') {
     my ($self, $c) = @_;
     
     my $forum_code = $c->req->snippets->[0];
