@@ -5,7 +5,7 @@ use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
 
-sub lock_or_top_or_elite : Regex('^forum/(\w+)/(\d+)/(un)?(top|elite|lock)$') {
+sub lock_or_sticky_or_elite : Regex('^forum/(\w+)/(\d+)/(un)?(sticky|elite|lock)$') {
     my ( $self, $c ) = @_;
     
     my $forum_code = $c->req->snippets->[0];
@@ -33,7 +33,7 @@ sub lock_or_top_or_elite : Regex('^forum/(\w+)/(\d+)/(un)?(top|elite|lock)$') {
     my $status = ($is_un)?'0':'1';
     
     my $update_col;
-    if ($action eq 'top') {
+    if ($action eq 'sticky') {
         $update_col = 'sticky';
     } elsif ($action eq 'lock') {
         $update_col = 'closed';
@@ -48,7 +48,7 @@ sub lock_or_top_or_elite : Regex('^forum/(\w+)/(\d+)/(un)?(top|elite|lock)$') {
         $update_col => $status,
     } );
     
-    $c->model('Log')->log_action($c, { action => "$is_un$action", object_type => 'topic', object_id => $topic_id } );
+    $c->model('Log')->log_action($c, { action => "$is_un$action", object_type => 'topic', object_id => $topic_id, forum_id => $forum_id } );
     
     $c->clear_cached_page( "/forum/$forum_id" );
     $c->clear_cached_page( "/forum/$forum_code" ) if ($forum_code);

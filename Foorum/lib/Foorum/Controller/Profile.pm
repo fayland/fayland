@@ -102,7 +102,7 @@ sub edit : Local {
     $c->user->update( {
         nickname => $c->req->param('nickname') || $c->user->username,
         gender   => $c->req->param('gender') || '',
-        lang     => $c->req->param('lang') || $c->config->{default_pref_lang},
+        lang     => $c->req->param('lang') || $c->config->{default_lang},
         country  => $c->req->param('country') || '',
     } );
     

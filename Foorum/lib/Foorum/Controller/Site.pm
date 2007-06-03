@@ -3,7 +3,7 @@ package Foorum::Controller::Site;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use Foorum::Utils qw/get_page_no_from_url/;
+use Foorum::Utils qw/get_page_from_url/;
 use Data::Dumper;
 
 sub recent : Local {
@@ -21,7 +21,7 @@ sub recent : Local {
     
     $c->cache_page( '300' );
     
-    my $page = get_page_no_from_url($c->req->path);
+    my $page = get_page_from_url($c->req->path);
     my $rs = $c->model('DBIC::Topic')->search( {
         'forum.policy' => 'public',
         @extra_cols,

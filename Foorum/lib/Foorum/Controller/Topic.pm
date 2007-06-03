@@ -4,14 +4,14 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
-use Foorum::Utils qw/encodeHTML get_page_no_from_url/;
+use Foorum::Utils qw/encodeHTML get_page_from_url/;
 
 sub topic : Regex('^forum/(\w+)/(\d+)$') {
     my ( $self, $c ) = @_;
     
     my $forum_code = $c->req->snippets->[0];
     my $topic_id = $c->req->snippets->[1];
-    my $page_no  = get_page_no_from_url($c->req->path);
+    my $page_no  = get_page_from_url($c->req->path);
     $page_no = 1 unless ($page_no and $page_no =~ /^\d+$/);
     
     # get the forum information

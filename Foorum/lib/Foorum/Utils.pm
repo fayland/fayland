@@ -8,7 +8,7 @@ use vars qw/@EXPORT_OK/;
     encodeHTML decodeHTML
     is_color
     generate_random_word
-    get_page_no_from_url
+    get_page_from_url
 /;
 
 =pod
@@ -86,13 +86,13 @@ sub generate_random_word {
 
 =pod
 
-=item get_page_no_from_url
+=item get_page_from_url
 
 since we always use /page=(\d+)/ as in sub/pager.html
 
 =cut
 
-sub get_page_no_from_url {
+sub get_page_from_url {
     my ($url) = @_;
     
     my $page = 1;

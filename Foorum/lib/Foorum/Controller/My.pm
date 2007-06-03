@@ -3,7 +3,7 @@ package Foorum::Controller::My;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use Foorum::Utils qw/get_page_no_from_url/;
+use Foorum::Utils qw/get_page_from_url/;
 
 sub auto : Private {
     my ($self, $c) = @_;
@@ -18,7 +18,7 @@ sub auto : Private {
 sub starred : Local {
     my ($self, $c) = @_;
 
-    my $page = get_page_no_from_url($c->req->path);
+    my $page = get_page_from_url($c->req->path);
     
     my $rs = $c->model('DBIC::Star')->search( {
         user_id => $c->user->user_id,
@@ -49,7 +49,7 @@ sub starred : Local {
 sub topics : Local {
     my ($self, $c) = @_;
     
-    my $page = get_page_no_from_url($c->req->path);
+    my $page = get_page_from_url($c->req->path);
     my $rs = $c->model('DBIC::Topic')->search( {
         author_id => $c->user->user_id,
     }, {

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
-use Foorum::Utils qw/get_page_no_from_url/;
+use Foorum::Utils qw/get_page_from_url/;
 
 sub auto : Private {
     my ( $self, $c ) = @_;
@@ -76,7 +76,7 @@ sub compose : Local {
 sub inbox : Local {
     my ($self, $c) = @_;
     
-    my $page_no = get_page_no_from_url($c->req->path);
+    my $page_no = get_page_from_url($c->req->path);
     my $it = $c->model('DBIC')->resultset('Message')->search( {
         to_id => $c->user->user_id,
         to_status => 'open',
@@ -101,7 +101,7 @@ sub inbox : Local {
 sub outbox : Local {
     my ($self, $c) = @_;
     
-    my $page_no = get_page_no_from_url($c->req->path);
+    my $page_no = get_page_from_url($c->req->path);
     my $it = $c->model('DBIC')->resultset('Message')->search( {
         from_id => $c->user->user_id,
         from_status => 'open',
@@ -148,6 +148,12 @@ sub delete : LocalRegex('^(\d+)/delete$') {
     my $message = $c->model('DBIC')->resultset('Message')->find( {
         message_id => $message_id,
     } );
+    
+    # mark as read
+    $c->model('DBIC')->resultset('MessageUnread')->search( {
+        message_id => $message_id,
+        user_id    => $c->user->user_id,
+    } )->delete;
     
     # both inbox and outbox.
     # we set 'from_status' as 'deleted' when from_id delete it

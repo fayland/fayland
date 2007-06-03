@@ -101,7 +101,7 @@ register:
   closed: 0
   activation: 1
 
-default_pref_lang: cn
+default_lang: cn
 
 per_page:
   forum: 20

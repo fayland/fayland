@@ -146,6 +146,25 @@ msgstr "已关闭"
 msgid "The requested URL is not found on this server."
 msgstr "您访问的地址不存在"
 
+# forum/topic action
+msgid "Lock"
+msgstr "锁定"
+
+msgid "Unlock"
+msgstr "解除锁定"
+
+msgid "Sticky"
+msgstr "固顶"
+
+msgid "Unsticky"
+msgstr "解除固顶"
+
+msgid "Elite"
+msgstr "设置精华"
+
+msgid "Unelite"
+msgstr "取消精华"
+
 # message page
 msgid "Menu"
 msgstr "菜单"

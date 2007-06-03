@@ -3,7 +3,7 @@ package Foorum::Model::Comment;
 use strict;
 use warnings;
 use base 'Catalyst::Model';
-use Foorum::Utils qw/get_page_no_from_url encodeHTML/;
+use Foorum::Utils qw/get_page_from_url encodeHTML/;
 use Foorum::Filter qw/filter_format/;
 use Data::Page;
 use Data::Dumper;
@@ -13,7 +13,7 @@ sub get_comments_by_object {
     
     my $object_type = $info->{object_type};
     my $object_id   = $info->{object_id};
-    my $page        = $info->{page} || get_page_no_from_url($c->req->path);
+    my $page        = $info->{page} || get_page_from_url($c->req->path);
     
     my $cache_key   = "comment|object_type=$object_type|object_id=$object_id";
     my $cache_value = $c->cache->get($cache_key);

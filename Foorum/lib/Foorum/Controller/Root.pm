@@ -21,13 +21,13 @@ sub auto : Private {
 	$c->stash->{start_t0} = [gettimeofday] unless ($c->stash->{start_t0});
 	
 	# internationalization
-    $c->stash->{lang} = $c->req->cookie('pref_lang')->value if ($c->req->cookie('pref_lang'));
+    $c->stash->{lang} = $c->req->cookie('lang')->value if ($c->req->cookie('lang'));
     $c->stash->{lang} ||= $c->user->lang if ($c->user_exists);
-    $c->stash->{lang} ||= $c->config->{default_pref_lang};
-    if (my $lang = $c->req->param('set_lang')) {
+    $c->stash->{lang} ||= $c->config->{default_lang};
+    if (my $lang = $c->req->param('lang')) {
         $lang =~ s/\W+//isg;
         if (length($lang) == 2) {
-            $c->res->cookies->{pref_lang} = { value => $lang };
+            $c->res->cookies->{lang} = { value => $lang };
             $c->stash->{lang} = $lang;
         }
     }

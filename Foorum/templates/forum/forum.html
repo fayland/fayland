@@ -76,7 +76,7 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 	<tr class="title" align='center'>
 	<td width='42'>[% c.loc("Status") %]</td>
 	<td width='*'>[% c.loc("Subject") %]</td>
-	<td width='100'>[% c.loc("Author") %]</td>
+	<td width='80'>[% c.loc("Author") %]</td>
 	<td width='40'>[% c.loc("Reply") %]</td>
 	<td width='40'>[% c.loc("Hit") %]</td>
 	<td width='200'>[% c.loc("Last Update") %]</td>
@@ -98,6 +98,13 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 			    [% IF c.user_exists AND NOT is_visited.thread.${t.topic_id} %]
 			    <img src='[% c.config.dir.images %]/site/new.gif' />
 			    [% END %]
+			    [% IF roles.is_moderator %]
+            	<div style='float:right'>
+            	    <a href='[% forum.forum_url %]/[% t.topic_id %]/[% IF t.sticky %]unsticky[% ELSE %]sticky[% END %]'>[% IF t.sticky %][% c.loc('Unsticky') %][% ELSE %][% c.loc('Sticky') %][% END %]</a> |
+                    <a href='[% forum.forum_url %]/[% t.topic_id %]/[% IF t.closed %]unlock[% ELSE %]lock[% END %]'>[% IF t.closed %][% c.loc('Unlock') %][% ELSE %][% c.loc('Lock') %][% END %]</a> |
+                    <a href='[% forum.forum_url %]/[% t.topic_id %]/[% IF t.elite %]unelite[% ELSE %]elite[% END %]'>[% IF t.elite %][% c.loc('Unelite') %][% ELSE %][% c.loc('Elite') %][% END %]
+                </div>
+                [% END %]
 			</td>
 			</tr>
     	</table>

@@ -3,7 +3,7 @@ package Foorum::Controller::Poll;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use Foorum::Utils qw/encodeHTML get_page_no_from_url/;
+use Foorum::Utils qw/encodeHTML get_page_from_url/;
 
 sub create : Regex('^forum/(\w+)/poll/new$') {
     my ($self, $c) = @_;
@@ -101,7 +101,7 @@ sub view_polls : Regex('^forum/(\w+)/poll$') {
     my $forum_code = $c->req->snippets->[0];
     my $forum    = $c->model('Forum')->get($c, $forum_code);
     my $forum_id = $forum->forum_id;
-    my $page     = get_page_no_from_url($c->req->path);
+    my $page     = get_page_from_url($c->req->path);
 
     # get all moderators
     $c->stash->{forum_roles} = $c->model('Policy')->get_forum_moderators( $c, $forum_id );

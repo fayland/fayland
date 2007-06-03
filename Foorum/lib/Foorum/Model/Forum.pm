@@ -68,6 +68,7 @@ sub remove_forum {
     $c->model('Policy')->remove_user_role( $c, {
         field => $forum_id,
     } );
+    $c->model('DBIC::LogAction')->search( { forum_id => $forum_id } )->delete;
     
     # get all topic_ids
     my @topic_ids;

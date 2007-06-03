@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use Data::Dumper;
-use Foorum::Utils qw/get_page_no_from_url/;
+use Foorum::Utils qw/get_page_from_url/;
 
 sub auto : Private {
     my ($self, $c) = @_;
@@ -20,7 +20,7 @@ sub auto : Private {
 sub default : Private {
     my ($self, $c) = @_;
     
-    my $page = get_page_no_from_url($c->req->path);
+    my $page = get_page_from_url($c->req->path);
     my $rs = $c->model('DBIC::User')->search( { }, {
         order_by => 'user_id',
         page => $page,

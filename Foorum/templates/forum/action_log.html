@@ -1,0 +1,24 @@
+[% title = 'Action Logs Of ' _ forum.name %]
+
+<div class='one'>
+<table align='center'>
+	<tr class='title' align='center'>
+	<td>[% c.loc('Operator') %]</td>
+	<td>[% c.loc('Action') %]</td>
+	<td>[% c.loc('Date') %]</td>
+	</tr>
+[% FOREACH log IN logs %]
+<tr align='center'>
+	<td class='forum2'><a href='/u/[% log.operator.username %]'>[% log.operator.nickname %]</a></td>
+	<td class='forum1'>[% log.action | ucfirst %]</td>
+	<td class='forum2'>[% log.time %]</td>
+	<td class='forum1'>[% members.${user.user_id}.register_on %]</td>
+</tr>
+[% END %]
+<tr class='forum2'>
+	<td colspan='3' align='right'>
+	[% INCLUDE 'sub/pager.html' url_prefix = forum.forum_url _ '/action_log' %]
+	</td>
+</tr>
+</table>
+</div>

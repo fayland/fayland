@@ -3,7 +3,7 @@ package Foorum::Controller::Admin::Log;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use Foorum::Utils qw/get_page_no_from_url/;
+use Foorum::Utils qw/get_page_from_url/;
 
 sub error_log : Local {
     my ($self, $c) = @_;
@@ -21,7 +21,7 @@ sub error_log : Local {
         $c->stash->{url_postfix} .= 'text=' . $text;
     }
     
-    my $page = get_page_no_from_url($c->req->path);
+    my $page = get_page_from_url($c->req->path);
     my $rs = $c->model('DBIC')->resultset('LogError')->search( {
         @extra_cols
     }, {

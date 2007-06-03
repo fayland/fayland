@@ -3,7 +3,7 @@ package Foorum::Controller::Forum;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use Foorum::Utils qw/get_page_no_from_url/;
+use Foorum::Utils qw/get_page_from_url/;
 use Foorum::Filter qw/filter_format/;
 use Data::Dumper;
 
@@ -34,7 +34,7 @@ sub forum_list : Regex('^forum/(\w+)$') {
     my ($self, $c) = @_;
 
     my $is_elite = ($c->req->path =~ /\/elite(\/|$)/) ? 1 : 0;
-    my $page_no  = get_page_no_from_url($c->req->path);
+    my $page_no  = get_page_from_url($c->req->path);
 
     # get the forum information
     my $forum_code = $c->req->snippets->[0];
@@ -122,7 +122,7 @@ sub members : Regex('^forum/(\w+)/members(/(\w+))$') {
         $member_type = 'user';
     }
     
-    my $page_no  = get_page_no_from_url($c->req->path);
+    my $page_no  = get_page_from_url($c->req->path);
     
     my (@query_cols, @attr_cols);
     if ($member_type eq 'user') {
@@ -152,14 +152,43 @@ sub members : Regex('^forum/(\w+)/members(/(\w+))$') {
         } )->all;
         %members = map { $_->user_id => $_ } @members;
     }
+    
+    my $url_prefix = $forum->{forum_url} . '/members';
+    $url_prefix .= "/$member_type" if ($member_type);
 
     $c->stash( {
         template => 'forum/members.html',
         member_type => $member_type,
         pager => $rs->pager,
+        url_prefix => $url_prefix,
         user_roles => \@user_roles,
         whos_view_this_page => 1,
         members    => \%members,
+    } );
+}
+
+sub action_log : Regex('^forum/(\w+)/action_log(/(\w+))$') {
+    my ($self, $c) = @_;
+    
+    my $forum_code = $c->req->snippets->[0];
+    my $log_type = $c->req->snippets->[2];
+    my $forum = $c->model('Forum')->get($c, $forum_code);
+    $forum_code = $forum->forum_code;
+    my $forum_id = $forum->forum_id;
+    
+    my $page = get_page_from_url($c->req->path);
+    my $rs = $c->model('DBIC')->resultset('LogAction')->search( {
+        forum_id => $forum_id,
+    }, {
+        order_by => 'time DESC',
+        page => $page, rows => 20,
+        prefetch => ['operator'],
+    } );
+    
+    $c->stash( {
+        template => 'forum/action_log.html',
+        pager => $rs->pager,
+        logs  => [ $rs->all ],
     } );
 }
 

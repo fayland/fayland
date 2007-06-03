@@ -51,7 +51,7 @@ sub default : Private {
         email     => $email,
         register_on => \"NOW()",
         register_ip => $c->req->address,
-        lang => $c->config->{default_pref_lang},
+        lang => $c->config->{default_lang},
         status => 'unauthorized',
     });
 

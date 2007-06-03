@@ -44,7 +44,7 @@ sub remove {
     }
         
     # log action
-    $c->model('Log')->log_action($c, { action => 'delete', object_type => 'topic', object_id => $topic_id } );
+    $c->model('Log')->log_action($c, { action => 'delete', object_type => 'topic', object_id => $topic_id, forum_id => $forum_id } );
         
     # update last
     my $lastest = $c->model('DBIC')->resultset('Topic')->find( {
