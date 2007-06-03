@@ -11,6 +11,11 @@ BODY {
 TD, DIV, form, OPTION, P, TH { font-family: arial,sans-serif; font-size: 9pt }
 INPUT, textarea, select { border-width: 1px; padding: 1px; font-size: 9pt; border-color: #cccccc; }
 
+/* bar header */
+#gbar { float:left; height:22px; padding-top: 4px }
+#gbar .gbarp { font-size:13px; padding-right:1em }
+#guser { font-size:13px; padding-bottom:7px !important; padding-top:4px; padding-right:11px; }
+
 #footer {
     clear:both;
     text-align:center;

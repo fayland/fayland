@@ -75,10 +75,13 @@ A:link { color: #333333 }
 .plumbline { width: 1px; height: 100%;background:#90c8ff }
 .horizontal { width: 99%; height: 1px;border-top:1px solid #90c8ff }
 
+/* header bar */
+.barline { border-top:1px solid #90c8ff; font-size:0; height:1px; position:absolute; right:0; top:26px; width:110% }
+
+
 .tabnav {
     margin-bottom: 5px;
-    margin-left: 2%;
-    
+    margin-left: 2%;   
 }
 
 .tabnav ul {
