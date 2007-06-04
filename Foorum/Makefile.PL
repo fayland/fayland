@@ -41,6 +41,8 @@ requires 'Email::Obfuscate';
 requires 'Locale::Country::Multilingual';
 requires 'YAML::Syck';
 requires 'File::Slurp';
+requires 'Net::IP::Match::Regexp';
+requires 'Net::CIDR::Lite';
 
 catalyst;
 

@@ -5,6 +5,21 @@ use warnings;
 use base 'Catalyst::Controller';
 use Digest ();
 use Data::Dumper;
+use Net::IP::Match::Regexp qw( create_iprange_regexp match_ip );
+
+sub auto : Private {
+    my ($self, $c) = @_;
+    
+    my @cidr_ips = $c->model('BannedIP')->get($c);
+    $c->log->debug('IPs: ' . join(', ', @cidr_ips));
+    my $regexp = create_iprange_regexp( @cidr_ips );
+    if (match_ip($c->req->address, $regexp)) {
+       $c->forward('/print_error', [ 'IP banned' ]);
+       return 0;
+    }
+    
+    return 1;
+}
 
 sub default : Private {
     my ( $self, $c ) = @_;

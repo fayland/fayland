@@ -1,6 +1,9 @@
 This file documents the revision history for Foorum.
 
-0.04  5c3d4f
+0.05  unknown
+    - use Net::IP::Match::Regexp to ban IP range from registration (5/6/2007)
+
+0.04  Sat Jun 3 15:55:55 2007
     - add log_error table and Foorum::Log for both Model and /bin/cron (20/5/2007)
     - move script/foorum_server.pl to bin/foorum_server.pl (20/5/2007)
     - add a new INSTALL file (20/5/2007)
@@ -9,7 +12,7 @@ This file documents the revision history for Foorum.
     - add a new Model/Validation.pm and remove 'FormValidator::Simple::Plugin::DBIC::Unique' (26/5/2007)
     - add cache for comments (26/5/2007)
     - Foorum::Filter: add textile support and remove 'Template::Plugin::HTML::BBCode' (26/5/2007)
-    - more sane change_email
+    - more sane change_email (2/6/2007)
 
 0.03  Sat May 19 13:24:00 2007
     - remove Plugin::Email. insert into table scheduled_email and use a cron script to send. (19/5/2007)
