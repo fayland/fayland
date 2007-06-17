@@ -13,25 +13,31 @@ $lcm = Locale::Country::Multilingual->new();
 sub user_profile : PathPart('u') Chained('/') CaptureArgs(1) {
     my ( $self, $c, $username ) = @_;
 
-    $c->stash->{user} =
-        $c->model('DBIC')->resultset('User')->find( { username => $username },
-        { prefetch => [ 'details', 'last_post' ], } );
-
+    my $user = $c->model('User')->get($c, { username => $username } );
     $c->detach( '/print_error', ['ERROR_USER_NON_EXSIT'] )
-        unless ( $c->stash->{user} );
+        unless ( $user );
+
+    $c->stash->{user} = $user;
 }
 
 sub home : PathPart('') Chained('user_profile') Args(0) {
     my ( $self, $c ) = @_;
 
     my $user = $c->stash->{user};
+    
+    # get last_post
+    if ($user->{last_post_id}) {
+        $user->{last_post} = $c->model('DBIC')->resultset('Topic')->find( {
+            topic_id => $user->{last_post_id},
+        } );
+    }
 
     # get comments
     $c->model('Comment')->get_comments_by_object(
         $c,
         {
             object_type => 'user_profile',
-            object_id   => $user->user_id,
+            object_id   => $user->{user_id},
         }
     );
 
@@ -112,7 +118,7 @@ sub edit : Local {
     unless ( $lcm->code2country( $c->req->param('country') ) ) {
         $c->req->param( 'country', '' );
     }
-    $c->user->update(
+    $c->model('User')->update($c, $c->user,
         {
             nickname => $c->req->param('nickname') || $c->user->username,
             gender   => $c->req->param('gender')   || '',
@@ -133,6 +139,9 @@ sub edit : Local {
             @extra_insert,
         }
     );
+    
+    # clear user cache too
+    $c->model('User')->delete_cache_by_user_cond($c, { user_id => $c->user->user_id } );
 
     $c->res->redirect( '/u/' . $c->user->username );
 }
@@ -171,7 +180,7 @@ sub change_password : Local {
     $d->add($new_password);
     my $new_computed = $d->digest;
 
-    $c->user->update( { password => $new_computed, } );
+    $c->model('User')->update($c, $c->user, { password => $new_computed, } );
 
     $c->res->body('ok');
 }
@@ -202,7 +211,7 @@ sub forget_password : Local {
     # send email
     $c->model('Email')
         ->send_forget_password( $c, $email, $username, $random_password );
-    $user->update( { password => $computed } );
+    $c->model('User')->update($c, $user, { password => $computed } );
     $c->detach(
         '/print_message',
         [
@@ -242,7 +251,7 @@ sub change_email : Local {
         $c->res->redirect( '/register/activation/' . $c->user->username );
     }
     else {
-        $c->user->update( { email => $email, } );
+        $c->model('User')->update($c, $c->user, { email => $email, } );
         $c->res->redirect('/profile/edit');
     }
 }
@@ -282,7 +291,7 @@ sub change_username : Local {
         return;
     }
 
-    $c->user->update( { username => $new_username, } );
+    $c->model('User')->update($c, $c->user, { username => $new_username, } );
     $c->session->{__user} = $new_username;
 
     $c->res->redirect("/u/$new_username");

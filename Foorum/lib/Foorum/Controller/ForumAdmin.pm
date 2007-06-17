@@ -346,13 +346,13 @@ sub change_membership : Chained('forum_for_admin') Args(0) {
         $forum->update( { total_members => \"total_members + 1" } );
     }
 
-    $c->model('DBIC::UserRole')->search(
-        {
-            field   => $forum_id,
-            user_id => $user_id,
-            role    => $from,
-        }
-    )->update( { role => $to } );
+    my $where = {
+        field   => $forum_id,
+        user_id => $user_id,
+        role    => $from,
+    };
+    $c->model('DBIC::UserRole')->search( $where )->update( { role => $to } );
+    $c->model('Policy')->clear_cached_policy($c, $where);
 
     $c->res->body('OK');
 }

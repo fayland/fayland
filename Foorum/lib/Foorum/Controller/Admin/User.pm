@@ -89,7 +89,7 @@ sub edit : Local {
                 push @update_cols, ( $key, $query->{$key} );
             }
         }
-        $user->update( {@update_cols} );
+        $c->model('User')->update($c, $user, {@update_cols} );
 
         # update session
         if ( $c->user->user_id == $c->req->param('user_id') ) {

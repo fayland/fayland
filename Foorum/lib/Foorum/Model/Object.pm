@@ -20,8 +20,9 @@ sub get_object_from_url {
 
     # 2. user profile, eg: /u/fayland
     elsif ( $path =~ /\/u\/(\w+)/ ) {
-        my $user_id = $c->model('User')->get_user_id_from_username( $c, $1 );
-        $object_id   = $user_id;
+        my $user = $c->model('User')->get( $c, { username => $1 } );
+        return unless ($user);
+        $object_id   = $user->{user_id};
         $object_type = 'user_profile';
     }
 
@@ -38,9 +39,9 @@ sub get_url_from_object {
     switch ($object_type) {
         case 'poll' { return "/forum/$forum_id/poll/$object_id"; }
         case 'user_profile' {
-            my $username =
-                $c->model('User')->get_username_from_user_id( $c, $object_id );
-            return "/u/$username" if ($username);
+            my $user =
+                $c->model('User')->get( $c, { user_id => $object_id } );
+            return '/u/' . $user->{username} if ($user);
         }
     }
 }

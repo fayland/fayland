@@ -19,9 +19,10 @@ use Catalyst qw/
     PageCacheWithI18N
     FormValidator::Simple
     Captcha
+    DBIC::Schema::Profiler
     /;
 
-#	DBIC::Schema::Profiler
+#	
 
 use vars qw/$VERSION/;
 $VERSION = '0.05';

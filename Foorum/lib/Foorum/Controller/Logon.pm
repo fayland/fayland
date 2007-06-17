@@ -48,7 +48,7 @@ sub login : Global {
             }
 
             # login_times++
-            $c->user->update(
+            $c->model('User')->update($c, $c->user,
                 {
                     login_times   => \'login_times + 1',
                     last_login_on => \'NOW()',

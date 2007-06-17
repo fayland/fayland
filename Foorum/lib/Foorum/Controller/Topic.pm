@@ -115,7 +115,7 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
     );
 
     # update user stat
-    $c->user->obj->update(
+    $c->model('User')->update($c, $c->user,
         {
             threads      => \"threads + 1",
             last_post_id => $topic->topic_id,
@@ -210,7 +210,7 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
     );
 
     # update user stat
-    $c->user->obj->update(
+    $c->model('User')->update($c, $c->user,
         {
             replies      => \"replies + 1",
             last_post_id => $topic_id,

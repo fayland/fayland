@@ -135,7 +135,7 @@ sub activation : Local {
         if ( $activation_rs->new_email ) {
             @extra_update = ( 'email', $activation_rs->new_email );
         }
-        $user->update(
+        $c->model('User')->update($c, $user,
             {
                 status => 'authorized',
                 @extra_update,
