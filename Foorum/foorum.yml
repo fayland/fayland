@@ -25,7 +25,7 @@ page_cache:
 
 authentication:
   dbic:
-    user_class: "DBIC::User"
+    user_class: "Foorum::Model::PluginHack"
     user_field: "username"
     password_field: "password"
     password_type: "hashed"
