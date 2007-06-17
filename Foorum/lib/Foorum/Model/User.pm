@@ -67,12 +67,10 @@ sub delete_cache_by_user {
     my ($self, $c, $user) = @_;
     
     return unless ($user);
-    
-    # two types of user:
-    # one is object from resultset('User')
-    # the other is hash from ->get
-    if (Scalar::Util::blessed($user)) {
-        $user = $user->{_column_data};
+
+    if ( Scalar::Util::blessed($user)
+        and $user->isa('Catalyst::Plugin::Authentication::User') ){
+        $user = $user->obj;
     }
     
     $c->cache->delete('user|' . Object::Signature::signature( { user_id => $user->{user_id} } ));
@@ -93,8 +91,15 @@ sub delete_cache_by_user_cond {
 sub update {
     my ($self, $c, $user, $update) = @_;
     
+    if ( Scalar::Util::blessed($user)
+        and $user->isa('Catalyst::Plugin::Authentication::User') ){
+        $user = $user->obj;
+    }
+    
     $self->delete_cache_by_user($c, $user);
-    $user->update($update);
+    $c->model('DBIC')->resultset('User')->search( {
+        user_id => $user->{user_id},
+    } )->update($update);
 }
 
 =pod

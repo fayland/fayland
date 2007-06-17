@@ -62,7 +62,7 @@ sub edit : Local {
     $c->stash->{countries} = \%countries;
 
     unless ( $c->req->method eq 'POST' ) {
-        my $birthday = $c->user->{details}->{birthday};
+        my $birthday = $c->user->obj->{details}->{birthday};
         if (    $birthday
             and $birthday
             and $birthday =~ /^(\d+)\-(\d+)\-(\d+)$/ )
@@ -75,7 +75,7 @@ sub edit : Local {
                 }
             );
         }
-        $c->stash->{user_details} = $c->user->{details};
+        $c->stash->{user_details} = $c->user->obj->{details};
         return;
     }
 
@@ -139,7 +139,7 @@ sub edit : Local {
     );
     
     # clear user cache too
-    $c->model('User')->delete_cache_by_user($c, $c->user );
+    $c->model('User')->delete_cache_by_user($c, $c->user->obj );
 
     $c->res->redirect( '/u/' . $c->user->username );
 }
@@ -159,7 +159,7 @@ sub change_password : Local {
         $c->config->{authentication}->{dbic}->{password_hash_type} );
     $d->add($password);
     my $computed = $d->digest;
-    if ( $computed ne $c->user->password ) {
+    if ( $computed ne $c->user->obj->{password} ) {
         $c->set_invalid_form( password => 'WRONG_PASSWORD' );
         return;
     }
@@ -178,7 +178,7 @@ sub change_password : Local {
     $d->add($new_password);
     my $new_computed = $d->digest;
 
-    $c->model('User')->update($c, $c->user, { password => $new_computed, } );
+    $c->model('User')->update($c, $c->user->obj, { password => $new_computed, } );
 
     $c->res->body('ok');
 }
@@ -269,7 +269,7 @@ sub change_username : Local {
         $c->config->{authentication}->{dbic}->{password_hash_type} );
     $d->add($password);
     my $computed = $d->digest;
-    if ( $computed ne $c->user->password ) {
+    if ( $computed ne $c->user->obj->{password} ) {
         $c->set_invalid_form( password => 'WRONG_PASSWORD' );
         return;
     }
