@@ -126,6 +126,8 @@ sub activation : Local {
         
         # login will be failed since the $user->password is SHA1 Hashed.
         # $c->login( $username, $user->password );
+        # so instead, we use set_authenticated, check Catalyst::Plugin::Authentication
+        $c->set_authenticated($user);
         $c->res->redirect('/profile/edit');
     } else {
         $c->stash->{'ERROR_UNMATCHED'} = 1;
