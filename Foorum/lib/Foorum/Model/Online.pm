@@ -92,8 +92,7 @@ sub _handler_session {
             }
             else {
                 $user =
-                    $c->model('DBIC::User')
-                    ->find( { user_id => $session->user_id } );
+                    $c->model('User')->get( $c, { user_id => $session->user_id } );
             }
         }
         push @results,

@@ -48,7 +48,7 @@ sub compose : Local {
 
     # check user exist
     my $rept =
-        $c->model('DBIC')->resultset('User')->single( { username => $to } );
+        $c->model('User')->get($c, { username => $to } );
     unless ($rept) {
         $c->set_invalid_form( to => 'USER_NONEXIST' );
         return;
@@ -57,7 +57,7 @@ sub compose : Local {
     my $message = $c->model('DBIC')->resultset('Message')->create(
         {
             from_id     => $c->user->user_id,
-            to_id       => $rept->user_id,
+            to_id       => $rept->{user_id},
             title       => $c->req->param('title'),
             text        => $c->req->param('text'),
             post_on     => \"NOW()",
@@ -71,7 +71,7 @@ sub compose : Local {
     $c->model('DBIC')->resultset('MessageUnread')->create(
         {
             message_id => $message->message_id,
-            user_id    => $rept->user_id,
+            user_id    => $rept->{user_id},
         }
     );
 

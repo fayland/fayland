@@ -141,17 +141,13 @@ sub get_forum_moderators {
 
     my $roles;
     foreach (@users) {
-        my $user = $c->model('DBIC')->resultset('User')->find(
-            { user_id => $_->user_id, },
-            {
-                columns => [ 'username', 'nickname' ],
-                cache   => 1,
-            }
-        );
+        my $user = $c->model('User')->get($c, { user_id => $_->user_id, } );
         next unless ($user);
-        $user = $user->{_column_data};    # for cache
         if ( $_->role eq 'admin' ) {
-            $roles->{ $_->field }->{'admin'} = $user;
+            $roles->{ $_->field }->{'admin'} = { # for cache
+                username => $user->{username},
+                nickname => $user->{nickname}
+            };
         }
         elsif ( $_->role eq 'moderator' ) {
             push @{ $roles->{ $_->field }->{'moderator'} }, $user;
@@ -174,7 +170,7 @@ sub get_forum_admin {
         }
     );
     return unless ($rs);
-    my $user = $c->model('DBIC::User')->find( { user_id => $rs->user_id } );
+    my $user = $c->model('User')->get($c, { user_id => $rs->user_id } );
     return $user;
 }
 

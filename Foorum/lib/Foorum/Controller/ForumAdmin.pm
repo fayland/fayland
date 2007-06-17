@@ -85,7 +85,7 @@ sub basic : Chained('forum_for_admin') Args(0) {
             if ( scalar @moderator_users > 2 )
             ;                                 # only allow 3 moderators at most
         my $moderator_user =
-            $c->model('DBIC::User')->find( { username => $_ } );
+            $c->model('User')->get($c, { username => $_ } );
         unless ($moderator_user) {
             $c->stash->{non_existence_user} = $_;
             return $c->set_invalid_form( moderators => 'ADMIN_NONEXISTENCE' );

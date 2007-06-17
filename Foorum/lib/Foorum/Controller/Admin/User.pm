@@ -61,7 +61,7 @@ sub edit : Local {
     else {
         return;
     }
-    my $user = $c->model('DBIC::User')->find( {@query_cols} );
+    my $user = $c->model('User')->get($c, {@query_cols} );
     return $c->stash->{error} = 'NO_RECORD' unless ($user);
 
     unless ( $c->req->method eq 'POST' ) {

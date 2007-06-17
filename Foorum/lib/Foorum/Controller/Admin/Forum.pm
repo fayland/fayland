@@ -60,7 +60,7 @@ sub create : Local {
 
     # validate the admin and moderators first
     my $total_members = 1;
-    my $admin_user = $c->model('DBIC::User')->find( { username => $admin } );
+    my $admin_user = $c->model('User')->get($c, { username => $admin } );
     unless ($admin_user) {
         return $c->set_invalid_form( admin => 'ADMIN_NONEXISTENCE' );
     }
@@ -72,7 +72,7 @@ sub create : Local {
             if ( scalar @moderator_users > 2 )
             ;                        # only allow 3 moderators at most
         my $moderator_user =
-            $c->model('DBIC::User')->find( { username => $_ } );
+            $c->model('User')->get($c, { username => $_ } );
         unless ($moderator_user) {
             $c->stash->{non_existence_user} = $_;
             return $c->set_invalid_form( moderators => 'ADMIN_NONEXISTENCE' );

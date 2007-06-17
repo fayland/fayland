@@ -14,9 +14,18 @@ sub board : Path {
         { forum_type => 'classical', },
         {
             order_by => 'me.forum_id',
-            prefetch => ['last_post'],
         }
     )->all;
+
+    # get last_post and the author
+    foreach (@forums) {
+        next unless $_->last_post_id;
+        $_->{last_post} = $c->model('DBIC')->resultset('Topic')->find( {
+            topic_id => $_->last_post_id,
+        } );
+        next unless $_->{last_post};
+        $_->{last_post}->{updator} = $c->model('User')->get($c, { user_id => $_->{last_post}->last_updator_id } );
+    }
 
     $c->cache_page('300');
 

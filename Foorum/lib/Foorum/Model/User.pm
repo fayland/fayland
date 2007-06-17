@@ -16,9 +16,16 @@ sub get {
     my ( $self, $c, $cond ) = @_;
     
     my $cache_key = 'user|' . Object::Signature::signature($cond);
+    
+    if ($c->stash->{"__user_caches|$cache_key"}) { # avoid memcache get
+        $c->log->debug('get user from stash');
+        return $c->stash->{"__user_caches|$cache_key"};
+    }
+    
     my $cache_val = $c->cache->get($cache_key);
     
     if ($cache_val) {
+        $c->stash->{"__user_caches|$cache_key"} = $cache_val;
         $c->log->debug('get user from cache: ' . Dumper(\$cond));
         return $cache_val;
     }
@@ -26,20 +33,22 @@ sub get {
     # if not cached yet
     # get all to cache: user, user_details, role
     {
+        my $user = $c->model('DBIC')->resultset('User')->find( $cond );
+
         # always set cache
         my $sentry = Object::Destroyer->new( sub {
             $c->log->debug('set user to cache: ' . Dumper(\$cond));
             $c->cache->set($cache_key, $cache_val, 7200); # two hours
+            $c->stash->{"__user_caches|$cache_key"} = $user;
         } );
-        
-        my $user = $c->model('DBIC')->resultset('User')->find( $cond );
+
         return unless ($user);
         
         my $user_details = $c->model('DBIC')->resultset('UserDetails')->find( { user_id => $user->user_id } );
         $user_details = $user_details->{_column_data} if ($user_details);
         
         my @roles = $c->model('DBIC')->resultset('UserRole')->search( {
-            user_id => $c->user->user_id,
+            user_id => $user->user_id,
         } )->all;
 
         my $roles;

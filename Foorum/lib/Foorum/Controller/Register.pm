@@ -112,7 +112,7 @@ sub activation : Local {
     );
     return unless ( $username and $activation_code );
 
-    my $user = $c->model('DBIC::User')->find( { username => $username } );
+    my $user = $c->model('User')->get($c, { username => $username } );
     $c->detach( '/print_error', ['ERROR_USER_NON_EXIST'] ) unless ($user);
 
     my $activation_rs =
@@ -143,9 +143,9 @@ sub activation : Local {
         );
         $activation_rs->delete;
 
-  # login will be failed since the $user->password is SHA1 Hashed.
-  # $c->login( $username, $user->password );
-  # so instead, we use set_authenticated, check Catalyst::Plugin::Authentication
+        # login will be failed since the $user->password is SHA1 Hashed.
+        # $c->login( $username, $user->password );
+        # so instead, we use set_authenticated, check Catalyst::Plugin::Authentication
         $c->set_authenticated($user);
         $c->res->redirect('/profile/edit');
     }

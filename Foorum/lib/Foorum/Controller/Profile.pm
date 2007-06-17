@@ -62,12 +62,10 @@ sub edit : Local {
     $c->stash->{countries} = \%countries;
 
     unless ( $c->req->method eq 'POST' ) {
-        my $rs =
-            $c->model('DBIC::UserDetails')
-            ->find( { user_id => $c->user->user_id } );
-        if (    $rs
-            and $rs->birthday
-            and $rs->birthday =~ /^(\d+)\-(\d+)\-(\d+)$/ )
+        my $birthday = $c->user->{details}->{birthday};
+        if (    $birthday
+            and $birthday
+            and $birthday =~ /^(\d+)\-(\d+)\-(\d+)$/ )
         {
             $c->stash(
                 {
@@ -77,7 +75,7 @@ sub edit : Local {
                 }
             );
         }
-        $c->stash->{user_details} = $rs;
+        $c->stash->{user_details} = $c->user->{details};
         return;
     }
 
@@ -141,7 +139,7 @@ sub edit : Local {
     );
     
     # clear user cache too
-    $c->model('User')->delete_cache_by_user_cond($c, { user_id => $c->user->user_id } );
+    $c->model('User')->delete_cache_by_user($c, $c->user );
 
     $c->res->redirect( '/u/' . $c->user->username );
 }
@@ -197,7 +195,7 @@ sub forget_password : Local {
     my $username = $c->req->param('username');
     my $email    = $c->req->param('email');
 
-    my $user = $c->model('DBIC::User')->find( { username => $username } );
+    my $user = $c->model('User')->get($c, { username => $username } );
     return $c->stash->{ERROR_NOT_SUCH_USER} = 1 unless ($user);
     return $c->stash->{ERROR_NOT_MATCH} = 1 if ( $user->email ne $email );
 
