@@ -40,6 +40,18 @@ UNLOCK TABLES;
 /*!40000 ALTER TABLE `board` ENABLE KEYS */;
 
 --
+-- Table structure for table `banned_ip`
+--
+
+DROP TABLE IF EXISTS `banned_ip`;
+CREATE TABLE banned_ip (
+  ip_id int(11)    auto_increment,
+  cidr_ip varchar(20)  DEFAULT ''  ,
+  time int(11)    ,
+  PRIMARY KEY (ip_id)
+);
+
+--
 -- Table structure for table `category`
 --
 

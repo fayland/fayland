@@ -6,3 +6,5 @@ remove_db_old_data:
   log_path: 30
   # log_error: default as 30days
   log_error: 30
+  # banned_ip: default as 604800 = 7days = 7 *24 * 60 * 60
+  banned_ip: 604800

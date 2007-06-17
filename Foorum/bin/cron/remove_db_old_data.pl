@@ -55,11 +55,18 @@ my $log_error_status = $schema->resultset('LogError')->search( {
     time => \"< DATE_SUB(NOW(), INTERVAL $days_ago DAY)",
 } )->delete;
 
+# for table 'banned_ip'
+$days_ago = $cron_config->{remove_db_old_data}->{banned_ip} || 30;
+my $banned_ip_status = $schema->resultset('BannedIP')->search( {
+    time => { '<' , time() - $days_ago },
+} )->delete;
+
 error_log($schema, 'info', <<LOG);
 $0 - status:
     visit - $visit_status
     log_path - $log_path_status
     log_error - $log_error_status
+    banned_ip - $banned_ip_status
 LOG
 
 1;

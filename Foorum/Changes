@@ -2,6 +2,7 @@ This file documents the revision history for Foorum.
 
 0.05  unknown
     - use Net::IP::Match::Regexp to ban IP range from registration (5/6/2007)
+    - an admin tool for ban ip (17/6/2007)
 
 0.04  Sat Jun 3 15:55:55 2007
     - add log_error table and Foorum::Log for both Model and /bin/cron (20/5/2007)
