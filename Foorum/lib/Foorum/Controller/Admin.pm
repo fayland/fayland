@@ -3,28 +3,27 @@ package Foorum::Controller::Admin;
 use strict;
 use warnings;
 use base 'Catalyst::Controller';
-use YAML::Syck;
-use Data::Dumper;
 
 sub auto : Private {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
 
-    unless ($c->user_exists) {
+    unless ( $c->user_exists ) {
         $c->res->redirect('/login');
         return 0;
     }
+
     # we have admin or moderator for 'site' field
     unless ( $c->model('Policy')->is_moderator( $c, 'site' ) ) {
-        $c->forward('/print_error', [ 'ERROR_PERMISSION_DENIED' ]);
+        $c->forward( '/print_error', ['ERROR_PERMISSION_DENIED'] );
         return 0;
-    }    
+    }
 
     return 1;
 }
 
 sub default : Private {
-    my ($self, $c) = @_;
-    
+    my ( $self, $c ) = @_;
+
     $c->stash->{template} = 'admin/index.html';
 }
 

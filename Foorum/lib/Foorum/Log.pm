@@ -6,17 +6,19 @@ use base 'Exporter';
 use vars qw/@EXPORT_OK/;
 @EXPORT_OK = qw/
     error_log
-/;
+    /;
 
 sub error_log {
-    my ($schema, $level, $text) = @_;
-    
+    my ( $schema, $level, $text ) = @_;
+
     return unless ($text);
-    $schema->resultset('LogError')->create( {
-        level => $level || 'debug',
-        text  => $text,
-        time  => \'NOW()',
-    } );
+    $schema->resultset('LogError')->create(
+        {
+            level => $level || 'debug',
+            text => $text,
+            time => \'NOW()',
+        }
+    );
 }
 
 =pod

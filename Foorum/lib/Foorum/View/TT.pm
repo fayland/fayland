@@ -4,6 +4,7 @@ use strict;
 use base 'Catalyst::View::TT';
 use Template::Stash::XS;
 use File::Spec;
+
 #use Template::Constants qw( :debug );
 use NEXT;
 use Email::Obfuscate qw(obfuscate_email_address);
@@ -16,47 +17,44 @@ $lcm = Locale::Country::Multilingual->new();
 my $tmpdir = File::Spec->tmpdir();
 
 __PACKAGE__->config(
+
     #DEBUG        => DEBUG_PARSER | DEBUG_PROVIDER,
-    INCLUDE_PATH => [
-        Foorum->path_to( 'templates' ), 
-    ],
-    COMPILE_DIR => $tmpdir . "/ttcache/$<",
-	COMPILE_EXT => '.ttp1', 
-	STASH       => Template::Stash::XS->new,
+    INCLUDE_PATH => [ Foorum->path_to('templates'), ],
+    COMPILE_DIR  => $tmpdir . "/ttcache/$<",
+    COMPILE_EXT  => '.ttp1',
+    STASH        => Template::Stash::XS->new,
     FILTERS      => {
-        email_obfuscate => sub { obfuscate_email_address(shift) },
-        decodeHTML      => sub { decodeHTML(shift) },
+        email_obfuscate => sub               { obfuscate_email_address(shift) },
+        decodeHTML      => sub               { decodeHTML(shift) },
         code2country    => [ \&code2country, 1 ],
     }
 );
 
 sub code2country {
-    my ($context, $lang) = @_;
+    my ( $context, $lang ) = @_;
     $lcm->set_lang($lang);
     return sub {
         my $code = shift;
-        return decode('utf8', $lcm->code2country($code));
-    }
+        return decode( 'utf8', $lcm->code2country($code) );
+        }
 }
 
 sub render {
-    my $self  = shift;
+    my $self = shift;
     my ( $c, $template, $args ) = @_;
-    
-    # view Catalyst::View::TT for more details
-    my $vars = { 
-        (ref $args eq 'HASH' ? %$args : %{ $c->stash() }),
-    };
 
-    if ($vars->{no_wrapper}) {
+    # view Catalyst::View::TT for more details
+    my $vars = { ( ref $args eq 'HASH' ? %$args : %{ $c->stash() } ), };
+
+    if ( $vars->{no_wrapper} ) {
         $self->template->service->{WRAPPER} = [];
-    } else {
+    }
+    else {
         $self->template->service->{WRAPPER} = ['wrapper.html'];
     }
 
     $self->NEXT::render(@_);
 }
-
 
 =pod
 

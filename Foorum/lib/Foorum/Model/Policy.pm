@@ -7,7 +7,7 @@ use Data::Dumper;
 
 sub fill_user_role {
     my ( $self, $c, $field ) = @_;
-    
+
     my $user_id = $c->user->user_id;
     my $mem_key = "policy|user_role|user_id=$user_id";
     my $mem_val = $c->cache->get($mem_key);
@@ -15,60 +15,62 @@ sub fill_user_role {
         $c->stash->{roles} = $mem_val;
         return $mem_val;
     }
-    
-    my @field = ('site'); # 'site' means site-cross Administrator
-    push @field, $field if ($field and $field ne 'site');
-    my @roles = $c->model('DBIC')->resultset('UserRole')->search( {
-        user_id => $c->user->user_id,
-        field   => \@field,
-    } )->all;
-    
+
+    my @field = ('site');    # 'site' means site-cross Administrator
+    push @field, $field if ( $field and $field ne 'site' );
+    my @roles = $c->model('DBIC')->resultset('UserRole')->search(
+        {
+            user_id => $c->user->user_id,
+            field   => \@field,
+        }
+    )->all;
+
     my $roles;
     foreach (@roles) {
-        $roles->{$_->field}->{$_->role} = 1;
+        $roles->{ $_->field }->{ $_->role } = 1;
     }
-    
-    if ($roles->{$field}->{user}) {
+
+    if ( $roles->{$field}->{user} ) {
         $roles->{is_member} = 1;
     }
-    
-    if ($roles->{site}->{moderator} || $roles->{$field}->{moderator}) {
-        $roles->{is_member} = 1;
+
+    if ( $roles->{site}->{moderator} || $roles->{$field}->{moderator} ) {
+        $roles->{is_member}    = 1;
         $roles->{is_moderator} = 1;
     }
-    
-    if ($roles->{site}->{admin} || $roles->{$field}->{admin}) {
-        $roles->{is_member} = 1;
+
+    if ( $roles->{site}->{admin} || $roles->{$field}->{admin} ) {
+        $roles->{is_member}    = 1;
         $roles->{is_moderator} = 1;
-        $roles->{is_admin} = 1;
+        $roles->{is_admin}     = 1;
     }
-    
-    if ($roles->{$field}->{blocked}) {
-        $roles->{is_member} = 0;
+
+    if ( $roles->{$field}->{blocked} ) {
+        $roles->{is_member}  = 0;
         $roles->{is_blocked} = 1;
     }
 
-    if ($roles->{$field}->{pending}) {
-        $roles->{is_member} = 0;
+    if ( $roles->{$field}->{pending} ) {
+        $roles->{is_member}  = 0;
         $roles->{is_pending} = 1;
     }
-    
-    if ($roles->{$field}->{rejected}) {
-        $roles->{is_member} = 0;
+
+    if ( $roles->{$field}->{rejected} ) {
+        $roles->{is_member}   = 0;
         $roles->{is_rejected} = 1;
     }
-    
-    $c->cache->set($mem_key, $roles, );
-    
+
+    $c->cache->set( $mem_key, $roles, );
+
     $c->stash->{roles} = $roles;
 }
 
 sub is_admin {
     my ( $self, $c, $field ) = @_;
-    
+
     $field = 'site' unless ($field);
-    &fill_user_role( $self, $c, $field ) unless ($c->stash->{roles});
-    
+    &fill_user_role( $self, $c, $field ) unless ( $c->stash->{roles} );
+
     return $c->stash->{roles}->{is_admin};
 }
 
@@ -76,147 +78,157 @@ sub is_moderator {
     my ( $self, $c, $field ) = @_;
 
     $field = 'site' unless ($field);
-    &fill_user_role( $self, $c, $field ) unless ($c->stash->{roles});
-    
+    &fill_user_role( $self, $c, $field ) unless ( $c->stash->{roles} );
+
     return $c->stash->{roles}->{is_moderator};
 }
 
 sub is_user {
     my ( $self, $c, $field ) = @_;
-    
+
     $field = 'site' unless ($field);
-    &fill_user_role( $self, $c, $field ) unless ($c->stash->{roles});
-    
+    &fill_user_role( $self, $c, $field ) unless ( $c->stash->{roles} );
+
     return $c->stash->{roles}->{is_member};
 }
 
 sub is_pending {
-    my ($self, $c, $field) = @_;
+    my ( $self, $c, $field ) = @_;
 
     return 0 unless ($field);
-    &fill_user_role($self, $c, $field) unless ($c->stash->{roles});
+    &fill_user_role( $self, $c, $field ) unless ( $c->stash->{roles} );
 
     return $c->stash->{roles}->{is_pending};
 }
 
 sub is_rejected {
-    my ($self, $c, $field) = @_;
+    my ( $self, $c, $field ) = @_;
 
     return 0 unless ($field);
-    &fill_user_role($self, $c, $field) unless ($c->stash->{roles});
+    &fill_user_role( $self, $c, $field ) unless ( $c->stash->{roles} );
 
     return $c->stash->{roles}->{is_rejected};
 }
 
 sub is_blocked {
-    my ($self, $c, $field ) = @_;
-    
+    my ( $self, $c, $field ) = @_;
+
     $field = 'site' unless ($field);
-    &fill_user_role( @_ ) unless ($c->stash->{roles});
-    
+    &fill_user_role(@_) unless ( $c->stash->{roles} );
+
     return $c->stash->{roles}->{is_blocked};
 }
 
 sub get_forum_moderators {
     my ( $self, $c, $forum_id ) = @_;
-    
+
     # for forum_id is an ARRAYREF: [1,2], we don't cache it because
     # when remove_user_role, we don't know how to clear all forum1's keys.
-    
+
     my $mem_key;
-    if ($forum_id =~ /^\d+$/) {
+    if ( $forum_id =~ /^\d+$/ ) {
         $mem_key = "policy|user_role|forum_id=$forum_id";
         my $mem_val = $c->cache->get($mem_key);
         return $mem_val if ($mem_val);
     }
-    
-    my @users = $c->model('DBIC')->resultset('UserRole')->search( {
-        role  => ['admin', 'moderator'],
-        field => $forum_id,
-    } )->all;
+
+    my @users = $c->model('DBIC')->resultset('UserRole')->search(
+        {
+            role  => [ 'admin', 'moderator' ],
+            field => $forum_id,
+        }
+    )->all;
 
     my $roles;
     foreach (@users) {
-        my $user = $c->model('DBIC')->resultset('User')->find( {
-            user_id => $_->user_id,
-        }, {
-            columns => ['username', 'nickname'],
-            cache => 1,
-        } );
+        my $user = $c->model('DBIC')->resultset('User')->find(
+            { user_id => $_->user_id, },
+            {
+                columns => [ 'username', 'nickname' ],
+                cache   => 1,
+            }
+        );
         next unless ($user);
-        $user = $user->{_column_data}; # for cache
-        if ($_->role eq 'admin') {
-            $roles->{$_->field}->{'admin'} = $user;
-        } elsif ($_->role eq 'moderator') {
-            push @{$roles->{$_->field}->{'moderator'}}, $user;
+        $user = $user->{_column_data};    # for cache
+        if ( $_->role eq 'admin' ) {
+            $roles->{ $_->field }->{'admin'} = $user;
+        }
+        elsif ( $_->role eq 'moderator' ) {
+            push @{ $roles->{ $_->field }->{'moderator'} }, $user;
         }
     }
-    
-    $c->cache->set($mem_key, $roles) if ($mem_key);
-    
+
+    $c->cache->set( $mem_key, $roles ) if ($mem_key);
+
     return $roles;
 }
 
 sub get_forum_admin {
-    my ($self, $c, $forum_id) = @_;
-    
+    my ( $self, $c, $forum_id ) = @_;
+
     # get admin
-    my $rs = $c->model('DBIC::UserRole')->find( {
-        field => $forum_id,
-        role  => 'admin',
-    } );
+    my $rs = $c->model('DBIC::UserRole')->find(
+        {
+            field => $forum_id,
+            role  => 'admin',
+        }
+    );
     return unless ($rs);
     my $user = $c->model('DBIC::User')->find( { user_id => $rs->user_id } );
     return $user;
 }
 
 sub create_user_role {
-    my ($self, $c, $info) = @_;
-    
-    $c->model('DBIC::UserRole')->create( {
-        user_id => $info->{user_id},
-        field   => $info->{field},
-        role    => $info->{role},
-    } );
+    my ( $self, $c, $info ) = @_;
 
-    clear_cached_policy($self, $c, $info);
+    $c->model('DBIC::UserRole')->create(
+        {
+            user_id => $info->{user_id},
+            field   => $info->{field},
+            role    => $info->{role},
+        }
+    );
+
+    clear_cached_policy( $self, $c, $info );
 }
 
 sub remove_user_role {
-    my ($self, $c, $info) = @_;
-    
+    my ( $self, $c, $info ) = @_;
+
     my @wheres;
-    push @wheres, ( user_id => $info->{user_id} ) if ($info->{user_id});
-    push @wheres, ( field => $info->{field} ) if ($info->{field});
-    push @wheres, ( role => $info->{role} ) if ($info->{role});
+    push @wheres, ( user_id => $info->{user_id} ) if ( $info->{user_id} );
+    push @wheres, ( field   => $info->{field} )   if ( $info->{field} );
+    push @wheres, ( role    => $info->{role} )    if ( $info->{role} );
 
-    return unless (scalar @wheres);
+    return unless ( scalar @wheres );
 
-    $c->model('DBIC::UserRole')->search( {
-        @wheres,
-    } )->delete;
+    $c->model('DBIC::UserRole')->search( { @wheres, } )->delete;
 
-    clear_cached_policy($self, $c, $info);
+    clear_cached_policy( $self, $c, $info );
 }
 
 sub clear_cached_policy {
-    my ($self, $c, $info) = @_;
-    
-    if ($info->{user_id}) {
+    my ( $self, $c, $info ) = @_;
+
+    if ( $info->{user_id} ) {
         $c->cache->delete("policy|user_role|user_id=$info->{user_id}");
     }
-    
+
     # field_id != 'site'
-    if (  $info->{field} =~ /^\d+$/ and 
-         (not $info->{role} or $info->{role} eq 'admin' or $info->{role} eq 'moderator')
-       ) {
+    if (
+        $info->{field} =~ /^\d+$/
+        and (  not $info->{role}
+            or $info->{role} eq 'admin'
+            or $info->{role} eq 'moderator' )
+        )
+    {
         $info->{forum_id} = $info->{field};
     }
-    
-    if ($info->{forum_id}) {
+
+    if ( $info->{forum_id} ) {
         $c->cache->delete("policy|user_role|forum_id=$info->{forum_id}");
     }
-    
+
 }
 
 =pod

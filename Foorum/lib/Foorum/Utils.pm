@@ -9,7 +9,7 @@ use vars qw/@EXPORT_OK/;
     is_color
     generate_random_word
     get_page_from_url
-/;
+    /;
 
 =pod
 
@@ -22,7 +22,7 @@ encodeHTML is the same as TT filter 'html'
 =cut
 
 sub encodeHTML {
-	my $text = shift;
+    my $text = shift;
     for ($text) {
         s/&/&amp;/g;
         s/</&lt;/g;
@@ -52,12 +52,13 @@ make sure color is ^\#[0-9a-zA-Z]{6}$
 =cut
 
 sub is_color {
-	my $color = shift;
-	if ($color =~ /^\#[0-9a-zA-Z]{6}$/) {
-		return 1;
-	} else {
-		return 0;
-	}
+    my $color = shift;
+    if ( $color =~ /^\#[0-9a-zA-Z]{6}$/ ) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
 }
 
 =pod
@@ -72,15 +73,15 @@ return a random word (length is $len), char is random ('A' .. 'Z', 'a' .. 'z', 0
 
 sub generate_random_word {
     my $len = shift;
-    my @random_words = ('A' .. 'Z', 'a' .. 'z', 0 .. 9);
+    my @random_words = ( 'A' .. 'Z', 'a' .. 'z', 0 .. 9 );
     my $random_word;
-    
+
     $len = 10 unless ($len);
-    
-    foreach (1 .. $len) {
-        $random_word .= $random_words[int(rand(scalar @random_words))];
+
+    foreach ( 1 .. $len ) {
+        $random_word .= $random_words[ int( rand( scalar @random_words ) ) ];
     }
-    
+
     return $random_word;
 }
 
@@ -94,9 +95,9 @@ since we always use /page=(\d+)/ as in sub/pager.html
 
 sub get_page_from_url {
     my ($url) = @_;
-    
+
     my $page = 1;
-    if ($url and $url =~ /\/page=(\d+)(\/|$)/) {
+    if ( $url and $url =~ /\/page=(\d+)(\/|$)/ ) {
         $page = $1;
     }
     return $page;

@@ -10,36 +10,38 @@ __PACKAGE__->config->{namespace} = '';
 
 sub begin : Private {
     my ( $self, $c ) = @_;
-    
+
     $c->stash->{start_t0} = [gettimeofday];
 }
 
 sub auto : Private {
-	my ( $self, $c ) = @_;
-	
-	# in case (begin : Private) is overrided
-	$c->stash->{start_t0} = [gettimeofday] unless ($c->stash->{start_t0});
-	
-	# internationalization
-    $c->stash->{lang} = $c->req->cookie('lang')->value if ($c->req->cookie('lang'));
-    $c->stash->{lang} ||= $c->user->lang if ($c->user_exists);
+    my ( $self, $c ) = @_;
+
+    # in case (begin : Private) is overrided
+    $c->stash->{start_t0} = [gettimeofday] unless ( $c->stash->{start_t0} );
+
+    # internationalization
+    $c->stash->{lang} = $c->req->cookie('lang')->value
+        if ( $c->req->cookie('lang') );
+    $c->stash->{lang} ||= $c->user->lang if ( $c->user_exists );
     $c->stash->{lang} ||= $c->config->{default_lang};
-    if (my $lang = $c->req->param('lang')) {
+    if ( my $lang = $c->req->param('lang') ) {
         $lang =~ s/\W+//isg;
-        if (length($lang) == 2) {
+        if ( length($lang) == 2 ) {
             $c->res->cookies->{lang} = { value => $lang };
             $c->stash->{lang} = $lang;
         }
     }
     $c->languages( [ $c->stash->{lang} ] );
 
-	my $path = $c->req->path;
-	# for maintain, but admin can login and do something
-	if ($c->config->{site}->{maintain} and $path !~ /^(admin|login)\//) {
+    my $path = $c->req->path;
+
+    # for maintain, but admin can login and do something
+    if ( $c->config->{site}->{maintain} and $path !~ /^(admin|login)\// ) {
         $c->stash->{template} = 'simple/maintain.html';
         return 0;
-	}
-    
+    }
+
     return 1;
 }
 
@@ -48,39 +50,44 @@ sub default : Private {
 
     # 404
     $c->res->status(404);
-    $c->detach('/print_error', [ 'ERROR_404' ] );
+    $c->detach( '/print_error', ['ERROR_404'] );
 }
 
 sub index : Private {
     my ( $self, $c ) = @_;
-    
-    $c->forward('Foorum::Controller::Forum', 'board');
+
+    $c->forward( 'Foorum::Controller::Forum', 'board' );
 }
 
 sub end : ActionClass('PathLogger') {
     my ( $self, $c ) = @_;
 
-    return if ($c->res->body);
+    return if ( $c->res->body );
 
-    if ($c->res->location) {
+    if ( $c->res->location ) {
+
         # for login using!
-        if ($c->res->location =~ /^\/login/) {
+        if ( $c->res->location =~ /^\/login/ ) {
             my $location = '/login?referer=/' . $c->req->path;
-            $location .= '?' . uri_escape($c->req->uri->query) if ($c->req->uri->query);
+            $location .= '?' . uri_escape( $c->req->uri->query )
+                if ( $c->req->uri->query );
             $c->res->location($location);
         }
         return 1;
     }
 
-    if ($c->stash->{template} =~ /^simple\//) {
+    if ( $c->stash->{template} =~ /^simple\// ) {
         $c->stash->{simple_wrapper} = 1;
-    } else {
+    }
+    else {
+
         # get whos view this page?
-        if ($c->stash->{whos_view_this_page}) {
+        if ( $c->stash->{whos_view_this_page} ) {
             my $results = $c->model('Online')->whos_view_this_page($c);
             $c->stash->{whos_view_this_page} = $results;
         }
-        $c->stash->{elapsed_time} = tv_interval( $c->stash->{start_t0}, [gettimeofday] );
+        $c->stash->{elapsed_time} =
+            tv_interval( $c->stash->{start_t0}, [gettimeofday] );
     }
     $c->forward( $c->view('TT') );
 }

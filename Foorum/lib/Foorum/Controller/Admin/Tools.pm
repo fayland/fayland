@@ -7,24 +7,28 @@ use Data::Dumper;
 
 sub flush_cache : Local {
     my ( $self, $c ) = @_;
-    
+
     my $result = $c->cache->flush_all;
-    
-    $c->stash( {
-        template => 'admin/index.html',
-        message  => Dumper(\$result),
-    } );
+
+    $c->stash(
+        {
+            template => 'admin/index.html',
+            message  => Dumper( \$result ),
+        }
+    );
 }
 
 sub cache_stat : Local {
-    my ($self, $c) = @_;
-    
+    my ( $self, $c ) = @_;
+
     my $result = $c->cache->stats;
-    
-    $c->stash( {
-        template => 'admin/index.html',
-        message  => Dumper(\$result),
-    } );
+
+    $c->stash(
+        {
+            template => 'admin/index.html',
+            message  => Dumper( \$result ),
+        }
+    );
 }
 
 =pod
