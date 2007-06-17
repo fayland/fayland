@@ -46,6 +46,11 @@ sub login : Global {
                 last_login_ip => $c->req->address,
             } );
             
+            if (length($c->user->lang) == 2) {
+                $c->res->cookies->{lang} = { value => $c->user->lang };
+                $c->stash->{lang} = $c->user->lang;
+            }
+            
             # redirect
             my $referer = $c->req->param('referer') || '/';
             $c->res->redirect($referer);
