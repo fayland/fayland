@@ -6,7 +6,7 @@
 [% USE FillInForm %]
 [% FILTER fillinform fdat => data || c.req.params %]
 <div class='one'>
-<form method='post'>
+<form method='post' onsubmit="return disableForm(this);">
 <table align='center'>
 <tr class='title'><td colspan='2'>Create a Forum</td></tr>
 <tr class='misc1'><td>Forum Code:</td><td><input type='text' name='forum_code' />

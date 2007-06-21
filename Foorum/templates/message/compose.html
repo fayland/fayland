@@ -4,7 +4,7 @@
 
 [% FILTER fillinform fdat => c.req.params %]
 <div class='one'> 
-<form method='post'>
+<form method='post' onsubmit="return disableForm(this);">
 <table align='center'>
 <tr><td class="title" colspan='2'><b>[% c.loc('Compose New Message') %]</b></td></tr>
 <tr class='misc1'>

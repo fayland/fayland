@@ -88,7 +88,7 @@
 [% IF c.user_exists AND NOT topic.closed %]
 <br />
 <div class='one'>
-<form method='post' action='[% url_prefix %]/reply' enctype="multipart/form-data">
+<form method='post' action='[% url_prefix %]/reply' enctype="multipart/form-data" onsubmit="return disableForm(this);">
 <table align='center'>
     <tr class='title'><td colspan='2'>[% c.loc('Reply') %]</td></tr>
     <tr class='misc1'><td align='right'>[% c.loc('Title') %]</td><td><input type='text' name='title' size='64' maxlength='80' /></td></tr>

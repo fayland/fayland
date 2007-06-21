@@ -3,7 +3,7 @@
 <div id='register' class='one'>
 <table align='center'>
 	<tbody>
-	<form method='post'>
+	<form method='post' onsubmit="return disableForm(this);">
 	<tr class='title'><td colspan='2'>Import Contacts</td></tr>
 	<tr class='misc1'><td width='20%' align='right'>Email</td><td><input type='text' name='email' size='24' value='[% email %]' /></td></tr>
 	<tr class='misc2'><td align='right'>Password:</td><td><input type='password' name='password' size='24' /></td></tr>

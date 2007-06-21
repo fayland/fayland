@@ -11,7 +11,7 @@ END; %]
 [% FILTER fillinform fdat => filldata || c.req.params %]
 
 <div class='one'>
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" onsubmit="return disableForm(this);">
 <table align='center' border='1' cellpadding='6'>
   <tr class='title'><td colspan='2'>Eidt a Comment</td></tr>
   <tr class='forum1'><td align='right'>[% c.loc('Title') %]</td><td><input type='text' size='60' maxlength='80' name='title' />

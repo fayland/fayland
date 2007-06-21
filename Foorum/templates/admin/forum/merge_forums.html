@@ -4,7 +4,7 @@
 [% IF message; message; ELSE %]
 
 <div class='one'>
-<form method='get'>
+<form method='get' onsubmit="return disableForm(this);">
 <table align='center'>
 <tr class='title'><td>Merge FOrum</td></tr>
 <tr><td class='misc2' align='center'>

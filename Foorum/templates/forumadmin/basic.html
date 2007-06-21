@@ -14,7 +14,7 @@
 END; %]
 [% FILTER fillinform fdat => data || c.req.params %]
 <div class='one'>
-<form method='post'>
+<form method='post' onsubmit="return disableForm(this);">
 <table align='center'>
   [% IF is_site_admin %]
     <tr class='forum2'><td>Forum Code:</td><td><input type='text' name='forum_code' />
