@@ -9,7 +9,7 @@ use Catalyst qw/
     Static::Simple
     Cache::Memcached
     Authentication
-    Authentication::Store::DBIC
+    Authentication::Store::Hash
     Authentication::Credential::Password
     Session::DynamicExpiry
     Session
