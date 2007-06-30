@@ -73,10 +73,16 @@ sub delete_cache_by_user {
         $user = $user->obj;
     }
     
-    $c->cache->delete('user|' . Object::Signature::signature( { user_id => $user->{user_id} } ));
-    $c->cache->delete('user|' . Object::Signature::signature( { username => $user->{username} } ));
-    $c->cache->delete('user|' . Object::Signature::signature( { email => $user->{email} } ));
+    my @ckeys;
+    push @ckeys, 'user|' . Object::Signature::signature( { user_id => $user->{user_id} } );
+    push @ckeys, 'user|' . Object::Signature::signature( { username => $user->{username} } );
+    push @ckeys, 'user|' . Object::Signature::signature( { email => $user->{email} } );
     
+    foreach my $ckey (@ckeys) {
+        $c->cache->delete($ckey);
+        $c->stash->{"__user_caches|$ckey"} = undef;
+    }
+
     return 1;
 }
 
