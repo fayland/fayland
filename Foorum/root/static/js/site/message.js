@@ -21,6 +21,6 @@ function show_message(request) {
 }
 
 // need load jquery.js
-$(document).ready(function(){
+jQuery(document).ready(function(){
    new_message();
  });
