@@ -6,6 +6,17 @@ use base 'Catalyst::Controller';
 use YAML::Syck;
 use Data::Dumper;
 
+sub auto : Private {
+    my ( $self, $c ) = @_;
+
+    # no cache
+    $c->res->header(
+        'Cache-Control' => 'no-cache, must-revalidate, max-age=0' );
+    $c->res->header( 'Pragma' => 'no-cache' );
+
+    return 1;
+}
+
 =pod
 
 =item new_message
@@ -27,7 +38,9 @@ sub new_message : Local {
 
     if ($count) {
         $c->res->body(
-            "<span style='color:red'>You have new messages ($count)</span>");
+            "<a href='/message'><span style='color:red'>"
+            . $c->localize("You have new messages ([_1])", $count)
+            . "</span></a>");
     }
     else {
         return $c->res->body(' ');
@@ -67,17 +80,6 @@ JAVASCRIPT
 
     $c->res->content_type('text/javascript');
     $c->res->body($output);
-}
-
-sub auto : Private {
-    my ( $self, $c ) = @_;
-
-    # no cache
-    $c->res->header(
-        'Cache-Control' => 'no-cache, must-revalidate, max-age=0' );
-    $c->res->header( 'Pragma' => 'no-cache' );
-
-    return 1;
 }
 
 =pod
