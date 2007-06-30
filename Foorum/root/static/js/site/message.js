@@ -1,3 +1,4 @@
+// need load prototype.js
 function new_message() {
     var url = '/ajax/new_message';
     var pars = '';
@@ -19,5 +20,7 @@ function show_message(request) {
     }
 }
 
-// need load utils.js
-addEvent( window, 'load', new_message );
+// need load jquery.js
+$(document).ready(function(){
+   new_message();
+ });
