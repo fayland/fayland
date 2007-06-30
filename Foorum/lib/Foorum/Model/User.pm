@@ -39,7 +39,8 @@ sub get {
         my $sentry = Object::Destroyer->new( sub {
             $c->log->debug('set user to cache: ' . Dumper(\$cond));
             $c->cache->set($cache_key, $cache_val, 7200); # two hours
-            $c->stash->{"__user_caches|$cache_key"} = $user;
+            $c->stash->{"__user_caches|$cache_key"} = $cache_val;
+            return $cache_val;
         } );
 
         return unless ($user);
