@@ -10,7 +10,6 @@ sub execute {
     my $self = shift;
     my ( $controller, $c ) = @_;
     
-    #$c->log->debug("controller is " . Dumper($controller));
     $self->NEXT::execute( @_ );
     
     my $loadtime = tv_interval( $c->stash->{start_t0}, [gettimeofday] );

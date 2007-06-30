@@ -65,10 +65,12 @@ sub index : Private {
 sub end : ActionClass('PathLogger') {
     my ( $self, $c ) = @_;
 
-    return if ( $c->res->body );
+    # check $c->error;
+    $c->forward( $c->view('TT') ) if ($c->model('Log')->check_c_error($c));
+
+    return 1 if ( $c->res->body );
 
     if ( $c->res->location ) {
-
         # for login using!
         if ( $c->res->location =~ /^\/login/ ) {
             my $location = '/login?referer=/' . $c->req->path;
@@ -93,6 +95,9 @@ sub end : ActionClass('PathLogger') {
             tv_interval( $c->stash->{start_t0}, [gettimeofday] );
     }
     $c->forward( $c->view('TT') );
+    
+    # check TT error.
+    $c->forward( $c->view('TT') ) if ($c->model('Log')->check_c_error($c));
 }
 
 =pod

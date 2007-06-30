@@ -9,15 +9,15 @@ use Foorum::Log qw/error_log/;
 sub log_path {
     my ( $self, $c, $loadtime ) = @_;
 
-    # sometimes we won't logger path because it expand the table so quickly
+    # sometimes we won't logger path because it expandes the table too quickly
     return unless ( $c->config->{logger}->{path} );
     return if ( $c->stash->{donot_log_path} );
 
-# but sometimes we want to know which url is causing more than $PATH_LOAD_TIME_MORE_THAN
+    # but sometimes we want to know which url is causing more than $PATH_LOAD_TIME_MORE_THAN
     return if ( $loadtime < $c->config->{logger}->{path_load_time_more_than} );
 
     my $path = $c->req->path;
-    $path = ($path) ? substr( $path, 0, 255 ) : 'index';    # varchar(255)
+    $path = ($path) ? substr( $path, 0, 255 ) : 'forum';    # varchar(255)
     my $get = $c->req->uri->query;
     $get = substr( $get, 0, 255 ) if ($get);                # varchar(255)
     my $post = $c->req->body_parameters;
@@ -60,8 +60,28 @@ sub log_action {
 sub log_error {
     my ( $self, $c, $level, $error ) = @_;
 
+    $level ||= 'debug';
+
     # thin wrapper for Foorum::Log sub error_log
     error_log( $c->model('DBIC'), $level, $error );
+}
+
+sub check_c_error {
+    my ($self, $c) = @_;
+    
+    my @error = @{ $c->error };
+    return 0 unless (scalar @error);
+    
+    my $error = join("\n", @error);
+
+    error_log( $c->model('DBIC'), 'fatal', $error );
+
+    $c->stash->{simple_wrapper} = 1;
+    $c->stash->{error}    = { msg => $error };
+    $c->stash->{template} = 'simple/error.html';
+    $c->error(0);
+    
+    return 1;
 }
 
 =pod
