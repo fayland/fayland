@@ -62,7 +62,7 @@ sub add_file {
     if ( $filesize > $max_size ) {
         $c->log->debug('EXCEED_MAX_SIZE');
         $c->stash->{upload_error} = 'EXCEED_MAX_SIZE';
-        return;
+        return 0;
     }
     ($filesize) = ( $filesize =~ /^(\d+\.?\d{0,1})/ );    # float(6,1)
 
@@ -71,7 +71,7 @@ sub add_file {
     unless ( grep { $filetype eq $_ } @valid_types ) {
         $c->log->debug("UNSUPPORTED_FILETYPE, $filetype");
         $c->stash->{upload_error} = 'UNSUPPORTED_FILETYPE';
-        return;
+        return 0;
     }
 
     if ( length($filename_no_postfix) > 30 ) {
@@ -115,7 +115,7 @@ sub add_file {
 
     unless ( $upload->link_to($target) || $upload->copy_to($target) ) {
         $c->stash->{upload_error} = 'SYSTEM_ERROR';
-        return;
+        return 0;
     }
 
     return $upload_id;
