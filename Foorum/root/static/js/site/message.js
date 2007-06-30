@@ -20,4 +20,7 @@ function show_message(request) {
     }
 }
 
-Event.observe(window, 'load', function(){ new_message() });
+// need load jquery.js
+$(document).ready(function(){
+   new_message();
+ });
