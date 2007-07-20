@@ -6,7 +6,7 @@ use vars qw/$VERSION/;
 use File::Spec;
 use WWW::Mechanize;
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 sub new {
     my $class = shift;
@@ -25,10 +25,15 @@ sub login {
     
     $self->{_username} = $username;
     $self->{ua}->get('http://www.zorpia.com/login');
+    return 0 unless ($self->{ua}->success);
     
     $self->{ua}->submit_form(
         form_name => 'Login',
-        fields    => { username => $username, password => $password },
+        fields    => {
+            username => $username,
+            password => $password,
+            'goto'   => '/help',
+        },
     );
     return 0 unless ($self->{ua}->success);
     
@@ -57,11 +62,7 @@ sub upload {
     return 0 unless (-e $upload_file);
     
     my $upload_url = 'http://www.zorpia.com/photo/html_form/' . $album_id;
-    
-    if ($upload->{group_code}) {
-        $upload_url .= '/' . $upload->{group_code};
-    }
-    
+    $upload_url .= '/' . $upload->{group_code} if ($upload->{group_code});
     $self->{ua}->get($upload_url);
     return 0 unless ($self->{ua}->success);
     $self->{ua}->submit_form(
@@ -76,6 +77,7 @@ sub upload {
         unlink $upload_file;
     }
     
+    return 0 unless ($self->{ua}->success);
     return 1;
 }
 
