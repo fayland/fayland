@@ -7,6 +7,24 @@ use Data::Dumper;
 use File::Remove qw(remove);
 use File::Path;
 use Foorum::Utils qw/generate_random_word/;
+use Scalar::Util        ();
+
+sub get {
+    my ( $self, $c, $upload_id ) = @_;
+    
+    return unless ($upload_id =~ /^\d+$/);
+    my $cache_key = "upload|upload_id=$upload_id";
+    my $cache_val = $c->cache->get($cache_key);
+    return $cache_val if ($cache_val);
+    
+    my $upload = $c->model('DBIC')->resultset('Upload')->find( { upload_id => $upload_id } );
+    return unless ($upload);
+    
+    $cache_val = $upload->{_column_data};
+    $c->cache->set($cache_key, $cache_val, 7200); # two hours
+    
+    return $cache_val;
+}
 
 sub remove_for_forum {
     my ( $self, $c, $forum_id ) = @_;
@@ -33,8 +51,7 @@ sub remove_for_user {
 sub remove_file_by_upload_id {
     my ( $self, $c, $upload_id ) = @_;
 
-    my $upload = $c->model('DBIC::Upload')->find( { upload_id => $upload_id },
-        { columns => [ 'upload_id', 'filename' ] } );
+    my $upload = get( $self, $c, $upload_id );
     return unless ($upload);
     remove_by_upload( $self, $c, $upload );
     return 1;
@@ -42,14 +59,21 @@ sub remove_file_by_upload_id {
 
 sub remove_by_upload {
     my ( $self, $c, $upload ) = @_;
-    my $directory_1 = int( $upload->upload_id / 3200 / 3200 );
-    my $directory_2 = int( $upload->upload_id / 3200 );
+    
+    if ( Scalar::Util::blessed($upload) ) {
+        $upload = $upload->{_column_data};
+    }
+    
+    my $directory_1 = int( $upload->{upload_id} / 3200 / 3200 );
+    my $directory_2 = int( $upload->{upload_id} / 3200 );
     my $file =
         $c->path_to( 'root', 'upload', $directory_1, $directory_2,
-        $upload->filename )->stringify;
+        $upload->{filename} )->stringify;
     remove($file);
-    $c->model('DBIC::Upload')->search( { upload_id => $upload->upload_id } )
+    $c->model('DBIC::Upload')->search( { upload_id => $upload->{upload_id} } )
         ->delete;
+
+    $c->cache->delete('upload|upload_id=' . $upload->{upload_id});
 }
 
 sub add_file {
@@ -82,7 +106,7 @@ sub add_file {
     my $upload_rs = $c->model('DBIC::Upload')->create(
         {
             user_id  => $c->user->user_id,
-            forum_id => $info->{forum_id},
+            forum_id => $info->{forum_id} || 0,
             filename => $basename,
             filesize => $filesize,
             filetype => $filetype,

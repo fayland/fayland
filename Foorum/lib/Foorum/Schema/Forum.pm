@@ -6,7 +6,7 @@ __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('forum');
 __PACKAGE__->add_columns(
     qw/
-        forum_id forum_code name description forum_type policy total_members total_topics total_replies last_post_id
+        forum_id forum_code name description forum_type policy total_members total_topics total_replies last_post_id status
         /
 );
 __PACKAGE__->set_primary_key('forum_id');

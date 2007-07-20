@@ -58,7 +58,9 @@
        <a href='[% url_prefix %]/[% comment.comment_id %]/edit'><img src='[% c.config.dir.images %]/edit.gif' width='16' height='15' align='absmiddle'> [% c.loc('Edit') %]</a>
        [%# END %]
        [%# IF roles.is_moderator %]
+       [% IF loop.count != 1 %]
        <a href='[% url_prefix %]/[% comment.comment_id %]/delete'><img src='[% c.config.dir.images %]/del.gif' width='16' height='15' align='absmiddle'> [% c.loc('Delete') %]</a>
+       [% END %]
        [% END %]
        <img src='[% c.config.dir.images %]/posttime.gif' width='16' height='15' align='absmiddle'> [% comment.post_on %]
     </td>
@@ -80,6 +82,7 @@
     <a href='[% url_prefix %]/[% IF topic.sticky %]unsticky[% ELSE %]sticky[% END %]'>[% IF topic.sticky %][% c.loc('Unsticky') %][% ELSE %][% c.loc('Sticky') %][% END %]</a> |
     <a href='[% url_prefix %]/[% IF topic.closed %]unlock[% ELSE %]lock[% END %]'>[% IF topic.closed %][% c.loc('Unlock') %][% ELSE %][% c.loc('Lock') %][% END %]</a> |
     <a href='[% url_prefix %]/[% IF topic.elite %]unelite[% ELSE %]elite[% END %]'>[% IF topic.elite %][% c.loc('Unelite') %][% ELSE %][% c.loc('Elite') %][% END %]</a>
+    <a href='[% url_prefix %]/[% IF topic.status == 'banned' %]unban[% ELSE %]ban[% END %]'>[% IF topic.status == 'banned' %][% c.loc('Unban') %][% ELSE %][% c.loc('Ban') %][% END %]</a>
 </td></tr>
 </table>
 </div>

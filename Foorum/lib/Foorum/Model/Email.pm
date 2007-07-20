@@ -17,7 +17,7 @@ sub send_activation {
         $activation_code = $rs->activation_code;
     }
     else {
-        $activation_code = &generate_random_word(10);
+        $activation_code = generate_random_word(10);
         my @extra_insert;
         if ($new_email) {
             @extra_insert = ( 'new_email', $new_email );

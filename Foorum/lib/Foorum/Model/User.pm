@@ -45,21 +45,29 @@ sub get {
 
         return unless ($user);
         
+        # user_details
         my $user_details = $c->model('DBIC')->resultset('UserDetails')->find( { user_id => $user->user_id } );
         $user_details = $user_details->{_column_data} if ($user_details);
         
+        # user role
         my @roles = $c->model('DBIC')->resultset('UserRole')->search( {
             user_id => $user->user_id,
         } )->all;
-
         my $roles;
         foreach (@roles) {
             $roles->{ $_->field }->{ $_->role } = 1;
         }
         
+        # user profile photo
+        my $profile_photo;
+        if ($user->primary_photo_id) {
+            $profile_photo = $c->model('Upload')->get($c, $user->primary_photo_id);
+        }
+        
         $cache_val = $user->{_column_data};
         $cache_val->{details} = $user_details;
         $cache_val->{roles} = $roles;
+        $cache_val->{profile_photo} = $profile_photo;
         return $cache_val;
     }
 }

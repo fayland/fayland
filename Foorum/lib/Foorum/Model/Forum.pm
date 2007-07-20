@@ -8,7 +8,6 @@ use Data::Dumper;
 sub get {
     my ( $self, $c, $forum_code, $attr ) = @_;
 
-    #my $RaiseError = (exists $attr->{RaiseError}) ? $attr->{RaiseError} : 1;
     my $forum_type = $attr->{forum_type} || 'classical';
 
     # if $forum_code is all numberic, that's forum_id
@@ -27,6 +26,7 @@ sub get {
 
     # print error if the forum_id is non-exist
     $c->detach( '/print_error', ['Non-existent forum'] ) unless ($forum);
+    $c->detach( '/print_error', ['Status: Banned'] ) if ($forum->status eq 'banned' and not $c->model('Policy')->is_moderator( $c, $forum->forum_id ));
 
     my $forum_id = $forum->forum_id;
 

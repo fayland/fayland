@@ -11,8 +11,10 @@ sub board : Path {
     my ( $self, $c ) = @_;
 
     my @forums = $c->model('DBIC')->resultset('Forum')->search(
-        { forum_type => 'classical', },
         {
+            forum_type => 'classical',
+            status     => { '!=', 'banned' },
+        }, {
             order_by => 'me.forum_id',
         }
     )->all;
@@ -111,6 +113,7 @@ sub forum_list : Regex('^forum/(\w+)$') {
     my $it = $c->model('DBIC')->resultset('Topic')->search(
         {
             forum_id => $forum_id,
+            'me.status'   => { '!=', 'banned' },
             @extra_cols,
         },
         {

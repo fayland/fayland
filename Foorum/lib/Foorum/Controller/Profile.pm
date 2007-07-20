@@ -231,6 +231,17 @@ sub change_email : Local {
     $c->stash->{template} = 'user/profile/change_email.html';
 
     return unless ( $c->req->method eq 'POST' );
+    
+    # check the password typed in is correct
+    my $password = $c->req->param('password');
+    my $d        = Digest->new(
+        $c->config->{authentication}->{dbic}->{password_hash_type} );
+    $d->add($password);
+    my $computed = $d->digest;
+    if ( $computed ne $c->user->obj->{password} ) {
+        $c->set_invalid_form( password => 'WRONG_PASSWORD' );
+        return;
+    }
 
     # validation
     my $email = $c->req->param('email');
@@ -293,6 +304,42 @@ sub change_username : Local {
     $c->session->{__user} = $new_username;
 
     $c->res->redirect("/u/$new_username");
+}
+
+sub profile_photo : Local {
+    my ($self, $c) = @_;
+    
+    return $c->res->redirect('/login') unless ( $c->user_exists );
+
+    $c->stash->{template} = 'user/profile/profile_photo.html';
+
+    return unless ( $c->req->method eq 'POST' );
+    
+    my $new_upload = $c->req->upload('upload');
+    my $old_upload_id = $c->user->obj->{profile_photo} ? $c->user->obj->{profile_photo}->{upload_id} : 0;
+    my $new_upload_id = 0;
+    if ( ( $c->req->param('attachment_action') eq 'delete' ) or $new_upload ) {
+
+        # delete old upload
+        if ($old_upload_id) {
+            $c->model('Upload')->remove_by_upload( $c, $c->user->obj->{profile_photo} );
+            $new_upload_id = 0;
+        }
+
+        # add new upload
+        if ($new_upload) {
+            $new_upload_id =
+                $c->model('Upload')
+                ->add_file( $c, $new_upload );
+            unless ($new_upload_id) {
+                return $c->set_invalid_form(
+                    upload => $c->stash->{upload_error} );
+            }
+        }
+    }
+    
+    $c->model('User')->update($c, $c->user, { primary_photo_id => $new_upload_id } );
+    $c->res->redirect('/u/' . $c->user->obj->{username});
 }
 
 =pod

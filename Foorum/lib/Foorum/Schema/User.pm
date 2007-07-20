@@ -9,7 +9,7 @@ __PACKAGE__->add_columns(
         user_id username password nickname gender email
         register_on register_ip last_login_on last_login_ip login_times
         status threads replies last_post_id lang
-        country state_id city_id
+        country state_id city_id primary_photo_id
         /
 );
 __PACKAGE__->set_primary_key('user_id');

@@ -21,6 +21,7 @@ sub get {
 
     # print error if the topic is non-exist
     $c->detach( '/print_error', ['Non-existent topic'] ) unless ($topic);
+    $c->detach( '/print_error', ['Status: Banned'] ) if ($topic->status eq 'banned' and not $c->model('Policy')->is_moderator( $c, $forum_id ));
 
     $c->stash->{topic} = $topic;
 

@@ -167,6 +167,7 @@ CREATE TABLE `forum` (
   `total_topics` int(11) NOT NULL default '0',
   `total_replies` int(11) NOT NULL default '0',
   `last_post_id` int(11) default NULL,
+  status enum('healthy','banned','deleted')  DEFAULT 'healthy'  ,
   PRIMARY KEY  (`forum_id`)
 );
 
@@ -506,6 +507,7 @@ CREATE TABLE `topic` (
   `last_update_date` datetime NOT NULL,
   `author_id` int(11) NOT NULL,
   `total_replies` int(11) NOT NULL default '0',
+  status enum('healthy','banned','deleted')  DEFAULT 'healthy'  ,
   PRIMARY KEY  (`topic_id`)
 );
 
@@ -571,6 +573,7 @@ CREATE TABLE `user` (
   `country` char(2) default NULL,
   `state_id` int(11) default NULL,
   `city_id` int(11) default NULL,
+  `primary_photo` varchar(64) default NULL,
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)

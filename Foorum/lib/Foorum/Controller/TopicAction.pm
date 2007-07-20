@@ -17,15 +17,7 @@ sub lock_or_sticky_or_elite :
     my $is_un    = $c->req->snippets->[2];
     my $action   = $c->req->snippets->[3];
 
-    my $topic = $c->model('DBIC')->resultset('Topic')->single(
-        {
-            topic_id => $topic_id,
-            forum_id => $forum_id,
-        },
-        { columns => [ 'author_id', 'title' ], }
-    );
-
-    $c->detach( '/print_error', ['Non-existent topic'] ) unless ($topic);
+    my $topic = $c->model('Topic')->get( $c, $forum_id, $topic_id );
 
     # check policy
     unless ( $c->model('Policy')->is_moderator( $c, $forum_id )
@@ -71,6 +63,45 @@ sub lock_or_sticky_or_elite :
         $c->model('ClearCachedPage')->clear_when_topic_elite( $c, $forum );
     }
 
+    $c->forward(
+        '/print_message',
+        [
+            {
+                msg => 'OK',
+                url => $forum->{forum_url},
+            }
+        ]
+    );
+}
+
+sub ban_or_unban_topic :
+    Regex('^forum/(\w+)/(\d+)/(un)?ban$') {
+    my ( $self, $c ) = @_;
+
+    my $forum_code = $c->req->snippets->[0];
+    my $forum      = $c->model('Forum')->get( $c, $forum_code );
+    my $forum_id   = $forum->forum_id;
+    $forum_code = $forum->forum_code;
+    my $topic_id = $c->req->snippets->[1];
+    my $is_un    = $c->req->snippets->[2];
+
+    my $topic = $c->model('DBIC')->resultset('Topic')->find( {
+        forum_id => $forum_id,
+        topic_id => $topic_id,
+    } );
+    $c->detach( '/print_error', ['Non-existent topic'] ) unless ($topic);
+    
+    # check policy
+    unless ( $c->model('Policy')->is_moderator( $c, $forum_id ) ) {
+        $c->detach( '/print_error', ['ERROR_PERMISSION_DENIED'] );
+    }
+    
+    if ($is_un) {
+        $topic->update( { status => 'healthy' } );
+    } else {
+        $topic->update( { status => 'banned' } );
+    }
+    
     $c->forward(
         '/print_message',
         [

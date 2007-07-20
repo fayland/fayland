@@ -5,6 +5,7 @@ This file documents the revision history for Foorum.
     - an admin tool for ban ip (17/6/2007)
     - perltidy -b -ci=4 *.pm (17/6/2007)
     - User cache (17/6/2007)
+    - change email add 'password' check
 
 0.04  Sat Jun 3 15:55:55 2007
     - add log_error table and Foorum::Log for both Model and /bin/cron (20/5/2007)

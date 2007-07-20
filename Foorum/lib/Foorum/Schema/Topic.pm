@@ -6,7 +6,7 @@ __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('topic');
 __PACKAGE__->add_columns(
     qw/
-        topic_id forum_id title closed sticky elite author_id hit last_updator_id last_update_date total_replies
+        topic_id forum_id title closed sticky elite author_id hit last_updator_id last_update_date total_replies status
         /
 );
 __PACKAGE__->set_primary_key('topic_id');
