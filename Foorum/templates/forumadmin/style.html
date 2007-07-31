@@ -17,13 +17,13 @@
 <script src='[% c.config.dir.js %]/utils/OnDemandJS.js'></script>
 <script>
 	function CHANGEC(obj) {
-		$(obj).style.background = $(obj).value;
+		$('#' + obj).css( { background : $('#' + obj).val() } );
 	}
 	function show_color(color) {
-		$('showcolor').value = color;
+		$('#showcolor').val(color);
 	}
 	function LoadStyle() {
-	    var stylename = $('style_template').value;
+	    var stylename = $('#style_template').val();
 	    OnDemandJS('stylesetting', '/ajax/loadstyle?style=' + stylename);
 	}
 </script>

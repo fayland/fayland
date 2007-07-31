@@ -3,48 +3,39 @@
 <script>
 
 function validate_username () {
-    var username = $('username').value;
+    var username = $('#username').val();
     if (username.length < 6 || username.length > 20) {
-        $('error_username').style.color = 'red';
-        $('error_username').innerHTML = 'username should be 6-20 chars.';
+        $('#error_username').css( { color: 'red' } );
+        $('#error_username').html('username should be 6-20 chars.');
         return false;
     }
     
-    var url = '/ajax/validate_username';
-    var pars = 'username=' + username;
-
-    var myAjax = new Ajax.Request( url, {
-	    method: 'get',
-	    parameters: pars,
-	    onSuccess: function (request) {
-	        response  = request.responseText;
-            if (response == 'OK') {
-                $('error_username').style.color = 'green';
-                $('error_username').innerHTML = 'OK';
-            } else {
-                var error;
-                switch (response) {
-                    case 'HAS_BLANK' :
-                        error = "don't put blank in your username.";
-                        break;
-                    case 'HAS_SPECAIL_CHAR' :
-                        error = "only A-Z, a-z, 0-9, -, _ is allowed.";
-                        break;
-                    case 'HAS_RESERVED' :
-                        error = "this username is reserved.";
-                        break;
-                    case 'DBIC_UNIQUE'  :
-                        error = "This username is used by another one.";
-                        break;
-                    default : 
-                        error = "Unkown";
-                }
-                $('error_username').style.color = 'red';
-                $('error_username').innerHTML = error;
+    $.get('/ajax/validate_username', { 'username': username }, function(data) {
+        if (data == 'OK') {
+            $('#error_username').css( { color: 'green' } );
+            $('#error_username').html('OK');
+        } else {
+            var error;
+            switch (data) {
+                case 'HAS_BLANK' :
+                    error = "don't put blank in your username.";
+                    break;
+                case 'HAS_SPECAIL_CHAR' :
+                    error = "only A-Z, a-z, 0-9, -, _ is allowed.";
+                    break;
+                case 'HAS_RESERVED' :
+                    error = "this username is reserved.";
+                    break;
+                case 'DBIC_UNIQUE'  :
+                    error = "This username is used by another one.";
+                    break;
+                default : 
+                    error = "Unkown";
             }
-	    },
-	    onFailure: function () { alert('ERROR') }
-	} );
+            $('#error_username').css( { color: 'red' } );
+            $('#error_username').html(error);
+        }
+    } );
 }
 
 </script>

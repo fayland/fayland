@@ -50,19 +50,15 @@
 <br />
 [% INCLUDE comment/post.html %]
 [% IF can_vote %]
+<script type="text/javascript" src="[% c.config.dir.js %]/jquery/form.js"></script>
 <script>
 
 function HAVEAVOTE() {
-    var url  = '/ajax/poll/vote';
-    var pars = Form.serialize("vote");
-    Form.disable("vote");
-
-	var myAjax = new Ajax.Request( url, {
-	    method: 'get',
-	    parameters: pars,
-	    onSuccess: function (request) { alert(request.responseText) },
-	    onFailure: function () { alert('SERVER ERROR 500')    }
-	} );
+    $('#vote').ajaxSubmit( {
+        url : '/ajax/poll/vote',
+        type: 'get',
+        success: function(responseText) { alert(responseText); }
+    } );
 }
 
 </script>

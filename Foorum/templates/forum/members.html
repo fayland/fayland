@@ -49,22 +49,17 @@
 <script>
 
 function ChangeView() {
-    var member_type = $('member_type').value;
+    var member_type = $('#member_type').val();
     if (member_type == 'user') { member_type = ''; }
     window.location = '[% forum.forum_url %]/members/' + member_type;
 }
 
 [% IF roles.is_moderator %]
 function ChangeMemberType(user_id, from) {
-    var m_type = $('div_r_'+user_id).value;
+    var m_type = $('#div_r_'+user_id).val();
     
-    var url  = '/forumadmin/[% forum.forum_id %]/change_membership';
-    var pars = 'user_id=' + user_id + '&from=' + from + '&to=' + m_type;
-    var myAjax = new Ajax.Request( url, {
-        method: 'get',
-        parameters: pars,
-        onSuccess: function(request) { alert(request.responseText); },
-        onFailure: function () { alert('ERROR') }
+    $.get('/forumadmin/[% forum.forum_id %]/change_membership', { 'user_id': user_id, 'from': from, 'to': m_type }, function(data) {
+        alert(data);
     } );
 }
 [% END %]

@@ -1,9 +1,9 @@
 
 <script>
   function AddAnotherRow() {
-      var option_number = $('option_number').value;
+      var option_number = $('#option_number').val();
       var new_option_no = Math.round(option_number) + 1;
-      $('option_number').value = new_option_no;
+      $('#option_number').val(new_option_no);
       var option_html = "Option " + new_option_no + ": <input type='text' name='option" + new_option_no + "' id='option" + new_option_no + "' /><br />";
       new Insertion.Before('extra_options', option_html);
   }

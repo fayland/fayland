@@ -1,13 +1,14 @@
 <script>
 function emot(smilietext) {
+    var input_text = document.getElementByID('text');
 	smilietext=' :'+smilietext+': ';
-	if ($('text').createTextRange && $('text').caretPos) {
-		var caretPos = $('text').caretPos;
+	if (input_text.createTextRange && input_text.caretPos) {
+		var caretPos = input_text.caretPos;
 		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? smilietext + ' ' : smilietext;
-		$('text').focus();
+		input_text.focus();
 	} else {
-		$('text').value += smilietext;
-		$('text').focus();
+		input_text.value += smilietext;
+		input_text.focus();
 	}
 }
 </script>
