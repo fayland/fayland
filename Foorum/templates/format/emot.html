@@ -1,6 +1,6 @@
 <script>
 function emot(smilietext) {
-    var input_text = document.getElementByID('text');
+    var input_text = document.getElementById('text');
 	smilietext=' :'+smilietext+': ';
 	if (input_text.createTextRange && input_text.caretPos) {
 		var caretPos = input_text.caretPos;

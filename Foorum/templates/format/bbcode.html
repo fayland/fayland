@@ -21,7 +21,10 @@ function thelp(swtch) {
     }
 }
 
-function AddText(NewCode) { $('#text').append(NewCode);  }
+function AddText(NewCode) {
+    var input_text = document.getElementById('text');
+    input_text.value += NewCode;
+}
 
 function showcolor(color) {
     if (helpstat) {
