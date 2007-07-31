@@ -1,22 +1,15 @@
-[% USE date %]
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" /> 
-<script type="text/javascript" src="[% c.config.dir.js %]/prototype.js"></script>
 <script type="text/javascript" src="[% c.config.dir.js %]/jquery.js"></script>
-<script type="text/javascript">
-jQuery.noConflict();
-</script>
 <script type="text/javascript" src="[% c.config.dir.js %]/utils.js"></script>
 [% IF c.user_exists %]
     <!-- # disable for test
     <script type="text/javascript" src="[% c.config.dir.js %]/site/message.js"></script>
     -->
     <script type='text/javascript' src="[% c.config.dir.js %]/JSAN/JSAN.js"></script>
-    <script type="text/javascript" src="[% c.config.dir.js %]/scriptaculous/scriptaculous.js"></script>
 [% END %]
 <link rel="stylesheet" href="[% c.config.dir.static %]/css/common.css" type="text/css" />
 [% IF forum.forum_id %]
@@ -82,7 +75,7 @@ urchinTracker();
         JSAN.use('Widget.Lightbox');
         JSAN.use("Effect.RoundedCorners");
         var box = new Widget.Lightbox();
-        box.effects('RoundedCorners', 'Appear');
+        box.effects('RoundedCorners');
         box.content("<div class='lightbox'><h3>[% c.loc('My Panel') %]</h3><ul>" + 
             "<li><a href='/message'>[% c.loc('Message') %]</a></li>" + 
             "<li><a href='/my/topics'>[% c.loc('My Recent Topics') %]</a></li>" + 

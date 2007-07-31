@@ -1,5 +1,12 @@
-// need load prototype.js
+$(document).ready(function() {    
+    $.get('/ajax/new_message', function(data) {
+        $('#new_message').html(data);
+    } );
+} );
+
+/*
 function new_message() {
+    
     var url = '/ajax/new_message';
     var pars = '';
 
@@ -8,7 +15,6 @@ function new_message() {
 	    parameters: pars,
 	    onSuccess: show_message
 	} );
-    //var myAjax = new Ajax.Updater('new_message', url, {method: 'get', parameters: pars});
 }
 
 function show_message(request) {
@@ -21,3 +27,4 @@ function show_message(request) {
 }
 
 Event.observe(window, 'load', new_message, false);
+*/
