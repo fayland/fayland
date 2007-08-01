@@ -19,7 +19,7 @@
 
 [% IF message.recipient.user_id == c.user.user_id %]
 <br />
-<form action='/message/compose' method='post' onsubmit="return disableForm(this);">
+<form action='/message/compose' method='post'>
 <input type='hidden' name='to' value='[% message.sender.username %]' />
 <div class='one'>
 <table align='center'>

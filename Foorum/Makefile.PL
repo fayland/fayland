@@ -31,7 +31,6 @@ requires 'Catalyst::Plugin::Session::DynamicExpiry';
 requires 'Catalyst::Plugin::FormValidator::Simple';
 requires 'Catalyst::Plugin::Captcha';
 requires 'Catalyst::Plugin::I18N';
-requires 'Catalyst::Plugin::DBIC::Schema::Profiler';
 requires 'Template::Plugin::FillInForm';
 requires 'Template::Plugin::Date';
 requires 'Template::Plugin::String::Compare';

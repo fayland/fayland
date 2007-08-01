@@ -3,7 +3,7 @@
 [% FILTER fillinform fdat => c.req.params %]
 
 <div class='one'>
-<form method="post" enctype="multipart/form-data" onsubmit="return disableForm(this);">
+<form method="post" enctype="multipart/form-data">
 <table align='center' border='1' cellpadding='6'>
   <tr class='title'><td colspan='2'>Reply a Comment</td></tr>
   [% IF comment %]
