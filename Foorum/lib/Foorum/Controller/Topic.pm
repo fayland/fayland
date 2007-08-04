@@ -162,7 +162,7 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
                 with_author => 1,
                 with_text   => 1
             }
-        );
+        ) if ($comment_id);
         return;
     }
 
