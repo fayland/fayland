@@ -8,7 +8,7 @@ you can run it under mod_perl or fastcgi
 
 for test using, we recommend to use builtin server.pl try:
   
-  perl script/foorum.server.pl -k
+  perl bin/foorum_server.pl -k
 
 =head2 SEE ALSO
 

@@ -8,4 +8,4 @@ Steps:
     * cp foorum.yml foorum_local.yml
     * vi foorum_local.yml and change the 'dsn_pwd' config etc.
     * perl Makefile.PL; make; make test;
-    * run `perl bin/foorum_server.pl` to test
+    * perl bin/foorum_server.pl
