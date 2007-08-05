@@ -18,6 +18,7 @@ use Catalyst qw/
     PageCacheWithI18N
     FormValidator::Simple
     Captcha
+    FoorumUtils
     /;
 
 #	

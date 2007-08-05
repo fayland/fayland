@@ -21,7 +21,7 @@ sub auto : Private {
 
 =item new_message
 
-(Global Site) check if a user get any message
+(Global Site) check if a user get any new message
 
 =cut
 
@@ -70,10 +70,10 @@ sub loadstyle : Local {
     $style = LoadFile($style_file);
 
     foreach ( keys %{$style} ) {
-        my $background = qq~\$('$_').style.background = "$style->{$_}";~
+        my $background = qq~\$('#$_').style.background = "$style->{$_}";~
             if ( $style->{$_} =~ /^\#/ );
         $output .= <<JAVASCRIPT;
-        \$('$_').value = "$style->{$_}";
+        \$('#$_').value = "$style->{$_}";
         $background
 JAVASCRIPT
     }

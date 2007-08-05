@@ -14,7 +14,7 @@
 </tr>
 [% END %]
 
-<script src='[% c.config.dir.js %]/utils/OnDemandJS.js'></script>
+[% c.load_once("utils/OnDemandJS.js") %]
 <script>
 	function CHANGEC(obj) {
 		$('#' + obj).css( { background : $('#' + obj).val() } );

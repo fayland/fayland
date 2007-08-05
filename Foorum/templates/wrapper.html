@@ -4,23 +4,22 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
  
-<script type="text/javascript" src="[% c.config.dir.js %]/jquery.js"></script>
-<script type="text/javascript" src="[% c.config.dir.js %]/utils.js"></script>
+[% c.load_once("jquery.js") %]
+[% c.load_once("utils.js") %]
 [% IF c.user_exists %]
-    <script type="text/javascript" src="[% c.config.dir.js %]/site/message.js"></script>
-    <script type='text/javascript' src="[% c.config.dir.js %]/JSAN/JSAN.js"></script>
+    [% c.load_once("site/message.js") %]
 [% END %]
-<link rel="stylesheet" href="[% c.config.dir.static %]/css/common.css" type="text/css" />
+[% c.load_once("common.css") %]
 [% IF forum.forum_id %]
     [% TRY %]
     [% css_file = c.config.home _ '/root/static/css/custom/forum' _ forum.forum_id _ '.css' %]
     [% USE File( css_file ) %]
-<link rel="stylesheet" href="[% c.config.dir.static %]/css/custom/forum[% forum.forum_id %].css" type="text/css" />
+    [% c.load_once("custom/forum" _ forum.forum_id _ ".css") %]
     [% CATCH File %]
-<link rel="stylesheet" href="[% c.config.dir.static %]/css/default.css" type="text/css" />
+    [% c.load_once("default.css") %]
     [% END %]
 [% ELSE %]
-<link rel="stylesheet" href="[% c.config.dir.static %]/css/default.css" type="text/css" />
+[% c.load_once("default.css") %]
 [% END %]
 <title> 
     [% IF title %]
@@ -62,20 +61,19 @@
 <div id="guser" width="100%" align="right">
 <nowrap>
     [% IF c.user_exists %]
+    [% c.load_once("jquery/blockUI.js") %]
     <script>
-        JSAN.use('Widget.Lightbox');
-        JSAN.use("Effect.RoundedCorners");
-        var box = new Widget.Lightbox();
-        box.effects('RoundedCorners');
-        box.content("<div class='lightbox'><h3>[% c.loc('My Panel') %]</h3><ul>" + 
-            "<li><a href='/message'>[% c.loc('Message') %]</a></li>" + 
-            "<li><a href='/my/topics'>[% c.loc('My Recent Topics') %]</a></li>" + 
-            "<li><a href='/my/starred'><img src='http://mail.google.com/mail/images/star_on_2.gif' /> My Starred Items</a></li>" + 
-            "<li><a href='/profile/edit'>[% c.loc('Edit Profile') %]</a></li>" + 
-            "</ul><div style='text-align:right'><a href='javascript:box.hide()'>[% c.loc('Close') %]</a></div></div>");
+        function my_panel() {
+            $.blockUI("<div class='lightbox'><h3>[% c.loc('My Panel') %]</h3><ul>" + 
+                "<li><a href='/message'>[% c.loc('Message') %]</a></li>" + 
+                "<li><a href='/my/topics'>[% c.loc('My Recent Topics') %]</a></li>" + 
+                "<li><a href='/my/starred'><img src='http://mail.google.com/mail/images/star_on_2.gif' /> My Starred Items</a></li>" + 
+                "<li><a href='/profile/edit'>[% c.loc('Edit Profile') %]</a></li>" + 
+                "</ul><div style='text-align:right'><a href='javascript:$.unblockUI()'>[% c.loc('Close') %]</a></div></div>");
+        }
     </script>
     <span id='new_message'></span> 
-       <a href='javascript:box.show();'>[% c.loc('My Panel') %]</a> 
+       <a href='javascript:my_panel();'>[% c.loc('My Panel') %]</a> 
      | <a href='/logout'>[% c.loc("Log out") %]</a> 
     [% ELSE %]
     <a href='/register'>[% c.loc("Register") %]</a>  | <a href='/login'>[% c.loc("Log in") %]</a> | <a href='/profile/forget_password'>[% c.loc("Forget password?") %]</a>

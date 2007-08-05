@@ -50,7 +50,7 @@
 <br />
 [% INCLUDE comment/post.html %]
 [% IF can_vote %]
-<script type="text/javascript" src="[% c.config.dir.js %]/jquery/form.js"></script>
+[% c.load_once("jquery/form.js") %]
 <script>
 
 function HAVEAVOTE() {

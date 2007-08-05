@@ -16,7 +16,7 @@
 </div>
 
 [% IF c.user_exists %]
-<script type="text/javascript" src="[% c.config.dir.js %]/site/star.js"></script>
+[% c.load_once("site/star.js") %]
 [% END %]
 
 <div class='one'>

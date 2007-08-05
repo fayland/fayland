@@ -12,9 +12,8 @@ $(document.forms).each( function(theform) {
         var x = evt.keyCode;
         var q = evt.ctrlKey;
         
-        if (q && ( x == 13 || x == 10)) {
+        if (q && (x == 13 || x == 10)) {
             theform.submit();
         }
     } );
-    
 } );

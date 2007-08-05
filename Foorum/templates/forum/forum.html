@@ -1,18 +1,7 @@
 [% IF announcement %]
-[% UNLESS c.user_exists %]
-<script type='text/javascript' src="[% c.config.dir.js %]/JSAN/JSAN.js"></script>
-[% END %]
+[% c.load_once("jquery/blockUI.js") %]
 <script>
-    [%# if user_exists, wrapper is already loaded this JSAN %]
-    [% UNLESS c.user_exists %]
-    JSAN.use('Widget.Lightbox');
-    JSAN.use("Effect.RoundedCorners");
-    [% END %]
-    
-    var ann_box = new Widget.Lightbox();
-    ann_box.effects('RoundedCorners');
-    ann_box.content("<div class='lightbox'><h3>[% announcement.title %]</h3>[% announcement.text | replace('"', "'") %]<div style='text-align:right'><a href='javascript:ann_box.hide()'>[% c.loc('Close') %]</a></div></div>");
-    ann_box.show();
+    $.blockUI("<div class='lightbox'><h3>[% announcement.title %]</h3>[% announcement.text | replace('"', "'") %]<div style='text-align:right'><a href='javascript:$.unblockUI()'>[% c.loc('Close') %]</a></div></div>");
 </script>
 [% END %]
 
