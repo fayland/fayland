@@ -24,6 +24,10 @@ sub __serve_static_info {
         $c->path_to( 'templates', $c->stash->{lang} ),
         $c->path_to( 'templates', 'en' )
     ];
+    
+    if ($c->req->param('ajax')) {
+        $c->stash->{simple_wrapper} = 1;
+    }
 
     # help/info templates in under its own templates/$lang/help
     # since too many text needs translation.
