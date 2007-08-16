@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Time::HiRes qw( gettimeofday tv_interval );
 use vars qw/$VERSION/;
-$VERSION = '0.3';
+$VERSION = '0.4';
 
 sub tv_mark_point {
     my ($c, $timername) = @_;
@@ -34,7 +34,9 @@ sub tv_mark_point {
 sub tv_clear_marked_point {
     my ($c) = @_;
     
-    delete $c->stash->{__tv_interval};
+    eval {
+        delete $c->stash->{__tv_interval};
+    };
 }
 
 1; # mummy happy
