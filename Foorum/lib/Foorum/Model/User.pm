@@ -6,7 +6,6 @@ use base 'Catalyst::Model';
 use Data::Dumper;
 use Object::Signature   ();
 use Scalar::Util        ();
-use Object::Destroyer;
 
 # Usage:
 # $c->model('User')->get($c, { user_id => ? } );
@@ -30,46 +29,74 @@ sub get {
         return $cache_val;
     }
     
-    # if not cached yet
-    # get all to cache: user, user_details, role
-    {
-        my $user = $c->model('DBIC')->resultset('User')->find( $cond );
+    $cache_val = get_user_from_db($self, $c, $cond);
+    return unless ($cache_val);
+    
+    $c->log->debug('set user to cache: ' . Dumper(\$cond));
+    $c->cache->set($cache_key, $cache_val, 7200); # two hours
+    $c->stash->{"__user_caches|$cache_key"} = $cache_val;
+}
 
-        # always set cache
-        my $sentry = Object::Destroyer->new( sub {
-            $c->log->debug('set user to cache: ' . Dumper(\$cond));
-            $c->cache->set($cache_key, $cache_val, 7200); # two hours
-            $c->stash->{"__user_caches|$cache_key"} = $cache_val;
-            return $cache_val;
-        } );
-
-        return unless ($user);
-        
-        # user_details
-        my $user_details = $c->model('DBIC')->resultset('UserDetails')->find( { user_id => $user->user_id } );
-        $user_details = $user_details->{_column_data} if ($user_details);
-        
-        # user role
-        my @roles = $c->model('DBIC')->resultset('UserRole')->search( {
-            user_id => $user->user_id,
-        } )->all;
-        my $roles;
-        foreach (@roles) {
-            $roles->{ $_->field }->{ $_->role } = 1;
-        }
-        
-        # user profile photo
-        my $profile_photo;
-        if ($user->primary_photo_id) {
-            $profile_photo = $c->model('Upload')->get($c, $user->primary_photo_id);
-        }
-        
-        $cache_val = $user->{_column_data};
-        $cache_val->{details} = $user_details;
-        $cache_val->{roles} = $roles;
-        $cache_val->{profile_photo} = $profile_photo;
-        return $cache_val;
+# Usage:
+# $c->model('User')->get_multi($c, user_id => [1, 2, 3]  );
+# $c->model('User')->get_multi($c, username => ['fayland', 'testman'] );
+sub get_multi {
+    my ($self, $c, $key, $val) = @_;
+    
+    my @mem_keys; my %val_map_key;
+    foreach (@$val) {
+        my $cache_key = 'user|' . Object::Signature::signature( { $key => $_ } );
+        push @mem_keys, $cache_key;
+        $val_map_key{ $_ } = $cache_key;
     }
+    
+    my $users = $c->cache->get_multi(@mem_keys);
+    
+    my %return_users;
+    foreach my $v (@$val) {
+        if ( exists $users->{ $val_map_key{$v} } ) {
+            $return_users{ $v } = $users->{ $val_map_key{$v} };
+        } else {
+            $return_users{ $v } = get_user_from_db($self, $c, { $key => $v } );
+            next unless ($return_users{ $v });
+            $c->log->debug("set user to cache in multi: $key => $v");
+            $c->cache->set($val_map_key{$v}, $return_users{ $v }, 7200); # two hours
+        }
+    }
+    
+    return \%return_users;
+}
+
+sub get_user_from_db {
+    my ($self, $c, $cond) = @_;
+    
+    my $user = $c->model('DBIC')->resultset('User')->find( $cond );
+    return unless ($user);
+        
+    # user_details
+    my $user_details = $c->model('DBIC')->resultset('UserDetails')->find( { user_id => $user->user_id } );
+    $user_details = $user_details->{_column_data} if ($user_details);
+        
+    # user role
+    my @roles = $c->model('DBIC')->resultset('UserRole')->search( {
+        user_id => $user->user_id,
+    } )->all;
+    my $roles;
+    foreach (@roles) {
+        $roles->{ $_->field }->{ $_->role } = 1;
+    }
+        
+    # user profile photo
+    my $profile_photo;
+    if ($user->primary_photo_id) {
+        $profile_photo = $c->model('Upload')->get($c, $user->primary_photo_id);
+    }
+        
+    $user = $user->{_column_data};
+    $user->{details} = $user_details;
+    $user->{roles} = $roles;
+    $user->{profile_photo} = $profile_photo;
+    return $user;
 }
 
 sub delete_cache_by_user {
