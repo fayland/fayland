@@ -2,11 +2,13 @@
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
-          'NAME' => 'Catalyst::Plugin::DBIC::QueryLog',
-          'VERSION_FROM' => 'lib/Catalyst/Plugin/DBIC/QueryLog.pm',
+          'NAME' => 'Catalyst::Model::DBIC::Schema::QueryLog',
+          'VERSION_FROM' => 'lib/Catalyst/Model/DBIC/Schema/QueryLog.pm',
           'PREREQ_PM' => {
                            'Catalyst' => '0',
+                           'Catalyst::Component::InstancePerContext' => '0',
                            'DBIx::Class::QueryLog' => '0',
+                           'Moose' => '0',
                            'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',

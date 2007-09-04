@@ -1,19 +1,21 @@
 ---
-name: Catalyst-Plugin-DBIC-QueryLog
+name: Catalyst-Model-DBIC-Schema-QueryLog
 version: 0.01
 author:
-  - 'Fayland Lam <fayland@gmail>'
-abstract: Catalyst Plugin for DBIx::Class::QueryLog!
+  - 'Fayland Lam <fayland@gmail.com>'
+abstract: DBIx::Class::QueryLog Model Class
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
 build_requires:
   Catalyst: 0
+  Catalyst::Component::InstancePerContext: 0
   DBIx::Class::QueryLog: 0
+  Moose: 0
   Test::More: 0
 provides:
-  Catalyst::Plugin::DBIC::QueryLog:
-    file: lib/Catalyst/Plugin/DBIC/QueryLog.pm
+  Catalyst::Model::DBIC::Schema::QueryLog:
+    file: lib/Catalyst/Model/DBIC/Schema/QueryLog.pm
     version: 0.01
 generated_by: Module::Build version 0.2808
 meta-spec:
