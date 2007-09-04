@@ -41,7 +41,7 @@ if( __PACKAGE__->config->{debug_mode} ) {
         *{"$class\::debug"} = sub { 1 };
     }
     
-    my @extra_plugins = qw/ StackTrace DBIC::Schema::Profiler /;
+    my @extra_plugins = qw/ StackTrace /; # DBIC::Schema::Profiler 
     __PACKAGE__->setup_plugins( [ @extra_plugins ] );
 }
 

@@ -1,7 +1,14 @@
 package Foorum::Model::DBIC;
 
 use strict;
-use base 'Catalyst::Model::DBIC::Schema';
+BEGIN {
+    if (Foorum->config->{debug_mode}) {
+        eval("use base 'Catalyst::Model::DBIC::Schema::QueryLog';");
+    } else {
+        eval("use base 'Catalyst::Model::DBIC::Schema';");
+    }
+    die $@ if ($@);
+};
 
 __PACKAGE__->config(
     schema_class => 'Foorum::Schema',
