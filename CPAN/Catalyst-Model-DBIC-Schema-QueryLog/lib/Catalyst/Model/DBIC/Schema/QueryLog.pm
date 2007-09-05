@@ -3,7 +3,7 @@ package Catalyst::Model::DBIC::Schema::QueryLog;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use base 'Catalyst::Model::DBIC::Schema';
 __PACKAGE__->mk_accessors('querylog');
@@ -107,7 +107,7 @@ an instance of DBIx::Class::QueryLog::Analyzer.
        <tr class="[% IF loop.count % 2 %]odd[% END %]">
         <th class="sub">[% q.time_elapsed | format('%0.6f') %]
         <td>[% ((q.time_elapsed / total ) * 100 ) | format('%i') %]%</td>
-        <td>[% q.sql %]</td>
+        <td>[% q.sql %] : ([% q.params.join(', ') %])</td>
        </th></tr>
        [% IF i == 5 %]
         [% LAST %]
