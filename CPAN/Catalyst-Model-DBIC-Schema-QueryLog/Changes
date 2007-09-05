@@ -1,5 +1,8 @@
 Revision history for Catalyst-Model-DBIC-Schema-QueryLog
 
+0.02    2007.9.5/10:11:11
+        add "'Sort::Key'  => 0," in build_requires
+
 0.01    Date/time
         First version, released on an unsuspecting world.
 

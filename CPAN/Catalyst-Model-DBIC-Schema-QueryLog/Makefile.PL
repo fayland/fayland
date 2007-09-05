@@ -9,6 +9,7 @@ WriteMakefile
                            'Catalyst::Component::InstancePerContext' => '0',
                            'DBIx::Class::QueryLog' => '0',
                            'Moose' => '0',
+                           'Sort::Key' => '0',
                            'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',

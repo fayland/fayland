@@ -3,7 +3,7 @@ package Catalyst::Model::DBIC::Schema::QueryLog;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use base 'Catalyst::Model::DBIC::Schema';
 __PACKAGE__->mk_accessors('querylog');
