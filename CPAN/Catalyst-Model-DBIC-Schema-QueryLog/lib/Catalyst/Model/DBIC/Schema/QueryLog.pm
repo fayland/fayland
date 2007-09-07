@@ -3,7 +3,7 @@ package Catalyst::Model::DBIC::Schema::QueryLog;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 use base 'Catalyst::Model::DBIC::Schema';
 __PACKAGE__->mk_accessors('querylog');
@@ -71,11 +71,11 @@ Generally, you should check the document of L<Catalyst::Model::DBIC::Schema>. th
 
 =item querylog
 
-an instance of DBIx::Class::QueryLog.
+an instance of L<DBIx::Class::QueryLog>.
 
 =item querylog_analyzer
 
-an instance of DBIx::Class::QueryLog::Analyzer.
+an instance of L<DBIx::Class::QueryLog::Analyzer>.
 
 =back
 

@@ -1,5 +1,8 @@
 Revision history for Catalyst-Model-DBIC-Schema-QueryLog
 
+0.03    2007.9.5/16:25:25
+        better document
+
 0.03    2007.9.5/12:32:32
         improved templates with " : ([% q.params.join(', ') %])"
 
