@@ -14,7 +14,7 @@ sub get {
         if ( $cache_data and ref($cache_data) eq 'ARRAY' );
     $cache_data = [];
 
-    my $rs = $c->model('DBIC')->resultset('BannedIP')->search();
+    my $rs = $c->model('DBIC')->resultset('BannedIp')->search();
     while ( my $rec = $rs->next ) {
         push @{$cache_data}, $rec->cidr_ip;
     }

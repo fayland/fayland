@@ -21,7 +21,7 @@ sub default : Private {
     my ( $self, $c ) = @_;
 
     $c->stash->{template} = 'admin/ban_ip/default.html';
-    my @cidr_ips = $c->model('DBIC')->resultset('BannedIP')->search()->all;
+    my @cidr_ips = $c->model('DBIC')->resultset('BannedIp')->search()->all;
     foreach (@cidr_ips) {
         my $cidr = Net::CIDR::Lite->new;
         $cidr->add( $_->cidr_ip );
@@ -39,7 +39,7 @@ sub remove : Local {
     return $c->res->redirect('/admin/banip') unless ($ip_id);
 
     my $st =
-        $c->model('DBIC')->resultset('BannedIP')->search( { ip_id => $ip_id, } )
+        $c->model('DBIC')->resultset('BannedIp')->search( { ip_id => $ip_id, } )
         ->delete;
 
     my $cache_key = 'global|banned_ip';
@@ -59,7 +59,7 @@ sub add : Local {
     $cidr->add_range("$from_ip - $end_ip");
     my @cidr_list = $cidr->list;
     foreach my $cidr (@cidr_list) {
-        $c->model('DBIC')->resultset('BannedIP')->create(
+        $c->model('DBIC')->resultset('BannedIp')->create(
             {
                 cidr_ip => $cidr,
                 time    => time(),
