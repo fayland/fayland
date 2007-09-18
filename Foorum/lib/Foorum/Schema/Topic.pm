@@ -43,10 +43,13 @@ __PACKAGE__->add_columns(
     size => 7,
   },
 );
-__PACKAGE__->set_primary_key('topic_id');
+__PACKAGE__->set_primary_key("topic_id");
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:var96wqf+3D8YdelJ3cvUQ
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:29:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1xuUo8EEiX+w8ykKx3PW0A
+
+
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
@@ -62,5 +65,4 @@ __PACKAGE__->belongs_to(
     'forum' => 'Foorum::Schema::Forum',
     { 'foreign.forum_id' => 'self.forum_id' }
 );
-
 1;

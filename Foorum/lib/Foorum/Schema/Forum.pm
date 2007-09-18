@@ -58,8 +58,11 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key("forum_id");
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qx0rE6dTKEFZvnumB1ZF1w
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:29:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:uiqsZ4alrN56w75jjc5fOw
+
+
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
@@ -67,5 +70,4 @@ __PACKAGE__->has_many(
     'topics' => 'Foorum::Schema::Topic',
     { 'foreign.forum_id' => 'self.forum_id' }
 );
-
 1;

@@ -15,10 +15,12 @@ __PACKAGE__->add_columns(
   "field",
   { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 32 },
 );
-__PACKAGE__->set_primary_key(qw/user_id role field/);
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:8Lk8TAfLs99rnR0X2TLU2A
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:29:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:7X/xVIQ0xCqabIveLCvjBQ
+
+
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

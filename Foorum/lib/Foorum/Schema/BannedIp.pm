@@ -18,8 +18,10 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("ip_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:or8lZQuBNEKEEAV5P6PCbA
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:29:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6rnHDMQ7EVm0ch6vv3riyQ
+
+
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

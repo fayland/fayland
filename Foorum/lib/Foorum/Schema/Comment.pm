@@ -60,10 +60,13 @@ __PACKAGE__->add_columns(
   "upload_id",
   { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
 );
-__PACKAGE__->set_primary_key('comment_id');
+__PACKAGE__->set_primary_key("comment_id");
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ZTm0hu/dW0Wg9QhHL7hRDg
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:29:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qFaV0MF0ofuqjF1B8YUjBQ
+
+
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
@@ -75,5 +78,4 @@ __PACKAGE__->might_have(
     'upload' => 'Foorum::Schema::Upload',
     { 'foreign.upload_id' => 'self.upload_id' }
 );
-
 1;

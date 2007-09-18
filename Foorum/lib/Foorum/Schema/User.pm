@@ -89,12 +89,13 @@ __PACKAGE__->add_unique_constraint("email", ["email"]);
 __PACKAGE__->add_unique_constraint("username", ["username"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:JkiZ3tdwmlrkp3XmzmWGdA
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:29:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:lyPZCfArWWkOW06+VOTpJA
+
+
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
-
 __PACKAGE__->might_have(
     'details' => 'Foorum::Schema::UserDetails',
     { 'foreign.user_id' => 'self.user_id' }

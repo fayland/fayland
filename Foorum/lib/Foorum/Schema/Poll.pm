@@ -32,10 +32,13 @@ __PACKAGE__->add_columns(
     size => 128,
   },
 );
-__PACKAGE__->set_primary_key('poll_id');
+__PACKAGE__->set_primary_key("poll_id");
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:k3oC/UEeMP1I8wM1ztYosA
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:29:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:uSmM6ST5XVCDF924++5dKg
+
+
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
@@ -51,5 +54,4 @@ __PACKAGE__->has_many(
     'results' => 'Foorum::Schema::PollResult',
     { 'foreign.poll_id' => 'self.poll_id' }
 );
-
 1;

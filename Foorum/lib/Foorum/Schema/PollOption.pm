@@ -22,10 +22,13 @@ __PACKAGE__->add_columns(
   "vote_no",
   { data_type => "INT", default_value => undef, is_nullable => 1, size => 6 },
 );
-__PACKAGE__->set_primary_key('option_id');
+__PACKAGE__->set_primary_key("option_id");
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:J675kcunEeoQj5+sXdS4yg
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:29:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:sC7SO28StbAU/cIZhXnMFg
+
+
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
