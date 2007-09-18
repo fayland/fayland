@@ -1,13 +1,9 @@
 #!/usr/bin/perl
 
-# crontab: 0 0 * * * perl remove_db_old_data.pl
-
 use strict;
 use warnings;
-use Data::Dumper;
 use FindBin qw/$Bin $RealBin/;
 use YAML qw(LoadFile);
-use lib "$Bin/../../lib";
 use Cwd qw/abs_path/;
 
 use DBIx::Class::Schema::Loader qw| make_schema_at |;
@@ -19,7 +15,6 @@ DBIx::Class::Schema::Loader->dump_to_dir($path);
 # and merge as $config
 my $config = LoadFile("$Bin/../../foorum.yml");
 my $extra_config = LoadFile("$Bin/../../foorum_local.yml");
-my $cron_config = LoadFile("$Bin/../../conf/cron.yml");
 $config = { %$config, %$extra_config };
 
 make_schema_at("Foorum::Schema", { debug => 1 }, [ $config->{dsn}, $config->{dsn_user}, $config->{dsn_pwd} ]);
