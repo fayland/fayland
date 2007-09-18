@@ -1,15 +1,55 @@
 package Foorum::Schema::Topic;
 
-use base qw/DBIx::Class/;
+use strict;
+use warnings;
 
-__PACKAGE__->load_components(qw/PK::Auto Core/);
-__PACKAGE__->table('topic');
+use base 'DBIx::Class';
+
+__PACKAGE__->load_components("Core");
+__PACKAGE__->table("topic");
 __PACKAGE__->add_columns(
-    qw/
-        topic_id forum_id title closed sticky elite author_id hit last_updator_id last_update_date total_replies status
-        /
+  "topic_id",
+  { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
+  "forum_id",
+  { data_type => "INT", default_value => undef, is_nullable => 1, size => 4 },
+  "title",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 255,
+  },
+  "closed",
+  { data_type => "ENUM", default_value => 0, is_nullable => 0, size => 1 },
+  "sticky",
+  { data_type => "ENUM", default_value => 0, is_nullable => 0, size => 1 },
+  "elite",
+  { data_type => "ENUM", default_value => "", is_nullable => 0, size => 1 },
+  "hit",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
+  "last_updator_id",
+  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  "last_update_date",
+  { data_type => "DATETIME", default_value => "", is_nullable => 0, size => 19 },
+  "author_id",
+  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
+  "total_replies",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
+  "status",
+  {
+    data_type => "ENUM",
+    default_value => "healthy",
+    is_nullable => 0,
+    size => 7,
+  },
 );
 __PACKAGE__->set_primary_key('topic_id');
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:var96wqf+3D8YdelJ3cvUQ
+
+
+# You can replace this text with custom content, and it will be preserved on regeneration
 __PACKAGE__->might_have(
     'author' => 'Foorum::Schema::User',
     { 'foreign.user_id' => 'self.author_id' }

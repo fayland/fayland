@@ -1,25 +1,102 @@
 package Foorum::Schema::User;
 
-use base qw/DBIx::Class/;
+use strict;
+use warnings;
 
-__PACKAGE__->load_components(qw/PK::Auto Core/);
-__PACKAGE__->table('user');
+use base 'DBIx::Class';
+
+__PACKAGE__->load_components("Core");
+__PACKAGE__->table("user");
 __PACKAGE__->add_columns(
-    qw/
-        user_id username password nickname gender email
-        register_on register_ip last_login_on last_login_ip login_times
-        status threads replies last_post_id lang
-        country state_id city_id primary_photo_id
-        /
+  "user_id",
+  { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
+  "username",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 32,
+  },
+  "password",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 32,
+  },
+  "nickname",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 100,
+  },
+  "gender",
+  { data_type => "ENUM", default_value => undef, is_nullable => 1, size => 1 },
+  "email",
+  { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 255 },
+  "register_on",
+  { data_type => "DATE", default_value => undef, is_nullable => 1, size => 10 },
+  "register_ip",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 32,
+  },
+  "last_login_on",
+  {
+    data_type => "DATETIME",
+    default_value => undef,
+    is_nullable => 1,
+    size => 19,
+  },
+  "last_login_ip",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 32,
+  },
+  "login_times",
+  { data_type => "INT", default_value => 1, is_nullable => 1, size => 11 },
+  "status",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 16,
+  },
+  "threads",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
+  "replies",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
+  "last_post_id",
+  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  "lang",
+  { data_type => "CHAR", default_value => "cn", is_nullable => 1, size => 2 },
+  "country",
+  { data_type => "CHAR", default_value => undef, is_nullable => 1, size => 2 },
+  "state_id",
+  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  "city_id",
+  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  "primary_photo_id",
+  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
 );
-__PACKAGE__->set_primary_key('user_id');
-__PACKAGE__->add_unique_constraint( constraint_name => [qw/username email/], );
+__PACKAGE__->set_primary_key("user_id");
+__PACKAGE__->add_unique_constraint("email", ["email"]);
+__PACKAGE__->add_unique_constraint("username", ["username"]);
+
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:JkiZ3tdwmlrkp3XmzmWGdA
+
+
+# You can replace this text with custom content, and it will be preserved on regeneration
 
 __PACKAGE__->might_have(
     'details' => 'Foorum::Schema::UserDetails',
     { 'foreign.user_id' => 'self.user_id' }
 );
-
-#__PACKAGE__->has_many('roles' => 'Foorum::Schema::UserRole', { 'foreign.user_id' => 'self.user_id' } );
-
 1;

@@ -1,14 +1,23 @@
 package Foorum::Schema::MessageUnread;
 
-use base qw/DBIx::Class/;
+use strict;
+use warnings;
 
-__PACKAGE__->load_components(qw/Core/);
-__PACKAGE__->table('message_unread');
+use base 'DBIx::Class';
+
+__PACKAGE__->load_components("Core");
+__PACKAGE__->table("message_unread");
 __PACKAGE__->add_columns(
-    qw/
-        user_id message_id
-        /
+  "message_id",
+  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  "user_id",
+  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
 );
-__PACKAGE__->set_primary_key(qw/user_id message_id/);
 
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Q9/8Tjqw/Qt8qS9oqryh5g
+
+
+# You can replace this text with custom content, and it will be preserved on regeneration
 1;
