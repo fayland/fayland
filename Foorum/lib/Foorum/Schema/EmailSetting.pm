@@ -18,8 +18,9 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("user_id", "object_type");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:29:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:uF+vPBv6EqTGTctjEj7ihg
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:44:39
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:oNx4YYJFpkEzHy4pGB/ceg
+
 
 
 

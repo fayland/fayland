@@ -63,8 +63,9 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("comment_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:29:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qFaV0MF0ofuqjF1B8YUjBQ
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:44:39
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:kdhEKigfxhw7wz+bk+iI1w
+
 
 
 

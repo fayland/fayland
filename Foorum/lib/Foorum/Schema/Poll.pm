@@ -35,8 +35,9 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("poll_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:29:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:uSmM6ST5XVCDF924++5dKg
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:44:40
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:OXoan1Z5bAw64tGfMK4Ymg
+
 
 
 

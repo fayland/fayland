@@ -32,8 +32,9 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:29:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ZT3PqHIEgl1Hv8WnsmgRxQ
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:44:40
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ZDED8AqananN7xAdOQtrQg
+
 
 
 
