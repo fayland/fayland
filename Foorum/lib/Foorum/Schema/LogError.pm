@@ -25,8 +25,11 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("error_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:48:11
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fm9m9YOJ3RyOz0Khkax1Ig
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:02:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ecfAUgLiYz2klClEvIu52w
+
+
+
 
 
 

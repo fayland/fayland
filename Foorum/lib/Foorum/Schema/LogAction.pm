@@ -45,8 +45,11 @@ __PACKAGE__->add_columns(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:48:11
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4pqw2+GWzLzdz6cpE+hbXA
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:02:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4JO0kn8i+0lPF4RGbtM88g
+
+
+
 
 
 

@@ -89,8 +89,11 @@ __PACKAGE__->add_unique_constraint("email", ["email"]);
 __PACKAGE__->add_unique_constraint("username", ["username"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:48:11
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4BOKkWx/Wvh1BmvCkdatPg
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:02:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4RR5MUCtnAXYQX9EEqOUow
+
+
+
 
 
 
