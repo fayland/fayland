@@ -24,8 +24,9 @@ __PACKAGE__->add_columns(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:44:40
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ifmbpiiOBVQCDbeUz2u+Ew
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:48:11
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:gLDx9I6NsonykU7sjEDp7A
+
 
 
 

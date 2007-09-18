@@ -59,8 +59,9 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("forum_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:44:40
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BKfht4DjbLNpTwP+ihMX5w
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 18:48:11
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3Is4ljhneD7fPdUCXQ3hJg
+
 
 
 
