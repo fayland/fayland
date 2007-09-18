@@ -29,8 +29,9 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("upload_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:02:08
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:nHUxFMfF2CNp/j6jeljMsw
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BGTWuAVfQrNlSwfpyj6IIQ
+
 
 
 
