@@ -1,18 +1,53 @@
 package Foorum::Schema::LogAction;
 
-use base qw/DBIx::Class/;
+use strict;
+use warnings;
 
-__PACKAGE__->load_components(qw/Core/);
-__PACKAGE__->table('log_action');
+use base 'DBIx::Class';
+
+__PACKAGE__->load_components("Core");
+__PACKAGE__->table("log_action");
 __PACKAGE__->add_columns(
-    qw/
-        user_id action object_type object_id time text forum_id
-        /
+  "user_id",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
+  "action",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 24,
+  },
+  "object_type",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 12,
+  },
+  "object_id",
+  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  "time",
+  {
+    data_type => "TIMESTAMP",
+    default_value => "CURRENT_TIMESTAMP",
+    is_nullable => 1,
+    size => 14,
+  },
+  "text",
+  {
+    data_type => "TEXT",
+    default_value => undef,
+    is_nullable => 1,
+    size => 65535,
+  },
+  "forum_id",
+  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
 );
 
-__PACKAGE__->might_have(
-    'operator' => 'Foorum::Schema::User',
-    { 'foreign.user_id' => 'self.user_id' }
-);
 
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ymkxIQSBodyONnUIhGCUVw
+
+
+# You can replace this text with custom content, and it will be preserved on regeneration
 1;

@@ -1,16 +1,72 @@
 package Foorum::Schema::Comment;
 
-use base qw/DBIx::Class/;
+use strict;
+use warnings;
 
-__PACKAGE__->load_components(qw/PK::Auto Core/);
-__PACKAGE__->table('comment');
+use base 'DBIx::Class';
+
+__PACKAGE__->load_components("Core");
+__PACKAGE__->table("comment");
 __PACKAGE__->add_columns(
-    qw/
-        comment_id reply_to author_id title text post_on update_on post_ip formatter
-        object_type object_id forum_id upload_id
-        /
+  "comment_id",
+  { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
+  "reply_to",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
+  "text",
+  {
+    data_type => "TEXT",
+    default_value => undef,
+    is_nullable => 1,
+    size => 65535,
+  },
+  "post_on",
+  {
+    data_type => "DATETIME",
+    default_value => undef,
+    is_nullable => 1,
+    size => 19,
+  },
+  "update_on",
+  {
+    data_type => "DATETIME",
+    default_value => undef,
+    is_nullable => 1,
+    size => 19,
+  },
+  "post_ip",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 32,
+  },
+  "formatter",
+  {
+    data_type => "VARCHAR",
+    default_value => "ubb",
+    is_nullable => 1,
+    size => 16,
+  },
+  "object_type",
+  { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 30 },
+  "object_id",
+  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
+  "author_id",
+  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  "title",
+  { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 255 },
+  "forum_id",
+  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  "upload_id",
+  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
 );
 __PACKAGE__->set_primary_key('comment_id');
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 17:59:07
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ZTm0hu/dW0Wg9QhHL7hRDg
+
+
+# You can replace this text with custom content, and it will be preserved on regeneration
 __PACKAGE__->might_have(
     'author' => 'Foorum::Schema::User',
     { 'foreign.user_id' => 'self.author_id' }
