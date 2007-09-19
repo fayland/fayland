@@ -13,19 +13,9 @@ __PACKAGE__->add_columns(
   "reply_to",
   { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "text",
-  {
-    data_type => "TEXT",
-    default_value => undef,
-    is_nullable => 1,
-    size => 65535,
-  },
+  { data_type => "TEXT", default_value => "", is_nullable => 0, size => 65535 },
   "post_on",
-  {
-    data_type => "DATETIME",
-    default_value => undef,
-    is_nullable => 1,
-    size => 19,
-  },
+  { data_type => "DATETIME", default_value => "", is_nullable => 0, size => 19 },
   "update_on",
   {
     data_type => "DATETIME",
@@ -34,17 +24,12 @@ __PACKAGE__->add_columns(
     size => 19,
   },
   "post_ip",
-  {
-    data_type => "VARCHAR",
-    default_value => undef,
-    is_nullable => 1,
-    size => 32,
-  },
+  { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 32 },
   "formatter",
   {
     data_type => "VARCHAR",
     default_value => "ubb",
-    is_nullable => 1,
+    is_nullable => 0,
     size => 16,
   },
   "object_type",
@@ -52,19 +37,21 @@ __PACKAGE__->add_columns(
   "object_id",
   { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
   "author_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "title",
   { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 255 },
   "forum_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "upload_id",
-  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
 );
 __PACKAGE__->set_primary_key("comment_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qcVGkGJzZXqKm/B+3cpTHw
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:dldwIjFNKqeyDX7HsQQFnA
+
+
 
 
 

@@ -9,7 +9,7 @@ __PACKAGE__->load_components("Core");
 __PACKAGE__->table("email_setting");
 __PACKAGE__->add_columns(
   "user_id",
-  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "object_type",
   { data_type => "ENUM", default_value => "", is_nullable => 0, size => 7 },
   "frequence",
@@ -18,8 +18,10 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("user_id", "object_type");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:bzL8S1XPQVW72D6ljMbSQQ
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Nq+fYAm37hrdB/1bPY8qvQ
+
+
 
 
 

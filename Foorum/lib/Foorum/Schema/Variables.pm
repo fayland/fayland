@@ -15,10 +15,13 @@ __PACKAGE__->add_columns(
   "value",
   { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 255 },
 );
+__PACKAGE__->set_primary_key("type", "name");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:e/pKy43CPRzHpOfT4prptg
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:z/xmAkyqNNCwdCctBpTm9A
+
+
 
 
 

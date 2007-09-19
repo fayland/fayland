@@ -65,8 +65,10 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("email_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Im/ItjwNqMBAZNG0PV7/Wg
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4ylKJJgx5LU6lRuxSvFuiA
+
+
 
 
 

@@ -14,14 +14,17 @@ __PACKAGE__->add_columns(
   {
     data_type => "ENUM",
     default_value => "username_reserved",
-    is_nullable => 1,
+    is_nullable => 0,
     size => 19,
   },
 );
+__PACKAGE__->set_primary_key("word", "type");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:P78IyDMvu6M1hBxRp6O8fg
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:AG4fVNJp49bgvwPZYslYig
+
+
 
 
 

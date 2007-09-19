@@ -11,9 +11,9 @@ __PACKAGE__->add_columns(
   "message_id",
   { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
   "from_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "to_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "title",
   { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 255 },
   "text",
@@ -30,8 +30,10 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("message_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:A7IXVxzzBEWYOmx9/zP3hg
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:wuX6F0T/BCw7GNIiF+4MBQ
+
+
 
 
 

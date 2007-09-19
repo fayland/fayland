@@ -9,7 +9,7 @@ __PACKAGE__->load_components("Core");
 __PACKAGE__->table("user_role");
 __PACKAGE__->add_columns(
   "user_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "role",
   { data_type => "ENUM", default_value => "user", is_nullable => 1, size => 9 },
   "field",
@@ -17,8 +17,10 @@ __PACKAGE__->add_columns(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9iqmIciUv465BYUqRjSpXQ
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:HjBV6UX6MG6JzGFCbtYlBw
+
+
 
 
 

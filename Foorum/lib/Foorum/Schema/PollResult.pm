@@ -9,11 +9,11 @@ __PACKAGE__->load_components("Core");
 __PACKAGE__->table("poll_result");
 __PACKAGE__->add_columns(
   "option_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
   "poll_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "poster_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "poster_ip",
   {
     data_type => "VARCHAR",
@@ -24,8 +24,10 @@ __PACKAGE__->add_columns(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:LWkBWGyHoZBG88W0gr6VGw
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:iHfHdtp0mF24IYDvjQAAzg
+
+
 
 
 

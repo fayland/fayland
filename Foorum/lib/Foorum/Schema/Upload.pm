@@ -9,11 +9,11 @@ __PACKAGE__->load_components("Core");
 __PACKAGE__->table("upload");
 __PACKAGE__->add_columns(
   "upload_id",
-  { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
+  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
   "user_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "forum_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "filename",
   {
     data_type => "VARCHAR",
@@ -22,15 +22,18 @@ __PACKAGE__->add_columns(
     size => 36,
   },
   "filesize",
-  { data_type => "FLOAT", default_value => undef, is_nullable => 1, size => 32 },
+  { data_type => "DOUBLE", default_value => undef, is_nullable => 1, size => 64 },
   "filetype",
   { data_type => "VARCHAR", default_value => undef, is_nullable => 1, size => 4 },
 );
 __PACKAGE__->set_primary_key("upload_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BGTWuAVfQrNlSwfpyj6IIQ
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:56:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:petJIM2H4DhJyHFe4xJ+kg
+
+
+
 
 
 

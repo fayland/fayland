@@ -11,9 +11,9 @@ __PACKAGE__->add_columns(
   "poll_id",
   { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
   "forum_id",
-  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "author_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "multi",
   { data_type => "ENUM", default_value => "", is_nullable => 0, size => 1 },
   "anonymous",
@@ -23,7 +23,7 @@ __PACKAGE__->add_columns(
   "duration",
   { data_type => "INT", default_value => undef, is_nullable => 1, size => 10 },
   "vote_no",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 6 },
+  { data_type => "MEDIUMINT", default_value => 0, is_nullable => 0, size => 8 },
   "title",
   {
     data_type => "VARCHAR",
@@ -35,8 +35,10 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("poll_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:XiNOzqOuwuRdD4eMsgJKLg
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:XsMQc6JEasCzJpE54LH4IQ
+
+
 
 
 

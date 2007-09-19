@@ -11,33 +11,13 @@ __PACKAGE__->add_columns(
   "forum_id",
   { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
   "forum_code",
-  {
-    data_type => "VARCHAR",
-    default_value => undef,
-    is_nullable => 1,
-    size => 25,
-  },
+  { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 25 },
   "name",
-  {
-    data_type => "VARCHAR",
-    default_value => undef,
-    is_nullable => 1,
-    size => 100,
-  },
+  { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 100 },
   "description",
-  {
-    data_type => "VARCHAR",
-    default_value => undef,
-    is_nullable => 1,
-    size => 100,
-  },
+  { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 255 },
   "forum_type",
-  {
-    data_type => "VARCHAR",
-    default_value => undef,
-    is_nullable => 1,
-    size => 16,
-  },
+  { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 16 },
   "policy",
   { data_type => "ENUM", default_value => "public", is_nullable => 0, size => 9 },
   "total_members",
@@ -47,20 +27,23 @@ __PACKAGE__->add_columns(
   "total_replies",
   { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "last_post_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "status",
   {
     data_type => "ENUM",
     default_value => "healthy",
-    is_nullable => 1,
+    is_nullable => 0,
     size => 7,
   },
 );
 __PACKAGE__->set_primary_key("forum_id");
+__PACKAGE__->add_unique_constraint("forum_code", ["forum_code"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:iHNiYwJMA9Or0/6X70akmA
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rw1dZOSkg/hP/BbixT+IPg
+
+
 
 
 

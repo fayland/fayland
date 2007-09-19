@@ -11,7 +11,7 @@ __PACKAGE__->add_columns(
   "topic_id",
   { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
   "forum_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 4 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "title",
   {
     data_type => "VARCHAR",
@@ -28,11 +28,11 @@ __PACKAGE__->add_columns(
   "hit",
   { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "last_updator_id",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "last_update_date",
   { data_type => "DATETIME", default_value => "", is_nullable => 0, size => 19 },
   "author_id",
-  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "total_replies",
   { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "status",
@@ -46,8 +46,10 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("topic_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:2uTOxFrP99VkkCEyJFQalQ
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:45
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ZZwPQ8kbJUhQHQxhefhGAA
+
+
 
 
 

@@ -9,7 +9,7 @@ __PACKAGE__->load_components("Core");
 __PACKAGE__->table("user_activation");
 __PACKAGE__->add_columns(
   "user_id",
-  { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "activation_code",
   {
     data_type => "VARCHAR",
@@ -28,8 +28,11 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("user_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:r+6447/2ejeW8KeTMwNMxg
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:56:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:d+esxIcs8vH35+G5qOI0cg
+
+
+
 
 
 

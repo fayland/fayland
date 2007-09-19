@@ -15,13 +15,16 @@ __PACKAGE__->add_columns(
   "object_id",
   { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
   "time",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 10 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 10 },
 );
 __PACKAGE__->set_primary_key("user_id", "object_type", "object_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 19:46:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:RdW0c9aLb3R6nL/fpNmTeg
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:56:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:oYUeTFe8dXWBT5eX1ohKEQ
+
+
+
 
 
 
