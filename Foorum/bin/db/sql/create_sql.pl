@@ -2,9 +2,8 @@
 
 use strict;
 use warnings;
-use FindBin qw/$Bin $RealBin/;
+use FindBin qw/$Bin/;
 use YAML qw(LoadFile);
-use Cwd qw/abs_path/;
 use lib "$Bin/../../../lib";
 
 # load foorum.yml and foorum_local.yml
