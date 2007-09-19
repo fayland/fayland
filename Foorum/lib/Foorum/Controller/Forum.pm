@@ -32,8 +32,10 @@ sub board : Path {
     # get all moderators
     my @forum_ids;
     push @forum_ids, $_->forum_id foreach (@forums);
-    my $roles = $c->model('Policy')->get_forum_moderators( $c, \@forum_ids );
-    $c->stash->{roles} = $roles;
+    if (scalar @forum_ids) {
+        my $roles = $c->model('Policy')->get_forum_moderators( $c, \@forum_ids );
+        $c->stash->{roles} = $roles;
+    }
 
     $c->stash->{whos_view_this_page} = 1;
     $c->stash->{forums}              = \@forums;

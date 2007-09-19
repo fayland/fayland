@@ -17,7 +17,7 @@ sub get {
             forum_id => $forum_id,
         },
         { @extra_attrs, }
-    )->first;
+    )->slice(0,1);
 
     # print error if the topic is non-exist
     $c->detach( '/print_error', ['Non-existent topic'] ) unless ($topic);
@@ -62,8 +62,8 @@ sub remove {
     # update last
     my $lastest
         = $c->model('DBIC')->resultset('Topic')
-        ->find( { forum_id => $forum_id },
-        { order_by => 'last_update_date DESC', } );
+        ->search( { forum_id => $forum_id },
+        { order_by => 'last_update_date DESC', } )->slice(0,1);
     my $last_post_id = $lastest ? $lastest->topic_id : 0;
     $c->model('DBIC::Forum')->search( { forum_id => $forum_id, } )->update(
         {   total_topics  => \'total_topics - 1',

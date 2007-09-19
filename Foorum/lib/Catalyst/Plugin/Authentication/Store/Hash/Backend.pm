@@ -44,4 +44,8 @@ sub user_supports {
     shift->{auth}{catalyst_user_class}->supports(@_);
 }
 
+sub supports {
+    return 1;
+}
+
 1;

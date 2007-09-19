@@ -59,11 +59,9 @@ sub get_object_by_type_id {
             $object = $c->model('DBIC::Topic')->find(
                 {
                     topic_id => $object_id,
-                        ;
                 },
                 {
                     prefetch => ['author'],
-                        ;
                 }
             );
             return unless ($object);
@@ -73,11 +71,9 @@ sub get_object_by_type_id {
             $object = $c->model('DBIC::Poll')->find(
                 {
                     poll_id => $object_id,
-                        ;
                 },
                 {
                     prefetch => ['author'],
-                        ;
                 }
             );
             return unless ($object_id);

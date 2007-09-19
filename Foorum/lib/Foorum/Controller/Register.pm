@@ -11,10 +11,12 @@ sub auto : Private {
     my ( $self, $c ) = @_;
 
     my @cidr_ips = $c->model('BannedIP')->get($c);
-    my $regexp   = create_iprange_regexp(@cidr_ips);
-    if ( match_ip( $c->req->address, $regexp ) ) {
-        $c->forward( '/print_error', ['IP banned'] );
-        return 0;
+    if (scalar @cidr_ips) {
+        my $regexp   = create_iprange_regexp(@cidr_ips);
+        if ( match_ip( $c->req->address, $regexp ) ) {
+            $c->forward( '/print_error', ['IP banned'] );
+            return 0;
+        }
     }
 
     return 1;
@@ -112,12 +114,12 @@ sub activation : Local {
     $c->detach( '/print_error', ['ERROR_USER_NON_EXIST'] ) unless ($user);
 
     my $activation_rs = $c->model('DBIC')->resultset('UserActivation')
-        ->find( { user_id => $user->user_id } );
+        ->find( { user_id => $user->{user_id} } );
     unless ($activation_rs) {
-        if ( $user->status eq 'unauthorized' ) {    # new account
+        if ( $user->{status} eq 'unauthorized' ) {    # new account
             $c->model('Email')->send_activation( $c, $user );
             return $c->res->redirect(
-                '/register/activation/' . $user->username );
+                '/register/activation/' . $user->{username} );
         } else {
             return $c->res->redirect('/profile/edit');
         }
@@ -138,7 +140,7 @@ sub activation : Local {
         $activation_rs->delete;
 
 # login will be failed since the $user->password is SHA1 Hashed.
-# $c->login( $username, $user->password );
+# $c->login( $username, $user->{password} );
 # so instead, we use set_authenticated, check Catalyst::Plugin::Authentication
         $c->set_authenticated($user);
         $c->res->redirect('/profile/edit');
