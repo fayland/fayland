@@ -11,22 +11,20 @@ sub board : Path {
     my ( $self, $c ) = @_;
 
     my @forums = $c->model('DBIC')->resultset('Forum')->search(
-        {
-            forum_type => 'classical',
+        {   forum_type => 'classical',
             status     => { '!=', 'banned' },
-        }, {
-            order_by => 'me.forum_id',
-        }
+        },
+        { order_by => 'me.forum_id', }
     )->all;
 
     # get last_post and the author
     foreach (@forums) {
         next unless $_->last_post_id;
-        $_->{last_post} = $c->model('DBIC')->resultset('Topic')->find( {
-            topic_id => $_->last_post_id,
-        } );
+        $_->{last_post} = $c->model('DBIC')->resultset('Topic')
+            ->find( { topic_id => $_->last_post_id, } );
         next unless $_->{last_post};
-        $_->{last_post}->{updator} = $c->model('User')->get($c, { user_id => $_->{last_post}->last_updator_id } );
+        $_->{last_post}->{updator} = $c->model('User')
+            ->get( $c, { user_id => $_->{last_post}->last_updator_id } );
     }
 
     $c->cache_page('300');
@@ -55,20 +53,18 @@ sub forum_list : Regex('^forum/(\w+)$') {
     $forum_code = $forum->forum_code;
 
     # get all moderators
-    $c->stash->{forum_roles} =
-        $c->model('Policy')->get_forum_moderators( $c, $forum_id );
+    $c->stash->{forum_roles}
+        = $c->model('Policy')->get_forum_moderators( $c, $forum_id );
 
     # for page 1 and normal mode
     if ( $page_no == 1 and not $is_elite ) {
 
         # poll
         my @polls = $c->model('DBIC')->resultset('Poll')->search(
-            {
-                forum_id => $forum_id,
+            {   forum_id => $forum_id,
                 duration => { '>', time() },
             },
-            {
-                order_by => 'time desc',
+            {   order_by => 'time desc',
                 prefetch => ['author'],
             }
         )->all;
@@ -77,8 +73,7 @@ sub forum_list : Regex('^forum/(\w+)$') {
         # for private forum
         if ( $forum->policy eq 'private' ) {
             my $pending_count = $c->model('DBIC::UserRole')->count(
-                {
-                    field => $forum_id,
+                {   field => $forum_id,
                     role  => 'pending',
                 }
             );
@@ -89,16 +84,15 @@ sub forum_list : Regex('^forum/(\w+)$') {
         my $ann_cookie = $c->req->cookie("ann_$forum_id");
         unless ( $ann_cookie and $ann_cookie->value ) {
             my $announcement = $c->model('DBIC::Comment')->find(
-                {
-                    object_type => 'announcement',
+                {   object_type => 'announcement',
                     object_id   => $forum_id,
                 },
                 { columns => [ 'title', 'text' ], }
             );
 
             # filter format by Foorum::Filter
-            $announcement->{_column_data}->{text} =
-                filter_format( $announcement->{_column_data}->{text},
+            $announcement->{_column_data}->{text}
+                = filter_format( $announcement->{_column_data}->{text},
                 { format => 'ubb' } )
                 if ($announcement);
             $c->stash->{announcement} = $announcement;
@@ -111,13 +105,11 @@ sub forum_list : Regex('^forum/(\w+)$') {
     my @extra_cols = ( 'elite', 1 ) if ($is_elite);
 
     my $it = $c->model('DBIC')->resultset('Topic')->search(
-        {
-            forum_id => $forum_id,
-            'me.status'   => { '!=', 'banned' },
+        {   forum_id    => $forum_id,
+            'me.status' => { '!=', 'banned' },
             @extra_cols,
         },
-        {
-            order_by => 'sticky DESC, last_update_date DESC',
+        {   order_by => 'sticky DESC, last_update_date DESC',
             rows     => $c->config->{per_page}->{forum},
             page     => $page_no,
             prefetch => [ 'author', 'last_updator' ],
@@ -127,8 +119,8 @@ sub forum_list : Regex('^forum/(\w+)$') {
     my @topics = $it->all;
     if ( $c->user_exists ) {
         my @all_topic_ids = map { $_->topic_id } @topics;
-        $c->stash->{is_visited} =
-            $c->model('Visit')->is_visited( $c, 'thread', \@all_topic_ids )
+        $c->stash->{is_visited}
+            = $c->model('Visit')->is_visited( $c, 'thread', \@all_topic_ids )
             if ( scalar @all_topic_ids );
     }
 
@@ -163,14 +155,12 @@ sub members : LocalRegex('^(\w+)/members(/(\w+))?$') {
     if ( $member_type eq 'user' ) {
         @query_cols = ( 'role', [ 'admin', 'moderator', 'user' ] );
         @attr_cols = ( 'order_by' => 'role ASC' );
-    }
-    else {
+    } else {
         @query_cols = ( 'role', $member_type );
     }
     my $rs = $c->model('DBIC::UserRole')->search(
         { @query_cols, field => $forum_id, },
-        {
-            @attr_cols,
+        {   @attr_cols,
             rows => 20,
             page => $page_no,
         }
@@ -183,8 +173,7 @@ sub members : LocalRegex('^(\w+)/members(/(\w+))?$') {
     if ( scalar @all_user_ids ) {
         @members = $c->model('DBIC::User')->search(
             { user_id => { 'IN', \@all_user_ids }, },
-            {
-                columns => [
+            {   columns => [
                     'user_id', 'username', 'nickname', 'gender',
                     'register_on'
                 ],
@@ -197,8 +186,7 @@ sub members : LocalRegex('^(\w+)/members(/(\w+))?$') {
     $url_prefix .= "/$member_type" if ($member_type);
 
     $c->stash(
-        {
-            template            => 'forum/members.html',
+        {   template            => 'forum/members.html',
             member_type         => $member_type,
             pager               => $rs->pager,
             url_prefix          => $url_prefix,
@@ -221,8 +209,7 @@ sub action_log : LocalRegex('^(\w+)/action_log(/(\w+))?$') {
     my $page = get_page_from_url( $c->req->path );
     my $rs   = $c->model('DBIC')->resultset('LogAction')->search(
         { forum_id => $forum_id, },
-        {
-            order_by => 'time DESC',
+        {   order_by => 'time DESC',
             page     => $page,
             rows     => 20,
             prefetch => ['operator'],
@@ -230,8 +217,7 @@ sub action_log : LocalRegex('^(\w+)/action_log(/(\w+))?$') {
     );
 
     $c->stash(
-        {
-            template => 'forum/action_log.html',
+        {   template => 'forum/action_log.html',
             pager    => $rs->pager,
             logs     => [ $rs->all ],
         }
@@ -247,8 +233,7 @@ sub join_us : Private {
 
     if ( $c->req->method eq 'POST' ) {
         my $rs = $c->model('DBIC::UserRole')->find(
-            {
-                user_id => $c->user->user_id,
+            {   user_id => $c->user->user_id,
                 field   => $forum_id,
             },
             { columns => ['role'], }
@@ -259,33 +244,30 @@ sub join_us : Private {
                 or $rs->role eq 'admin' )
             {
                 return $c->res->redirect( $forum->{forum_url} );
-            }
-            elsif ($rs->role eq 'blocked'
+            } elsif ( $rs->role eq 'blocked'
                 or $rs->role eq 'pending'
                 or $rs->role eq 'rejected' )
             {
                 my $role = uc( $rs->role );
                 $c->detach( '/print_error', ["ERROR_USER_$role"] );
             }
-        }
-        else {
+        } else {
             $c->model('Policy')->create_user_role(
                 $c,
-                {
-                    user_id => $c->user->user_id,
+                {   user_id => $c->user->user_id,
                     field   => $forum_id,
                     role    => 'pending',
                 }
             );
-            $c->detach( '/print_message',
-                ['Successfully Requested. You need wait for admin\'s approval']
+            $c->detach(
+                '/print_message',
+                [   'Successfully Requested. You need wait for admin\'s approval'
+                ]
             );
         }
-    }
-    else {
+    } else {
         $c->stash(
-            {
-                simple_wrapper => 1,
+            {   simple_wrapper => 1,
                 template       => 'forum/join_us.html',
             }
         );

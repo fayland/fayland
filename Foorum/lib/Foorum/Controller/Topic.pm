@@ -26,8 +26,7 @@ sub topic : Regex('^forum/(\w+)/(\d+)$') {
 
         # 'star' status
         $c->stash->{has_star} = $c->model('DBIC::Star')->count(
-            {
-                user_id     => $c->user->user_id,
+            {   user_id     => $c->user->user_id,
                 object_type => 'topic',
                 object_id   => $topic_id,
             }
@@ -40,8 +39,7 @@ sub topic : Regex('^forum/(\w+)/(\d+)$') {
     # get comments
     $c->model('Comment')->get_comments_by_object(
         $c,
-        {
-            object_type => 'thread',
+        {   object_type => 'thread',
             object_id   => $topic_id,
             page        => $page_no,
         }
@@ -63,8 +61,7 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
     my $forum_id   = $forum->forum_id;
 
     $c->stash(
-        {
-            template => 'topic/create.html',
+        {   template => 'topic/create.html',
             action   => 'create',
         }
     );
@@ -77,11 +74,11 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
     my $upload    = $c->req->upload('upload');
     my $upload_id = 0;
     if ($upload) {
-        $upload_id =
-            $c->model('Upload')
+        $upload_id = $c->model('Upload')
             ->add_file( $c, $upload, { forum_id => $forum_id } );
         unless ($upload_id) {
-            return $c->set_invalid_form( upload => $c->stash->{upload_error} );
+            return $c->set_invalid_form(
+                upload => $c->stash->{upload_error} );
         }
     }
 
@@ -91,8 +88,7 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
 
     # create record
     my $topic = $c->model('DBIC')->resultset('Topic')->create(
-        {
-            forum_id         => $forum_id,
+        {   forum_id         => $forum_id,
             title            => $title,
             author_id        => $c->user->user_id,
             last_updator_id  => $c->user->user_id,
@@ -106,8 +102,7 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
 
     my $comment = $c->model('Comment')->create(
         $c,
-        {
-            object_type => 'thread',
+        {   object_type => 'thread',
             object_id   => $topic->topic_id,
             forum_id    => $forum_id,
             upload_id   => $upload_id,
@@ -115,17 +110,17 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
     );
 
     # update user stat
-    $c->model('User')->update($c, $c->user,
-        {
-            threads      => \"threads + 1",
+    $c->model('User')->update(
+        $c,
+        $c->user,
+        {   threads      => \"threads + 1",
             last_post_id => $topic->topic_id,
         }
     );
 
     # update forum
     $forum->update(
-        {
-            total_topics => $forum->total_topics + 1,
+        {   total_topics => $forum->total_topics + 1,
             last_post_id => $topic->topic_id,
         }
     );
@@ -156,8 +151,7 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
         my $comment = $c->model('Comment')->get(
             $c,
             $comment_id,
-            {
-                object_type => 'thread',
+            {   object_type => 'thread',
                 object_id   => $topic_id,
                 with_author => 1,
                 with_text   => 1
@@ -174,19 +168,18 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
     my $upload    = $c->req->upload('upload');
     my $upload_id = 0;
     if ($upload) {
-        $upload_id =
-            $c->model('Upload')
+        $upload_id = $c->model('Upload')
             ->add_file( $c, $upload, { forum_id => $forum_id } );
         unless ($upload_id) {
-            return $c->set_invalid_form( upload => $c->stash->{upload_error} );
+            return $c->set_invalid_form(
+                upload => $c->stash->{upload_error} );
         }
     }
 
     $comment_id = $topic_id unless ($comment_id);
     my $comment = $c->model('Comment')->create(
         $c,
-        {
-            object_type => 'thread',
+        {   object_type => 'thread',
             object_id   => $topic_id,
             forum_id    => $forum_id,
             upload_id   => $upload_id,
@@ -196,23 +189,22 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
 
     # update forum and topic
     $forum->update(
-        {
-            total_replies => $forum->total_replies + 1,
+        {   total_replies => $forum->total_replies + 1,
             last_post_id  => $topic->topic_id,
         }
     );
     $topic->update(
-        {
-            total_replies    => $topic->total_replies + 1,
+        {   total_replies    => $topic->total_replies + 1,
             last_update_date => \"NOW()",
             last_updator_id  => $c->user->user_id,
         }
     );
 
     # update user stat
-    $c->model('User')->update($c, $c->user,
-        {
-            replies      => \"replies + 1",
+    $c->model('User')->update(
+        $c,
+        $c->user,
+        {   replies      => \"replies + 1",
             last_post_id => $topic_id,
         }
     );
@@ -221,9 +213,7 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
 
     $c->forward(
         '/print_message',
-        [
-            {
-                msg => 'Post Reply OK',
+        [   {   msg => 'Post Reply OK',
                 url => $forum->{forum_url} . "/$topic_id",
             }
         ]
@@ -243,8 +233,8 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
     my $topic_id   = $c->req->snippets->[1];
     my $topic      = $c->model('Topic')->get( $c, $forum_id, $topic_id );
     my $comment_id = $c->req->snippets->[2];
-    my $comment =
-        $c->model('Comment')
+    my $comment
+        = $c->model('Comment')
         ->get( $c, $comment_id,
         { object_type => 'thread', object_id => $topic_id } );
 
@@ -260,8 +250,7 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
     # edit upload
     my $old_upload;
     if ( $comment->upload_id ) {
-        $old_upload =
-            $c->model('DBIC::Upload')
+        $old_upload = $c->model('DBIC::Upload')
             ->find( { upload_id => $comment->upload_id } );
     }
     $c->stash->{upload} = $old_upload;
@@ -275,7 +264,8 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
 
     my $new_upload = $c->req->upload('upload');
     my $upload_id  = $comment->upload_id;
-    if ( ( $c->req->param('attachment_action') eq 'delete' ) or $new_upload ) {
+    if ( ( $c->req->param('attachment_action') eq 'delete' ) or $new_upload )
+    {
 
         # delete old upload
         if ($old_upload) {
@@ -283,8 +273,8 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
             $upload_id = 0;
         }
         if ($new_upload) {
-            $upload_id =
-                $c->model('Upload')
+            $upload_id
+                = $c->model('Upload')
                 ->add_file( $c, $new_upload,
                 { forum_id => $comment->forum_id } );
             unless ($upload_id) {
@@ -297,8 +287,7 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
     my $title = $c->req->param('title');
     $title = encodeHTML($title);
     $comment->update(
-        {
-            title     => $title,
+        {   title     => $title,
             text      => $c->req->param('text'),
             formatter => 'ubb',
             update_on => \'NOW()',
@@ -307,7 +296,8 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
         }
     );
 
-    if ( $comment->reply_to == 0 and $topic->title ne $c->req->param('title') )
+    if (    $comment->reply_to == 0
+        and $topic->title ne $c->req->param('title') )
     {
         $topic->update( { title => $c->req->param('title'), } );
         $c->model('ClearCachedPage')->clear_when_topic_changes( $c, $forum );
@@ -318,9 +308,7 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
 
     $c->forward(
         '/print_message',
-        [
-            {
-                msg => 'Edit Reply OK',
+        [   {   msg => 'Edit Reply OK',
                 url => $forum->{forum_url} . "/$topic_id",
             }
         ]
@@ -335,8 +323,8 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
     my $forum_id   = $forum->forum_id;
     my $topic_id   = $c->req->snippets->[1];
     my $comment_id = $c->req->snippets->[2];
-    my $comment =
-        $c->model('Comment')
+    my $comment
+        = $c->model('Comment')
         ->get( $c, $comment_id,
         { object_type => 'thread', object_id => $topic_id } );
 
@@ -351,11 +339,11 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
     if ( $comment->reply_to == 0 ) {
 
         # u can only delete 5 topics one day
-        my $most_deletion_per_day = $c->config->{topic}->{most_deletion_per_day}
+        my $most_deletion_per_day
+            = $c->config->{topic}->{most_deletion_per_day}
             || 5;
         my $deleted_count = $c->model('DBIC')->resultset('LogAction')->count(
-            {
-                forum_id => $forum_id,
+            {   forum_id => $forum_id,
                 action   => 'delete',
                 time     => \"> DATE_SUB(NOW(), INTERVAL 1 DAY)"
             }
@@ -363,8 +351,7 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
         if ( $deleted_count >= $most_deletion_per_day ) {
             $c->detach(
                 '/print_error',
-                [
-"For security reason, you can't delete more than $most_deletion_per_day topics in one day"
+                [   "For security reason, you can't delete more than $most_deletion_per_day topics in one day"
                 ]
             );
         }
@@ -374,8 +361,7 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
             { log_text => $comment->title } );
         $url = $forum->{forum_url};
         $c->model('ClearCachedPage')->clear_when_topic_changes( $c, $forum );
-    }
-    else {
+    } else {
 
         # delete comment
         $c->model('Comment')->remove( $c, $comment );
@@ -384,8 +370,7 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
 
         # update topic
         my $lastest = $c->model('DBIC')->resultset('Comment')->find(
-            {
-                object_type => 'thread',
+            {   object_type => 'thread',
                 object_id   => $topic_id,
             },
             { order_by => 'post_on DESC', }
@@ -397,8 +382,7 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
                 last_updator_id  => $lastest->author_id,
                 last_update_date => $lastest->update_on || $lastest->post_on,
             );
-        }
-        else {
+        } else {
             @extra_cols = (
                 last_updator_id  => '',
                 last_update_date => '',
@@ -406,8 +390,7 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
         }
         $c->model('DBIC')->resultset('Topic')
             ->search( { topic_id => $topic_id, } )->update(
-            {
-                total_replies => \"total_replies - 1",
+            {   total_replies => \"total_replies - 1",
                 @extra_cols,
             }
             );
@@ -418,9 +401,7 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
 
     $c->forward(
         '/print_message',
-        [
-            {
-                msg => 'Delete Reply OK',
+        [   {   msg => 'Delete Reply OK',
                 url => $url,
             }
         ]

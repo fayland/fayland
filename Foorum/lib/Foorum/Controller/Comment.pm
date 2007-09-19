@@ -12,8 +12,8 @@ sub post : Local {
 
     # get object_type and object_id from c.req.referer
     my $path = $c->req->referer || '/';
-    my ( $object_id, $object_type, $forum_id ) =
-        $c->model('Object')->get_object_from_url( $c, $path );
+    my ( $object_id, $object_type, $forum_id )
+        = $c->model('Object')->get_object_from_url( $c, $path );
     return $c->res->redirect($path) unless ( $object_id and $object_type );
 
     if ($forum_id) {    # maybe that's a ForumCode
@@ -27,8 +27,7 @@ sub post : Local {
     my $upload    = $c->req->upload('upload');
     my $upload_id = 0;
     if ($upload) {
-        $upload_id =
-            $c->model('Upload')
+        $upload_id = $c->model('Upload')
             ->add_file( $c, $upload, { forum_id => $forum_id } );
         unless ($upload_id) {
             $c->detach( '/print_error', [ $c->stash->{upload_error} ] );
@@ -38,8 +37,7 @@ sub post : Local {
     # create record
     $c->model('Comment')->create(
         $c,
-        {
-            object_type => $object_type,
+        {   object_type => $object_type,
             object_id   => $object_id,
             forum_id    => $forum_id,
             upload_id   => $upload_id,
@@ -56,8 +54,7 @@ sub reply : LocalRegex('^(\d+)/reply$') {
     $c->stash->{template} = 'comment/reply.html';
 
     my $comment_id = $c->req->snippets->[0];
-    my $comment =
-        $c->model('Comment')
+    my $comment    = $c->model('Comment')
         ->get( $c, $comment_id, { with_author => 1, with_text => 1 } )
         ;    # show up
 
@@ -69,16 +66,16 @@ sub reply : LocalRegex('^(\d+)/reply$') {
     my $upload    = $c->req->upload('upload');
     my $upload_id = 0;
     if ($upload) {
-        $upload_id =
-            $c->model('Upload')
+        $upload_id = $c->model('Upload')
             ->add_file( $c, $upload, { forum_id => $comment->forum_id } );
         unless ($upload_id) {
-            return $c->set_invalid_form( upload => $c->stash->{upload_error} );
+            return $c->set_invalid_form(
+                upload => $c->stash->{upload_error} );
         }
     }
 
-    my ( $object_id, $object_type, $forum_id ) =
-        ( $comment->object_id, $comment->object_type, $comment->forum_id );
+    my ( $object_id, $object_type, $forum_id )
+        = ( $comment->object_id, $comment->object_type, $comment->forum_id );
     my $info = {
         object_type => $object_type,
         object_id   => $object_id,
@@ -93,9 +90,7 @@ sub reply : LocalRegex('^(\d+)/reply$') {
 
     $c->forward(
         '/print_message',
-        [
-            {
-                msg => 'Post Reply OK',
+        [   {   msg => 'Post Reply OK',
                 url => $path,
             }
         ]
@@ -122,8 +117,7 @@ sub edit : LocalRegex('^(\d+)/edit$') {
     # edit upload
     my $old_upload;
     if ( $comment->upload_id ) {
-        $old_upload =
-            $c->model('DBIC::Upload')
+        $old_upload = $c->model('DBIC::Upload')
             ->find( { upload_id => $comment->upload_id } );
     }
     $c->stash->{upload} = $old_upload;
@@ -135,7 +129,8 @@ sub edit : LocalRegex('^(\d+)/edit$') {
 
     my $new_upload = $c->req->upload('upload');
     my $upload_id  = $comment->upload_id;
-    if ( ( $c->req->param('attachment_action') eq 'delete' ) or $new_upload ) {
+    if ( ( $c->req->param('attachment_action') eq 'delete' ) or $new_upload )
+    {
 
         # delete old upload
         if ($old_upload) {
@@ -145,8 +140,8 @@ sub edit : LocalRegex('^(\d+)/edit$') {
 
         # add new upload
         if ($new_upload) {
-            $upload_id =
-                $c->model('Upload')
+            $upload_id
+                = $c->model('Upload')
                 ->add_file( $c, $new_upload,
                 { forum_id => $comment->forum_id } );
             unless ($upload_id) {
@@ -157,8 +152,7 @@ sub edit : LocalRegex('^(\d+)/edit$') {
     }
 
     $comment->update(
-        {
-            title     => $c->req->param('title'),
+        {   title     => $c->req->param('title'),
             text      => $c->req->param('text'),
             formatter => 'ubb',
             update_on => \'NOW()',
@@ -167,8 +161,8 @@ sub edit : LocalRegex('^(\d+)/edit$') {
         }
     );
 
-    my ( $object_id, $object_type, $forum_id ) =
-        ( $comment->object_id, $comment->object_type, $comment->forum_id );
+    my ( $object_id, $object_type, $forum_id )
+        = ( $comment->object_id, $comment->object_type, $comment->forum_id );
     my $info = {
         object_type => $object_type,
         object_id   => $object_id,
@@ -181,9 +175,7 @@ sub edit : LocalRegex('^(\d+)/edit$') {
 
     $c->forward(
         '/print_message',
-        [
-            {
-                msg => 'Edit Reply OK',
+        [   {   msg => 'Edit Reply OK',
                 url => $path,
             }
         ]
@@ -215,9 +207,7 @@ sub delete : LocalRegex('^(\d+)/delete$') {
 
     $c->forward(
         '/print_message',
-        [
-            {
-                msg => 'Delete Reply OK',
+        [   {   msg => 'Delete Reply OK',
                 url => $path,
             }
         ]

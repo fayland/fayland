@@ -31,25 +31,21 @@ sub lock_or_sticky_or_elite :
     my $update_col;
     if ( $action eq 'sticky' ) {
         $update_col = 'sticky';
-    }
-    elsif ( $action eq 'lock' ) {
+    } elsif ( $action eq 'lock' ) {
         $update_col = 'closed';
-    }
-    elsif ( $action eq 'elite' ) {
+    } elsif ( $action eq 'elite' ) {
         $update_col = 'elite';
     }
 
     $c->model('DBIC::Topic')->search(
-        {
-            topic_id => $topic_id,
+        {   topic_id => $topic_id,
             forum_id => $forum_id,
         }
     )->update( { $update_col => $status, } );
 
     $c->model('Log')->log_action(
         $c,
-        {
-            action      => "$is_un$action",
+        {   action      => "$is_un$action",
             object_type => 'topic',
             object_id   => $topic_id,
             forum_id    => $forum_id,
@@ -65,17 +61,14 @@ sub lock_or_sticky_or_elite :
 
     $c->forward(
         '/print_message',
-        [
-            {
-                msg => 'OK',
+        [   {   msg => 'OK',
                 url => $forum->{forum_url},
             }
         ]
     );
 }
 
-sub ban_or_unban_topic :
-    Regex('^forum/(\w+)/(\d+)/(un)?ban$') {
+sub ban_or_unban_topic : Regex('^forum/(\w+)/(\d+)/(un)?ban$') {
     my ( $self, $c ) = @_;
 
     my $forum_code = $c->req->snippets->[0];
@@ -85,28 +78,27 @@ sub ban_or_unban_topic :
     my $topic_id = $c->req->snippets->[1];
     my $is_un    = $c->req->snippets->[2];
 
-    my $topic = $c->model('DBIC')->resultset('Topic')->find( {
-        forum_id => $forum_id,
-        topic_id => $topic_id,
-    } );
+    my $topic = $c->model('DBIC')->resultset('Topic')->find(
+        {   forum_id => $forum_id,
+            topic_id => $topic_id,
+        }
+    );
     $c->detach( '/print_error', ['Non-existent topic'] ) unless ($topic);
-    
+
     # check policy
     unless ( $c->model('Policy')->is_moderator( $c, $forum_id ) ) {
         $c->detach( '/print_error', ['ERROR_PERMISSION_DENIED'] );
     }
-    
+
     if ($is_un) {
         $topic->update( { status => 'healthy' } );
     } else {
         $topic->update( { status => 'banned' } );
     }
-    
+
     $c->forward(
         '/print_message',
-        [
-            {
-                msg => 'OK',
+        [   {   msg => 'OK',
                 url => $forum->{forum_url},
             }
         ]

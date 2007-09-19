@@ -29,18 +29,16 @@ sub filter_format {
         my $formatter = Text::Textile->new();
         $formatter->charset('utf-8');
         $text = $formatter->process($text);
-    }
-    elsif ( ( $format eq 'ubb' or $format eq 'default' ) and $has_ubb_code ) {
+    } elsif ( ( $format eq 'ubb' or $format eq 'default' ) and $has_ubb_code )
+    {
         my $formatter = HTML::BBCode->new(
-            {
-                no_html    => 1,
+            {   no_html    => 1,
                 no_jslink  => 1,
                 linebreaks => 1,
             }
         );
         $text = $formatter->parse($text);
-    }
-    else {
+    } else {
         $text =~ s|<|&lt;|gs;         # no_html
         $text =~ s|>|&gt;|gs;
         $text =~ s|\n|<br />\n|gs;    # linebreaks

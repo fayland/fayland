@@ -39,8 +39,8 @@ sub get_url_from_object {
     switch ($object_type) {
         case 'poll' { return "/forum/$forum_id/poll/$object_id"; }
         case 'user_profile' {
-            my $user =
-                $c->model('User')->get( $c, { user_id => $object_id } );
+            my $user
+                = $c->model('User')->get( $c, { user_id => $object_id } );
             return '/u/' . $user->{username} if ($user);
         }
     }
@@ -56,22 +56,33 @@ sub get_object_by_type_id {
     my $object;
     switch ($object_type) {
         case 'topic' {
-            $object = $c->model('DBIC::Topic')->find( {
-                topic_id => $object_id,
-            }, {
-                prefetch => ['author'],
-            } );
+            $object = $c->model('DBIC::Topic')->find(
+                {
+                    topic_id => $object_id,
+                        ;
+                },
+                {
+                    prefetch => ['author'],
+                        ;
+                }
+            );
             return unless ($object);
             $object->{url} = '/forum/' . $object->forum_id . "/$object_id";
         }
         case 'poll' {
-            $object = $c->model('DBIC::Poll')->find( {
-                poll_id => $object_id,
-            }, {
-                prefetch => ['author'],
-            } );
+            $object = $c->model('DBIC::Poll')->find(
+                {
+                    poll_id => $object_id,
+                        ;
+                },
+                {
+                    prefetch => ['author'],
+                        ;
+                }
+            );
             return unless ($object_id);
-            $object->{url} = '/forum/' . $object->forum_id . "/poll/$object_id";
+            $object->{url}
+                = '/forum/' . $object->forum_id . "/poll/$object_id";
         }
     }
     return $object;

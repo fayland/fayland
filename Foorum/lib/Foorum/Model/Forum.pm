@@ -12,8 +12,8 @@ sub get {
 
     # if $forum_code is all numberic, that's forum_id
     # or else, it's forum_code
-    my $where =
-          ( $forum_code =~ /^\d+$/ )
+    my $where
+        = ( $forum_code =~ /^\d+$/ )
         ? { forum_id => $forum_code }
         : { forum_code => $forum_code, forum_type => $forum_type };
 
@@ -26,12 +26,15 @@ sub get {
 
     # print error if the forum_id is non-exist
     $c->detach( '/print_error', ['Non-existent forum'] ) unless ($forum);
-    $c->detach( '/print_error', ['Status: Banned'] ) if ($forum->status eq 'banned' and not $c->model('Policy')->is_moderator( $c, $forum->forum_id ));
+    $c->detach( '/print_error', ['Status: Banned'] )
+        if ( $forum->status eq 'banned'
+        and not $c->model('Policy')->is_moderator( $c, $forum->forum_id ) );
 
     my $forum_id = $forum->forum_id;
 
     # check policy
-    if ( $c->user_exists and $c->model('Policy')->is_blocked( $c, $forum_id ) )
+    if (    $c->user_exists
+        and $c->model('Policy')->is_blocked( $c, $forum_id ) )
     {
         $c->detach( '/print_error', ['ERROR_USER_BLOCKED'] );
     }
@@ -44,11 +47,9 @@ sub get {
         unless ( $c->model('Policy')->is_user( $c, $forum_id ) ) {
             if ( $c->model('Policy')->is_pending( $c, $forum_id ) ) {
                 $c->detach( '/print_error', ['ERROR_USER_PENDING'] );
-            }
-            elsif ( $c->model('Policy')->is_rejected( $c, $forum_id ) ) {
+            } elsif ( $c->model('Policy')->is_rejected( $c, $forum_id ) ) {
                 $c->detach( '/print_error', ['ERROR_USER_REJECTED'] );
-            }
-            else {
+            } else {
                 $c->detach( '/forum/join_us', [$forum] );
             }
         }
@@ -76,8 +77,7 @@ sub remove_forum {
 
     # get all topic_ids
     my @topic_ids;
-    my $tp_rs =
-        $c->model('DBIC::Topic')
+    my $tp_rs = $c->model('DBIC::Topic')
         ->search( { forum_id => $forum_id, }, { columns => ['topic_id'], } );
     while ( my $r = $tp_rs->next ) {
         push @topic_ids, $r->topic_id;
@@ -86,8 +86,7 @@ sub remove_forum {
 
     # get all poll_ids
     my @poll_ids;
-    my $pl_rs =
-        $c->model('DBIC::Poll')
+    my $pl_rs = $c->model('DBIC::Poll')
         ->search( { forum_id => $forum_id, }, { columns => ['poll_id'], } );
     while ( my $r = $pl_rs->next ) {
         push @poll_ids, $r->poll_id;
@@ -103,28 +102,24 @@ sub remove_forum {
     # comment and star
     if ( scalar @topic_ids ) {
         $c->model('DBIC::Comment')->search(
-            {
-                object_type => 'thread',
+            {   object_type => 'thread',
                 object_id   => { 'IN', \@topic_ids },
             }
         )->delete;
         $c->model('DBIC::Star')->search(
-            {
-                object_type => 'topic',
+            {   object_type => 'topic',
                 object_id   => { 'IN', \@topic_ids },
             }
         )->delete;
     }
     if ( scalar @poll_ids ) {
         $c->model('DBIC::Comment')->search(
-            {
-                object_type => 'poll',
+            {   object_type => 'poll',
                 object_id   => { 'IN', \@poll_ids },
             }
         )->delete;
         $c->model('DBIC::Star')->search(
-            {
-                object_type => 'poll',
+            {   object_type => 'poll',
                 object_id   => { 'IN', \@poll_ids },
             }
         )->delete;
@@ -140,7 +135,8 @@ sub merge_forums {
     my $from_id = $info->{from_id} or return 0;
     my $to_id   = $info->{to_id}   or return 0;
 
-    my $old_forum = $c->model('DBIC::Forum')->find( { forum_id => $from_id } );
+    my $old_forum
+        = $c->model('DBIC::Forum')->find( { forum_id => $from_id } );
     return unless ($old_forum);
     my $new_forum = $c->model('DBIC::Forum')->find( { forum_id => $to_id } );
     return unless ($new_forum);
@@ -155,8 +151,7 @@ sub merge_forums {
         @extra_cols = ( 'total_members', \"total_members + $total_members" );
     }
     $c->model('DBIC::Forum')->search( { forum_id => $to_id, } )->update(
-        {
-            total_topics  => \"total_topics  + $total_topics",
+        {   total_topics  => \"total_topics  + $total_topics",
             total_replies => \"total_replies + $total_replies",
             @extra_cols,
         }

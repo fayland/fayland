@@ -47,16 +47,14 @@ sub compose : Local {
     return if ( $c->form->has_error );
 
     # check user exist
-    my $rept =
-        $c->model('User')->get($c, { username => $to } );
+    my $rept = $c->model('User')->get( $c, { username => $to } );
     unless ($rept) {
         $c->set_invalid_form( to => 'USER_NONEXIST' );
         return;
     }
 
     my $message = $c->model('DBIC')->resultset('Message')->create(
-        {
-            from_id     => $c->user->user_id,
+        {   from_id     => $c->user->user_id,
             to_id       => $rept->{user_id},
             title       => $c->req->param('title'),
             text        => $c->req->param('text'),
@@ -69,8 +67,7 @@ sub compose : Local {
 
     # add unread
     $c->model('DBIC')->resultset('MessageUnread')->create(
-        {
-            message_id => $message->message_id,
+        {   message_id => $message->message_id,
             user_id    => $rept->{user_id},
         }
     );
@@ -83,16 +80,14 @@ sub inbox : Local {
 
     my $page_no = get_page_from_url( $c->req->path );
     my $it      = $c->model('DBIC')->resultset('Message')->search(
-        {
-            to_id     => $c->user->user_id,
+        {   to_id     => $c->user->user_id,
             to_status => 'open',
         },
-        {
-            columns  => [ 'message_id', 'title', 'post_on', ],
+        {   columns  => [ 'message_id', 'title', 'post_on', ],
             prefetch => ['sender'],
             order_by => 'post_on DESC',
-            rows     => $c->config->{per_page}->{message},
-            page     => $page_no,
+            rows => $c->config->{per_page}->{message},
+            page => $page_no,
         }
     );
     my @messages = $it->all;
@@ -101,8 +96,8 @@ sub inbox : Local {
 
     my @all_message_ids;
     push @all_message_ids, $_->message_id foreach (@messages);
-    $c->stash->{unread} =
-        $c->model('Message')->are_messages_unread( $c, \@all_message_ids )
+    $c->stash->{unread}
+        = $c->model('Message')->are_messages_unread( $c, \@all_message_ids )
         if ( scalar @all_message_ids );
 
     $c->stash->{template} = 'message/inbox.html';
@@ -113,16 +108,14 @@ sub outbox : Local {
 
     my $page_no = get_page_from_url( $c->req->path );
     my $it      = $c->model('DBIC')->resultset('Message')->search(
-        {
-            from_id     => $c->user->user_id,
+        {   from_id     => $c->user->user_id,
             from_status => 'open',
         },
-        {
-            columns  => [ 'message_id', 'title', 'post_on', ],
+        {   columns  => [ 'message_id', 'title', 'post_on', ],
             prefetch => ['recipient'],
             order_by => 'post_on DESC',
-            rows     => $c->config->{per_page}->{message},
-            page     => $page_no,
+            rows => $c->config->{per_page}->{message},
+            page => $page_no,
         }
     );
     my @messages = $it->all;
@@ -137,16 +130,15 @@ sub message : LocalRegex('^(\d+)$') {
 
     my $message_id = $c->req->snippets->[0];
 
-    my $message =
-        $c->model('DBIC')->resultset('Message')
+    my $message
+        = $c->model('DBIC')->resultset('Message')
         ->find( { message_id => $message_id, },
         { prefetch => [ 'sender', 'recipient' ], } );
     $c->stash->{message} = $message;
 
     # mark as read
     $c->model('DBIC')->resultset('MessageUnread')->search(
-        {
-            message_id => $message_id,
+        {   message_id => $message_id,
             user_id    => $c->user->user_id,
         }
     )->delete;
@@ -159,14 +151,12 @@ sub delete : LocalRegex('^(\d+)/delete$') {
 
     my $message_id = $c->req->snippets->[0];
 
-    my $message =
-        $c->model('DBIC')->resultset('Message')
+    my $message = $c->model('DBIC')->resultset('Message')
         ->find( { message_id => $message_id, } );
 
     # mark as read
     $c->model('DBIC')->resultset('MessageUnread')->search(
-        {
-            message_id => $message_id,
+        {   message_id => $message_id,
             user_id    => $c->user->user_id,
         }
     )->delete;
@@ -179,17 +169,14 @@ sub delete : LocalRegex('^(\d+)/delete$') {
     if ( $c->user->user_id == $message->from_id ) {    # outbox
         if ( $message->to_status eq 'deleted' ) {
             $c->model('Message')->remove_from_db( $c, $message_id );
-        }
-        else {
+        } else {
             $message->update( { from_status => 'deleted' } );
         }
         $c->res->redirect('/message/outbox');
-    }
-    elsif ( $c->user->user_id == $message->to_id ) {    # inbox
+    } elsif ( $c->user->user_id == $message->to_id ) {    # inbox
         if ( $message->from_status eq 'deleted' ) {
             $c->model('Message')->remove_from_db( $c, $message_id );
-        }
-        else {
+        } else {
             $message->update( { to_status => 'deleted' } );
         }
         $c->res->redirect('/message/inbox');

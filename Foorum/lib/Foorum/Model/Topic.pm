@@ -9,11 +9,11 @@ sub get {
     my ( $self, $c, $forum_id, $topic_id, $attrs ) = @_;
 
     my @extra_attrs;
-    push @extra_attrs, ( prefetch => ['author'] ) if ( $attrs->{with_author} );
+    push @extra_attrs, ( prefetch => ['author'] )
+        if ( $attrs->{with_author} );
 
     my $topic = $c->model('DBIC')->resultset('Topic')->search(
-        {
-            topic_id => $topic_id,
+        {   topic_id => $topic_id,
             forum_id => $forum_id,
         },
         { @extra_attrs, }
@@ -21,7 +21,9 @@ sub get {
 
     # print error if the topic is non-exist
     $c->detach( '/print_error', ['Non-existent topic'] ) unless ($topic);
-    $c->detach( '/print_error', ['Status: Banned'] ) if ($topic->status eq 'banned' and not $c->model('Policy')->is_moderator( $c, $forum_id ));
+    $c->detach( '/print_error', ['Status: Banned'] )
+        if ( $topic->status eq 'banned'
+        and not $c->model('Policy')->is_moderator( $c, $forum_id ) );
 
     $c->stash->{topic} = $topic;
 
@@ -37,8 +39,7 @@ sub remove {
     # delete comments with upload
     my $total_replies = -1;    # since one comment is topic indeed.
     my $comment_rs = $c->model('DBIC::Comment')->search(
-        {
-            object_type => 'thread',
+        {   object_type => 'thread',
             object_id   => $topic_id,
         }
     );
@@ -50,8 +51,7 @@ sub remove {
     # log action
     $c->model('Log')->log_action(
         $c,
-        {
-            action      => 'delete',
+        {   action      => 'delete',
             object_type => 'topic',
             object_id   => $topic_id,
             forum_id    => $forum_id,
@@ -60,13 +60,13 @@ sub remove {
     );
 
     # update last
-    my $lastest =
-        $c->model('DBIC')->resultset('Topic')->find( { forum_id => $forum_id },
+    my $lastest
+        = $c->model('DBIC')->resultset('Topic')
+        ->find( { forum_id => $forum_id },
         { order_by => 'last_update_date DESC', } );
     my $last_post_id = $lastest ? $lastest->topic_id : 0;
     $c->model('DBIC::Forum')->search( { forum_id => $forum_id, } )->update(
-        {
-            total_topics  => \'total_topics - 1',
+        {   total_topics  => \'total_topics - 1',
             last_post_id  => $last_post_id,
             total_replies => \"total_replies - $total_replies",
         }

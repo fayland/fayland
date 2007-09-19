@@ -24,9 +24,9 @@ __PACKAGE__->config(
     COMPILE_EXT  => '.ttp1',
     STASH        => Template::Stash::XS->new,
     FILTERS      => {
-        email_obfuscate => sub               { obfuscate_email_address(shift) },
-        decodeHTML      => sub               { decodeHTML(shift) },
-        code2country    => [ \&code2country, 1 ],
+        email_obfuscate => sub { obfuscate_email_address(shift) },
+        decodeHTML      => sub { decodeHTML(shift) },
+        code2country => [ \&code2country, 1 ],
     }
 );
 
@@ -48,8 +48,7 @@ sub render {
 
     if ( $vars->{no_wrapper} ) {
         $self->template->service->{WRAPPER} = [];
-    }
-    else {
+    } else {
         $self->template->service->{WRAPPER} = ['wrapper.html'];
     }
 

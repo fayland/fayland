@@ -34,7 +34,8 @@ sub default : Private {
     $c->form(
         username => [qw/NOT_BLANK/],
         password => [ qw/NOT_BLANK/, [qw/LENGTH 6 20/] ],
-        { passwords => [ 'password', 'confirm_password' ] } => ['DUPLICATION'],
+        { passwords => [ 'password', 'confirm_password' ] } =>
+            ['DUPLICATION'],
     );
     return if ( $c->form->has_error );
 
@@ -60,8 +61,7 @@ sub default : Private {
     my $computed = $d->digest;
 
     my $user = $c->model('DBIC')->resultset('User')->create(
-        {
-            username    => $username,
+        {   username    => $username,
             nickname    => $c->req->param('nickname') || $username,
             password    => $computed,
             email       => $email,
@@ -77,15 +77,12 @@ sub default : Private {
 
         # send activation code
         $c->model('Email')->send_activation( $c, $user );
-        $c->res->redirect("/register/activation/$username");    # to activation
-    }
-    else {
+        $c->res->redirect("/register/activation/$username");   # to activation
+    } else {
         $c->login( $username, $password );
         $c->forward(
             '/print_message',
-            [
-                {
-                    msg => 'register success!',
+            [   {   msg => 'register success!',
                     url => '/',
                 }
             ]
@@ -105,26 +102,23 @@ sub activation : Local {
         unless ($activation_code);
 
     $c->stash(
-        {
-            template => 'register/activation.html',
+        {   template => 'register/activation.html',
             username => $username,
         }
     );
     return unless ( $username and $activation_code );
 
-    my $user = $c->model('User')->get($c, { username => $username } );
+    my $user = $c->model('User')->get( $c, { username => $username } );
     $c->detach( '/print_error', ['ERROR_USER_NON_EXIST'] ) unless ($user);
 
-    my $activation_rs =
-        $c->model('DBIC')->resultset('UserActivation')
+    my $activation_rs = $c->model('DBIC')->resultset('UserActivation')
         ->find( { user_id => $user->user_id } );
     unless ($activation_rs) {
         if ( $user->status eq 'unauthorized' ) {    # new account
             $c->model('Email')->send_activation( $c, $user );
             return $c->res->redirect(
                 '/register/activation/' . $user->username );
-        }
-        else {
+        } else {
             return $c->res->redirect('/profile/edit');
         }
     }
@@ -135,21 +129,20 @@ sub activation : Local {
         if ( $activation_rs->new_email ) {
             @extra_update = ( 'email', $activation_rs->new_email );
         }
-        $c->model('User')->update($c, $user,
-            {
-                status => 'authorized',
+        $c->model('User')->update(
+            $c, $user,
+            {   status => 'authorized',
                 @extra_update,
             }
         );
         $activation_rs->delete;
 
-        # login will be failed since the $user->password is SHA1 Hashed.
-        # $c->login( $username, $user->password );
-        # so instead, we use set_authenticated, check Catalyst::Plugin::Authentication
+# login will be failed since the $user->password is SHA1 Hashed.
+# $c->login( $username, $user->password );
+# so instead, we use set_authenticated, check Catalyst::Plugin::Authentication
         $c->set_authenticated($user);
         $c->res->redirect('/profile/edit');
-    }
-    else {
+    } else {
         $c->stash->{'ERROR_UNMATCHED'} = 1;
     }
 }
@@ -162,8 +155,7 @@ sub import_contacts : Local {
     my $email = $c->req->param('email') || $c->user->email;
 
     $c->stash(
-        {
-            template => 'register/import_contacts.html',
+        {   template => 'register/import_contacts.html',
             email    => $email,
         }
     );

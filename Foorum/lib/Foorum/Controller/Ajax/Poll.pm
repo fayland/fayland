@@ -28,8 +28,7 @@ sub vote : Local {
     return $c->res->body('ALREADY VOTED')
         if (
         $c->model('DBIC::PollResult')->count(
-            {
-                poster_id => $c->user->user_id,
+            {   poster_id => $c->user->user_id,
                 poll_id   => $poll_id,
             }
         )
@@ -39,16 +38,14 @@ sub vote : Local {
     foreach (@option_id) {
         next unless (/^\d+$/);
         my $has_it = $c->model('DBIC::PollOption')->search(
-            {
-                poll_id   => $poll_id,
+            {   poll_id   => $poll_id,
                 option_id => $_,
             }
         )->update( { vote_no => \"vote_no + 1", } );
         $c->log->debug("has_it: $has_it");
         if ( $has_it and $has_it ne '0E0' ) {
             $c->model('DBIC::PollResult')->create(
-                {
-                    poll_id   => $poll_id,
+                {   poll_id   => $poll_id,
                     option_id => $_,
                     poster_id => $c->user->user_id,
                     poster_ip => $c->req->address,

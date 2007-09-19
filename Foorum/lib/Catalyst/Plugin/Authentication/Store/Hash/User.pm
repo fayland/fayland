@@ -5,15 +5,21 @@ use warnings;
 use base qw/Catalyst::Plugin::Authentication::User Class::Accessor::Fast/;
 use Set::Object ();
 
-use overload '""' => sub { shift->id }, 'bool' => sub { 1 }, fallback => 1;
+use overload '""' => sub { shift->id }, 'bool' => sub {1}, fallback => 1;
 
 __PACKAGE__->mk_accessors(qw/id config obj store/);
 
 sub new {
     my ( $class, $id, $config ) = @_;
 
-    my $query = @{$config->{auth}{user_field}} > 1
-        ? { -or => [ map { { $_ => $id } } @{$config->{auth}{user_field}} ] }
+    my $query = @{ $config->{auth}{user_field} } > 1
+        ? {
+        -or => [
+            map {
+                { $_ => $id }
+                } @{ $config->{auth}{user_field} }
+        ]
+        }
         : { $config->{auth}{user_field}[0] => $id };
 
     my $user_obj = $config->{auth}{user_class}->get_user($query);
@@ -26,9 +32,9 @@ sub new {
     }, $class;
 }
 
-*user = \&obj;
+*user             = \&obj;
 *crypted_password = \&password;
-*hashed_password = \&password;
+*hashed_password  = \&password;
 
 sub hash_algorithm { shift->config->{auth}{password_hash_type} }
 
@@ -51,17 +57,15 @@ sub supported_features {
     $self->config->{auth}{password_type} ||= 'clear';
 
     return {
-        password => {
-            $self->config->{auth}{password_type} => 1,
-        },
-        session         => 1,
-        session_data    => $self->{config}{auth}{session_data_field} ? 1 : 0,
-        roles           => 0,
+        password => { $self->config->{auth}{password_type} => 1, },
+        session  => 1,
+        session_data => $self->{config}{auth}{session_data_field} ? 1 : 0,
+        roles => 0,
     };
 }
 
 sub get_session_data {
-    my ( $self ) = @_;
+    my ($self) = @_;
     my $col = $self->config->{auth}{session_data_field};
     return $self->obj->{$col};
 }
@@ -72,7 +76,7 @@ sub for_session {
 
 sub AUTOLOAD {
     my $self = shift;
-    (my $method) = (our $AUTOLOAD =~ /([^:]+)$/);
+    ( my $method ) = ( our $AUTOLOAD =~ /([^:]+)$/ );
     return if $method eq "DESTROY";
 
     $self->obj->{$method};

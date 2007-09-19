@@ -10,7 +10,8 @@ sub error_log : Local {
 
     my $level = $c->req->param('level');
     my @extra_cols;
-    if ( grep { $level eq $_ } ( 'info', 'debug', 'warn', 'error', 'fatal' ) ) {
+    if ( grep { $level eq $_ } ( 'info', 'debug', 'warn', 'error', 'fatal' ) )
+    {
         push @extra_cols, ( 'level', $level );
         $c->stash->{has_level}   = 1;
         $c->stash->{url_postfix} = '?level=' . $level;
@@ -23,9 +24,8 @@ sub error_log : Local {
 
     my $page = get_page_from_url( $c->req->path );
     my $rs   = $c->model('DBIC')->resultset('LogError')->search(
-        { @extra_cols },
-        {
-            rows     => 20,
+        {@extra_cols},
+        {   rows     => 20,
             page     => $page,
             order_by => 'error_id DESC',
         }
@@ -34,8 +34,7 @@ sub error_log : Local {
     my @errors = $rs->all;
 
     $c->stash(
-        {
-            template   => 'admin/log/error_log.html',
+        {   template   => 'admin/log/error_log.html',
             errors     => \@errors,
             pager      => $pager,
             url_prefix => '/admin/log/error_log',

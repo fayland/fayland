@@ -9,11 +9,11 @@ use Data::Dumper;
 sub execute {
     my $self = shift;
     my ( $controller, $c ) = @_;
-    
-    $self->NEXT::execute( @_ );
-    
+
+    $self->NEXT::execute(@_);
+
     my $loadtime = tv_interval( $c->stash->{start_t0}, [gettimeofday] );
-    $c->model('Log')->log_path($c, $loadtime);
+    $c->model('Log')->log_path( $c, $loadtime );
 }
 
 =pod

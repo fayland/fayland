@@ -11,8 +11,7 @@ sub flush_cache : Local {
     my $result = $c->cache->flush_all;
 
     $c->stash(
-        {
-            template => 'admin/index.html',
+        {   template => 'admin/index.html',
             message  => Dumper( \$result ),
         }
     );
@@ -24,8 +23,7 @@ sub cache_stat : Local {
     my $result = $c->cache->stats;
 
     $c->stash(
-        {
-            template => 'admin/index.html',
+        {   template => 'admin/index.html',
             message  => Dumper( \$result ),
         }
     );

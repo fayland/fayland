@@ -11,7 +11,8 @@ use Data::Dumper;
 sub forum_for_admin : PathPart('forumadmin') Chained('/') CaptureArgs(1) {
     my ( $self, $c, $forum_code ) = @_;
 
-    my $forum = $c->model('Forum')->get( $c, $forum_code, { level => 'data' } );
+    my $forum
+        = $c->model('Forum')->get( $c, $forum_code, { level => 'data' } );
 
     unless ( $c->model('Policy')->is_admin( $c, $forum->forum_id ) ) {
         $c->detach( '/print_error', ['ERROR_PERMISSION_DENIED'] );
@@ -83,9 +84,8 @@ sub basic : Chained('forum_for_admin') Args(0) {
         next if ( $_ eq $admin_username );    # avoid the same man
         last
             if ( scalar @moderator_users > 2 )
-            ;                                 # only allow 3 moderators at most
-        my $moderator_user =
-            $c->model('User')->get($c, { username => $_ } );
+            ;    # only allow 3 moderators at most
+        my $moderator_user = $c->model('User')->get( $c, { username => $_ } );
         unless ($moderator_user) {
             $c->stash->{non_existence_user} = $_;
             return $c->set_invalid_form( moderators => 'ADMIN_NONEXISTENCE' );
@@ -103,8 +103,7 @@ sub basic : Chained('forum_for_admin') Args(0) {
     push @extra_update, ( forum_code => $forum_code )
         if ( $c->stash->{is_site_admin} );
     $forum->update(
-        {
-            name        => $name,
+        {   name        => $name,
             description => $description,
 
             #        type => 'classical',
@@ -116,16 +115,14 @@ sub basic : Chained('forum_for_admin') Args(0) {
     # delete before create
     $c->model('Policy')->remove_user_role(
         $c,
-        {
-            role  => 'moderator',
+        {   role  => 'moderator',
             field => $forum->forum_id,
         }
     );
     foreach (@moderator_users) {
         $c->model('Policy')->create_user_role(
             $c,
-            {
-                user_id => $_->user_id,
+            {   user_id => $_->user_id,
                 role    => 'moderator',
                 field   => $forum->forum_id,
             }
@@ -145,8 +142,8 @@ sub style : Chained('forum_for_admin') Args(0) {
     $c->stash->{template} = 'forumadmin/style.html';
 
     # style.yml and style.css
-    my $yml =
-        $c->path_to( 'style', 'custom', "forum$forum_id\.yml" )->stringify;
+    my $yml
+        = $c->path_to( 'style', 'custom', "forum$forum_id\.yml" )->stringify;
 
     unless ( $c->req->method eq 'POST' ) {
         if ( -e $yml ) {
@@ -187,17 +184,15 @@ sub style : Chained('forum_for_admin') Args(0) {
     return if ( $c->form->has_error );
 
     # save the style.yml and style.css
-    my $css =
-        $c->path_to( 'root', 'static', 'css', 'custom', "forum$forum_id\.css" )
-        ->stringify;
+    my $css = $c->path_to( 'root', 'static', 'css', 'custom',
+        "forum$forum_id\.css" )->stringify;
 
     my $style = $c->req->params;
 
     my $css_content = $c->view('TT')->render(
         $c,
         'style/style.css',
-        {
-            no_wrapper => 1,
+        {   no_wrapper => 1,
             style      => $style,
         }
     );
@@ -212,8 +207,7 @@ sub style : Chained('forum_for_admin') Args(0) {
     my $yml_content = $c->view('TT')->render(
         $c,
         'style/style.yml',
-        {
-            no_wrapper => 1,
+        {   no_wrapper => 1,
             style      => $style,
         }
     );
@@ -234,11 +228,10 @@ sub del_style : Chained('forum_for_admin') Args(0) {
     my $forum    = $c->stash->{forum};
     my $forum_id = $forum->forum_id;
 
-    my $yml =
-        $c->path_to( 'style', 'custom', "forum$forum_id\.yml" )->stringify;
-    my $css =
-        $c->path_to( 'root', 'static', 'css', 'custom', "forum$forum_id\.css" )
-        ->stringify;
+    my $yml
+        = $c->path_to( 'style', 'custom', "forum$forum_id\.yml" )->stringify;
+    my $css = $c->path_to( 'root', 'static', 'css', 'custom',
+        "forum$forum_id\.css" )->stringify;
 
     unlink $yml if ( -e $yml );
     unlink $css if ( -e $css );
@@ -253,16 +246,14 @@ sub announcement : Chained('forum_for_admin') Args(0) {
     my $forum_id = $forum->forum_id;
 
     my $announce = $c->model('DBIC::Comment')->find(
-        {
-            object_id   => $forum_id,
+        {   object_id   => $forum_id,
             object_type => 'announcement',
         }
     );
 
     unless ( $c->req->method eq 'POST' ) {
         $c->stash(
-            {
-                template => 'forumadmin/announcement.html',
+            {   template => 'forumadmin/announcement.html',
                 announce => $announce,
             }
         );
@@ -278,29 +269,24 @@ sub announcement : Chained('forum_for_admin') Args(0) {
         if ($announce) {
             $title = encodeHTML($title);
             $announce->update(
-                {
-                    text      => $text,
+                {   text      => $text,
                     update_on => \"NOW()",
                     author_id => $c->user->user_id,
                     title     => $title,
                 }
             );
-        }
-        else {
+        } else {
             $c->model('Comment')->create(
                 $c,
-                {
-                    object_type => 'announcement',
+                {   object_type => 'announcement',
                     object_id   => $forum_id,
                     forum_id    => $forum_id,
                 }
             );
         }
-    }
-    else {
+    } else {
         $c->model('DBIC::Comment')->search(
-            {
-                object_id   => $forum_id,
+            {   object_id   => $forum_id,
                 object_type => 'announcement',
             }
         )->delete;
@@ -329,8 +315,7 @@ sub change_membership : Chained('forum_for_admin') Args(0) {
     }
 
     my $rs = $c->model('DBIC::UserRole')->count(
-        {
-            field   => $forum_id,
+        {   field   => $forum_id,
             user_id => $user_id,
             role    => $from,
         }
@@ -339,8 +324,8 @@ sub change_membership : Chained('forum_for_admin') Args(0) {
 
     if ( $from eq 'user' and ( $to eq 'rejected' or $to eq 'blocked' ) ) {
         $forum->update( { total_members => \"total_members - 1" } );
-    }
-    elsif ( ( $from eq 'rejected' or $from eq 'blocked' or $from eq 'pending' )
+    } elsif (
+        ( $from eq 'rejected' or $from eq 'blocked' or $from eq 'pending' )
         and $to eq 'user' )
     {
         $forum->update( { total_members => \"total_members + 1" } );
@@ -351,8 +336,8 @@ sub change_membership : Chained('forum_for_admin') Args(0) {
         user_id => $user_id,
         role    => $from,
     };
-    $c->model('DBIC::UserRole')->search( $where )->update( { role => $to } );
-    $c->model('Policy')->clear_cached_policy($c, $where);
+    $c->model('DBIC::UserRole')->search($where)->update( { role => $to } );
+    $c->model('Policy')->clear_cached_policy( $c, $where );
 
     $c->res->body('OK');
 }

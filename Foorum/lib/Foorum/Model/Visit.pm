@@ -10,8 +10,7 @@ sub make_visited {
 
     return unless ( $c->user_exists );
     $c->model('DBIC::Visit')->update_or_create(
-        {
-            user_id     => $c->user->user_id,
+        {   user_id     => $c->user->user_id,
             object_type => $object_type,
             object_id   => $object_id,
             time        => time(),
@@ -23,8 +22,7 @@ sub make_un_visited {
     my ( $self, $c, $object_type, $object_id ) = @_;
 
     $c->model('DBIC::Visit')->search(
-        {
-            user_id     => { '!=', $c->user->user_id },
+        {   user_id     => { '!=', $c->user->user_id },
             object_type => $object_type,
             object_id   => $object_id,
         }
@@ -37,8 +35,7 @@ sub is_visited {
     return {} unless ( $c->user_exists );
     my $visit;
     my @visits = $c->model('DBIC::Visit')->search(
-        {
-            user_id     => $c->user->user_id,
+        {   user_id     => $c->user->user_id,
             object_type => $object_type,
             object_id   => $object_id,
         },

@@ -23,7 +23,7 @@ sub from_session {
     return $id if ref $id;
 
     # XXX: hits the database on every request?  Not good...
-    return $self->get_user( $id );
+    return $self->get_user($id);
 }
 
 sub get_user {
@@ -31,16 +31,17 @@ sub get_user {
 
     my $user = $self->{auth}{catalyst_user_class}->new( $id, { %{$self} } );
 
-    if ( $user ) {
-        $user->store( $self );
+    if ($user) {
+        $user->store($self);
         return $user;
     }
     return undef;
 }
 
 sub user_supports {
+
     # this can work as a class method
-    shift->{auth}{catalyst_user_class}->supports( @_ );
+    shift->{auth}{catalyst_user_class}->supports(@_);
 }
 
 1;

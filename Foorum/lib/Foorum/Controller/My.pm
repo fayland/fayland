@@ -22,8 +22,7 @@ sub starred : Local {
 
     my $rs = $c->model('DBIC::Star')->search(
         { user_id => $c->user->user_id, },
-        {
-            order_by => \'time DESC',
+        {   order_by => \'time DESC',
             rows     => 20,
             page     => $page,
         }
@@ -33,8 +32,11 @@ sub starred : Local {
 
     my @starred_items;
     foreach my $rec (@objects) {
-        my $object = $c->model('Object')->get_object_by_type_id( $c,
-            { object_type => $rec->object_type, object_id => $rec->object_id, }
+        my $object = $c->model('Object')->get_object_by_type_id(
+            $c,
+            {   object_type => $rec->object_type,
+                object_id   => $rec->object_id,
+            }
         );
         next unless ($object);
         push @starred_items,
@@ -46,8 +48,7 @@ sub starred : Local {
     }
 
     $c->stash(
-        {
-            template      => 'my/starred.html',
+        {   template      => 'my/starred.html',
             starred_items => \@starred_items,
             pager         => $rs->pager,
             url_prefix    => '/my/starred',
@@ -61,8 +62,7 @@ sub topics : Local {
     my $page = get_page_from_url( $c->req->path );
     my $rs   = $c->model('DBIC::Topic')->search(
         { author_id => $c->user->user_id, },
-        {
-            order_by => \'last_update_date DESC',
+        {   order_by => \'last_update_date DESC',
             prefetch => [ 'last_updator', 'forum' ],
             join     => [qw/forum/],
             rows     => 20,
@@ -71,8 +71,7 @@ sub topics : Local {
     );
 
     $c->stash(
-        {
-            template    => 'site/recent.html',
+        {   template    => 'site/recent.html',
             topics      => [ $rs->all ],
             pager       => $rs->pager,
             recent_type => 'my',

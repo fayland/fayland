@@ -13,8 +13,7 @@ sub error_log {
 
     return unless ($text);
     $schema->resultset('LogError')->create(
-        {
-            level => $level || 'debug',
+        {   level => $level || 'debug',
             text => $text,
             time => \'NOW()',
         }

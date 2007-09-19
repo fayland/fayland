@@ -10,21 +10,18 @@ sub send_activation {
     my ( $self, $c, $user, $new_email ) = @_;
 
     my $activation_code;
-    my $rs =
-        $c->model('DBIC')->resultset('UserActivation')
+    my $rs = $c->model('DBIC')->resultset('UserActivation')
         ->find( { user_id => $user->user_id, } );
     if ($rs) {
         $activation_code = $rs->activation_code;
-    }
-    else {
+    } else {
         $activation_code = generate_random_word(10);
         my @extra_insert;
         if ($new_email) {
             @extra_insert = ( 'new_email', $new_email );
         }
         $c->model('DBIC')->resultset('UserActivation')->create(
-            {
-                user_id         => $user->user_id,
+            {   user_id         => $user->user_id,
                 activation_code => $activation_code,
                 @extra_insert,
             }
@@ -34,8 +31,7 @@ sub send_activation {
     my $email_body = $c->view('TT')->render(
         $c,
         $c->stash->{lang} . '/email/activation.html',
-        {
-            no_wrapper      => 1,
+        {   no_wrapper      => 1,
             username        => $user->username,
             activation_code => $activation_code,
             new_email       => $new_email,
@@ -43,8 +39,7 @@ sub send_activation {
     );
 
     $c->model('DBIC')->resultset('ScheduledEmail')->create(
-        {
-            email_type => 'activation',
+        {   email_type => 'activation',
             from_email => $c->config->{mail}->{from_email},
             to_email   => $user->email,
             subject    => 'Your Activation Code In ' . $c->config->{name},
@@ -61,16 +56,14 @@ sub send_forget_password {
     my $email_body = $c->view('TT')->render(
         $c,
         $c->stash->{lang} . '/email/forget_password.html',
-        {
-            no_wrapper => 1,
+        {   no_wrapper => 1,
             username   => $username,
             password   => $password,
         }
     );
 
     $c->model('DBIC')->resultset('ScheduledEmail')->create(
-        {
-            email_type => 'forget_password',
+        {   email_type => 'forget_password',
             from_email => $c->config->{mail}->{from_email},
             to_email   => $email,
             subject    => 'Your Password For '

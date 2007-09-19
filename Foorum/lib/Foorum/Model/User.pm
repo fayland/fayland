@@ -4,8 +4,8 @@ use strict;
 use warnings;
 use base 'Catalyst::Model';
 use Data::Dumper;
-use Object::Signature   ();
-use Scalar::Util        ();
+use Object::Signature ();
+use Scalar::Util      ();
 
 # Usage:
 # $c->model('User')->get($c, { user_id => ? } );
@@ -13,27 +13,27 @@ use Scalar::Util        ();
 # $c->model('User')->get($c, { email => ? } );
 sub get {
     my ( $self, $c, $cond ) = @_;
-    
+
     my $cache_key = 'user|' . Object::Signature::signature($cond);
-    
-    if ($c->stash->{"__user_caches|$cache_key"}) { # avoid memcache get
+
+    if ( $c->stash->{"__user_caches|$cache_key"} ) {    # avoid memcache get
         $c->log->debug('get user from stash');
         return $c->stash->{"__user_caches|$cache_key"};
     }
-    
+
     my $cache_val = $c->cache->get($cache_key);
-    
+
     if ($cache_val) {
         $c->stash->{"__user_caches|$cache_key"} = $cache_val;
-        $c->log->debug('get user from cache: ' . Dumper(\$cond));
+        $c->log->debug( 'get user from cache: ' . Dumper( \$cond ) );
         return $cache_val;
     }
-    
-    $cache_val = get_user_from_db($self, $c, $cond);
+
+    $cache_val = get_user_from_db( $self, $c, $cond );
     return unless ($cache_val);
-    
-    $c->log->debug('set user to cache: ' . Dumper(\$cond));
-    $c->cache->set($cache_key, $cache_val, 7200); # two hours
+
+    $c->log->debug( 'set user to cache: ' . Dumper( \$cond ) );
+    $c->cache->set( $cache_key, $cache_val, 7200 );    # two hours
     $c->stash->{"__user_caches|$cache_key"} = $cache_val;
 }
 
@@ -41,79 +41,87 @@ sub get {
 # $c->model('User')->get_multi($c, user_id => [1, 2, 3]  );
 # $c->model('User')->get_multi($c, username => ['fayland', 'testman'] );
 sub get_multi {
-    my ($self, $c, $key, $val) = @_;
-    
-    my @mem_keys; my %val_map_key;
+    my ( $self, $c, $key, $val ) = @_;
+
+    my @mem_keys;
+    my %val_map_key;
     foreach (@$val) {
-        my $cache_key = 'user|' . Object::Signature::signature( { $key => $_ } );
+        my $cache_key
+            = 'user|' . Object::Signature::signature( { $key => $_ } );
         push @mem_keys, $cache_key;
-        $val_map_key{ $_ } = $cache_key;
+        $val_map_key{$_} = $cache_key;
     }
-    
+
     my $users = $c->cache->get_multi(@mem_keys);
-    
+
     my %return_users;
     foreach my $v (@$val) {
         if ( exists $users->{ $val_map_key{$v} } ) {
-            $return_users{ $v } = $users->{ $val_map_key{$v} };
+            $return_users{$v} = $users->{ $val_map_key{$v} };
         } else {
-            $return_users{ $v } = get_user_from_db($self, $c, { $key => $v } );
-            next unless ($return_users{ $v });
+            $return_users{$v} = get_user_from_db( $self, $c, { $key => $v } );
+            next unless ( $return_users{$v} );
             $c->log->debug("set user to cache in multi: $key => $v");
-            $c->cache->set($val_map_key{$v}, $return_users{ $v }, 7200); # two hours
+            $c->cache->set( $val_map_key{$v}, $return_users{$v}, 7200 )
+                ;    # two hours
         }
     }
-    
+
     return \%return_users;
 }
 
 sub get_user_from_db {
-    my ($self, $c, $cond) = @_;
-    
-    my $user = $c->model('DBIC')->resultset('User')->find( $cond );
+    my ( $self, $c, $cond ) = @_;
+
+    my $user = $c->model('DBIC')->resultset('User')->find($cond);
     return unless ($user);
-        
+
     # user_details
-    my $user_details = $c->model('DBIC')->resultset('UserDetails')->find( { user_id => $user->user_id } );
+    my $user_details = $c->model('DBIC')->resultset('UserDetails')
+        ->find( { user_id => $user->user_id } );
     $user_details = $user_details->{_column_data} if ($user_details);
-        
+
     # user role
-    my @roles = $c->model('DBIC')->resultset('UserRole')->search( {
-        user_id => $user->user_id,
-    } )->all;
+    my @roles = $c->model('DBIC')->resultset('UserRole')
+        ->search( { user_id => $user->user_id, } )->all;
     my $roles;
     foreach (@roles) {
         $roles->{ $_->field }->{ $_->role } = 1;
     }
-        
+
     # user profile photo
     my $profile_photo;
-    if ($user->primary_photo_id) {
-        $profile_photo = $c->model('Upload')->get($c, $user->primary_photo_id);
+    if ( $user->primary_photo_id ) {
+        $profile_photo
+            = $c->model('Upload')->get( $c, $user->primary_photo_id );
     }
-        
-    $user = $user->{_column_data};
-    $user->{details} = $user_details;
-    $user->{roles} = $roles;
+
+    $user                  = $user->{_column_data};
+    $user->{details}       = $user_details;
+    $user->{roles}         = $roles;
     $user->{profile_photo} = $profile_photo;
     return $user;
 }
 
 sub delete_cache_by_user {
-    my ($self, $c, $user) = @_;
-    
+    my ( $self, $c, $user ) = @_;
+
     return unless ($user);
 
     if ( Scalar::Util::blessed($user)
-        and $user->isa('Catalyst::Plugin::Authentication::User') ){
+        and $user->isa('Catalyst::Plugin::Authentication::User') )
+    {
         $user = $user->obj;
     }
-    
+
     my @ckeys;
-    push @ckeys, 'user|' . Object::Signature::signature( { user_id => $user->{user_id} } );
-    push @ckeys, 'user|' . Object::Signature::signature( { username => $user->{username} } );
-    push @ckeys, 'user|' . Object::Signature::signature( { email => $user->{email} } );
-    
+    push @ckeys, 'user|'
+        . Object::Signature::signature( { user_id => $user->{user_id} } );
+    push @ckeys, 'user|'
+        . Object::Signature::signature( { username => $user->{username} } );
+    push @ckeys,
+        'user|' . Object::Signature::signature( { email => $user->{email} } );
+
     foreach my $ckey (@ckeys) {
         $c->cache->delete($ckey);
         $c->stash->{"__user_caches|$ckey"} = undef;
@@ -123,25 +131,25 @@ sub delete_cache_by_user {
 }
 
 sub delete_cache_by_user_cond {
-    my ($self, $c, $cond) = @_;
-    
-    my $user = $self->get($c, $cond);
-    $self->delete_cache_by_user($c, $user);
+    my ( $self, $c, $cond ) = @_;
+
+    my $user = $self->get( $c, $cond );
+    $self->delete_cache_by_user( $c, $user );
 }
 
 # call this update will delete cache.
 sub update {
-    my ($self, $c, $user, $update) = @_;
-    
+    my ( $self, $c, $user, $update ) = @_;
+
     if ( Scalar::Util::blessed($user)
-        and $user->isa('Catalyst::Plugin::Authentication::User') ){
+        and $user->isa('Catalyst::Plugin::Authentication::User') )
+    {
         $user = $user->obj;
     }
-    
-    $self->delete_cache_by_user($c, $user);
-    $c->model('DBIC')->resultset('User')->search( {
-        user_id => $user->{user_id},
-    } )->update($update);
+
+    $self->delete_cache_by_user( $c, $user );
+    $c->model('DBIC')->resultset('User')
+        ->search( { user_id => $user->{user_id}, } )->update($update);
 }
 
 =pod

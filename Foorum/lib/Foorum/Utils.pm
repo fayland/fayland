@@ -55,8 +55,7 @@ sub is_color {
     my $color = shift;
     if ( $color =~ /^\#[0-9a-zA-Z]{6}$/ ) {
         return 1;
-    }
-    else {
+    } else {
         return 0;
     }
 }

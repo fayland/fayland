@@ -19,8 +19,7 @@ sub auto : Private {
 sub default : Private {
     my ( $self, $c ) = @_;
 
-    my @forums =
-        $c->model('DBIC')->resultset('Forum')
+    my @forums = $c->model('DBIC')->resultset('Forum')
         ->search( {}, { order_by => 'forum_id', } )->all;
 
     $c->stash->{forums}   = \@forums;
@@ -60,7 +59,7 @@ sub create : Local {
 
     # validate the admin and moderators first
     my $total_members = 1;
-    my $admin_user = $c->model('User')->get($c, { username => $admin } );
+    my $admin_user = $c->model('User')->get( $c, { username => $admin } );
     unless ($admin_user) {
         return $c->set_invalid_form( admin => 'ADMIN_NONEXISTENCE' );
     }
@@ -71,8 +70,7 @@ sub create : Local {
         last
             if ( scalar @moderator_users > 2 )
             ;                        # only allow 3 moderators at most
-        my $moderator_user =
-            $c->model('User')->get($c, { username => $_ } );
+        my $moderator_user = $c->model('User')->get( $c, { username => $_ } );
         unless ($moderator_user) {
             $c->stash->{non_existence_user} = $_;
             return $c->set_invalid_form( moderators => 'ADMIN_NONEXISTENCE' );
@@ -84,8 +82,7 @@ sub create : Local {
     # insert data into table.
     my $policy = ( $private == 1 ) ? 'private' : 'public';
     my $forum = $c->model('DBIC::Forum')->create(
-        {
-            name          => $name,
+        {   name          => $name,
             forum_code    => $forum_code,
             description   => $description,
             forum_type    => 'classical',
@@ -95,8 +92,7 @@ sub create : Local {
     );
     $c->model('Policy')->create_user_role(
         $c,
-        {
-            user_id => $admin_user->user_id,
+        {   user_id => $admin_user->user_id,
             role    => 'admin',
             field   => $forum->forum_id,
         }
@@ -104,8 +100,7 @@ sub create : Local {
     foreach (@moderator_users) {
         $c->model('Policy')->create_user_role(
             $c,
-            {
-                user_id => $_->user_id,
+            {   user_id => $_->user_id,
                 role    => 'moderator',
                 field   => $forum->forum_id,
             }
@@ -113,8 +108,7 @@ sub create : Local {
     }
 
     $c->stash(
-        {
-            is_ok => 1,
+        {   is_ok => 1,
             forum => $forum,
         }
     );
@@ -141,8 +135,7 @@ sub merge_forums : Local {
     $c->stash->{template} = 'admin/forum/merge_forums.html';
     return unless ( $from_id and $to_id );
 
-    my $message =
-        $c->model('Forum')
+    my $message = $c->model('Forum')
         ->merge_forums( $c, { from_id => $from_id, to_id => $to_id } );
     $c->stash->{message} = ($message) ? 'OK' : 'FAIL';
 }

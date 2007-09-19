@@ -7,22 +7,23 @@ use Data::Dumper;
 use File::Remove qw(remove);
 use File::Path;
 use Foorum::Utils qw/generate_random_word/;
-use Scalar::Util        ();
+use Scalar::Util ();
 
 sub get {
     my ( $self, $c, $upload_id ) = @_;
-    
-    return unless ($upload_id =~ /^\d+$/);
+
+    return unless ( $upload_id =~ /^\d+$/ );
     my $cache_key = "upload|upload_id=$upload_id";
     my $cache_val = $c->cache->get($cache_key);
     return $cache_val if ($cache_val);
-    
-    my $upload = $c->model('DBIC')->resultset('Upload')->find( { upload_id => $upload_id } );
+
+    my $upload = $c->model('DBIC')->resultset('Upload')
+        ->find( { upload_id => $upload_id } );
     return unless ($upload);
-    
+
     $cache_val = $upload->{_column_data};
-    $c->cache->set($cache_key, $cache_val, 7200); # two hours
-    
+    $c->cache->set( $cache_key, $cache_val, 7200 );    # two hours
+
     return $cache_val;
 }
 
@@ -59,21 +60,20 @@ sub remove_file_by_upload_id {
 
 sub remove_by_upload {
     my ( $self, $c, $upload ) = @_;
-    
+
     if ( Scalar::Util::blessed($upload) ) {
         $upload = $upload->{_column_data};
     }
-    
+
     my $directory_1 = int( $upload->{upload_id} / 3200 / 3200 );
     my $directory_2 = int( $upload->{upload_id} / 3200 );
-    my $file =
-        $c->path_to( 'root', 'upload', $directory_1, $directory_2,
+    my $file = $c->path_to( 'root', 'upload', $directory_1, $directory_2,
         $upload->{filename} )->stringify;
     remove($file);
     $c->model('DBIC::Upload')->search( { upload_id => $upload->{upload_id} } )
         ->delete;
 
-    $c->cache->delete('upload|upload_id=' . $upload->{upload_id});
+    $c->cache->delete( 'upload|upload_id=' . $upload->{upload_id} );
 }
 
 sub add_file {
@@ -90,7 +90,8 @@ sub add_file {
     }
     ($filesize) = ( $filesize =~ /^(\d+\.?\d{0,1})/ );    # float(6,1)
 
-    my ( $filename_no_postfix, $filetype ) = ( $basename =~ /^(.*?)\.(\w+)$/ );
+    my ( $filename_no_postfix, $filetype )
+        = ( $basename =~ /^(.*?)\.(\w+)$/ );
     $filetype = lc($filetype);
     unless ( grep { $filetype eq $_ } @valid_types ) {
         $c->log->debug("UNSUPPORTED_FILETYPE, $filetype");
@@ -99,13 +100,12 @@ sub add_file {
     }
 
     if ( length($filename_no_postfix) > 30 ) {
-        $filename_no_postfix =
-            substr( $filename_no_postfix, 0, 30 );        # varchar(36)
+        $filename_no_postfix
+            = substr( $filename_no_postfix, 0, 30 );    # varchar(36)
         $basename = $filename_no_postfix . ".$filetype";
     }
     my $upload_rs = $c->model('DBIC::Upload')->create(
-        {
-            user_id  => $c->user->user_id,
+        {   user_id  => $c->user->user_id,
             forum_id => $info->{forum_id} || 0,
             filename => $basename,
             filesize => $filesize,
@@ -117,21 +117,21 @@ sub add_file {
 
     my $directory_1 = int( $upload_id / 3200 / 3200 );
     my $directory_2 = int( $upload_id / 3200 );
-    my $upload_dir =
-        $c->path_to( 'root', 'upload', $directory_1, $directory_2 )->stringify;
+    my $upload_dir
+        = $c->path_to( 'root', 'upload', $directory_1, $directory_2 )
+        ->stringify;
     mkpath( [$upload_dir], 0, 0777 );    # mkdir -p
 
-    my $target =
-        $c->path_to( 'root', 'upload', $directory_1, $directory_2, $basename )
-        ->stringify;
+    my $target = $c->path_to( 'root', 'upload', $directory_1, $directory_2,
+        $basename )->stringify;
 
     # rename if exist
     if ( -e $target ) {
         my $random_filename;
         while ( -e $target ) {
             $random_filename = generate_random_word(15) . ".$filetype";
-            $target =
-                $c->path_to( 'root', 'upload', $directory_1, $directory_2,
+            $target
+                = $c->path_to( 'root', 'upload', $directory_1, $directory_2,
                 $random_filename )->stringify;
         }
         $upload_rs->update( { filename => $random_filename } );

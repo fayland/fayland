@@ -32,17 +32,14 @@ sub new_message : Local {
 
     return $c->res->body(' ') unless ( $c->user_exists );
 
-    my $count =
-        $c->model('DBIC::MessageUnread')
+    my $count = $c->model('DBIC::MessageUnread')
         ->count( { user_id => $c->user->user_id, } );
 
     if ($count) {
-        $c->res->body(
-            "<a href='/message'><span style='color:red'>"
-            . $c->localize("You have new messages ([_1])", $count)
-            . "</span></a>");
-    }
-    else {
+        $c->res->body( "<a href='/message'><span style='color:red'>"
+                . $c->localize( "You have new messages ([_1])", $count )
+                . "</span></a>" );
+    } else {
         return $c->res->body(' ');
     }
 }
@@ -64,7 +61,8 @@ sub loadstyle : Local {
 
     my $output;
 
-    my $style_file = $c->path_to( 'style', 'system', "$style\.yml" )->stringify;
+    my $style_file
+        = $c->path_to( 'style', 'system', "$style\.yml" )->stringify;
     return unless ( -e $style_file );
 
     $style = LoadFile($style_file);

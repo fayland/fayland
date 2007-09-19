@@ -9,7 +9,7 @@ sub get_user {
 
     my $c = ${ Foorum->config->{user_auth} };
     my $user = $c->model('User')->get( $c, @_ );
-    
+
     return $user;
 }
 

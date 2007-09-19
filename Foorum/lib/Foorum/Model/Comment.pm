@@ -22,15 +22,12 @@ sub get_comments_by_object {
     if ($cache_value) {
         $c->log->debug('Cache: get comments');
         @comments = @{ $cache_value->{comments} };
-    }
-    else {
+    } else {
         my $it = $c->model('DBIC')->resultset('Comment')->search(
-            {
-                object_type => $object_type,
+            {   object_type => $object_type,
                 object_id   => $object_id,
             },
-            {
-                order_by => 'post_on',
+            {   order_by => 'post_on',
                 prefetch => [ 'upload', 'author' ],
             }
         );
@@ -43,14 +40,12 @@ sub get_comments_by_object {
             $rec->{author} = $author->{_column_data} if ($author);
 
             # filter format by Foorum::Filter
-            $rec->{title} =
-                $c->model('FilterWord')
+            $rec->{title} = $c->model('FilterWord')
                 ->convert_offensive_word( $c, $rec->{title} );
-            $rec->{text} =
-                $c->model('FilterWord')
+            $rec->{text} = $c->model('FilterWord')
                 ->convert_offensive_word( $c, $rec->{text} );
-            $rec->{text} =
-                filter_format( $rec->{text}, { format => $rec->{formatter} } );
+            $rec->{text} = filter_format( $rec->{text},
+                { format => $rec->{formatter} } );
 
             push @comments, $rec;
         }
@@ -81,11 +76,11 @@ sub get {
         if ( $attrs->{object_id} );
 
     my @extra_attrs;
-    push @extra_attrs, ( prefetch => ['author'] ) if ( $attrs->{with_author} );
+    push @extra_attrs, ( prefetch => ['author'] )
+        if ( $attrs->{with_author} );
 
     my $comment = $c->model('DBIC')->resultset('Comment')->search(
-        {
-            comment_id => $comment_id,
+        {   comment_id => $comment_id,
             @extra_where,
         },
         { @extra_attrs, }
@@ -97,8 +92,7 @@ sub get {
     if ( $attrs->{with_text} ) {
 
         # filter format by Foorum::Filter
-        $comment->{_column_data}->{text} =
-            $c->model('FilterWord')
+        $comment->{_column_data}->{text} = $c->model('FilterWord')
             ->convert_offensive_word( $c, $comment->{_column_data}->{text} );
         $comment->{_column_data}->{text} = filter_format(
             $comment->{_column_data}->{text},
@@ -124,8 +118,7 @@ sub create {
     $title = encodeHTML($title);
 
     my $comment = $c->model('DBIC')->resultset('Comment')->create(
-        {
-            object_type => $object_type,
+        {   object_type => $object_type,
             object_id   => $object_id,
             author_id   => $c->user->user_id,
             title       => $title,
@@ -152,8 +145,8 @@ sub remove {
         $c->model('Upload')
             ->remove_file_by_upload_id( $c, $comment->upload_id );
     }
-    $c->model('DBIC::Comment')->search( { comment_id => $comment->comment_id } )
-        ->delete;
+    $c->model('DBIC::Comment')
+        ->search( { comment_id => $comment->comment_id } )->delete;
 
     my $object_type = $comment->object_type;
     my $object_id   = $comment->object_id;

@@ -17,7 +17,8 @@ sub validate_username {
     }
 
     # username_reserved
-    my @reserved = $c->model('FilterWord')->get_data( $c, 'username_reserved' );
+    my @reserved
+        = $c->model('FilterWord')->get_data( $c, 'username_reserved' );
     return 'HAS_RESERVED' if ( grep { lc($username) eq lc($_) } @reserved );
 
     # unique
@@ -44,7 +45,8 @@ sub validate_email {
 sub validate_forum_code {
     my ( $self, $c, $forum_code ) = @_;
 
-    return 'LENGTH' if ( length($forum_code) < 6 or length($forum_code) > 20 );
+    return 'LENGTH'
+        if ( length($forum_code) < 6 or length($forum_code) > 20 );
 
     for ($forum_code) {
         return 'HAS_BLANK' if (/\s/);
@@ -53,12 +55,13 @@ sub validate_forum_code {
     }
 
     # forum_code_reserved
-    my @reserved =
-        $c->model('FilterWord')->get_data( $c, 'forum_code_reserved' );
+    my @reserved
+        = $c->model('FilterWord')->get_data( $c, 'forum_code_reserved' );
     return 'HAS_RESERVED' if ( grep { lc($forum_code) eq lc($_) } @reserved );
 
     # unique
-    my $cnt = $c->model('DBIC::Forum')->count( { forum_code => $forum_code, } );
+    my $cnt
+        = $c->model('DBIC::Forum')->count( { forum_code => $forum_code, } );
     return 'DBIC_UNIQUE' if ($cnt);
 
     return;
@@ -71,14 +74,12 @@ sub validate_comment {
     my $text  = $c->req->param('text');
     unless ( $title and length($title) < 80 ) {
         $c->detach( '/print_error', ['ERROR_TITLE_LENGTH'] );
-    }
-    else {
+    } else {
         $c->model('FilterWord')->has_bad_word( $c, $title );
     }
     unless ($text) {
         $c->detach( '/print_error', ['ERROR_TEXT_REQUIRED'] );
-    }
-    else {
+    } else {
         $c->model('FilterWord')->has_bad_word( $c, $text );
     }
 }

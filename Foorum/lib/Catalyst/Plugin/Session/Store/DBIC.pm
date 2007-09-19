@@ -70,9 +70,9 @@ sub setup_session {
 
     $c->NEXT::setup_session(@_);
 
-    Catalyst::Exception->throw(
-        message => __PACKAGE__ . qq/: You must provide a value for dbic_class/
-    ) unless $c->config->{session}->{dbic_class};
+    Catalyst::Exception->throw( message => __PACKAGE__
+            . qq/: You must provide a value for dbic_class/ )
+        unless $c->config->{session}->{dbic_class};
 }
 
 =head2 setup_finished
@@ -90,23 +90,25 @@ sub setup_finished {
 
     # Store a reference to the configured session class or object
     my $dbic_class = $config->{dbic_class};
-    my $model      = $c->model($dbic_class) || $c->comp($dbic_class);
+    my $model = $c->model($dbic_class) || $c->comp($dbic_class);
 
-    my $rs = ref $model ? $model
-        : $dbic_class->can('resultset_instance') ? $dbic_class->resultset_instance
+    my $rs
+        = ref $model ? $model
+        : $dbic_class->can('resultset_instance')
+        ? $dbic_class->resultset_instance
         : $dbic_class;
     $c->_dbic_session_resultset($rs);
 
     # Try to determine id_field if it isn't set
     my @primaries = $rs->result_source->primary_columns;
-    if (scalar @primaries > 1 and not exists $config->{id_field}) {
-        Catalyst::Exception->throw(
-            message => __PACKAGE__ . qq/: Primary key consists of more than one column; please set id_field manually/
+    if ( scalar @primaries > 1 and not exists $config->{id_field} ) {
+        Catalyst::Exception->throw( message => __PACKAGE__
+                . qq/: Primary key consists of more than one column; please set id_field manually/
         );
     }
 
     # Set default values
-    $config->{id_field}      ||= $primaries[0] || 'id';
+    $config->{id_field} ||= $primaries[0] || 'id';
     $config->{data_field}    ||= 'session_data';
     $config->{expires_field} ||= 'expires';
 
@@ -122,29 +124,30 @@ is stored alonside the session itself.
 =cut
 
 sub get_session_data {
-    my ($c, $key) = @_;
+    my ( $c, $key ) = @_;
 
     my $config = $c->config->{session};
 
     # Optimize for expires:sid
     my $want_expires = 0;
-    if ($key =~ /^expires:(.*)/) {
-        $key = "session:$1";
+    if ( $key =~ /^expires:(.*)/ ) {
+        $key          = "session:$1";
         $want_expires = 1;
     }
 
-    my $field = $want_expires
+    my $field
+        = $want_expires
         ? $config->{expires_field}
         : $config->{data_field};
-    my $session = $c->_dbic_session_resultset->find($key, { select => $field });
+    my $session
+        = $c->_dbic_session_resultset->find( $key, { select => $field } );
     return unless $session;
 
     my $data = $session->get_column($field);
     if ($want_expires) {
         return $data;
-    }
-    elsif ($data) {
-        return thaw(decode_base64($data));
+    } elsif ($data) {
+        return thaw( decode_base64($data) );
     }
 }
 
@@ -157,37 +160,36 @@ is stored alongside the session itself.
 =cut
 
 sub store_session_data {
-    my ($c, $key, $data) = @_;
+    my ( $c, $key, $data ) = @_;
 
     my $config = $c->config->{session};
 
     # Optimize for expires:sid
     my $setting_expires = 0;
-    if ($key =~ /^expires:(.*)/) {
-        $key = "session:$1";
+    if ( $key =~ /^expires:(.*)/ ) {
+        $key             = "session:$1";
         $setting_expires = 1;
     }
 
-    my %fields = (
-        $config->{id_field} => $key,
-    );
+    my %fields = ( $config->{id_field} => $key, );
     if ($setting_expires) {
-        $fields{$config->{expires_field}} = $c->session_expires;
-    }
-    else {
-        $fields{$config->{data_field}} = encode_base64(nfreeze($data));
+        $fields{ $config->{expires_field} } = $c->session_expires;
+    } else {
+        $fields{ $config->{data_field} } = encode_base64( nfreeze($data) );
     }
 
     # set user_id in session table
     eval {
-        if ($c->user_exists) {
+        if ( $c->user_exists )
+        {
             $fields{user_id} = $c->user->user_id;
         }
     };
-    # set path in session table
-    $fields{path} = substr($c->req->path, 0, 255) if ($c->req->path);
 
-    $c->_dbic_session_resultset->update_or_create(\%fields);
+    # set path in session table
+    $fields{path} = substr( $c->req->path, 0, 255 ) if ( $c->req->path );
+
+    $c->_dbic_session_resultset->update_or_create( \%fields );
 }
 
 =head2 delete_session_data
@@ -198,16 +200,15 @@ the specified session from the backend store.
 =cut
 
 sub delete_session_data {
-    my ($c, $key) = @_;
+    my ( $c, $key ) = @_;
 
     # We store expiration data alongside the session:sid
     return if $key =~ /^expires/;
 
     my $config = $c->config->{session};
 
-    $c->_dbic_session_resultset->search({
-        $config->{id_field} => $key,
-    })->delete;
+    $c->_dbic_session_resultset->search( { $config->{id_field} => $key, } )
+        ->delete;
 }
 
 =head2 delete_expired_sessions
@@ -222,9 +223,8 @@ sub delete_expired_sessions {
 
     my $config = $c->config->{session};
 
-    $c->_dbic_session_resultset->search({
-        $config->{expires_field} => { '<', time() },
-    })->delete;
+    $c->_dbic_session_resultset->search(
+        { $config->{expires_field} => { '<', time() }, } )->delete;
 }
 
 =head1 CONFIGURATION

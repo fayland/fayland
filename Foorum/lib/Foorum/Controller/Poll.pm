@@ -25,7 +25,7 @@ sub create : Regex('^forum/(\w+)/poll/new$') {
     $multi = 0 if ( $multi ne '1' );    # 0 or 1
 
     my $now = time();
-    $duration = $now + $duration * 86400;    # 86400 = 24 * 60 * 60, means 1 day
+    $duration = $now + $duration * 86400;  # 86400 = 24 * 60 * 60, means 1 day
 
     # we prefer [% | html %] now because of my bad memory in TT html
     my $title = $c->req->param('title');
@@ -33,8 +33,7 @@ sub create : Regex('^forum/(\w+)/poll/new$') {
 
     # insert record into table
     my $poll = $c->model('DBIC::Poll')->create(
-        {
-            forum_id  => $forum_id,
+        {   forum_id  => $forum_id,
             author_id => $c->user->user_id,
             multi     => $multi,
             anonymous => 0,                   # disable it for this moment
@@ -53,8 +52,7 @@ sub create : Regex('^forum/(\w+)/poll/new$') {
         my $option_text = $c->req->param("option$_");
         next unless ($option_text);
         $c->model('DBIC::PollOption')->create(
-            {
-                poll_id => $poll_id,
+            {   poll_id => $poll_id,
                 text    => $option_text,
                 vote_no => 0,
             }
@@ -78,8 +76,7 @@ sub poll : Regex('^forum/(\w+)/poll/(\d+)$') {
     my $can_vote = 0;
     if ( time() < $poll->duration and $c->user_exists ) {
         my $is_voted = $c->model('DBIC::PollResult')->count(
-            {
-                poll_id   => $poll_id,
+            {   poll_id   => $poll_id,
                 poster_id => $c->user->user_id,
             }
         );
@@ -89,15 +86,13 @@ sub poll : Regex('^forum/(\w+)/poll/(\d+)$') {
     # get comments
     $c->model('Comment')->get_comments_by_object(
         $c,
-        {
-            object_type => 'poll',
+        {   object_type => 'poll',
             object_id   => $poll_id,
         }
     );
 
     $c->stash(
-        {
-            can_vote => $can_vote,
+        {   can_vote => $can_vote,
             poll     => $poll,
             template => 'poll/index.html',
         }
@@ -113,13 +108,12 @@ sub view_polls : Regex('^forum/(\w+)/poll$') {
     my $page       = get_page_from_url( $c->req->path );
 
     # get all moderators
-    $c->stash->{forum_roles} =
-        $c->model('Policy')->get_forum_moderators( $c, $forum_id );
+    $c->stash->{forum_roles}
+        = $c->model('Policy')->get_forum_moderators( $c, $forum_id );
 
     my $rs = $c->model('DBIC::Poll')->search(
         { forum_id => $forum_id, },
-        {
-            order_by => 'time desc',
+        {   order_by => 'time desc',
             rows     => $c->config->{per_page}->{forum},
             page     => $page,
             prefetch => ['author'],
@@ -127,8 +121,7 @@ sub view_polls : Regex('^forum/(\w+)/poll$') {
     );
 
     $c->stash(
-        {
-            polls    => [ $rs->all ],
+        {   polls    => [ $rs->all ],
             pager    => $rs->pager,
             template => 'poll/view_polls.html',
         }

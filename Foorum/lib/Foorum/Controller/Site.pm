@@ -14,8 +14,7 @@ sub recent : Local {
     if ( $recent_type eq 'elite' ) {
         @extra_cols = ( 'elite', 1 );
         $url_prefix .= '/site/recent/elite';
-    }
-    else {
+    } else {
         $recent_type = 'site';
         $url_prefix  = '/site/recent';
     }
@@ -24,12 +23,10 @@ sub recent : Local {
 
     my $page = get_page_from_url( $c->req->path );
     my $rs   = $c->model('DBIC::Topic')->search(
-        {
-            'forum.policy' => 'public',
+        {   'forum.policy' => 'public',
             @extra_cols,
         },
-        {
-            order_by => 'last_update_date desc',
+        {   order_by => 'last_update_date desc',
             prefetch => [ 'author', 'last_updator', 'forum' ],
             join     => [qw/forum/],
             rows     => 20,
@@ -38,8 +35,7 @@ sub recent : Local {
     );
 
     $c->stash(
-        {
-            template    => 'site/recent.html',
+        {   template    => 'site/recent.html',
             topics      => [ $rs->all ],
             pager       => $rs->pager,
             recent_type => $recent_type,
@@ -53,11 +49,11 @@ sub online : Local {
 
     $c->cache_page('300');
 
-    my ( $results, $pager ) = $c->model('Online')->get_data( $c, $forum_code );
+    my ( $results, $pager )
+        = $c->model('Online')->get_data( $c, $forum_code );
 
     $c->stash(
-        {
-            results  => $results,
+        {   results  => $results,
             pager    => $pager,
             template => 'site/online.html',
         }

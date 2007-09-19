@@ -25,12 +25,10 @@ sub get_data {
     # 15 * 60 = 900
     my $last_15_min = time() + $c->config->{session}->{expires} - 900;
     my $rs          = $c->model('DBIC::Session')->search(
-        {
-            expires => { '>', $last_15_min },
+        {   expires => { '>', $last_15_min },
             @extra_cols,
         },
-        {
-            order_by => $attr->{order_by},
+        {   order_by => $attr->{order_by},
             rows     => 20,
             page     => $attr->{page},
         }
@@ -49,12 +47,10 @@ sub whos_view_this_page {
     # 15 * 60 = 900
     my $last_15_min = time() + $c->config->{session}->{expires} - 900;
     my @session     = $c->model('DBIC::Session')->search(
-        {
-            expires => { '>', $last_15_min },
+        {   expires => { '>', $last_15_min },
             path    => $c->req->path,
         },
-        {
-            order_by => 'expires',
+        {   order_by => 'expires',
             rows     => 20,
             page     => 1,
         }
@@ -86,13 +82,13 @@ sub _handler_session {
             $has_me = 1;
         }
         if ( $session->user_id ) {
-            if ( $c->user_exists and $session->user_id == $c->user->user_id ) {
+            if ( $c->user_exists and $session->user_id == $c->user->user_id )
+            {
                 $user  = $c->user;
                 $refer = $c->req->path;
-            }
-            else {
-                $user =
-                    $c->model('User')->get( $c, { user_id => $session->user_id } );
+            } else {
+                $user = $c->model('User')
+                    ->get( $c, { user_id => $session->user_id } );
             }
         }
         push @results,

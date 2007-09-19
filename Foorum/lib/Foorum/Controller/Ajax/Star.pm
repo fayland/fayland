@@ -20,8 +20,7 @@ sub default : Private {
 
     # if we already has it, it's unstar, or else, it's star
     my $count = $c->model('DBIC::Star')->count(
-        {
-            user_id     => $c->user->user_id,
+        {   user_id     => $c->user->user_id,
             object_type => $object_type,
             object_id   => $object_id,
         }
@@ -30,20 +29,17 @@ sub default : Private {
 
         # unstar
         $c->model('DBIC::Star')->search(
-            {
-                user_id     => $c->user->user_id,
+            {   user_id     => $c->user->user_id,
                 object_type => $object_type,
                 object_id   => $object_id,
             }
         )->delete;
         $c->res->body('0');
-    }
-    else {
+    } else {
 
         # star
         $c->model('DBIC::Star')->create(
-            {
-                user_id     => $c->user->user_id,
+            {   user_id     => $c->user->user_id,
                 object_type => $object_type,
                 object_id   => $object_id,
                 time        => time(),

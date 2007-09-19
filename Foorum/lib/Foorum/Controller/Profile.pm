@@ -13,9 +13,9 @@ $lcm = Locale::Country::Multilingual->new();
 sub user_profile : PathPart('u') Chained('/') CaptureArgs(1) {
     my ( $self, $c, $username ) = @_;
 
-    my $user = $c->model('User')->get($c, { username => $username } );
+    my $user = $c->model('User')->get( $c, { username => $username } );
     $c->detach( '/print_error', ['ERROR_USER_NON_EXSIT'] )
-        unless ( $user );
+        unless ($user);
 
     $c->stash->{user} = $user;
 }
@@ -24,19 +24,17 @@ sub home : PathPart('') Chained('user_profile') Args(0) {
     my ( $self, $c ) = @_;
 
     my $user = $c->stash->{user};
-    
+
     # get last_post
-    if ($user->{last_post_id}) {
-        $user->{last_post} = $c->model('DBIC')->resultset('Topic')->find( {
-            topic_id => $user->{last_post_id},
-        } );
+    if ( $user->{last_post_id} ) {
+        $user->{last_post} = $c->model('DBIC')->resultset('Topic')
+            ->find( { topic_id => $user->{last_post_id}, } );
     }
 
     # get comments
     $c->model('Comment')->get_comments_by_object(
         $c,
-        {
-            object_type => 'user_profile',
+        {   object_type => 'user_profile',
             object_id   => $user->{user_id},
         }
     );
@@ -68,8 +66,7 @@ sub edit : Local {
             and $birthday =~ /^(\d+)\-(\d+)\-(\d+)$/ )
         {
             $c->stash(
-                {
-                    year  => $1,
+                {   year  => $1,
                     month => $2,
                     day   => $3,
                 }
@@ -79,14 +76,14 @@ sub edit : Local {
         return;
     }
 
-    my $birthday =
-          $c->req->param('year') . '-'
+    my $birthday
+        = $c->req->param('year') . '-'
         . $c->req->param('month') . '-'
         . $c->req->param('day');
     my ( @extra_valid, @extra_insert );
     if ( length($birthday) > 2 ) {    # is not --
-        @extra_valid =
-            ( { birthday => [ 'year', 'month', 'day' ] } => ['DATE'] );
+        @extra_valid
+            = ( { birthday => [ 'year', 'month', 'day' ] } => ['DATE'] );
         @extra_insert = ( birthday => $birthday );
     }
 
@@ -116,18 +113,18 @@ sub edit : Local {
     unless ( $lcm->code2country( $c->req->param('country') ) ) {
         $c->req->param( 'country', '' );
     }
-    $c->model('User')->update($c, $c->user,
-        {
-            nickname => $c->req->param('nickname') || $c->user->username,
+    $c->model('User')->update(
+        $c,
+        $c->user,
+        {   nickname => $c->req->param('nickname') || $c->user->username,
             gender   => $c->req->param('gender')   || '',
-            lang    => $c->req->param('lang')    || $c->config->{default_lang},
+            lang => $c->req->param('lang') || $c->config->{default_lang},
             country => $c->req->param('country') || '',
         }
     );
 
     $c->model('DBIC::UserDetails')->update_or_create(
-        {
-            user_id  => $c->user->user_id,
+        {   user_id  => $c->user->user_id,
             homepage => $c->req->param('homepage') || '',
             'qq'     => $c->req->param('qq') || '',
             msn      => $c->req->param('msn') || '',
@@ -137,9 +134,9 @@ sub edit : Local {
             @extra_insert,
         }
     );
-    
+
     # clear user cache too
-    $c->model('User')->delete_cache_by_user($c, $c->user->obj );
+    $c->model('User')->delete_cache_by_user( $c, $c->user->obj );
 
     $c->res->redirect( '/u/' . $c->user->username );
 }
@@ -178,7 +175,8 @@ sub change_password : Local {
     $d->add($new_password);
     my $new_computed = $d->digest;
 
-    $c->model('User')->update($c, $c->user->obj, { password => $new_computed, } );
+    $c->model('User')
+        ->update( $c, $c->user->obj, { password => $new_computed, } );
 
     $c->res->body('ok');
 }
@@ -195,7 +193,7 @@ sub forget_password : Local {
     my $username = $c->req->param('username');
     my $email    = $c->req->param('email');
 
-    my $user = $c->model('User')->get($c, { username => $username } );
+    my $user = $c->model('User')->get( $c, { username => $username } );
     return $c->stash->{ERROR_NOT_SUCH_USER} = 1 unless ($user);
     return $c->stash->{ERROR_NOT_MATCH} = 1 if ( $user->email ne $email );
 
@@ -209,12 +207,10 @@ sub forget_password : Local {
     # send email
     $c->model('Email')
         ->send_forget_password( $c, $email, $username, $random_password );
-    $c->model('User')->update($c, $user, { password => $computed } );
+    $c->model('User')->update( $c, $user, { password => $computed } );
     $c->detach(
         '/print_message',
-        [
-            {
-                msg =>
+        [   {   msg =>
                     'Your Password is Sent to Your Email, Please have a check',
                 url          => '/login',
                 stay_in_page => 1,
@@ -231,7 +227,7 @@ sub change_email : Local {
     $c->stash->{template} = 'user/profile/change_email.html';
 
     return unless ( $c->req->method eq 'POST' );
-    
+
     # check the password typed in is correct
     my $password = $c->req->param('password');
     my $d        = Digest->new(
@@ -258,9 +254,8 @@ sub change_email : Local {
         # send activation code
         $c->model('Email')->send_activation( $c, $c->user, $email );
         $c->res->redirect( '/register/activation/' . $c->user->username );
-    }
-    else {
-        $c->model('User')->update($c, $c->user, { email => $email, } );
+    } else {
+        $c->model('User')->update( $c, $c->user, { email => $email, } );
         $c->res->redirect('/profile/edit');
     }
 }
@@ -300,46 +295,50 @@ sub change_username : Local {
         return;
     }
 
-    $c->model('User')->update($c, $c->user, { username => $new_username, } );
+    $c->model('User')->update( $c, $c->user, { username => $new_username, } );
     $c->session->{__user} = $new_username;
 
     $c->res->redirect("/u/$new_username");
 }
 
 sub profile_photo : Local {
-    my ($self, $c) = @_;
-    
+    my ( $self, $c ) = @_;
+
     return $c->res->redirect('/login') unless ( $c->user_exists );
 
     $c->stash->{template} = 'user/profile/profile_photo.html';
 
     return unless ( $c->req->method eq 'POST' );
-    
+
     my $new_upload = $c->req->upload('upload');
-    my $old_upload_id = $c->user->obj->{profile_photo} ? $c->user->obj->{profile_photo}->{upload_id} : 0;
+    my $old_upload_id
+        = $c->user->obj->{profile_photo}
+        ? $c->user->obj->{profile_photo}->{upload_id}
+        : 0;
     my $new_upload_id = 0;
-    if ( ( $c->req->param('attachment_action') eq 'delete' ) or $new_upload ) {
+    if ( ( $c->req->param('attachment_action') eq 'delete' ) or $new_upload )
+    {
 
         # delete old upload
         if ($old_upload_id) {
-            $c->model('Upload')->remove_by_upload( $c, $c->user->obj->{profile_photo} );
+            $c->model('Upload')
+                ->remove_by_upload( $c, $c->user->obj->{profile_photo} );
             $new_upload_id = 0;
         }
 
         # add new upload
         if ($new_upload) {
-            $new_upload_id =
-                $c->model('Upload')
-                ->add_file( $c, $new_upload );
+            $new_upload_id = $c->model('Upload')->add_file( $c, $new_upload );
             unless ($new_upload_id) {
                 return $c->set_invalid_form(
                     upload => $c->stash->{upload_error} );
             }
         }
     }
-    
-    $c->model('User')->update($c, $c->user, { primary_photo_id => $new_upload_id } );
-    $c->res->redirect('/u/' . $c->user->obj->{username});
+
+    $c->model('User')
+        ->update( $c, $c->user, { primary_photo_id => $new_upload_id } );
+    $c->res->redirect( '/u/' . $c->user->obj->{username} );
 }
 
 =pod

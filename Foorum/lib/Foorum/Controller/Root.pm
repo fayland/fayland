@@ -19,7 +19,7 @@ sub auto : Private {
 
     # in case (begin : Private) is overrided
     $c->stash->{start_t0} = [gettimeofday] unless ( $c->stash->{start_t0} );
-    
+
     # temp use, only for Model/Plugin.pm temporarily
     $c->config->{user_auth} = \$c;
 
@@ -66,11 +66,12 @@ sub end : ActionClass('PathLogger') {
     my ( $self, $c ) = @_;
 
     # check $c->error;
-    $c->forward( $c->view('TT') ) if ($c->model('Log')->check_c_error($c));
+    $c->forward( $c->view('TT') ) if ( $c->model('Log')->check_c_error($c) );
 
     return 1 if ( $c->res->body );
 
     if ( $c->res->location ) {
+
         # for login using!
         if ( $c->res->location =~ /^\/login/ ) {
             my $location = '/login?referer=/' . $c->req->path;
@@ -83,21 +84,20 @@ sub end : ActionClass('PathLogger') {
 
     if ( $c->stash->{template} =~ /^simple\// ) {
         $c->stash->{simple_wrapper} = 1;
-    }
-    else {
+    } else {
 
         # get whos view this page?
         if ( $c->stash->{whos_view_this_page} ) {
             my $results = $c->model('Online')->whos_view_this_page($c);
             $c->stash->{whos_view_this_page} = $results;
         }
-        $c->stash->{elapsed_time} =
-            tv_interval( $c->stash->{start_t0}, [gettimeofday] );
+        $c->stash->{elapsed_time}
+            = tv_interval( $c->stash->{start_t0}, [gettimeofday] );
     }
     $c->forward( $c->view('TT') );
-    
+
     # check TT error.
-    $c->forward( $c->view('TT') ) if ($c->model('Log')->check_c_error($c));
+    $c->forward( $c->view('TT') ) if ( $c->model('Log')->check_c_error($c) );
 }
 
 =pod

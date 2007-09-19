@@ -11,7 +11,8 @@ sub forum : Regex('^forum/(\w+)/rss$') {
     my ( $self, $c ) = @_;
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum = $c->model('Forum')->get( $c, $forum_code, { level => 'data' } );
+    my $forum
+        = $c->model('Forum')->get( $c, $forum_code, { level => 'data' } );
     return unless ($forum);
     return if ( $forum->policy eq 'private' );
 
@@ -20,8 +21,7 @@ sub forum : Regex('^forum/(\w+)/rss$') {
     my $forum_id = $forum->forum_id;
     my @topics   = $c->model('DBIC')->resultset('Topic')->search(
         { forum_id => $forum_id, },
-        {
-            order_by => 'last_update_date DESC',
+        {   order_by => 'last_update_date DESC',
             rows     => 20,
             page     => 1,
         }
@@ -43,12 +43,10 @@ sub forum : Regex('^forum/(\w+)/rss$') {
         $pubDate =~ s/\s+/T/;
 
         my $rs = $c->model('DBIC::Comment')->find(
-            {
-                object_type => 'thread',
+            {   object_type => 'thread',
                 object_id   => $_->topic_id,
             },
-            {
-                order_by => 'post_on',
+            {   order_by => 'post_on',
                 rows     => 1,
                 page     => 1,
             }
@@ -83,12 +81,11 @@ sub recent_rss : Regex('^site/recent(/elite)?/rss$') {
         $url_prefix .= '/elite';
     }
     my @topics = $c->model('DBIC::Topic')->search(
-        {
-            'forum.policy' => 'public',
+        {   'forum.policy' => 'public',
             @extra_cols,
         },
-        {
-            columns => [ 'topic_id', 'forum_id', 'last_update_date', 'title' ],
+        {   columns =>
+                [ 'topic_id', 'forum_id', 'last_update_date', 'title' ],
             order_by => 'last_update_date desc',
             join     => [qw/forum/],
             rows     => 20,
@@ -111,20 +108,18 @@ sub recent_rss : Regex('^site/recent(/elite)?/rss$') {
         $pubDate =~ s/\s+/T/;
 
         my $rs = $c->model('DBIC::Comment')->find(
-            {
-                object_type => 'thread',
+            {   object_type => 'thread',
                 object_id   => $_->topic_id,
             },
-            {
-                order_by => 'post_on',
+            {   order_by => 'post_on',
                 rows     => 1,
                 page     => 1,
             }
         );
         next unless ($rs);
 
-        my $topic_url =
-            $c->req->base . 'forum/' . $_->forum_id . '/' . $_->topic_id;
+        my $topic_url
+            = $c->req->base . 'forum/' . $_->forum_id . '/' . $_->topic_id;
         $rss->add_item(
             title       => $_->title,
             link        => $topic_url,

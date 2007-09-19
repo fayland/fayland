@@ -19,8 +19,7 @@ sub fill_user_role {
     my @field = ('site');    # 'site' means site-cross Administrator
     push @field, $field if ( $field and $field ne 'site' );
     my @roles = $c->model('DBIC')->resultset('UserRole')->search(
-        {
-            user_id => $c->user->user_id,
+        {   user_id => $c->user->user_id,
             field   => \@field,
         }
     )->all;
@@ -133,23 +132,21 @@ sub get_forum_moderators {
     }
 
     my @users = $c->model('DBIC')->resultset('UserRole')->search(
-        {
-            role  => [ 'admin', 'moderator' ],
+        {   role  => [ 'admin', 'moderator' ],
             field => $forum_id,
         }
     )->all;
 
     my $roles;
     foreach (@users) {
-        my $user = $c->model('User')->get($c, { user_id => $_->user_id, } );
+        my $user = $c->model('User')->get( $c, { user_id => $_->user_id, } );
         next unless ($user);
         if ( $_->role eq 'admin' ) {
-            $roles->{ $_->field }->{'admin'} = { # for cache
+            $roles->{ $_->field }->{'admin'} = {    # for cache
                 username => $user->{username},
                 nickname => $user->{nickname}
             };
-        }
-        elsif ( $_->role eq 'moderator' ) {
+        } elsif ( $_->role eq 'moderator' ) {
             push @{ $roles->{ $_->field }->{'moderator'} }, $user;
         }
     }
@@ -164,13 +161,12 @@ sub get_forum_admin {
 
     # get admin
     my $rs = $c->model('DBIC::UserRole')->find(
-        {
-            field => $forum_id,
+        {   field => $forum_id,
             role  => 'admin',
         }
     );
     return unless ($rs);
-    my $user = $c->model('User')->get($c, { user_id => $rs->user_id } );
+    my $user = $c->model('User')->get( $c, { user_id => $rs->user_id } );
     return $user;
 }
 
@@ -178,8 +174,7 @@ sub create_user_role {
     my ( $self, $c, $info ) = @_;
 
     $c->model('DBIC::UserRole')->create(
-        {
-            user_id => $info->{user_id},
+        {   user_id => $info->{user_id},
             field   => $info->{field},
             role    => $info->{role},
         }
@@ -208,14 +203,15 @@ sub clear_cached_policy {
 
     if ( $info->{user_id} ) {
         $c->cache->delete("policy|user_role|user_id=$info->{user_id}");
-        
+
         # clear user cache too
-        $c->model('User')->delete_cache_by_user_cond($c, { user_id => $info->{user_id} } );
+        $c->model('User')
+            ->delete_cache_by_user_cond( $c,
+            { user_id => $info->{user_id} } );
     }
 
     # field_id != 'site'
-    if (
-        $info->{field} =~ /^\d+$/
+    if ($info->{field} =~ /^\d+$/
         and (  not $info->{role}
             or $info->{role} eq 'admin'
             or $info->{role} eq 'moderator' )

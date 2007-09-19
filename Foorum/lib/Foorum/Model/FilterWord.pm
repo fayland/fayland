@@ -37,8 +37,7 @@ sub has_bad_word {
             if ($RaiseError) {
                 $c->detach( '/print_error',
                     [qq~Sorry, your input has a bad word "$word".~] );
-            }
-            else {
+            } else {
                 return 1;
             }
             last;    # out foreach
@@ -56,7 +55,9 @@ sub convert_offensive_word {
             my $asterisk_word   = $word;
             my $converted_chars = 0;
             foreach my $offset ( 2 .. length($word) ) {
-                next if ( int( rand(10) ) % 2 == 1 ); # randomly skip some chars
+                next
+                    if ( int( rand(10) ) % 2 == 1 )
+                    ;    # randomly skip some chars
                 substr( $asterisk_word, $offset - 1, 1 ) = '*';
                 $converted_chars++;
                 last if ( $converted_chars == 2 );    # that's enough
