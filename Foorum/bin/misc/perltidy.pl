@@ -1,14 +1,13 @@
 #!/usr/bin/perl -w
 
 use strict;
-use FindBin qw/$Bin $RealBin/;
+use FindBin qw/$RealBin/;
 use Cwd qw/abs_path/;
-use lib "$FindBin::Bin/../../lib";
 use Perl::Tidy;
 use File::Next;
 use File::Copy;
 
-my $path = abs_path("$RealBin/../../lib");
+my $path = abs_path("$RealBin/../..");
 
 my $files = File::Next::files( $path );
 
