@@ -11,6 +11,7 @@ use DBIx::Class::Schema::Loader qw| make_schema_at |;
 my $path = abs_path("$RealBin/../../lib");
 DBIx::Class::Schema::Loader->dump_to_dir($path);
 
+use lib "$Bin/../../lib";
 use Foorum::ExternalUtils qw/config/;
 my $config = config();
 
