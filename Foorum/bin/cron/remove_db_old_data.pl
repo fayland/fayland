@@ -18,23 +18,13 @@ if ($has_proc_pid_file) {
 }
 
 use YAML qw(LoadFile);
-use Foorum::Schema; # DB Schema
+use Foorum::ExternalUtils qw/schema/;
 use Foorum::Log qw/error_log/;
 
-# load foorum.yml and foorum_local.yml
-# and merge as $config
-my $config = LoadFile("$Bin/../../foorum.yml");
-my $extra_config = LoadFile("$Bin/../../foorum_local.yml");
 my $cron_config = LoadFile("$Bin/../../conf/cron.yml");
-$config = { %$config, %$extra_config };
 
 # connect the db
-my $schema = Foorum::Schema->connect(
-    $config->{dsn},
-    $config->{dsn_user},
-    $config->{dsn_pwd},
-    { AutoCommit => 1, RaiseError => 1, PrintError => 1 },
-);
+my $schema = schema();
 
 # for table 'visit'
 # 2592000 = 30 * 24 * 60 * 60
@@ -57,7 +47,7 @@ my $log_error_status = $schema->resultset('LogError')->search( {
 
 # for table 'banned_ip'
 $days_ago = $cron_config->{remove_db_old_data}->{banned_ip} || 604800;
-my $banned_ip_status = $schema->resultset('BannedIP')->search( {
+my $banned_ip_status = $schema->resultset('BannedIp')->search( {
     time => { '<' , time() - $days_ago },
 } )->delete;
 
