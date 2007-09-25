@@ -6,10 +6,11 @@ use FindBin qw/$Bin/;
 use YAML qw/LoadFile/;
 use Foorum::Schema;
 use base 'Exporter';
-use vars qw/@EXPORT_OK $config $schema/;
+use vars qw/@EXPORT_OK $config $schema $memcached/;
 @EXPORT_OK = qw/
     config
     schema
+    memcached
 /;
 
 sub config {
@@ -34,6 +35,16 @@ sub schema {
         { AutoCommit => 1, RaiseError => 1, PrintError => 1 },
     );
     return $schema;
+}
+
+sub memcached {
+    
+    return $memcached if ($memcached);
+    $config = config() unless ($config);
+    
+    my $params = { %{ $config->{cache} } };
+    $memcached = Cache::Memcached->new($params);
+    return $memcached;
 }
 
 1;
