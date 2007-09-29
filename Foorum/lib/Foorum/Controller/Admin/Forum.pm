@@ -92,7 +92,7 @@ sub create : Local {
     );
     $c->model('Policy')->create_user_role(
         $c,
-        {   user_id => $admin_user->user_id,
+        {   user_id => $admin_user->{user_id},
             role    => 'admin',
             field   => $forum->forum_id,
         }

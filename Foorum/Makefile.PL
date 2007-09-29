@@ -22,7 +22,6 @@ requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Cache::Memcached';
 requires 'Catalyst::Plugin::PageCache';
 requires 'Catalyst::Plugin::Authentication';
-requires 'Catalyst::Plugin::Unicode';
 requires 'Catalyst::Plugin::Authentication::Credential::Password';
 requires 'Catalyst::Plugin::Session';
 requires 'Catalyst::Plugin::Session::State::Cookie';

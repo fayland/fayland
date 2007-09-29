@@ -84,7 +84,7 @@ sub get {
             @extra_where,
         },
         { @extra_attrs, }
-    )->slice(0,1);
+    )->first;
 
     # print error if the comment is non-exist
     $c->detach( '/print_error', ['Non-existent comment'] ) unless ($comment);
