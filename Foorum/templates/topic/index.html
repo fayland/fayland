@@ -74,19 +74,27 @@
 </table>
 </div>
 
-[% IF roles.is_moderator %]
 <br />
 <div class='one'>
 <table align='center'>
-<tr class='title'><td width='100'>Operation</td><td align='center'>
+[% IF roles.is_moderator %]
+<tr class='title'>
+    <td width='100'>Operation</td><td align='center'>
     <a href='[% url_prefix %]/[% IF topic.sticky %]unsticky[% ELSE %]sticky[% END %]'>[% IF topic.sticky %][% c.loc('Unsticky') %][% ELSE %][% c.loc('Sticky') %][% END %]</a> |
     <a href='[% url_prefix %]/[% IF topic.closed %]unlock[% ELSE %]lock[% END %]'>[% IF topic.closed %][% c.loc('Unlock') %][% ELSE %][% c.loc('Lock') %][% END %]</a> |
     <a href='[% url_prefix %]/[% IF topic.elite %]unelite[% ELSE %]elite[% END %]'>[% IF topic.elite %][% c.loc('Unelite') %][% ELSE %][% c.loc('Elite') %][% END %]</a>
     <a href='[% url_prefix %]/[% IF topic.status == 'banned' %]unban[% ELSE %]ban[% END %]'>[% IF topic.status == 'banned' %][% c.loc('Unban') %][% ELSE %][% c.loc('Ban') %][% END %]</a>
-</td></tr>
+    </td>
+</tr>
+[% END %]
+<tr class='title'>
+    <td colspan='2'>
+    <a href='http://del.icio.us/post?url=[% c.req.base _ c.req.path %]&title=[% title %]'><img src='[% c.config.dir.images %]/site/s/delicious.gif' align='absmiddle' />del.icio.us</a> 
+    <a href='http://digg.com/submit?phase=2&URL=[% c.req.base _ c.req.path %]'><img src='[% c.config.dir.images %]/site/s/digg.gif' align='absmiddle' />digg</a>
+    </td>
+</tr>
 </table>
 </div>
-[% END %]
 
 [% IF c.user_exists AND NOT topic.closed %]
 <br />
