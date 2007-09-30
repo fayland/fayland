@@ -89,8 +89,8 @@
 [% END %]
 <tr class='title'>
     <td colspan='2'>
-    <a href='http://del.icio.us/post?url=[% c.req.base _ c.req.path %]&title=[% title %]'><img src='[% c.config.dir.images %]/site/s/delicious.gif' align='absmiddle' />del.icio.us</a> 
-    <a href='http://digg.com/submit?phase=2&URL=[% c.req.base _ c.req.path %]'><img src='[% c.config.dir.images %]/site/s/digg.gif' align='absmiddle' />digg</a>
+    <a href='http://del.icio.us/post?url=[% c.req.base _ c.req.path  | uri %]&title=[% title | uri %]'><img src='[% c.config.dir.images %]/site/s/delicious.gif' align='absmiddle' />del.icio.us</a> 
+    <a href='http://digg.com/submit?phase=2&URL=[% c.req.base _ c.req.path | uri %]'><img src='[% c.config.dir.images %]/site/s/digg.gif' align='absmiddle' />digg</a>
     </td>
 </tr>
 </table>
