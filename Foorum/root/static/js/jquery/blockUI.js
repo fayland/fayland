@@ -1,6 +1,6 @@
 /*
  * jQuery blockUI plugin
- * Version 1.30  (07/24/2007)
+ * Version 1.33  (09/14/2007)
  * @requires jQuery v1.1.1
  *
  * $Id$
@@ -66,7 +66,7 @@ $.blockUI = function(msg, css, opts) {
 };
 
 // expose version number so other plugins can interogate
-$.blockUI.version = 1.30;
+$.blockUI.version = 1.33;
 
 /**
  * unblockUI removes the UI block that was put in place by blockUI
@@ -77,8 +77,8 @@ $.blockUI.version = 1.30;
  * @name unblockUI
  * @cat Plugins/blockUI
  */
-$.unblockUI = function() {
-    $.blockUI.impl.remove(window);
+$.unblockUI = function(opts) {
+    $.blockUI.impl.remove(window, opts);
 };
 
 /**
@@ -121,9 +121,9 @@ $.fn.block = function(msg, css, opts) {
  * @type jQuery
  * @cat Plugins/blockUI
  */
-$.fn.unblock = function() {
+$.fn.unblock = function(opts) {
     return this.each(function() {
-        $.blockUI.impl.remove(this);
+        $.blockUI.impl.remove(this, opts);
     });
 };
 
@@ -155,10 +155,10 @@ $.fn.displayBox = function(css, fn, isFlash) {
         h = parseInt(h) || 100;
         h = (h * hh) / 100;
     }
-    
+
     var ml = '-' + parseInt(w)/2 + 'px';
     var mt = '-' + parseInt(h)/2 + 'px';
-    
+
     // supress opacity on overlay if displaying flash content on mac/ff platform
     var ua = navigator.userAgent.toLowerCase();
     var opts = {
@@ -190,9 +190,10 @@ $.blockUI.defaults = {
     allowTabToLeave: 0,
     // Title attribute for overlay when using displayBox
     closeMessage: 'Click to close',
-    
-    fadeOut:  1,  // true for fadeOut unblocking
-    fadeTime: 400 
+    // use fadeOut effect when unblocking (can be overridden on unblock call)
+    fadeOut:  1,
+    // fadeOut transition time in millis
+    fadeTime: 400
 };
 
 // the gory details
@@ -202,19 +203,19 @@ $.blockUI.impl = {
     pageBlock: null,
     pageBlockEls: [],
     op8: window.opera && window.opera.version() < 9,
-    ie6: $.browser.msie && /6.0/.test(navigator.userAgent),
+    ie6: $.browser.msie && /MSIE 6.0/.test(navigator.userAgent),
     install: function(el, msg, css, opts) {
         opts = opts || {};
         this.boxCallback = typeof opts.displayMode == 'function' ? opts.displayMode : null;
         this.box = opts.displayMode ? msg : null;
         var full = (el == window);
-        
+
         // use logical settings for opacity support based on browser but allow overrides via opts arg
         var noalpha = this.op8 || $.browser.mozilla && /Linux/.test(navigator.platform);
         if (typeof opts.alphaOverride != 'undefined')
             noalpha = opts.alphaOverride == 0 ? 1 : 0;
-        
-        if (full && this.pageBlock) this.remove(window);
+
+        if (full && this.pageBlock) this.remove(window, {fadeOut:0});
         // check to see if we were only passed the css object (a literal)
         if (msg && typeof msg == 'object' && !msg.jquery && !msg.nodeType) {
             css = msg;
@@ -226,7 +227,7 @@ $.blockUI.impl = {
         else
             var basecss = jQuery.extend({}, full ? $.blockUI.defaults.pageMessageCSS : $.blockUI.defaults.elementMessageCSS);
         css = jQuery.extend(basecss, css || {});
-        var f = ($.browser.msie) ? $('<iframe class="blockUI" style="z-index:1000;border:none;margin:0;padding:0;position:absolute;width:100%;height:100%;top:0;left:0" src="javascript:false;document.write(\'\');"></iframe>')
+        var f = ($.browser.msie) ? $('<iframe class="blockUI" style="z-index:1000;border:none;margin:0;padding:0;position:absolute;width:100%;height:100%;top:0;left:0" src="javascript:false;"></iframe>')
                                  : $('<div class="blockUI" style="display:none"></div>');
         var w = $('<div class="blockUI" style="z-index:1001;cursor:wait;border:none;margin:0;padding:0;width:100%;height:100%;top:0;left:0"></div>');
         var m = full ? $('<div class="blockUI blockMsg" style="z-index:1002;cursor:wait;padding:0;position:fixed"></div>')
@@ -241,7 +242,7 @@ $.blockUI.impl = {
 
         // ie7 must use absolute positioning in quirks mode and to account for activex issues (when scrolling)
         var expr = $.browser.msie && (!$.boxModel || $('object,embed', full ? null : el).length > 0);
-        if (this.ie6 || expr) { 
+        if (this.ie6 || expr) {
             // stretch content area if it's short
             if (full && $.blockUI.defaults.ie6Stretch && $.boxModel)
                 $('html,body').css('height','100%');
@@ -252,13 +253,13 @@ $.blockUI.impl = {
                 var fixT = t ? '(0 - '+t+')' : 0;
                 var fixL = l ? '(0 - '+l+')' : 0;
             }
-            
+
             // simulate fixed position
             $.each([f,w,m], function(i,o) {
                 var s = o[0].style;
                 s.position = 'absolute';
                 if (i < 2) {
-                    full ? s.setExpression('height','document.body.scrollHeight > document.body.offsetHeight ? document.body.scrollHeight : document.body.offsetHeight + "px"') 
+                    full ? s.setExpression('height','document.body.scrollHeight > document.body.offsetHeight ? document.body.scrollHeight : document.body.offsetHeight + "px"')
                          : s.setExpression('height','this.parentNode.offsetHeight + "px"');
                     full ? s.setExpression('width','jQuery.boxModel && document.documentElement.clientWidth || document.body.clientWidth + "px"')
                          : s.setExpression('width','this.parentNode.offsetWidth + "px"');
@@ -273,7 +274,7 @@ $.blockUI.impl = {
         }
         if (opts.displayMode) {
             w.css('cursor','default').attr('title', $.blockUI.defaults.closeMessage);
-            m.css('cursor','default'); 
+            m.css('cursor','default');
             $([f[0],w[0],m[0]]).removeClass('blockUI').addClass('displayBox');
             $().click($.blockUI.impl.boxHandler).bind('keypress', $.blockUI.impl.boxHandler);
         }
@@ -289,16 +290,16 @@ $.blockUI.impl = {
         }
         else this.center(m[0]);
     },
-    remove: function(el) {
+    remove: function(el, opts) {
+        var o = $.extend({}, $.blockUI.defaults, opts);
         this.bind(0, el);
         var full = el == window;
         var els = full ? $('body').children().filter('.blockUI') : $('.blockUI', el);
-        var count = els.length;
         if (full) this.pageBlock = this.pageBlockEls = null;
-        
-        if ($.blockUI.defaults.fadeOut) {
-            els.fadeOut($.blockUI.defaults.fadeTime, function() {
-                if (--count <= 0) els.remove();
+
+        if (o.fadeOut) {
+            els.fadeOut(o.fadeTime, function() {
+                if (this.parentNode) this.parentNode.removeChild(this);
             });
         }
         else els.remove();
@@ -337,7 +338,7 @@ $.blockUI.impl = {
         // don't bother unbinding if there is nothing to unbind
         if (!b && (full && !this.pageBlock || !full && !el.$blocked)) return;
         if (!full) el.$blocked = b;
-        var $e = full ? $() : $(el).find('a,:input');
+        var $e = $(el).find('a,:input');
         $.each(['mousedown','mouseup','keydown','keypress','click'], function(i,o) {
             $e[b?'bind':'unbind'](o, $.blockUI.impl.handler);
         });
