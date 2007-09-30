@@ -1,27 +1,46 @@
 [% url_base = '/admin' %]
 
-<table align='center' class='tablewidth'>
-<tr><td valign='top' align='left' width='200'>
-<div class='one'>
-<table>
-<tr><td class='title'>[% c.loc('Menu') %]</td></tr>
-<tr><td class='misc2'><a href='[% url_base %]'>Site Map</a></td></tr>
-<tr><td class='title'>Forum</td></tr>
-<tr><td class='misc2'><a href='[% url_base %]/forum'>Forum Lists</a></td></tr>
-<tr><td class='misc1'><a href='[% url_base %]/forum/create'>Create a Forum</a></td></tr>
-<tr><td class='misc2'><a href='[% url_base %]/forum/merge_forums'>Merge Forums</a></td></tr>
-<tr><td class='title'>User</td></tr>
-<tr><td class='misc2'><a href='[% url_base %]/user'>User Lists</a></td></tr>
-<tr><td class='misc1'><a href='[% url_base %]/user/edit'>Edit User</a></td></tr>
-<tr><td class='title'>Ban</td></tr>
-<tr><td class='misc2'><a href='[% url_base %]/banip'>Ban IP</a></td></tr>
-<tr><td class='title'>Tools</td></tr>
-<tr><td class='misc1'><a href='/admin/tools/flush_cache'>Flush Cache</a></td></tr>
-<tr><td class='misc2'><a href='/admin/tools/cache_stat'>Cache Stats</a></td></tr>
-<tr><td class='title'>Log</td></tr>
-<tr><td class='misc1'><a href='/admin/log/error_log'>Error Log</a></td></tr>
-</table>
+[% c.load_once("jquery.ui/ui.tabs.js") %]
+[% c.load_once("jquery.ui/themes/flora/flora.all.css") %]
+
+<div id='admin_tabs'>
+    <ul>
+        <li><a href='#menu'>Menu:</a></li>
+        <li><a href='#forum'>Forum</a></li>
+        <li><a href='#user'>User</a></li>
+        <li><a href='#ban'>Ban</a></li>
+        <li><a href='#tools'>Tools</a></li>
+        <li><a href='#log'>Log</a></li>
+    </ul>
+    <div id='menu'>
+        <a href='[% url_base %]'>Site Map</a>
+    </div>
+    <div id='forum'>
+        <a href='[% url_base %]/forum'>Forum Lists</a> | <a href='[% url_base %]/forum/create'>Create a Forum</a> | <a href='[% url_base %]/forum/merge_forums'>Merge Forums</a>
+    </div>
+    <div id='user'>
+        <a href='[% url_base %]/user'>User Lists</a> | <a href='[% url_base %]/user/edit'>Edit User</a>
+    </div>
+    <div id='ban'>
+        <a href='[% url_base %]/banip'>Ban IP</a>
+    </div>
+    <div id='tools'>
+        <a href='/admin/tools/flush_cache'>Flush Cache</a> | <a href='/admin/tools/cache_stat'>Cache Stats</a>
+    </div>
+    <div id='log'>
+        <a href='/admin/log/error_log'>Error Log</a>
+    </div>
 </div>
-</td><td valign='top' width='*'>
+
+<script>
+    $(function() {
+        $('#admin_tabs ul').tabs([% IF c.req.path.match('forum') %]2[% ELSIF c.req.path.match('user') %]3[% ELSIF c.req.path.match('ban') %]4[% ELSIF c.req.path.match('tools') %]5[% ELSIF c.req.path.match('log') %]6[% END %]);
+    });
+</script>
+
+<p><br /></p>
+
+<table align='center' class='tablewidth'>
+<tr><td valign='top' width='*'>
 [% content %]
 </td></tr></table>
