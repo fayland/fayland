@@ -11,11 +11,11 @@
 <div class='attachment'>
 [% IF filetype == 'jpg' OR filetype == 'jpeg' OR filetype == 'gif' OR filetype == 'gif' %]
 
-<a href="/upload/[% dir1 _ '/' _ dir2 _ '/' _ upload.filename %]" target='_blank'><img src='/upload/[% dir1 _ '/' _ dir2 _ '/' _ upload.filename %]' /></a>
+<a href="[% c.config.dir.upload %]/[% dir1 _ '/' _ dir2 _ '/' _ upload.filename %]" target='_blank'><img src='[% c.config.dir.upload %]/[% dir1 _ '/' _ dir2 _ '/' _ upload.filename %]' /></a>
 
 [% ELSE %]
 
-We have <a href="/upload/[% dir1 _ '/' _ dir2 _ '/' _ upload.filename %]">[% upload.filename %]</a> attached.
+We have <a href="[% c.config.dir.upload %]/[% dir1 _ '/' _ dir2 _ '/' _ upload.filename %]">[% upload.filename %]</a> attached.
 
 [% END %]
 </div>

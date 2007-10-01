@@ -1,24 +1,25 @@
+[% c.load_once("jquery.ui/themes/flora/flora.tabs.css") %]
+
 [% url_base = '/forumadmin/' _ forum.forum_id %]
 
-<table align='center' class='tablewidth'>
-<tr><td valign='top' align='left' width='200'>
-<div class='one'>
-<table>
-<tr><td class='title'>[% c.loc('Menu') %]</td></tr>
-<tr><td class='forum1'><a href='[% url_base %]/basic'>[% c.loc('Basic Setting') %]</a></td></tr>
-<tr><td class='forum2'><a href='[% url_base %]/style'>[% c.loc('Style Setting') %]</a></td></tr>
-[% TRY %]
-[% css_file = c.config.home _ '/style/custom/forum' _ forum.forum_id _ '.yml' %]
-[% USE File( css_file ) %]
-<tr><td class='forum1'><a href='[% url_base %]/del_style'>[% c.loc('Delete Style') %]</a></td></tr>
-[% CATCH File %]
-[% END %]
-[% IF forum.policy == 'private' %]
-<tr><td class='forum2'><a href='[% forum.forum_url %]/members'>[% c.loc('Members Settings') %]</a></td></tr>
-[% END %]
-<tr><td class='forum1'><a href='[% url_base %]/announcement'>[% c.loc('Announcement Setting') %]</a></td></tr>
-</table>
-</div>
-</td><td valign='top' width='*'>
+<div id='edit_profile_tabs' class='tabs'>
+    <ul class="ui-tabs-nav">
+        <li[% IF c.req.path.match('basic') %] class="ui-tabs-selected"[% END %]><a href='[% url_base %]/basic'><span>[% c.loc('Basic Setting') %]</span></a></li>
+        <li[% IF c.req.path.match('style') %] class="ui-tabs-selected"[% END %]><a href='[% url_base %]/style'><span>[% c.loc('Style Setting') %]</span></a></li>
+        [% TRY %]
+        [% css_file = c.config.home _ '/style/custom/forum' _ forum.forum_id _ '.yml' %]
+        [% USE File( css_file ) %]
+        <li[% IF c.req.path.match('del_style') %] class="ui-tabs-selected"[% END %]><a href='[% url_base %]/del_style'><span>[% c.loc('Delete Style') %]</span></a></li>
+        [% CATCH File %]
+        [% END %]
+        [% IF forum.policy == 'private' %]
+        <li><a href='[% forum.forum_url %]/members'><span>[% c.loc('Members Settings') %]</span></a></li>
+        [% END %]
+        <li[% IF c.req.path.match('announcement') %] class="ui-tabs-selected"[% END %]><a href='[% url_base %]/announcement'><span>[% c.loc('Announcement Setting') %]</span></a></li>
+    </ul>
+    <div class="ui-tabs-container">
+
 [% content %]
-</td></tr></table>
+
+    </div>
+</div>

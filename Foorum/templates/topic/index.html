@@ -70,7 +70,7 @@
 [% END %]
 <div class='none'>
 <table align='center'>
-    <tr>[% IF c.user_exists %]<td><a href="javascript:star('topic', '[% topic.topic_id %]', 'starDiv')"><span id='starDiv'><img src="http://mail.google.com/mail/images/star_[% IF has_star;'on';ELSE;'off';END %]_2.gif" /></span></a></td>[% END %]<td align='right'>[% INCLUDE 'sub/pager.html' pager = comments_pager %]</td></tr>
+    <tr><td align='right'>[% INCLUDE 'sub/pager.html' pager = comments_pager %]</td></tr>
 </table>
 </div>
 
@@ -82,13 +82,14 @@
     <td width='100'>Operation</td><td align='center'>
     <a href='[% url_prefix %]/[% IF topic.sticky %]unsticky[% ELSE %]sticky[% END %]'>[% IF topic.sticky %][% c.loc('Unsticky') %][% ELSE %][% c.loc('Sticky') %][% END %]</a> |
     <a href='[% url_prefix %]/[% IF topic.closed %]unlock[% ELSE %]lock[% END %]'>[% IF topic.closed %][% c.loc('Unlock') %][% ELSE %][% c.loc('Lock') %][% END %]</a> |
-    <a href='[% url_prefix %]/[% IF topic.elite %]unelite[% ELSE %]elite[% END %]'>[% IF topic.elite %][% c.loc('Unelite') %][% ELSE %][% c.loc('Elite') %][% END %]</a>
+    <a href='[% url_prefix %]/[% IF topic.elite %]unelite[% ELSE %]elite[% END %]'>[% IF topic.elite %][% c.loc('Unelite') %][% ELSE %][% c.loc('Elite') %][% END %]</a> |
     <a href='[% url_prefix %]/[% IF topic.status == 'banned' %]unban[% ELSE %]ban[% END %]'>[% IF topic.status == 'banned' %][% c.loc('Unban') %][% ELSE %][% c.loc('Ban') %][% END %]</a>
     </td>
 </tr>
 [% END %]
 <tr class='title'>
     <td colspan='2'>
+    [% IF c.user_exists %]<a href="javascript:star('topic', '[% topic.topic_id %]', 'starDiv')"><span id='starDiv'><img src="http://mail.google.com/mail/images/star_[% IF has_star;'on';ELSE;'off';END %]_2.gif" align='absmiddle' /> Star</span></a>[% END %]
     <a href='http://del.icio.us/post?url=[% c.req.base _ c.req.path  | uri %]&title=[% title | uri %]'><img src='[% c.config.dir.images %]/site/s/delicious.gif' align='absmiddle' />del.icio.us</a> 
     <a href='http://digg.com/submit?phase=2&URL=[% c.req.base _ c.req.path | uri %]'><img src='[% c.config.dir.images %]/site/s/digg.gif' align='absmiddle' />digg</a>
     </td>

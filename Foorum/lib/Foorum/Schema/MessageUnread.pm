@@ -8,15 +8,25 @@ use base 'DBIx::Class';
 __PACKAGE__->load_components("Core");
 __PACKAGE__->table("message_unread");
 __PACKAGE__->add_columns(
-    "message_id",
-    { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
-    "user_id",
-    { data_type => "INT", default_value => "", is_nullable => 0, size => 11 },
+  "message_id",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
+  "user_id",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
 );
-__PACKAGE__->set_primary_key( "message_id", "user_id" );
+__PACKAGE__->set_primary_key("message_id", "user_id");
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:RlVEkxl7984mi8nHaRoXWw
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-01 12:29:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:jfq6DbIoA8+iYrrEwR3EYA
+
+
+
+
+
+
+
+
+
 
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;

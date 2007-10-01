@@ -4,13 +4,18 @@
 [% title = c.loc('Recent Topics') %]
 [% END %]
 
-<div class='tabnav'>
-    <ul>
-        <li[% IF recent_type == 'site' %] class='selected'[% END %]><a href='/site/recent'>[% c.loc('Recent Topics') %]</a></li>
-        <li[% IF recent_type == 'elite' %] class='selected'[% END %]><a href='/site/recent/elite'>[% c.loc('Recent Elite Topics') %]</a></li>
-        <li[% IF recent_type == 'my' %] class='selected'[% END %]><a href='/my/topics'>[% c.loc('My Recent Topics') %]</a></li>
+[% c.load_once("jquery.ui/themes/flora/flora.tabs.css") %]
+
+<div id='recent_tabs' class='tabs'>
+    <ul class="ui-tabs-nav">
+        <li[% IF recent_type == 'site' %] class="ui-tabs-selected"[% END %]><a href='/site/recent'><span>[% c.loc('Recent Topics') %]</span></a></li>
+        <li[% IF recent_type == 'elite' %] class="ui-tabs-selected"[% END %]><a href='/site/recent/elite'><span>[% c.loc('Recent Elite Topics') %]</span></a></li>
+        <li[% IF recent_type == 'my' %] class="ui-tabs-selected"[% END %]><a href='/my/topics'><span>[% c.loc('My Recent Topics') %]</span></a></li>
+        [% IF c.user_exists %]
+        <li><a href='/my/starred'><span>[% c.loc('My Starred Items') %]</span></a></li>
+        [% END %]
     </ul>
-</div>
+    <div class="ui-tabs-container">
 <div class='one'>
 <table height='28' align='center'>
 	<tr class="title" align='center'>
@@ -38,7 +43,7 @@
 			    [% IF t.elite %]
 			    <span class='highlight'>[Elite]</a> 
 			    [% END %]
-			    <a href='/forum/[% forum.forum_code %]/[% t.topic_id %]'><span class='semilight'>[% t.title %]</span></a>
+			    <a href='/forum/[% t.forum.forum_code %]/[% t.topic_id %]'><span class='semilight'>[% t.title %]</span></a>
 			</td>
 			</tr>
     	</table>
@@ -67,4 +72,7 @@
         [% END %]
     </tr>
 </table>
+</div>
+
+    </div>
 </div>

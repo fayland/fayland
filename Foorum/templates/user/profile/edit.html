@@ -14,19 +14,30 @@
         skype  => user_details.skype,
     };
 END; %]
+
+[% c.load_once("jquery.ui/themes/flora/flora.tabs.css") %]
+
+<div id='edit_profile_tabs' class='tabs'>
+    <ul class="ui-tabs-nav">
+        <li class="ui-tabs-selected"><a href='javascript:void(0);'><span>[% c.loc('Edit Profile') %]</span></a></li>
+        <li><a href='/profile/change_username'><span>Change Username</span></a></li>
+        <li><a href='/profile/change_password'><span>Change Password</span></a></li>
+        <li><a href='/profile/change_email'><span>Change Email</span></a></li>
+        <li><a href='/profile/profile_photo'><span>Profile Photo</span></a></li>
+    </ul>
+    <div class="ui-tabs-container">
+
 [% FILTER fillinform fdat => data || c.req.params %]
 <div class='one'>
 <table align='center'>
 	<tbody>
 	<form method='post'>
-	<tr class='title'><td colspan='2'>[% c.loc('Edit Profile') %]</td></tr>
-    <tr class='misc1'><td width='20%' align='right'>[% c.loc('Username') %]</td><td>[% c.user.username %] ( <a href='/profile/change_username'>Change Username</a>, <a href='/profile/change_password'>Change Password</a>, <a href='/profile/change_email'>Change Email</a>)
-	</td></tr>
     <tr class='misc1'><td align='right'>[% c.loc('Nickname') %]</td><td><input type='text' name='nickname' size='24' />
 	[% IF c.form.error('nickname') %]
 	the length of nickname should be more than 4 and less than 20
 	[% END %]
-	</td></tr>
+	</td>
+	</tr>
 	<tr class='misc2'><td align='right'>Preferable Language:</td><td><select name='lang'><option value='en'>English</option><option value='cn'>简体中文</option>
     </select>
 	[% IF c.form.error('lang') %]
@@ -34,7 +45,7 @@ END; %]
 	[% END %]
 	</td></tr>
     <tr class='misc1'><td align='right'>[% c.loc('Gender') %]</td><td><select name='gender'><option value=''>Secret</option><option value='M'>Male</option><option value='F'>Female</option>
-</select>
+    </select>
 	[% IF c.form.error('gender') %]
 	    Please select your gender.
 	[% END %]
@@ -43,16 +54,18 @@ END; %]
 	[% IF c.form.error('birthday') %]
 	Please type in a valid birthday.
 	[% END %]
+	Format: 1984/2/6
 	</td></tr>
 	<tr class='misc1'><td align='right'>[% c.loc('Homepage') %]</td><td><input type='text' name='homepage' size='24' />
 	[% IF c.form.error('homepage') %]
 	Please type a valid homepage URL.
 	[% END %]
+	Format: http://www.fayland.org/
 	</td></tr>
 	<tr class='title'><td colspan='2'>[% c.loc('Location Information') %]</td></tr>
 	<tr class='misc1'><td align='right'>[% c.loc('Country') %]</td><td>
 	    <select name='country'>
-	    [% FOREACH country IN countries.keys %]
+	    [% FOREACH country IN countries.keys.sort %]
 	    <option value='[% country %]'>[% country %]:[% countries.$country %]</option>
 	    [% END %]
 	    </select>
@@ -89,3 +102,6 @@ END; %]
 </table>
 </div>
 [% END %]
+
+    </div>
+</div>

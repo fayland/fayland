@@ -41,7 +41,7 @@ END; %]
      dir2 = upload_id / 3200;
      dir2 = Math.int(dir2);
   %]
-  <input type='radio' name='attachment_action' value='stay' checked='yes' /> Stay as before [ <a href="/upload/[% dir1 _ '/' _ dir2 _ '/' _ upload.filename %]">[% upload.filename %]</a> ]<br />
+  <input type='radio' name='attachment_action' value='stay' checked='yes' /> Stay as before [ <a href="[% c.config.dir.upload %]/[% dir1 _ '/' _ dir2 _ '/' _ upload.filename %]">[% upload.filename %]</a> ]<br />
   <input type='radio' name='attachment_action' value='delete' /> Delete it<br />
   <input type='radio' name='attachment_action' value='replace' /> Replace it<br />
   [% END %]

@@ -3,6 +3,8 @@
  <a href='/u/[% user.username %]'>[% user.nickname %]</a><br />
  [% IF user.status %][% c.loc('Status:') %] [% user.status %]<br />[% END %]
  
+ [% INCLUDE include/user_profile_photo.html %]
+ 
  <br /><br />
  [% c.loc('Threads:') %] [% user.threads %]<br />
  [% c.loc('Replies:') %] [% user.replies %]<br />

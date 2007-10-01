@@ -42,6 +42,29 @@ sub error_log : Local {
     );
 }
 
+sub path_log : Local {
+    my ( $self, $c ) = @_;
+
+    my $page = get_page_from_url( $c->req->path );
+    my $rs   = $c->model('DBIC')->resultset('LogPath')->search(
+        undef,
+        {   rows     => 20,
+            page     => $page,
+            order_by => 'path_id DESC',
+        }
+    );
+    my $pager = $rs->pager;
+    my @paths = $rs->all;
+
+    $c->stash(
+        {   template   => 'admin/log/path_log.html',
+            paths      => \@paths,
+            pager      => $pager,
+            url_prefix => '/admin/log/path_log',
+        }
+    );
+}
+
 =pod
 
 =head2 AUTHOR

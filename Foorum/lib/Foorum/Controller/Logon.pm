@@ -19,6 +19,15 @@ sub login : Global {
 
     my $username = $c->req->param('username');
     $username =~ s/\W+//isg;
+    my $email    = $c->req->param('email');
+    if (not $username and $email) {
+        my $user = $c->model('User')->get($c, { email => $email } );
+        if ($user) {
+            $username = $user->{username};
+        } else {
+            return $c->stash->{error} = 'ERROR_AUTH_FAILED';
+        }
+    }
 
     # check if we need captcha
     # for login password wrong more than 3 times, we create a captcha.

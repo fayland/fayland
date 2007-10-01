@@ -35,6 +35,7 @@ sub get {
     $c->log->debug( 'set user to cache: ' . Dumper( \$cond ) );
     $c->cache->set( $cache_key, $cache_val, 7200 );    # two hours
     $c->stash->{"__user_caches|$cache_key"} = $cache_val;
+    return $cache_val;
 }
 
 # Usage:
@@ -90,10 +91,15 @@ sub get_user_from_db {
     }
 
     # user profile photo
-    my $profile_photo;
-    if ( $user->primary_photo_id ) {
-        $profile_photo
-            = $c->model('Upload')->get( $c, $user->primary_photo_id );
+    my $profile_photo = $c->model('DBIC')->resultset('UserProfilePhoto')->find( {
+        user_id => $user->user_id,
+    } );
+    if ($profile_photo) {
+        $profile_photo = $profile_photo->{_column_data};
+        if ($profile_photo->{type} eq 'upload') {
+             my $profile_photo_upload = $c->model('Upload')->get( $c, $profile_photo->{value} );
+             $profile_photo->{upload} = $profile_photo_upload if ($profile_photo_upload);
+        }
     }
 
     $user                  = $user->{_column_data};

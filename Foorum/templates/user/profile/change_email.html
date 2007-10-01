@@ -1,8 +1,19 @@
+[% c.load_once("jquery.ui/themes/flora/flora.tabs.css") %]
+
+<div id='edit_profile_tabs' class='tabs'>
+    <ul class="ui-tabs-nav">
+        <li><a href='/profile/edit'><span>[% c.loc('Edit Profile') %]</span></a></li>
+        <li><a href='/profile/change_username'><span>Change Username</span></a></li>
+        <li><a href='/profile/change_password'><span>Change Password</span></a></li>
+        <li class="ui-tabs-selected"><a href='javascript:void(0);'><span>Change Email</span></a></li>
+        <li><a href='/profile/profile_photo'><span>Profile Photo</a></span></li>
+    </ul>
+    <div class="ui-tabs-container">
+
 <div class='one'>
 <table align='center'>
 	<tbody>
 	<form method='post'>
-	<tr class='title'><td colspan='2'>Email Edit</td></tr>
 	<tr class='misc1'><td width='20%' align='right'>Username:</td><td>[% c.user.username %]
 	</td></tr>
 	<tr class='misc2'><td align='right'>Password:</td><td><input type='password' name='password' size='12' />
@@ -25,4 +36,7 @@
 	</form>
 	</tbody>
 </table>
+</div>
+
+    </div>
 </div>

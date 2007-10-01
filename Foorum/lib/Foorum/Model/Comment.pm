@@ -28,16 +28,14 @@ sub get_comments_by_object {
                 object_id   => $object_id,
             },
             {   order_by => 'post_on',
-                prefetch => [ 'upload', 'author' ],
+                prefetch => [ 'upload' ],
             }
         );
 
         while ( my $rec = $it->next ) {
             my $upload = ( $rec->upload ) ? $rec->upload : undef;
-            my $author = ( $rec->author ) ? $rec->author : undef;
             $rec = $rec->{_column_data};    # for memcached using
             $rec->{upload} = $upload->{_column_data} if ($upload);
-            $rec->{author} = $author->{_column_data} if ($author);
 
             # filter format by Foorum::Filter
             $rec->{title} = $c->model('FilterWord')
@@ -62,6 +60,19 @@ sub get_comments_by_object {
 
     @comments = splice( @comments, ( $page - 1 ) * $rows, $rows );
 
+    my @all_user_ids; my %unique_user_ids;
+    foreach (@comments) {
+        next if ($unique_user_ids{$_->{author_id}});
+        push @all_user_ids, $_->{author_id};
+        $unique_user_ids{$_->{author_id}} = 1;
+    }
+    if (scalar @all_user_ids) {
+        my $authors = $c->model('User')->get_multi($c, 'user_id', \@all_user_ids);
+        foreach (@comments) {
+            $_->{author} = $authors->{$_->{author_id}};
+        }
+    }
+
     $c->stash->{comments}       = \@comments;
     $c->stash->{comments_pager} = $pager;
 }
@@ -75,15 +86,10 @@ sub get {
     push @extra_where, ( object_id => $attrs->{object_id} )
         if ( $attrs->{object_id} );
 
-    my @extra_attrs;
-    push @extra_attrs, ( prefetch => ['author'] )
-        if ( $attrs->{with_author} );
-
     my $comment = $c->model('DBIC')->resultset('Comment')->search(
         {   comment_id => $comment_id,
             @extra_where,
         },
-        { @extra_attrs, }
     )->first;
 
     # print error if the comment is non-exist
@@ -98,6 +104,9 @@ sub get {
             $comment->{_column_data}->{text},
             { format => $comment->formatter }
         );
+    }
+    if ( $attrs->{with_author} ) {
+        $comment->{author} = $c->model('User')->get($c, { user_id => $comment->author_id });
     }
 
     $c->stash->{comment} = $comment;

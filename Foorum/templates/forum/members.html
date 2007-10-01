@@ -1,5 +1,23 @@
 [% title = 'Members Of ' _ forum.name %]
 
+[% IF c.user_exists AND roles.is_admin %]
+[% c.load_once("jquery.ui/themes/flora/flora.tabs.css") %]
+<div id='edit_profile_tabs' class='tabs'>
+    <ul class="ui-tabs-nav">
+        <li><a href='/forumadmin/[% forum.forum_id  %]/basic'><span>[% c.loc('Basic Setting') %]</span></a></li>
+        <li><a href='/forumadmin/[% forum.forum_id  %]/style'><span>[% c.loc('Style Setting') %]</span></a></li>
+        [% TRY %]
+        [% css_file = c.config.home _ '/style/custom/forum' _ forum.forum_id _ '.yml' %]
+        [% USE File( css_file ) %]
+        <li><a href='/forumadmin/[% forum.forum_id  %]/del_style'><span>[% c.loc('Delete Style') %]</span></a></li>
+        [% CATCH File %]
+        [% END %]
+        <li class="ui-tabs-selected"><a href='[% forum.forum_url %]/members'><span>[% c.loc('Members Settings') %]</span></a></li>
+        <li><a href='/forumadmin/[% forum.forum_id  %]/announcement'><span>[% c.loc('Announcement Setting') %]</span></a></li>
+    </ul>
+    <div class="ui-tabs-container">
+[% END %]
+
 <div class='one'>
 <table align='center'>
 	<tr class='title' align='center'>
@@ -64,3 +82,8 @@ function ChangeMemberType(user_id, from) {
 }
 [% END %]
 </script>
+
+[% IF c.user_exists AND roles.is_admin %]
+    </div>
+</div>
+[% END %]

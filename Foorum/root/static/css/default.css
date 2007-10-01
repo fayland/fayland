@@ -78,28 +78,7 @@ A:link { color: #333333 }
 /* header bar */
 .barline { border-top:1px solid #F5DEB3; font-size:0; height:1px; position:absolute; right:0; top:26px; width:110% }
 
-
-.tabnav {
-    margin-bottom: 5px;
-    margin-left: 2%;   
+.tabs {
+    padding-left: 2em;
+    padding-right: 2em;
 }
-
-.tabnav ul {
-    margin: 0px;
-}
- 
-.tabnav ul li {
-    list-style-type: none;
-    display:inline;
-    background:#FFFBEC;
-    margin-left:10px;
-    padding:5px 10px 5px 10px;
-    border:1px solid #000;
-    border-bottom: 0px;
-    
-}
-
-.tabnav ul li.selected {
-    background:#F5DEB3;
-}
-

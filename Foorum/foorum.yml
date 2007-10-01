@@ -115,6 +115,7 @@ dir:
   js: /static/js
   images: /static/images
   static: /static
+  upload: /upload
 
 # For Foorum pm using
 mail:

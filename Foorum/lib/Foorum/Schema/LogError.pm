@@ -8,35 +8,34 @@ use base 'DBIx::Class';
 __PACKAGE__->load_components("Core");
 __PACKAGE__->table("log_error");
 __PACKAGE__->add_columns(
-    "error_id",
-    {   data_type     => "INT",
-        default_value => undef,
-        is_nullable   => 0,
-        size          => 11
-    },
-    "level",
-    {   data_type     => "ENUM",
-        default_value => "debug",
-        is_nullable   => 0,
-        size          => 5
-    },
-    "text",
-    {   data_type     => "TEXT",
-        default_value => "",
-        is_nullable   => 0,
-        size          => 65535
-    },
-    "time",
-    {   data_type     => "TIMESTAMP",
-        default_value => "CURRENT_TIMESTAMP",
-        is_nullable   => 1,
-        size          => 14,
-    },
+  "error_id",
+  { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
+  "level",
+  { data_type => "ENUM", default_value => "debug", is_nullable => 0, size => 5 },
+  "text",
+  { data_type => "TEXT", default_value => "", is_nullable => 0, size => 65535 },
+  "time",
+  {
+    data_type => "TIMESTAMP",
+    default_value => "CURRENT_TIMESTAMP",
+    is_nullable => 1,
+    size => 14,
+  },
 );
 __PACKAGE__->set_primary_key("error_id");
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3AyUSYk+XYtlz3fJRnX/cg
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-01 12:29:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:oOa7tMPZ5l4DONRryKCt1w
+
+
+
+
+
+
+
+
+
 
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;

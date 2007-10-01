@@ -8,23 +8,29 @@ use base 'DBIx::Class';
 __PACKAGE__->load_components("Core");
 __PACKAGE__->table("star");
 __PACKAGE__->add_columns(
-    "user_id",
-    { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
-    "object_type",
-    {   data_type     => "VARCHAR",
-        default_value => "",
-        is_nullable   => 0,
-        size          => 12
-    },
-    "object_id",
-    { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
-    "time",
-    { data_type => "INT", default_value => 0, is_nullable => 0, size => 10 },
+  "user_id",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
+  "object_type",
+  { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 12 },
+  "object_id",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
+  "time",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 10 },
 );
-__PACKAGE__->set_primary_key( "user_id", "object_id", "object_type" );
+__PACKAGE__->set_primary_key("user_id", "object_id", "object_type");
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:56:08
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:cDFqs33F8fXviR8xF94sxw
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-01 12:29:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ZJWV4PMON4qpDhejIPRdmw
+
+
+
+
+
+
+
+
+
 
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;

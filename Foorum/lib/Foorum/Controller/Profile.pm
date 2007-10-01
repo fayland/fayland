@@ -312,8 +312,8 @@ sub profile_photo : Local {
 
     my $new_upload = $c->req->upload('upload');
     my $old_upload_id
-        = $c->user->obj->{profile_photo}
-        ? $c->user->obj->{profile_photo}->{upload_id}
+        = ($c->user->obj->{profile_photo}->{type} eq 'upload')
+        ? $c->user->obj->{profile_photo}->{value}
         : 0;
     my $new_upload_id = 0;
     if ( ( $c->req->param('attachment_action') eq 'delete' ) or $new_upload )
@@ -322,7 +322,7 @@ sub profile_photo : Local {
         # delete old upload
         if ($old_upload_id) {
             $c->model('Upload')
-                ->remove_by_upload( $c, $c->user->obj->{profile_photo} );
+                ->remove_by_upload( $c, $c->user->obj->{profile_photo}->{upload} );
             $new_upload_id = 0;
         }
 
@@ -336,8 +336,17 @@ sub profile_photo : Local {
         }
     }
 
-    $c->model('User')
-        ->update( $c, $c->user, { primary_photo_id => $new_upload_id } );
+    $c->model('DBIC')->resultset('UserProfilePhoto')->search( { user_id => $c->user->obj->{user_id} } )->delete;
+    $c->model('DBIC')->resultset('UserProfilePhoto')->create( {
+        user_id => $c->user->obj->{user_id},
+        type    => 'upload',
+        value   => $new_upload_id,
+        width => 0, height => 0,
+        time  => time(),
+    } );
+    
+    $c->model('User')->delete_cache_by_user($c, $c->user->obj);
+    
     $c->res->redirect( '/u/' . $c->user->obj->{username} );
 }
 

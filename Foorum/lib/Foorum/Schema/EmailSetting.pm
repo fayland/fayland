@@ -8,17 +8,32 @@ use base 'DBIx::Class';
 __PACKAGE__->load_components("Core");
 __PACKAGE__->table("email_setting");
 __PACKAGE__->add_columns(
-    "user_id",
-    { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
-    "object_type",
-    { data_type => "ENUM", default_value => "", is_nullable => 0, size => 7 },
-    "frequence",
-    { data_type => "ENUM", default_value => "", is_nullable => 0, size => 6 },
+  "user_id",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
+  "object_type",
+  {
+    data_type => "ENUM",
+    default_value => "comment",
+    is_nullable => 0,
+    size => 7,
+  },
+  "frequence",
+  { data_type => "ENUM", default_value => "daily", is_nullable => 0, size => 6 },
 );
-__PACKAGE__->set_primary_key( "user_id", "object_type" );
+__PACKAGE__->set_primary_key("user_id", "object_type");
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-09-18 20:46:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Nq+fYAm37hrdB/1bPY8qvQ
+
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-01 12:29:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:OFxUkvoupsl2h1PLNrCdwg
+
+
+
+
+
+
+
+
+
 
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;
