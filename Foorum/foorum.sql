@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 19, 2007 at 08:42 AM
+-- Generation Time: Oct 01, 2007 at 12:42 PM
 -- Server version: 5.0.21
 -- PHP Version: 5.2.4
 
@@ -150,13 +150,15 @@ CREATE TABLE IF NOT EXISTS `log_error` (
 
 DROP TABLE IF EXISTS `log_path`;
 CREATE TABLE IF NOT EXISTS `log_path` (
+  `path_id` int(11) unsigned NOT NULL auto_increment,
   `session_id` varchar(72) default NULL,
   `user_id` int(11) unsigned NOT NULL default '0',
   `path` varchar(255) NOT NULL default '',
   `get` varchar(255) default NULL,
-  `post` varchar(255) default NULL,
+  `post` text,
   `time` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `loadtime` double NOT NULL default '0',
+  PRIMARY KEY  (`path_id`),
   KEY `path` (`path`),
   KEY `session_id` (`session_id`),
   KEY `user_id` (`user_id`)
@@ -380,7 +382,6 @@ CREATE TABLE IF NOT EXISTS `user` (
   `country` char(2) default 'cn',
   `state_id` int(11) unsigned NOT NULL default '0',
   `city_id` int(11) unsigned NOT NULL default '0',
-  `primary_photo_id` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`),
@@ -420,6 +421,23 @@ CREATE TABLE IF NOT EXISTS `user_details` (
   `birthday` date default NULL,
   PRIMARY KEY  (`user_id`),
   KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_profile_photo`
+--
+
+DROP TABLE IF EXISTS `user_profile_photo`;
+CREATE TABLE IF NOT EXISTS `user_profile_photo` (
+  `user_id` int(11) unsigned NOT NULL default '0',
+  `type` enum('upload','url') NOT NULL default 'upload',
+  `value` varchar(255) NOT NULL default '0',
+  `width` smallint(6) unsigned NOT NULL default '0',
+  `height` smallint(6) unsigned NOT NULL default '0',
+  `time` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
