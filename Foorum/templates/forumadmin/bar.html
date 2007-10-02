@@ -4,6 +4,7 @@
 
 <div id='edit_profile_tabs' class='tabs'>
     <ul class="ui-tabs-nav">
+        <li><a href='[% forum.forum_url %]'><span>Forum</span></a></li>
         <li[% IF c.req.path.match('basic') %] class="ui-tabs-selected"[% END %]><a href='[% url_base %]/basic'><span>[% c.loc('Basic Setting') %]</span></a></li>
         <li[% IF c.req.path.match('style') %] class="ui-tabs-selected"[% END %]><a href='[% url_base %]/style'><span>[% c.loc('Style Setting') %]</span></a></li>
         [% TRY %]

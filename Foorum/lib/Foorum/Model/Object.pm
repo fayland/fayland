@@ -53,35 +53,38 @@ sub get_object_by_type_id {
     my $object_id   = $info->{object_id};
     return unless ( $object_type and $object_id );
 
-    my $object;
     switch ($object_type) {
         case 'topic' {
-            $object = $c->model('DBIC::Topic')->find(
+            my $object = $c->model('DBIC::Topic')->find(
                 {
                     topic_id => $object_id,
-                },
-                {
-                    prefetch => ['author'],
                 }
             );
             return unless ($object);
-            $object->{url} = '/forum/' . $object->forum_id . "/$object_id";
+            return {
+                object_type => 'topic',
+                title  => $object->title,
+                author => $c->model('User')->get($c, { user_id => $object->author_id } ),
+                url    => '/forum/' . $object->forum_id . "/$object_id",
+                last_update => $object->last_update_date,
+            };
         }
         case 'poll' {
-            $object = $c->model('DBIC::Poll')->find(
+            my $object = $c->model('DBIC::Poll')->find(
                 {
                     poll_id => $object_id,
-                },
-                {
-                    prefetch => ['author'],
                 }
             );
             return unless ($object_id);
-            $object->{url}
-                = '/forum/' . $object->forum_id . "/poll/$object_id";
+            return {
+                object_type => 'poll',
+                title  => $object->title,
+                author => $c->model('User')->get($c, { user_id => $object->author_id } ),
+                url    => '/forum/' . $object->forum_id . "/poll/$object_id",
+                last_update => '-',
+            };
         }
     }
-    return $object;
 }
 
 =pod

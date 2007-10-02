@@ -40,8 +40,13 @@ __PACKAGE__->set_primary_key("forum_id");
 __PACKAGE__->add_unique_constraint("forum_code", ["forum_code"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-01 12:29:37
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fL0Tu7CWIH+Le8rPz3xS9A
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-02 15:41:21
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:O5lDpyOXvUPZyjn7G2jUeQ
+
+
+
+
+
 
 
 

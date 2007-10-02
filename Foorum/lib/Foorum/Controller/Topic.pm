@@ -20,7 +20,8 @@ sub topic : Regex('^forum/(\w+)/(\d+)$') {
 
     # get the topic
     my $topic = $c->model('Topic')->get( $c, $forum_id, $topic_id );
-    $topic->update( { hit => $topic->hit + 1, } );
+    
+    $topic->{_column_data}->{hit} = $c->model('Hit')->register($c, 'topic', $topic->topic_id, $topic->hit);
 
     if ( $c->user_exists ) {
 

@@ -61,17 +61,6 @@ sub forum_list : Regex('^forum/(\w+)$') {
     # for page 1 and normal mode
     if ( $page_no == 1 and not $is_elite ) {
 
-        # poll
-        my @polls = $c->model('DBIC')->resultset('Poll')->search(
-            {   forum_id => $forum_id,
-                duration => { '>', time() },
-            },
-            {   order_by => 'time desc',
-                prefetch => ['author'],
-            }
-        )->all;
-        $c->stash->{polls} = \@polls;
-
         # for private forum
         if ( $forum->policy eq 'private' ) {
             my $pending_count = $c->model('DBIC::UserRole')->count(
@@ -128,6 +117,13 @@ sub forum_list : Regex('^forum/(\w+)$') {
 
     # Pager
     my $pager = $it->pager;
+
+    # For Tabs
+    $c->stash->{poll_count} = $c->model('DBIC')->resultset('Poll')->count(
+        {   forum_id => $forum_id,
+            duration => { '>', time() },
+        }
+    );
 
     $c->stash->{whos_view_this_page} = 1;
     $c->stash->{topics}              = \@topics;
@@ -214,14 +210,28 @@ sub action_log : LocalRegex('^(\w+)/action_log(/(\w+))?$') {
         {   order_by => 'time DESC',
             page     => $page,
             rows     => 20,
-            prefetch => ['operator'],
         }
     );
+    
+    my @actions = $rs->all;
+    
+    my @all_user_ids; my %unique_user_ids;
+    foreach (@actions) {
+        next if ($unique_user_ids{$_->user_id});
+        push @all_user_ids, $_->user_id;
+        $unique_user_ids{$_->user_id} = 1;
+    }
+    if (scalar @all_user_ids) {
+        my $authors = $c->model('User')->get_multi($c, 'user_id', \@all_user_ids);
+        foreach (@actions) {
+            $_->{operator} = $authors->{$_->user_id};
+        }
+    }
 
     $c->stash(
         {   template => 'forum/action_log.html',
             pager    => $rs->pager,
-            logs     => [ $rs->all ],
+            logs     => \@actions,
         }
     );
 }

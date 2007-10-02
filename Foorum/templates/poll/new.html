@@ -5,9 +5,21 @@
       var new_option_no = Math.round(option_number) + 1;
       $('#option_number').val(new_option_no);
       var option_html = "Option " + new_option_no + ": <input type='text' name='option" + new_option_no + "' id='option" + new_option_no + "' /><br />";
-      new Insertion.Before('extra_options', option_html);
+      $('#extra_options').append(option_html);
   }
 </script>
+
+[% c.load_once("jquery.ui/themes/flora/flora.all.css") %]
+
+<div id='edit_profile_tabs' class='tabs'>
+    <ul class="ui-tabs-nav">
+        <li><a href='[% forum.forum_url %]'><span>Topics</span></a></li>
+        <li><a href='[% forum.forum_url %]/polls'><span>Polls</span></a></li>
+        <li><a href='[% forum.forum_url %]/topic/new'><span>New Topic</span></a></li>
+        <li class="ui-tabs-selected"><a href='[% forum.forum_url %]/poll/new'><span>New Poll</span></a></li>
+        <li><a href='[% forum.forum_url %]/action_log'><span>View Action Logs</span></a></li>
+    </ul>
+    <div class="ui-tabs-container">
 
 <div class='one'>
 <form method="post">
@@ -38,4 +50,7 @@
   <tr class='forum2'><td colspan='2'><input type='submit' /></td></tr>
 </table>
 </form>
+</div>
+
+    </div>
 </div>

@@ -1,5 +1,17 @@
 [% title = 'Action Logs Of ' _ forum.name %]
 
+[% c.load_once("jquery.ui/themes/flora/flora.all.css") %]
+
+<div id='edit_profile_tabs' class='tabs'>
+    <ul class="ui-tabs-nav">
+        <li><a href='[% forum.forum_url %]'><span>Topics</span></a></li>
+        <li><a href='[% forum.forum_url %]/polls'><span>Polls</span></a></li>
+        <li><a href='[% forum.forum_url %]/topic/new'><span>New Topic</span></a></li>
+        <li><a href='[% forum.forum_url %]/poll/new'><span>New Poll</span></a></li>
+        <li class="ui-tabs-selected"><a href='[% forum.forum_url %]/action_log'><span>View Action Logs</span></a></li>
+    </ul>
+    <div class="ui-tabs-container">
+
 <div class='one'>
 <table align='center'>
 	<tr class='title' align='center'>
@@ -28,4 +40,7 @@
 	</td>
 </tr>
 </table>
+</div>
+
+    </div>
 </div>

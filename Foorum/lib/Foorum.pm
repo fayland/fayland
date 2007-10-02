@@ -24,7 +24,7 @@ use Catalyst qw/
 #
 
 use vars qw/$VERSION/;
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 __PACKAGE__->config( { VERSION => $VERSION } );
 
@@ -43,8 +43,8 @@ if ( __PACKAGE__->config->{debug_mode} ) {
         *{"$class\::debug"} = sub {1};
     }
 
-    my @extra_plugins = qw/ StackTrace /;        # DBIC::Schema::Profiler
-    __PACKAGE__->setup_plugins( [@extra_plugins] );
+    #my @extra_plugins = qw/ StackTrace /;        # DBIC::Schema::Profiler
+    #__PACKAGE__->setup_plugins( [@extra_plugins] );
 }
 
 1;

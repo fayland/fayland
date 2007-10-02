@@ -4,6 +4,10 @@
 [% title = c.loc('Recent Topics') %]
 [% END %]
 
+[% IF recent_type != 'my' %]
+[% RSS_URL = url_prefix _ '/rss' %]
+[% END %]
+
 [% c.load_once("jquery.ui/themes/flora/flora.tabs.css") %]
 
 <div id='recent_tabs' class='tabs'>
@@ -67,9 +71,6 @@
 <table align='center'>
     <tr>
         <td>[% INCLUDE 'sub/pager.html' %]</td>
-        [% IF recent_type != 'my' %]
-        <td align='right'><a href='[% url_prefix %]/rss'><img src='[% c.config.dir.images %]/site/feed-icon-16x16.gif' width='16' height='16' align='absmiddle' /></a></td>
-        [% END %]
     </tr>
 </table>
 </div>

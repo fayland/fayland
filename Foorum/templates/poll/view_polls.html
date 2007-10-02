@@ -2,12 +2,24 @@
 
 [% title = forum.name %]
 
+[% c.load_once("jquery.ui/themes/flora/flora.all.css") %]
+
+<div id='edit_profile_tabs' class='tabs'>
+    <ul class="ui-tabs-nav">
+        <li><a href='[% forum.forum_url %]'><span>Topics</span></a></li>
+        <li class="ui-tabs-selected"><a href='[% forum.forum_url %]/polls'><span>Polls</span></a></li>
+        <li><a href='[% forum.forum_url %]/topic/new'><span>New Topic</span></a></li>
+        <li><a href='[% forum.forum_url %]/poll/new'><span>New Poll</span></a></li>
+        <li><a href='[% forum.forum_url %]/action_log'><span>View Action Logs</span></a></li>
+        [% IF c.user_exists AND roles.is_admin %]
+        <li><a href='/forumadmin/[% forum.forum_id %]'><span>[% c.loc('Forum Admin') %]</span></a></li>
+        [% END %]
+    </ul>
+    <div class="ui-tabs-container">
+
 <div class='none'>
 <table align='center'>
-<tr><td>
-<a href='[% forum.forum_url %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle' /></a> 
-<a href='[% forum.forum_url %]/poll/new'><img src='[% c.config.dir.images %]/newpoll.gif' width='99' height='25' align='absmiddle' /></a> 
-</td><td align='right' valign='bottom'>
+<tr><td align='right' valign='bottom'>
 Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_roles.${forum.forum_id}.admin.nickname %]</a>
 [% FOREACH moderator IN forum_roles.${forum.forum_id}.moderator %]
 [% IF loop.first %], [% END %]<a href='/u/[% moderator.username %]'>[% moderator.nickname %]</a>[% UNLESS loop.last %], [% END %]
@@ -44,4 +56,7 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 <table align='center'>
     <tr><td>[% INCLUDE 'sub/pager.html' url_prefix = '/forum/' _ forum.forum_code _ '/polls' %]</td></tr>
 </table>
+</div>
+
+    </div>
 </div>

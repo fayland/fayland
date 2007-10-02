@@ -19,12 +19,8 @@
 <tr align='center' class='misc[% IF loop.count mod 2 %]1[% ELSE %]2[% END %]'>
 
 <td><a href="javascript:star('[% item.object_type %]', '[% item.object_id %]', 'starDiv')"><span id='starDiv'><img src="http://mail.google.com/mail/images/star_on_2.gif" /></span></a></td>
-[% SWITCH item.object_type  %]
-[% CASE 'topic' %]
-<td align='left'><a href='[% item.object.url %]'>[% item.object.title %]</a></td>
-<td><a href='/u/[% item.object.author.username %]'>[% item.object.author.nickname %]</a></td>
-<td>[% item.object.last_update_date %]</td>
-[% END %]
+
+[% INCLUDE include/object_tds.html object = item.object %]
 
 </tr>
 [% END %]

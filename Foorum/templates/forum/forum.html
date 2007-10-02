@@ -6,6 +6,24 @@
 [% END %]
 
 [% title = forum.name %]
+[% IF forum.policy == 'public' %]
+[% RSS_URL = forum.forum_url _ '/rss' %]
+[% END %]
+
+[% c.load_once("jquery.ui/themes/flora/flora.all.css") %]
+
+<div id='edit_profile_tabs' class='tabs'>
+    <ul class="ui-tabs-nav">
+        <li class="ui-tabs-selected"><a href='[% forum.forum_url %]'><span>Topics</span></a></li>
+        <li><a href='[% forum.forum_url %]/polls'><span>Polls ([% poll_count %])</span></a></li>
+        <li><a href='[% forum.forum_url %]/topic/new'><span>New Topic</span></a></li>
+        <li><a href='[% forum.forum_url %]/poll/new'><span>New Poll</span></a></li>
+        <li><a href='[% forum.forum_url %]/action_log'><span>View Action Logs</span></a></li>
+        [% IF c.user_exists AND roles.is_admin %]
+        <li><a href='/forumadmin/[% forum.forum_id %]'><span>[% c.loc('Forum Admin') %]</span></a></li>
+        [% END %]
+    </ul>
+    <div class="ui-tabs-container">
 
 [% IF forum.policy == 'private' %]
 <div class='one'>
@@ -21,45 +39,14 @@
 
 <div class='none'>
 <table align='center'>
-<tr><td>
-<a href='[% forum.forum_url %]/topic/new'><img src='[% c.config.dir.images %]/newthread.gif' width='99' height='25' align='absmiddle' /></a> 
-<a href='[% forum.forum_url %]/poll/new'><img src='[% c.config.dir.images %]/newpoll.gif' width='99' height='25' align='absmiddle' /></a> 
-</td><td align='right' valign='bottom'>
+<tr><td width='*' align='right' valign='bottom'>
 Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_roles.${forum.forum_id}.admin.nickname %]</a>
 [% FOREACH moderator IN forum_roles.${forum.forum_id}.moderator %]
 [% IF loop.first %], [% END %]<a href='/u/[% moderator.username %]'>[% moderator.nickname %]</a>[% UNLESS loop.last %], [% END %]
 [% END %]
-[% IF forum.policy == 'public' %]
- &nbsp; <a href='[% forum.forum_url %]/rss'><img src='[% c.config.dir.images %]/site/feed-icon-16x16.gif' width='16' height='16' align='absmiddle' /></a> 
-<link rel="alternate" type="application/rss+xml" title="[% title %]" href="[% forum.forum_url %]/rss" /> 
-[% END %]
-<a href='[% forum.forum_url %]/action_log'>View Action Logs</a>
 <td></tr>
 </table>
 </div>
-
-<div class='one'>
-<table align='center'>
-[% IF polls.size %]
-	<tr class='title' align='center'>
-	<td>[% c.loc("Subject") %]</td>
-	<td width='100'>[% c.loc("Author") %]</td>
-	<td>[% c.loc("Poll") %]</td>
-	</tr>
-[% END %]
-[% FOREACH poll IN polls %]
-<tr align='center'>
-	<td class='forum2'><a href='[% forum.forum_url %]/poll/[% poll.poll_id %]'>[% poll.title %]</a></td>
-	<td class='forum1'><a href='/u/[% poll.author.username %]'>[% poll.author.nickname %]</a></td>
-	<td class='forum2'>[% poll.vote_no %]</td>
-</tr>
-[% END %]
-<tr>
-	<td colspan='3' align='right' class='forum2'><a href='[% forum.forum_url %]/poll'>View ALL POLLs</a></td>
-</tr>
-</table>
-</div>
-<br />
 
 <div class='one'>
 <table height='28' align='center'>
@@ -110,6 +97,12 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 
 <div class='none'>
 <table align='center'>
-    <tr><td>[% INCLUDE 'sub/pager.html' url_prefix = forum.forum_url %]</td></tr>
+    <tr>
+        <td>[% INCLUDE 'sub/pager.html' url_prefix = forum.forum_url %]</td>
+    </tr>
 </table>
+</div>
+
+
+    </div>
 </div>

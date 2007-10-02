@@ -31,12 +31,19 @@ __PACKAGE__->add_columns(
     is_nullable => 1,
     size => 128,
   },
+  "hit",
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
 );
 __PACKAGE__->set_primary_key("poll_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-01 12:29:37
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Tf/02Mi+RcVewiSjSjcs4w
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-02 15:41:21
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:syjbpjOGWSpr8cHojY7DHA
+
+
+
+
+
 
 
 

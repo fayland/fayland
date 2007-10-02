@@ -91,6 +91,9 @@ sub poll : Regex('^forum/(\w+)/poll/(\d+)$') {
         }
     );
 
+    # register hit
+    $poll->{_column_data}->{hit} = $c->model('Hit')->register($c, 'poll', $poll->poll_id, $poll->hit);
+
     $c->stash(
         {   can_vote => $can_vote,
             poll     => $poll,
@@ -99,7 +102,7 @@ sub poll : Regex('^forum/(\w+)/poll/(\d+)$') {
     );
 }
 
-sub view_polls : Regex('^forum/(\w+)/poll$') {
+sub view_polls : Regex('^forum/(\w+)/polls$') {
     my ( $self, $c ) = @_;
 
     my $forum_code = $c->req->snippets->[0];

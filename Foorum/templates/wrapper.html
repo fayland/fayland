@@ -81,9 +81,7 @@
     [% END %]
     [% UNLESS forum %]
      | <a href='/site/recent'>[% c.loc("Recent Topics") %]</a>
-    [% END %]
-    [% IF forum.forum_code AND c.user_exists AND roles.is_admin %]
-    | <a href='/forumadmin/[% forum.forum_id %]'>[% c.loc('Forum Admin') %]</a>
+     | <a href='/site/popular'>[% c.loc("Popular") %]</a>
     [% END %]
     [% IF roles.site.admin OR roles.site.moderator %]
     | <a href='/admin'>[% c.loc('Site Admin') %]</a>
@@ -108,6 +106,10 @@
     <div>Languages: <a href='[% c.req.uri_with( { lang => 'en' } ) %]'>English</a> | <a href='[% c.req.uri_with( { lang => 'cn' } ) %]'>简体中文</a></div>
     [% UNLESS forum %]<a href='/info/about_us'>[% c.loc("About Us") %]</a> | <a href='/info/contact_us'>[% c.loc("Contact Us") %]</a> | <a href='/help'>[% c.loc("Help Center") %]</a><br />[% END %]
     Copyright &copy; [% c.config.site.copy_rights_start_year %] - 2007 All Rights Reserved. Powered by <a href='/info/powered_by'>Foorum [% c.config.VERSION %].</a>
+    [% IF RSS_URL %]
+    <a href='[% RSS_URL %]'><img src='[% c.config.dir.images %]/site/feed-icon-16x16.gif' width='16' height='16' align='absmiddle' /></a> 
+    <link rel="alternate" type="application/rss+xml" title="[% title %]" href="[% RSS_URL %]" />
+    [% END %]
     </p>
 </div>
 <div id='timer'><p>This page takes [% elapsed_time %] to load. </p></div>
