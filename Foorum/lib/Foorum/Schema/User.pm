@@ -47,10 +47,10 @@ __PACKAGE__->add_columns(
   { data_type => "MEDIUMINT", default_value => 1, is_nullable => 0, size => 8 },
   "status",
   {
-    data_type => "VARCHAR",
-    default_value => undef,
-    is_nullable => 1,
-    size => 16,
+    data_type => "ENUM",
+    default_value => "unauthorized",
+    is_nullable => 0,
+    size => 12,
   },
   "threads",
   { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
@@ -72,8 +72,9 @@ __PACKAGE__->add_unique_constraint("email", ["email"]);
 __PACKAGE__->add_unique_constraint("username", ["username"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-02 15:41:21
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/ISI4TahJzzmwiY/TgE0yA
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-03 14:52:22
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KCQ2F5z5xlSUDgxrdvMtOQ
+
 
 
 
