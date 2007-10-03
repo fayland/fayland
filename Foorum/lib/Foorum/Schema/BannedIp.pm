@@ -18,8 +18,9 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("ip_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-03 14:52:22
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:I5uj2/UxUmUtn8SNcS3kvQ
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-03 15:05:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Fejf1pn/7/n8Fd45RisWlQ
+
 
 
 

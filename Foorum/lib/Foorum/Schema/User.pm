@@ -48,9 +48,9 @@ __PACKAGE__->add_columns(
   "status",
   {
     data_type => "ENUM",
-    default_value => "unauthorized",
+    default_value => "unverified",
     is_nullable => 0,
-    size => 12,
+    size => 10,
   },
   "threads",
   { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
@@ -72,8 +72,9 @@ __PACKAGE__->add_unique_constraint("email", ["email"]);
 __PACKAGE__->add_unique_constraint("username", ["username"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-03 14:52:22
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KCQ2F5z5xlSUDgxrdvMtOQ
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-03 15:05:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:n4uU8MKFYb1+d6SmoN1h9w
+
 
 
 

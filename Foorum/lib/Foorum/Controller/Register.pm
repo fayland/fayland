@@ -70,7 +70,7 @@ sub default : Private {
             register_on => \"NOW()",
             register_ip => $c->req->address,
             lang        => $c->config->{default_lang},
-            status      => 'unauthorized',
+            status      => 'unverified',
         }
     );
 
@@ -116,7 +116,7 @@ sub activation : Local {
     my $activation_rs = $c->model('DBIC')->resultset('UserActivation')
         ->find( { user_id => $user->{user_id} } );
     unless ($activation_rs) {
-        if ( $user->{status} eq 'unauthorized' ) {    # new account
+        if ( $user->{status} eq 'unverified' ) {    # new account
             $c->model('Email')->send_activation( $c, $user );
             return $c->res->redirect(
                 '/register/activation/' . $user->{username} );
@@ -133,7 +133,7 @@ sub activation : Local {
         }
         $c->model('User')->update(
             $c, $user,
-            {   status => 'authorized',
+            {   status => 'verified',
                 @extra_update,
             }
         );
