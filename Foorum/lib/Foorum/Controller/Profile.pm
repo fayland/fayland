@@ -17,6 +17,10 @@ sub user_profile : PathPart('u') Chained('/') CaptureArgs(1) {
     $c->detach( '/print_error', ['ERROR_USER_NON_EXSIT'] )
         unless ($user);
 
+    if ($user->status eq 'banned' or $user->status eq 'blocked') {
+        $c->detach('/print_error', [ 'ERROR_ACCOUNT_CLOSED_STATUS' ] );
+    }
+
     $c->stash->{user} = $user;
 }
 

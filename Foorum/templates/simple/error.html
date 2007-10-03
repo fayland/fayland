@@ -6,6 +6,8 @@
     error.msg = c.loc("User non-exist");
     CASE 'USER_BLOCKED';
     error.msg = c.loc("User is blocked");
+    CASE 'ACCOUNT_CLOSED_STATUS';
+    error.msg = c.loc("Account is banned or blocked or terminated.");
     CASE 'USER_PENDING';
     error.msg = c.loc("Your status is pending");
     CASE 'USER_REJECTED';

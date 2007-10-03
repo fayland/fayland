@@ -55,7 +55,7 @@ sub login : Global {
             
             if ($c->user->status eq 'banned' or $c->user->status eq 'blocked') {
                 $c->logout;
-                $c->detach('/print_error', [ 'Account Status: ' . $c->user->status ] );
+                $c->detach('/print_error', [ 'ERROR_ACCOUNT_CLOSED_STATUS' ] );
             }
 
             # remember me
