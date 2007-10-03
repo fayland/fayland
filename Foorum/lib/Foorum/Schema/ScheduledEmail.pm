@@ -65,23 +65,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("email_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-03 15:05:29
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:sviVB1MVtxmZA9WMWO+Qdw
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-03 15:37:22
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BrCgd/5jwzo4bUsJBPRPww
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
