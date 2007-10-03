@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 01, 2007 at 12:42 PM
+-- Generation Time: Oct 03, 2007 at 06:42 AM
 -- Server version: 5.0.21
 -- PHP Version: 5.2.4
 
@@ -105,6 +105,29 @@ CREATE TABLE IF NOT EXISTS `forum` (
   PRIMARY KEY  (`forum_id`),
   UNIQUE KEY `forum_code` (`forum_code`),
   KEY `forum_id` (`forum_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `hit`
+--
+
+DROP TABLE IF EXISTS `hit`;
+CREATE TABLE IF NOT EXISTS `hit` (
+  `hit_id` int(11) unsigned NOT NULL auto_increment,
+  `object_type` varchar(12) NOT NULL,
+  `object_id` int(11) unsigned NOT NULL default '0',
+  `hit_new` int(11) unsigned NOT NULL default '0',
+  `hit_today` int(11) unsigned NOT NULL default '0',
+  `hit_yesterday` int(11) unsigned NOT NULL default '0',
+  `hit_weekly` int(11) unsigned NOT NULL default '0',
+  `hit_monthly` int(11) unsigned NOT NULL default '0',
+  `hit_all` int(11) unsigned NOT NULL default '0',
+  `last_update_time` int(11) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`hit_id`),
+  KEY `object` (`object_type`,`object_id`),
+  KEY `object_type` (`object_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -218,6 +241,7 @@ CREATE TABLE IF NOT EXISTS `poll` (
   `duration` int(10) default NULL,
   `vote_no` mediumint(8) unsigned NOT NULL default '0',
   `title` varchar(128) default NULL,
+  `hit` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`poll_id`),
   KEY `poll_id` (`poll_id`),
   KEY `author_id` (`author_id`)
