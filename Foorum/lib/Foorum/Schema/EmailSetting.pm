@@ -27,21 +27,5 @@ __PACKAGE__->set_primary_key("user_id", "object_type");
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:DROog6K8NgquyCmi+ry1ag
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;

@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 use FindBin qw/$Bin $RealBin/;
-use YAML qw(LoadFile);
 use Cwd qw/abs_path/;
 
 use DBIx::Class::Schema::Loader qw| make_schema_at dump_to_dir |;
