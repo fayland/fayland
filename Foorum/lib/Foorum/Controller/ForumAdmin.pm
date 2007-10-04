@@ -11,14 +11,12 @@ use Data::Dumper;
 sub forum_for_admin : PathPart('forumadmin') Chained('/') CaptureArgs(1) {
     my ( $self, $c, $forum_code ) = @_;
 
-    my $forum
-        = $c->model('Forum')->get( $c, $forum_code, { level => 'data' } );
+    my $forum = $c->controller('Get')->forum( $c, $forum_code );
 
-    unless ( $c->model('Policy')->is_admin( $c, $forum->forum_id ) ) {
+    unless ( $c->model('Policy')->is_admin( $c, $forum->{forum_id} ) ) {
         $c->detach( '/print_error', ['ERROR_PERMISSION_DENIED'] );
     }
 
-    $c->stash( { forum => $forum, } );
 }
 
 sub home : PathPart('') Chained('forum_for_admin') Args(0) {
@@ -31,7 +29,7 @@ sub basic : Chained('forum_for_admin') Args(0) {
     my ( $self, $c ) = @_;
 
     my $forum    = $c->stash->{forum};
-    my $forum_id = $forum->forum_id;
+    my $forum_id = $forum->{forum_id};
 
     $c->stash( { template => 'forumadmin/basic.html', } );
 
@@ -48,7 +46,7 @@ sub basic : Chained('forum_for_admin') Args(0) {
             push @moderator_username, $_->{username} foreach (@e_moderators);
             $c->stash->{moderators} = join( ',', @moderator_username );
         }
-        $c->stash->{private} = ( $forum->policy eq 'private' ) ? 1 : 0;
+        $c->stash->{private} = ( $forum->{policy} eq 'private' ) ? 1 : 0;
         return;
     }
 
@@ -63,7 +61,7 @@ sub basic : Chained('forum_for_admin') Args(0) {
     # check forum_code
     my $forum_code = $c->req->param('forum_code');
     my $err = $c->model('Validation')->validate_forum_code( $c, $forum_code )
-        if ( $forum_code and $forum_code ne $forum->forum_code );
+        if ( $forum_code and $forum_code ne $forum->{forum_code} );
     if ($err) {
         $c->set_invalid_form( forum_code => $err );
         return;
@@ -102,7 +100,7 @@ sub basic : Chained('forum_for_admin') Args(0) {
     my @extra_update;
     push @extra_update, ( forum_code => $forum_code )
         if ( $c->stash->{is_site_admin} );
-    $forum->update(
+    $c->model('Forum')->update($c, $forum_id,
         {   name        => $name,
             description => $description,
 
@@ -116,7 +114,7 @@ sub basic : Chained('forum_for_admin') Args(0) {
     $c->model('Policy')->remove_user_role(
         $c,
         {   role  => 'moderator',
-            field => $forum->forum_id,
+            field => $forum->{forum_id},
         }
     );
     foreach (@moderator_users) {
@@ -124,7 +122,7 @@ sub basic : Chained('forum_for_admin') Args(0) {
             $c,
             {   user_id => $_->user_id,
                 role    => 'moderator',
-                field   => $forum->forum_id,
+                field   => $forum->{forum_id},
             }
         );
     }
@@ -137,7 +135,7 @@ sub style : Chained('forum_for_admin') Args(0) {
     my ( $self, $c ) = @_;
 
     my $forum    = $c->stash->{forum};
-    my $forum_id = $forum->forum_id;
+    my $forum_id = $forum->{forum_id};
 
     $c->stash->{template} = 'forumadmin/style.html';
 
@@ -226,7 +224,7 @@ sub del_style : Chained('forum_for_admin') Args(0) {
     my ( $self, $c ) = @_;
 
     my $forum    = $c->stash->{forum};
-    my $forum_id = $forum->forum_id;
+    my $forum_id = $forum->{forum_id};
 
     my $yml
         = $c->path_to( 'style', 'custom', "forum$forum_id\.yml" )->stringify;
@@ -243,7 +241,7 @@ sub announcement : Chained('forum_for_admin') Args(0) {
     my ( $self, $c ) = @_;
 
     my $forum    = $c->stash->{forum};
-    my $forum_id = $forum->forum_id;
+    my $forum_id = $forum->{forum_id};
 
     my $announce = $c->model('DBIC::Comment')->find(
         {   object_id   => $forum_id,
@@ -300,7 +298,7 @@ sub change_membership : Chained('forum_for_admin') Args(0) {
     my ( $self, $c ) = @_;
 
     my $forum    = $c->stash->{forum};
-    my $forum_id = $forum->forum_id;
+    my $forum_id = $forum->{forum_id};
 
     # get params;
     my $from    = $c->req->param('from');
@@ -323,12 +321,12 @@ sub change_membership : Chained('forum_for_admin') Args(0) {
     return $c->res->body('no record available') unless ($rs);
 
     if ( $from eq 'user' and ( $to eq 'rejected' or $to eq 'blocked' ) ) {
-        $forum->update( { total_members => \"total_members - 1" } );
+        $c->model('Forum')->update($c, $forum_id, { total_members => \"total_members - 1" } );
     } elsif (
         ( $from eq 'rejected' or $from eq 'blocked' or $from eq 'pending' )
         and $to eq 'user' )
     {
-        $forum->update( { total_members => \"total_members + 1" } );
+        $c->model('Forum')->update($c, $forum_id, { total_members => \"total_members + 1" } );
     }
 
     my $where = {

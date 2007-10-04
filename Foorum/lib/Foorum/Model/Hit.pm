@@ -48,13 +48,11 @@ sub update_hit_object {
     my ($self, $c, $object_type, $object_id, $hit) = @_;
     
     if ($object_type eq 'topic') {
-        $c->model('DBIC')->resultset('Topic')->search( {
-            topic_id => $object_id,
-        } )->update( {
+        $c->model('Topic')->update( $c, $object_id, {
             hit => $hit,
         } );
     } elsif ($object_type eq 'poll') {
-        $c->model('DBIC')->resultset('Topic')->search( {
+        $c->model('DBIC')->resultset('Poll')->search( {
             poll_id => $object_id,
         } )->update( {
             hit => $hit,

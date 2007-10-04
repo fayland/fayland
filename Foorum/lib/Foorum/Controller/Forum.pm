@@ -20,11 +20,10 @@ sub board : Path {
     # get last_post and the author
     foreach (@forums) {
         next unless $_->last_post_id;
-        $_->{last_post} = $c->model('DBIC')->resultset('Topic')
-            ->find( { topic_id => $_->last_post_id, } );
+        $_->{last_post} = $c->model('Topic')->get($c, $_->last_post_id );
         next unless $_->{last_post};
         $_->{last_post}->{updator} = $c->model('User')
-            ->get( $c, { user_id => $_->{last_post}->last_updator_id } );
+            ->get( $c, { user_id => $_->{last_post}->{last_updator_id} } );
     }
 
     $c->cache_page('300');
@@ -50,9 +49,9 @@ sub forum_list : Regex('^forum/(\w+)$') {
 
     # get the forum information
     my $forum_code = $c->req->snippets->[0];
-    my $forum      = $c->model('Forum')->get( $c, $forum_code );
-    my $forum_id   = $forum->forum_id;
-    $forum_code = $forum->forum_code;
+    my $forum      = $c->controller('Get')->forum( $c, $forum_code );
+    my $forum_id   = $forum->{forum_id};
+    $forum_code = $forum->{forum_code};
 
     # get all moderators
     $c->stash->{forum_roles}
@@ -62,7 +61,7 @@ sub forum_list : Regex('^forum/(\w+)$') {
     if ( $page_no == 1 and not $is_elite ) {
 
         # for private forum
-        if ( $forum->policy eq 'private' ) {
+        if ( $forum->{policy} eq 'private' ) {
             my $pending_count = $c->model('DBIC::UserRole')->count(
                 {   field => $forum_id,
                     role  => 'pending',
@@ -111,7 +110,7 @@ sub forum_list : Regex('^forum/(\w+)$') {
     if ( $c->user_exists ) {
         my @all_topic_ids = map { $_->topic_id } @topics;
         $c->stash->{is_visited}
-            = $c->model('Visit')->is_visited( $c, 'thread', \@all_topic_ids )
+            = $c->model('Visit')->is_visited( $c, 'topic', \@all_topic_ids )
             if ( scalar @all_topic_ids );
     }
 
@@ -136,9 +135,9 @@ sub members : LocalRegex('^(\w+)/members(/(\w+))?$') {
 
     my $forum_code  = $c->req->snippets->[0];
     my $member_type = $c->req->snippets->[2];
-    my $forum       = $c->model('Forum')->get( $c, $forum_code );
-    $forum_code = $forum->forum_code;
-    my $forum_id = $forum->forum_id;
+    my $forum       = $c->controller('Get')->forum( $c, $forum_code );
+    $forum_code = $forum->{forum_code};
+    my $forum_id = $forum->{forum_id};
 
     if (    $member_type ne 'pending'
         and $member_type ne 'blocked'
@@ -200,9 +199,9 @@ sub action_log : LocalRegex('^(\w+)/action_log(/(\w+))?$') {
 
     my $forum_code = $c->req->snippets->[0];
     my $log_type   = $c->req->snippets->[2];
-    my $forum      = $c->model('Forum')->get( $c, $forum_code );
-    $forum_code = $forum->forum_code;
-    my $forum_id = $forum->forum_id;
+    my $forum      = $c->controller('Get')->forum( $c, $forum_code );
+    $forum_code = $forum->{forum_code};
+    my $forum_id = $forum->{forum_id};
 
     my $page = get_page_from_url( $c->req->path );
     my $rs   = $c->model('DBIC')->resultset('LogAction')->search(
@@ -241,7 +240,7 @@ sub join_us : Private {
 
     return $c->res->redirect('/login') unless ( $c->user_exists );
 
-    my $forum_id = $forum->forum_id;
+    my $forum_id = $forum->{forum_id};
 
     if ( $c->req->method eq 'POST' ) {
         my $rs = $c->model('DBIC::UserRole')->find(

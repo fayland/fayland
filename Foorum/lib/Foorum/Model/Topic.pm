@@ -6,28 +6,34 @@ use base 'Catalyst::Model';
 use Data::Dumper;
 
 sub get {
-    my ( $self, $c, $forum_id, $topic_id, $attrs ) = @_;
+    my ( $self, $c, $topic_id, $attrs ) = @_;
 
-    my @extra_attrs;
-    push @extra_attrs, ( prefetch => ['author'] )
-        if ( $attrs->{with_author} );
+    my $cache_key   = "topic|topic_id=$topic_id";
+    my $cache_value = $c->cache->get($cache_key);
 
-    my $topic = $c->model('DBIC')->resultset('Topic')->search(
-        {   topic_id => $topic_id,
-            forum_id => $forum_id,
-        },
-        { @extra_attrs, }
-    )->first;
+    my $topic;
+    if ($cache_value and $cache_value->{val}) {
+        $topic = $cache_value->{val};
+    } else {
+        $topic = $c->model('DBIC')->resultset('Topic')->find( { topic_id => $topic_id } );
+        return unless ($topic);
+        $topic = $topic->{_column_data}; # for cache
+        $c->cache->set($cache_key, { val => $topic, 1 => 2 }, 7200);
+    }
 
-    # print error if the topic is non-exist
-    $c->detach( '/print_error', ['Non-existent topic'] ) unless ($topic);
-    $c->detach( '/print_error', ['Status: Banned'] )
-        if ( $topic->status eq 'banned'
-        and not $c->model('Policy')->is_moderator( $c, $forum_id ) );
-
-    $c->stash->{topic} = $topic;
+    if ($attrs->{with_author}) {
+        $topic->{author} = $c->model('User')->get($c, { user_id => $topic->{author_id} });
+    }
 
     return $topic;
+}
+
+sub update {
+    my ($self, $c, $topic_id, $update) = @_;
+    
+    $c->model('DBIC')->resultset('Topic')->search( { topic_id => $topic_id } )->update($update);
+    
+    $c->cache->delete("topic|topic_id=$topic_id");
 }
 
 sub remove {
@@ -35,11 +41,12 @@ sub remove {
 
     # delete topic
     $c->model('DBIC::Topic')->search( { topic_id => $topic_id } )->delete;
+    $c->cache->delete("topic|topic_id=$topic_id");
 
     # delete comments with upload
     my $total_replies = -1;    # since one comment is topic indeed.
     my $comment_rs = $c->model('DBIC::Comment')->search(
-        {   object_type => 'thread',
+        {   object_type => 'topic',
             object_id   => $topic_id,
         }
     );
@@ -65,7 +72,7 @@ sub remove {
         ->search( { forum_id => $forum_id },
         { order_by => 'last_update_date DESC', } )->first;
     my $last_post_id = $lastest ? $lastest->topic_id : 0;
-    $c->model('DBIC::Forum')->search( { forum_id => $forum_id, } )->update(
+    $c->model('Forum')->update( $c, $forum_id, 
         {   total_topics  => \'total_topics - 1',
             last_post_id  => $last_post_id,
             total_replies => \"total_replies - $total_replies",

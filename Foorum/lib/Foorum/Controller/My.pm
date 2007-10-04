@@ -61,7 +61,8 @@ sub topics : Local {
 
     my $page = get_page_from_url( $c->req->path );
     my $rs   = $c->model('DBIC::Topic')->search(
-        { author_id => $c->user->user_id, },
+        {  author_id  => $c->user->user_id,
+          'me.status' => { '!=', 'banned' }, },
         {   order_by => \'last_update_date DESC',
             prefetch => [ 'last_updator', 'forum' ],
             join     => [qw/forum/],

@@ -2,6 +2,10 @@
 
 Foorum - Foorum is a forum script built in Catalyst.
 
+=head2 INSTALL
+
+Read INSTALL file at the same dir.
+
 =head2 RUN
 
 you can run it under mod_perl or fastcgi

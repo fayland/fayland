@@ -24,6 +24,7 @@ sub recent : Local {
     my $page = get_page_from_url( $c->req->path );
     my $rs   = $c->model('DBIC::Topic')->search(
         {   'forum.policy' => 'public',
+            'me.status' => { '!=', 'banned' },
             @extra_cols,
         },
         {   order_by => 'last_update_date desc',

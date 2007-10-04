@@ -17,8 +17,8 @@ sub post : Local {
     return $c->res->redirect($path) unless ( $object_id and $object_type );
 
     if ($forum_id) {    # maybe that's a ForumCode
-        my $forum = $c->model('Forum')->get( $c, $forum_id );
-        $forum_id = $forum->forum_id;
+        my $forum = $c->controller('Get')->forum( $c, $forum_id );
+        $forum_id = $forum->{forum_id};
     }
 
     # execute validation.

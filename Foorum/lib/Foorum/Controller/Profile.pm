@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use Foorum::Utils qw/generate_random_word/;
+use Foorum::ExternalUtils qw/theschwartz/;
 use Digest ();
 use Encode qw/decode/;
 use Locale::Country::Multilingual;
@@ -17,7 +18,7 @@ sub user_profile : PathPart('u') Chained('/') CaptureArgs(1) {
     $c->detach( '/print_error', ['ERROR_USER_NON_EXSIT'] )
         unless ($user);
 
-    if ($user->status eq 'banned' or $user->status eq 'blocked') {
+    if ($user->{status} eq 'banned' or $user->{status} eq 'blocked') {
         $c->detach('/print_error', [ 'ERROR_ACCOUNT_CLOSED_STATUS' ] );
     }
 
@@ -31,8 +32,7 @@ sub home : PathPart('') Chained('user_profile') Args(0) {
 
     # get last_post
     if ( $user->{last_post_id} ) {
-        $user->{last_post} = $c->model('DBIC')->resultset('Topic')
-            ->find( { topic_id => $user->{last_post_id}, } );
+        $user->{last_post} = $c->model('Topic')->get($c, $user->{last_post_id} );
     }
 
     # get comments
@@ -319,7 +319,7 @@ sub profile_photo : Local {
         = ($c->user->obj->{profile_photo}->{type} eq 'upload')
         ? $c->user->obj->{profile_photo}->{value}
         : 0;
-    my $new_upload_id = 0;
+    my $new_upload_id = $old_upload_id;
     if ( ( $c->req->param('attachment_action') eq 'delete' ) or $new_upload )
     {
 
@@ -337,6 +337,9 @@ sub profile_photo : Local {
                 return $c->set_invalid_form(
                     upload => $c->stash->{upload_error} );
             }
+            
+            my $client = theschwartz();
+            $client->insert('Foorum::TheSchwartz::Worker::ResizeProfilePhoto', $new_upload_id);
         }
     }
 

@@ -11,16 +11,17 @@ sub forum : Regex('^forum/(\w+)/rss$') {
     my ( $self, $c ) = @_;
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum
-        = $c->model('Forum')->get( $c, $forum_code, { level => 'data' } );
+    my $forum = $c->model('Forum')->get( $c, $forum_code);
     return unless ($forum);
-    return if ( $forum->policy eq 'private' );
+    return if ( $forum->{policy} eq 'private' );
 
     $c->cache_page('600');
 
-    my $forum_id = $forum->forum_id;
+    my $forum_id = $forum->{forum_id};
     my @topics   = $c->model('DBIC')->resultset('Topic')->search(
-        { forum_id => $forum_id, },
+        { forum_id => $forum_id,
+          status   => { '!=', 'banned' },
+        },
         {   order_by => 'last_update_date DESC',
             rows     => 20,
             page     => 1,
@@ -30,9 +31,9 @@ sub forum : Regex('^forum/(\w+)/rss$') {
     my $forum_url = $c->req->base . $forum->{forum_url};
     my $rss = new XML::RSS( version => '2.0' );
     $rss->channel(
-        title         => $forum->name,
+        title         => $forum->{name},
         link          => $forum_url,
-        description   => $forum->description,
+        description   => $forum->{description},
         pubDate       => UnixDate( "today", "%Y-%m-%dT%H:%M:%S+00:00" ),
         lastBuildDate => UnixDate( "today", "%Y-%m-%dT%H:%M:%S+00:00" ),
         generator     => 'Foorum',
@@ -43,7 +44,7 @@ sub forum : Regex('^forum/(\w+)/rss$') {
         $pubDate =~ s/\s+/T/;
 
         my $rs = $c->model('DBIC::Comment')->find(
-            {   object_type => 'thread',
+            {   object_type => 'topic',
                 object_id   => $_->topic_id,
             },
             {   order_by => 'post_on',
@@ -82,6 +83,7 @@ sub recent_rss : Regex('^site/recent(/elite)?/rss$') {
     }
     my @topics = $c->model('DBIC::Topic')->search(
         {   'forum.policy' => 'public',
+            'me.status' => { '!=', 'banned' },
             @extra_cols,
         },
         {   columns =>
@@ -108,7 +110,7 @@ sub recent_rss : Regex('^site/recent(/elite)?/rss$') {
         $pubDate =~ s/\s+/T/;
 
         my $rs = $c->model('DBIC::Comment')->find(
-            {   object_type => 'thread',
+            {   object_type => 'topic',
                 object_id   => $_->topic_id,
             },
             {   order_by => 'post_on',

@@ -15,13 +15,13 @@ sub topic : Regex('^forum/(\w+)/(\d+)$') {
     $page_no = 1 unless ( $page_no and $page_no =~ /^\d+$/ );
 
     # get the forum information
-    my $forum = $c->model('Forum')->get( $c, $forum_code );
-    my $forum_id = $forum->forum_id;
+    my $forum = $c->controller('Get')->forum( $c, $forum_code );
+    my $forum_id = $forum->{forum_id};
 
     # get the topic
-    my $topic = $c->model('Topic')->get( $c, $forum_id, $topic_id );
+    my $topic = $c->controller('Get')->topic( $c, $topic_id, { forum_id => $forum_id } );
     
-    $topic->{_column_data}->{hit} = $c->model('Hit')->register($c, 'topic', $topic->topic_id, $topic->hit);
+    $topic->{hit} = $c->model('Hit')->register($c, 'topic', $topic_id, $topic->{hit});
 
     if ( $c->user_exists ) {
 
@@ -34,13 +34,13 @@ sub topic : Regex('^forum/(\w+)/(\d+)$') {
         );
 
         # 'visit'
-        $c->model('Visit')->make_visited( $c, 'thread', $topic_id );
+        $c->model('Visit')->make_visited( $c, 'topic', $topic_id );
     }
 
     # get comments
     $c->model('Comment')->get_comments_by_object(
         $c,
-        {   object_type => 'thread',
+        {   object_type => 'topic',
             object_id   => $topic_id,
             page        => $page_no,
         }
@@ -58,8 +58,8 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
     &_check_policy( $self, $c );
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum      = $c->model('Forum')->get( $c, $forum_code );
-    my $forum_id   = $forum->forum_id;
+    my $forum      = $c->controller('Get')->forum( $c, $forum_code );
+    my $forum_id   = $forum->{forum_id};
 
     $c->stash(
         {   template => 'topic/create.html',
@@ -99,11 +99,11 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
     $c->model('ClearCachedPage')->clear_when_topic_changes( $c, $forum );
 
     # clear visit
-    $c->model('Visit')->make_un_visited( $c, 'thread', $topic->topic_id );
+    $c->model('Visit')->make_un_visited( $c, 'topic', $topic->topic_id );
 
     my $comment = $c->model('Comment')->create(
         $c,
-        {   object_type => 'thread',
+        {   object_type => 'topic',
             object_id   => $topic->topic_id,
             forum_id    => $forum_id,
             upload_id   => $upload_id,
@@ -120,8 +120,8 @@ sub create : Regex('^forum/(\w+)/topic/new$') {
     );
 
     # update forum
-    $forum->update(
-        {   total_topics => $forum->total_topics + 1,
+    $c->model('Forum')->update($c, $forum_id,
+        {   total_topics => \'total_topics + 1', #'
             last_post_id => $topic->topic_id,
         }
     );
@@ -137,14 +137,14 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
     &_check_policy( $self, $c );
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum      = $c->model('Forum')->get( $c, $forum_code );
-    my $forum_id   = $forum->forum_id;
+    my $forum      = $c->controller('Get')->forum( $c, $forum_code );
+    my $forum_id   = $forum->{forum_id};
     my $topic_id   = $c->req->snippets->[1];
-    my $topic      = $c->model('Topic')->get( $c, $forum_id, $topic_id );
+    my $topic      = $c->controller('Get')->topic( $c, $topic_id, { forum_id => $forum_id } );
     my $comment_id = $c->req->snippets->[3];
 
     # topic is closed or not
-    $c->detach( '/print_error', ['ERROR_CLOSED'] ) if ( $topic->closed );
+    $c->detach( '/print_error', ['ERROR_CLOSED'] ) if ( $topic->{closed} );
 
     $c->stash->{template} = 'comment/reply.html';
 
@@ -152,7 +152,7 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
         my $comment = $c->model('Comment')->get(
             $c,
             $comment_id,
-            {   object_type => 'thread',
+            {   object_type => 'topic',
                 object_id   => $topic_id,
                 with_author => 1,
                 with_text   => 1
@@ -180,7 +180,7 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
     $comment_id = $topic_id unless ($comment_id);
     my $comment = $c->model('Comment')->create(
         $c,
-        {   object_type => 'thread',
+        {   object_type => 'topic',
             object_id   => $topic_id,
             forum_id    => $forum_id,
             upload_id   => $upload_id,
@@ -189,18 +189,17 @@ sub reply : Regex('^forum/(\w+)/(\d+)(/(\d+))?/reply$') {
     );
 
     # update forum and topic
-    $forum->update(
-        {   total_replies => $forum->total_replies + 1,
-            last_post_id  => $topic->topic_id,
+    $c->model('Forum')->update($c, $forum_id,
+        {   total_replies => \'total_replies + 1',
+            last_post_id  => $topic_id,
         }
     );
-    $topic->update(
-        {   total_replies    => $topic->total_replies + 1,
-            last_update_date => \"NOW()",
-            last_updator_id  => $c->user->user_id,
-        }
-    );
-
+    $c->model('Topic')->update( $c, $topic_id, {
+        total_replies    => \"total_replies + 1",
+        last_update_date => \"NOW()",
+        last_updator_id  => $c->user->user_id,
+    } );
+ 
     # update user stat
     $c->model('User')->update(
         $c,
@@ -229,15 +228,15 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
     &_check_policy( $self, $c );
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum      = $c->model('Forum')->get( $c, $forum_code );
-    my $forum_id   = $forum->forum_id;
+    my $forum      = $c->controller('Get')->forum( $c, $forum_code );
+    my $forum_id   = $forum->{forum_id};
     my $topic_id   = $c->req->snippets->[1];
-    my $topic      = $c->model('Topic')->get( $c, $forum_id, $topic_id );
+    my $topic      = $c->controller('Get')->topic( $c, $topic_id, { forum_id => $forum_id } );
     my $comment_id = $c->req->snippets->[2];
     my $comment
         = $c->model('Comment')
         ->get( $c, $comment_id,
-        { object_type => 'thread', object_id => $topic_id } );
+        { object_type => 'topic', object_id => $topic_id } );
 
     # permission
     if ( $c->user->user_id != $comment->author_id
@@ -298,13 +297,13 @@ sub edit : Regex('^forum/(\w+)/(\d+)/(\d+)/edit$') {
     );
 
     if (    $comment->reply_to == 0
-        and $topic->title ne $c->req->param('title') )
+        and $topic->{title} ne $c->req->param('title') )
     {
-        $topic->update( { title => $c->req->param('title'), } );
+        $c->model('Topic')->update( $c, $topic_id, { title => $c->req->param('title') } );
         $c->model('ClearCachedPage')->clear_when_topic_changes( $c, $forum );
     }
 
-    my $cache_key = "comment|object_type=thread|object_id=$topic_id";
+    my $cache_key = "comment|object_type=topic|object_id=$topic_id";
     $c->cache->delete($cache_key);
 
     $c->forward(
@@ -320,14 +319,14 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
     my ( $self, $c ) = @_;
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum      = $c->model('Forum')->get( $c, $forum_code );
-    my $forum_id   = $forum->forum_id;
+    my $forum      = $c->controller('Get')->forum( $c, $forum_code );
+    my $forum_id   = $forum->{forum_id};
     my $topic_id   = $c->req->snippets->[1];
     my $comment_id = $c->req->snippets->[2];
     my $comment
         = $c->model('Comment')
         ->get( $c, $comment_id,
-        { object_type => 'thread', object_id => $topic_id } );
+        { object_type => 'topic', object_id => $topic_id } );
 
     # permission
     if ( $c->user->user_id != $comment->author_id
@@ -357,8 +356,7 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
             );
         }
 
-        $c->model('Topic')
-            ->remove( $c, $forum_id, $topic_id,
+        $c->model('Topic')->remove( $c, $forum_id, $topic_id,
             { log_text => $comment->title } );
         $url = $forum->{forum_url};
         $c->model('ClearCachedPage')->clear_when_topic_changes( $c, $forum );
@@ -371,7 +369,7 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
 
         # update topic
         my $lastest = $c->model('DBIC')->resultset('Comment')->find(
-            {   object_type => 'thread',
+            {   object_type => 'topic',
                 object_id   => $topic_id,
             },
             { order_by => 'post_on DESC', }
@@ -389,15 +387,12 @@ sub delete : Regex('^forum/(\w+)/(\d+)/(\d+)/delete$') {
                 last_update_date => '',
             );
         }
-        $c->model('DBIC')->resultset('Topic')
-            ->search( { topic_id => $topic_id, } )->update(
-            {   total_replies => \"total_replies - 1",
-                @extra_cols,
-            }
-            );
-
+        $c->model('Topic')->update( $c, $topic_id, { total_replies => \"total_replies - 1",
+            @extra_cols,
+        } );
+        
         # update forum
-        $forum->update( { total_replies => $forum->total_replies - 1, } );
+        $c->model('Forum')->update($c, $forum_id, { total_replies => \'total_replies - 1' } );
     }
 
     $c->forward(

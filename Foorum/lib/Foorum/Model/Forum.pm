@@ -8,54 +8,50 @@ use Data::Dumper;
 sub get {
     my ( $self, $c, $forum_code, $attr ) = @_;
 
-    my $forum_type = $attr->{forum_type} || 'classical';
-
     # if $forum_code is all numberic, that's forum_id
     # or else, it's forum_code
-    my $where
-        = ( $forum_code =~ /^\d+$/ )
-        ? { forum_id => $forum_code }
-        : { forum_code => $forum_code, forum_type => $forum_type };
-
-    my $forum = $c->model('DBIC')->resultset('Forum')->find($where);
-    $forum->{forum_url} = $self->get_forum_url( $c, $forum ) if ($forum);
-
-    return $forum
-        if ( $attr->{level} eq 'data' )
-        ;    # do NOT check permisson, see also RSS.pm
-
-    # print error if the forum_id is non-exist
-    $c->detach( '/print_error', ['Non-existent forum'] ) unless ($forum);
-    $c->detach( '/print_error', ['Status: Banned'] )
-        if ( $forum->status eq 'banned'
-        and not $c->model('Policy')->is_moderator( $c, $forum->forum_id ) );
-
-    my $forum_id = $forum->forum_id;
-
-    # check policy
-    if (    $c->user_exists
-        and $c->model('Policy')->is_blocked( $c, $forum_id ) )
-    {
-        $c->detach( '/print_error', ['ERROR_USER_BLOCKED'] );
-    }
-    if ( $forum->policy eq 'private' ) {
-        unless ( $c->user_exists ) {
-            $c->res->redirect('/login');
-            $c->detach('/end');    # guess we'd better use Chained
-        }
-
-        unless ( $c->model('Policy')->is_user( $c, $forum_id ) ) {
-            if ( $c->model('Policy')->is_pending( $c, $forum_id ) ) {
-                $c->detach( '/print_error', ['ERROR_USER_PENDING'] );
-            } elsif ( $c->model('Policy')->is_rejected( $c, $forum_id ) ) {
-                $c->detach( '/print_error', ['ERROR_USER_REJECTED'] );
-            } else {
-                $c->detach( '/forum/join_us', [$forum] );
-            }
+    
+    my $forum; # return value
+    my $forum_id = 0;
+    if ($forum_code =~ /^\d+$/) {
+        $forum_id = $forum_code;
+    } else {
+        my $mem_key = 'global|forum_code_to_id';
+        my $mem_val = $c->cache->get($mem_key);
+        if ($mem_val and $mem_val->{$forum_code}) {
+            $forum_id = $mem_val->{$forum_code};
+        } else {
+            $forum = $c->model('DBIC')->resultset('Forum')->search( { forum_code => $forum_code } )->first;
+            return unless $forum;
+            $forum_id = $forum->forum_id;
+            $mem_val->{$forum_code} = $forum_id;
+            $c->cache->set($mem_key, $mem_val, 36000); # 10 hours
+            
+            # set cache
+            $forum = $forum->{_column_data}; # hash for cache
+            $forum->{forum_url} = $self->get_forum_url( $c, $forum );
+            $c->cache->set("forum|forum_id=$forum_id", { val => $forum, 1 => 2 }, 7200);
         }
     }
-
-    $c->stash->{forum} = $forum;
+    
+    return unless ($forum_id);
+    
+    unless ($forum) { # do not get from convert forum_code to forum_id
+        my $cache_key = "forum|forum_id=$forum_id";
+        my $cache_val = $c->cache->get($cache_key);
+    
+        if ($cache_val and $cache_val->{val}) {
+            $forum = $cache_val->{val};
+        } else {
+            $forum = $c->model('DBIC')->resultset('Forum')->find( { forum_id => $forum_id } );
+            return unless ($forum);
+            
+            # set cache
+            $forum = $forum->{_column_data}; # hash for cache
+            $forum->{forum_url} = $self->get_forum_url( $c, $forum );
+            $c->cache->set("forum|forum_id=$forum_id", { val => $forum, 1 => 2 }, 7200);
+        }
+    }
 
     return $forum;
 }
@@ -63,9 +59,17 @@ sub get {
 sub get_forum_url {
     my ( $self, $c, $forum ) = @_;
 
-    my $forum_url = '/forum/' . $forum->forum_code;
+    my $forum_url = '/forum/' . $forum->{forum_code};
 
     return $forum_url;
+}
+
+sub update {
+    my ($self, $c, $forum_id, $update) = @_;
+    
+    $c->model('DBIC')->resultset('Forum')->search( { forum_id => $forum_id } )->update($update);
+    
+    $c->cache->delete("forum|forum_id=$forum_id");
 }
 
 sub remove_forum {
@@ -102,7 +106,7 @@ sub remove_forum {
     # comment and star
     if ( scalar @topic_ids ) {
         $c->model('DBIC::Comment')->search(
-            {   object_type => 'thread',
+            {   object_type => 'topic',
                 object_id   => { 'IN', \@topic_ids },
             }
         )->delete;
@@ -135,8 +139,7 @@ sub merge_forums {
     my $from_id = $info->{from_id} or return 0;
     my $to_id   = $info->{to_id}   or return 0;
 
-    my $old_forum
-        = $c->model('DBIC::Forum')->find( { forum_id => $from_id } );
+    my $old_forum = $c->model('DBIC::Forum')->find( { forum_id => $from_id } );
     return unless ($old_forum);
     my $new_forum = $c->model('DBIC::Forum')->find( { forum_id => $to_id } );
     return unless ($new_forum);
@@ -162,7 +165,11 @@ sub merge_forums {
     $c->model('DBIC::Topic')->search( { forum_id => $from_id, } )
         ->update( { forum_id => $to_id, } );
 
-    # get all poll_ids
+    # FIXME!!!
+    # need delete all topic_id cache object
+    # $c->cache->delete("topic|topic_id=$topic_id");
+
+    # polls
     $c->model('DBIC::Poll')->search( { forum_id => $from_id, } )
         ->update( { forum_id => $to_id, } );
 

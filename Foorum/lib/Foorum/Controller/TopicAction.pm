@@ -10,18 +10,18 @@ sub lock_or_sticky_or_elite :
     my ( $self, $c ) = @_;
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum      = $c->model('Forum')->get( $c, $forum_code );
-    my $forum_id   = $forum->forum_id;
-    $forum_code = $forum->forum_code;
+    my $forum      = $c->controller('Get')->forum( $c, $forum_code );
+    my $forum_id   = $forum->{forum_id};
+    $forum_code = $forum->{forum_code};
     my $topic_id = $c->req->snippets->[1];
     my $is_un    = $c->req->snippets->[2];
     my $action   = $c->req->snippets->[3];
 
-    my $topic = $c->model('Topic')->get( $c, $forum_id, $topic_id );
+    my $topic = $c->controller('Get')->topic( $c, $topic_id, { forum_id => $forum_id } );
 
     # check policy
     unless ( $c->model('Policy')->is_moderator( $c, $forum_id )
-        or ( $action eq 'lock' and $topic->author_id == $c->user->user_id ) )
+        or ( $action eq 'lock' and $topic->{author_id} == $c->user->user_id ) )
     {
         $c->detach( '/print_error', ['ERROR_PERMISSION_DENIED'] );
     }
@@ -37,11 +37,7 @@ sub lock_or_sticky_or_elite :
         $update_col = 'elite';
     }
 
-    $c->model('DBIC::Topic')->search(
-        {   topic_id => $topic_id,
-            forum_id => $forum_id,
-        }
-    )->update( { $update_col => $status, } );
+    $c->model('Topic')->update( $c, $topic_id, { $update_col => $status, } );
 
     $c->model('Log')->log_action(
         $c,
@@ -49,7 +45,7 @@ sub lock_or_sticky_or_elite :
             object_type => 'topic',
             object_id   => $topic_id,
             forum_id    => $forum_id,
-            text        => $topic->title
+            text        => $topic->{title}
         }
     );
 
@@ -72,18 +68,13 @@ sub ban_or_unban_topic : Regex('^forum/(\w+)/(\d+)/(un)?ban$') {
     my ( $self, $c ) = @_;
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum      = $c->model('Forum')->get( $c, $forum_code );
-    my $forum_id   = $forum->forum_id;
-    $forum_code = $forum->forum_code;
+    my $forum      = $c->controller('Get')->forum( $c, $forum_code );
+    my $forum_id   = $forum->{forum_id};
+    $forum_code = $forum->{forum_code};
     my $topic_id = $c->req->snippets->[1];
     my $is_un    = $c->req->snippets->[2];
 
-    my $topic = $c->model('DBIC')->resultset('Topic')->find(
-        {   forum_id => $forum_id,
-            topic_id => $topic_id,
-        }
-    );
-    $c->detach( '/print_error', ['Non-existent topic'] ) unless ($topic);
+    my $topic = $c->controller('Get')->topic( $c, $topic_id, { forum_id => $forum_id } );
 
     # check policy
     unless ( $c->model('Policy')->is_moderator( $c, $forum_id ) ) {
@@ -91,9 +82,9 @@ sub ban_or_unban_topic : Regex('^forum/(\w+)/(\d+)/(un)?ban$') {
     }
 
     if ($is_un) {
-        $topic->update( { status => 'healthy' } );
+        $c->model('Topic')->update( $c, $topic_id, { status => 'healthy' } );
     } else {
-        $topic->update( { status => 'banned' } );
+       $c->model('Topic')->update( $c, $topic_id, { status => 'banned' } );
     }
 
     $c->forward(

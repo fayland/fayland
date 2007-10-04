@@ -1,0 +1,141 @@
+use TheSchwartz job queue to handle Image-Resize For Catalyst App.
+
+<a href='http://search.cpan.org/perldoc?TheSchwartz'>TheSchwartz</a> - reliable job queue. original developped by <a href='http://www.danga.com'>Brad</a> and used in <a href='http://www.livejournal.com'>LiveJournal</a>.
+
+My main aim is to remove 'Image::Magick' out of my Catalyst App since Image::Magick takes a lot of memories for every process under mod_perl. so we need a non-stop cron script to monitor and resize photos. and I picked TheSchwartz up for my Foorum Catalyst App.
+
+Here comes the instructions:
+
+1, create db 'theschwartz' by using schema: <a href='http://search.cpan.org/src/BRADFITZ/TheSchwartz-1.04/doc/schema.sql'>http://search.cpan.org/src/BRADFITZ/TheSchwartz-1.04/doc/schema.sql</a>
+
+2, write the main module <a href='http://fayland.googlecode.com/svn/trunk/Foorum/lib/Foorum/TheSchwartz/Worker/ResizeProfilePhoto.pm'>Foorum::TheSchwartz::Worker::ResizeProfilePhoto</a> use base <a href='http://search.cpan.org/perldoc?TheSchwartz::Worker'>TheSchwartz::Worker</a>.<pre>package Foorum::TheSchwartz::Worker::ResizeProfilePhoto;
+
+use TheSchwartz::Job;
+use base qw( TheSchwartz::Worker );
+use Foorum::ExternalUtils qw/schema/;
+use File::Spec;
+use Image::Magick;
+use Cwd qw/abs_path/;
+use File::Copy;
+
+my (undef, $path) = File::Spec->splitpath(__FILE__);
+
+sub work {
+    my $class = shift;
+    my TheSchwartz::Job $job = shift;
+    
+    my @args = $job->arg;
+    
+    my $schema = schema();
+
+    # get upload from db
+    my $upload_id = shift @args;
+    if ($upload_id !~ /^\d+$/) {
+        return $job->failed("Wrong upload_id: $upload_id");
+    }
+    my $upload = $schema->resultset('Upload')->find( { upload_id => $upload_id } );
+    unless ($upload) {
+        return $job->failed("No upload for $upload_id");
+    }
+    
+    # get file dir
+    my $directory_1 = int( $upload_id / 3200 / 3200 );
+    my $directory_2 = int( $upload_id / 3200 );
+    my $file = abs_path("$path/../../../../root/upload/$directory_1/$directory_2/" . $upload->filename);
+    
+    # resize photo
+    my $p = new Image::Magick;
+    $p->Read($file);
+    $p->Scale(geometry=>'120x120');
+    $p->Sharpen(geometry=>'0.0x1.0');
+    $p->Set(quality=>'75');
+    
+    my ($width, $height, $size) = $p->Get('width', 'height', 'filesize');
+    
+    my $tmp_file = $file . '.tmp';
+    $p->Write($tmp_file);
+    
+    move($tmp_file, $file);
+    
+    # update db
+    $schema->resultset('UserProfilePhoto')->search( {
+        type    => 'upload',
+        value   => $upload_id,
+    } )->update( {
+        width  => $width,
+        height => $height,
+    } );
+    ($size) = ( $size =~ /^(\d+\.?\d{0,1})/ );    # float(6,1)
+    $upload->update( { filesize => $size } );
+
+    $job->completed();
+}
+
+sub max_retries { 3 };
+
+1;</pre>
+
+3, write a <a href='http://fayland.googlecode.com/svn/trunk/Foorum/bin/cron/TheSchwartz_worker.pl'>TheSchwartz_worker.pl</a> and run it. it will monitor the "job" table in "theschwartz" database non-stop.<pre>package <a href='http://fayland.googlecode.com/svn/trunk/Foorum/lib/Foorum/ExternalUtils.pm'>Foorum::ExternalUtils</a>;
+# ... etc.
+use TheSchwartz;
+sub theschwartz {
+    
+    $config = config() unless ($config);
+    
+    my $theschwartz = TheSchwartz->new(
+        databases => [ {
+            dsn  => $config->{theschwartz_dsn}, # dbi:mysql:theschwartz
+            user => $config->{dsn_user},
+            pass => $config->{dsn_pwd},
+        } ],
+        verbose => 1,
+    );
+    return $theschwartz;
+}
+</pre><pre>use Foorum::ExternalUtils qw/theschwartz/;
+use Foorum::TheSchwartz::Worker::ResizeProfilePhoto;
+
+my $client = theschwartz();
+$client->can_do('Foorum::TheSchwartz::Worker::ResizeProfilePhoto');
+$client->work();</pre>
+
+4, at last, we need insert data into 'job' table then let TheSchwartz_worker.pl to handle it.<pre>package <a href='http://fayland.googlecode.com/svn/trunk/Foorum/lib/Foorum/Controller/Profile.pm'>Foorum::Controller::Profile</a>;
+use Foorum::ExternalUtils qw/theschwartz/;
+sub xxx : Local {
+    # ... etc.
+    my $client = theschwartz();
+    $client->insert('Foorum::TheSchwartz::Worker::ResizeProfilePhoto', $new_upload_id);
+}</pre>
+
+That's ALL.
+
+The idea behind TheSchwartz is not so complicate.
+<ul>
+<li>the "theschwartz" database contains 5 tables:
+    <ul>
+    <li>'error' for recording error for every failed job. like in Foorum::TheSchwartz::Worker::ResizeProfilePhoto, $job->failed("No upload for $upload_id");</li>
+    <li>'funcmap' has two columns: on is funcid and the other is funcname. It's pretty simple. when we call "$client->can_do('Foorum::TheSchwartz::Worker::ResizeProfilePhoto');" in TheSchwartz_worker.pl, it will create a new row ($auto_increasing_func_id, 'Foorum::TheSchwartz::Worker::ResizeProfilePhoto') if there hasn't</li>
+    <li>'job' is the most important table here. TheSchwartz_worker.pl monitor this table every 5 secs. and if $client->insert one job, it will work_once() immediately.</li>
+    <li>other two tables: exitstatus and notes</li>
+    </ul>
+<li>TheSchwartz_worker.pl can tell what jobs it can handle by using "$client->can_do('Foorum::TheSchwartz::Worker::ResizeProfilePhoto');". add this line means that TheSchwartz_worker.pl can do the jobs which the "funcid" in "job" table is mapping with 'Foorum::TheSchwartz::Worker::ResizeProfilePhoto'.</li>
+<li>TheSchwartz_worker.pl is a non-stop script to monitor the "job" table every 5 secs. if there are jobs, it will work_once() one by one.</li>
+<li>$client->insert('Foorum::TheSchwartz::Worker::ResizeProfilePhoto', $new_upload_id); it inserts one row in 'job' table then let worker.pl to handle it. 'Foorum::TheSchwartz::Worker::ResizeProfilePhoto' is the funcname, and $new_upload_id is the args.
+in package Foorum::TheSchwartz::Worker::ResizeProfilePhoto; we need use base TheSchwartz::Worker and write a sub work. 
+<pre>sub work {
+    my $class = shift;
+    my TheSchwartz::Job $job = shift;
+    
+    my @args = $job->arg;
+    
+    # do something
+    
+    $job->completed();
+}</pre></li>
+<li>If u want another worker:
+just write package Foorum::TheSchwartz::Worker::Another
+then in TheSchwartz_worker.pl use it and add $client->can_do('Foorum::TheSchwartz::Worker::Another');
+then in pl or pm. $client->insert('Foorum::TheSchwartz::Worker::Another', @args);
+</li>
+
+That's ALL. @Enjoy;

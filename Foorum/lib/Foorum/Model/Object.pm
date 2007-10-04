@@ -55,18 +55,14 @@ sub get_object_by_type_id {
 
     switch ($object_type) {
         case 'topic' {
-            my $object = $c->model('DBIC::Topic')->find(
-                {
-                    topic_id => $object_id,
-                }
-            );
+            my $object = $c->model('Topic')->get($c, $object_id);
             return unless ($object);
             return {
                 object_type => 'topic',
-                title  => $object->title,
-                author => $c->model('User')->get($c, { user_id => $object->author_id } ),
-                url    => '/forum/' . $object->forum_id . "/$object_id",
-                last_update => $object->last_update_date,
+                title  => $object->{title},
+                author => $c->model('User')->get($c, { user_id => $object->{author_id} } ),
+                url    => '/forum/' . $object->{forum_id} . "/$object_id",
+                last_update => $object->{last_update_date},
             };
         }
         case 'poll' {

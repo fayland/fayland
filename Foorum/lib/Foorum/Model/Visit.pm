@@ -9,7 +9,8 @@ sub make_visited {
     my ( $self, $c, $object_type, $object_id ) = @_;
 
     return unless ( $c->user_exists );
-    $c->model('DBIC::Visit')->update_or_create(
+    return if ($c->model('DBIC::Visit')->count( { user_id => $c->user->user_id, object_type => $object_type, object_id => $object_id } ));
+    $c->model('DBIC::Visit')->create(
         {   user_id     => $c->user->user_id,
             object_type => $object_type,
             object_id   => $object_id,
@@ -21,10 +22,15 @@ sub make_visited {
 sub make_un_visited {
     my ( $self, $c, $object_type, $object_id ) = @_;
 
+    my @extra_cols;
+    if ($c->user_exists) {
+        @extra_cols = ( user_id     => { '!=', $c->user->user_id } );
+    }
+
     $c->model('DBIC::Visit')->search(
-        {   user_id     => { '!=', $c->user->user_id },
-            object_type => $object_type,
+        {   object_type => $object_type,
             object_id   => $object_id,
+            @extra_cols,
         }
     )->delete;
 }

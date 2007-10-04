@@ -72,7 +72,7 @@ Admin: <a href='/u/[% forum_roles.${forum.forum_id}.admin.username %]'>[% forum_
 			    <a href='[% forum.forum_url %]/elite'><img src='[% c.config.dir.images %]/site/elite.gif' /></a> 
 			    [% END %]
 			    <a href='[% forum.forum_url %]/[% t.topic_id %]'><span class='semilight'>[% t.title %]</span></a>
-			    [% IF c.user_exists AND NOT is_visited.thread.${t.topic_id} %]
+			    [% IF c.user_exists AND NOT is_visited.topic.${t.topic_id} %]
 			    <img src='[% c.config.dir.images %]/site/new.gif' />
 			    [% END %]
 			    [% IF roles.is_moderator %]

@@ -11,8 +11,8 @@ sub create : Regex('^forum/(\w+)/poll/new$') {
     return $c->res->redirect('/login') unless ( $c->user_exists );
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum      = $c->model('Forum')->get( $c, $forum_code );
-    my $forum_id   = $forum->forum_id;
+    my $forum      = $c->controller('Get')->forum( $c, $forum_code );
+    my $forum_id   = $forum->{forum_id};
 
     $c->stash->{template} = 'poll/new.html';
     return unless ( $c->req->method eq 'POST' );
@@ -66,8 +66,8 @@ sub poll : Regex('^forum/(\w+)/poll/(\d+)$') {
     my ( $self, $c ) = @_;
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum      = $c->model('Forum')->get( $c, $forum_code );
-    my $forum_id   = $forum->forum_id;
+    my $forum      = $c->controller('Get')->forum( $c, $forum_code );
+    my $forum_id   = $forum->{forum_id};
     my $poll_id    = $c->req->snippets->[1];
 
     my $poll = $c->model('DBIC::Poll')->find( { poll_id => $poll_id, },
@@ -106,8 +106,8 @@ sub view_polls : Regex('^forum/(\w+)/polls$') {
     my ( $self, $c ) = @_;
 
     my $forum_code = $c->req->snippets->[0];
-    my $forum      = $c->model('Forum')->get( $c, $forum_code );
-    my $forum_id   = $forum->forum_id;
+    my $forum      = $c->controller('Get')->forum( $c, $forum_code );
+    my $forum_id   = $forum->{forum_id};
     my $page       = get_page_from_url( $c->req->path );
 
     # get all moderators

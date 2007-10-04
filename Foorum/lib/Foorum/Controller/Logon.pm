@@ -46,14 +46,14 @@ sub login : Global {
             # check if he is activated
             if (    $c->config->{mail}->{on}
                 and $c->config->{register}->{activation}
-                and $c->user->status eq 'unverified' )
+                and $c->user->obj->{status} eq 'unverified' )
             {
                 my $username = $c->user->username;
                 $c->logout;
                 return $c->res->redirect("/register/activation/$username");
             }
             
-            if ($c->user->status eq 'banned' or $c->user->status eq 'blocked') {
+            if ($c->user->obj->{status} eq 'banned' or $c->user->obj->{status} eq 'blocked') {
                 $c->logout;
                 $c->detach('/print_error', [ 'ERROR_ACCOUNT_CLOSED_STATUS' ] );
             }
