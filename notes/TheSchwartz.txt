@@ -137,5 +137,6 @@ just write package Foorum::TheSchwartz::Worker::Another
 then in TheSchwartz_worker.pl use it and add $client->can_do('Foorum::TheSchwartz::Worker::Another');
 then in pl or pm. $client->insert('Foorum::TheSchwartz::Worker::Another', @args);
 </li>
+</ul>
 
 That's ALL. @Enjoy;
