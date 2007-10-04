@@ -70,6 +70,13 @@ sub update {
     $c->model('DBIC')->resultset('Forum')->search( { forum_id => $forum_id } )->update($update);
     
     $c->cache->delete("forum|forum_id=$forum_id");
+    
+    if ($update->{forum_code}) {
+        my $mem_key = 'global|forum_code_to_id';
+        my $mem_val = $c->cache->get($mem_key);
+        $mem_val->{$update->{forum_code}} = $forum_id;
+        $c->cache->set($mem_key, $mem_val, 36000); # 10 hours
+    }
 }
 
 sub remove_forum {
