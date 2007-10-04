@@ -2,8 +2,6 @@
 
 use strict;
 use warnings;
-use FindBin qw/$Bin/;
-use lib "$Bin/../../lib";
 
 # for both Linux/Win32
 my $has_proc_pid_file = eval "use Proc::PID::File; 1;";
@@ -14,6 +12,8 @@ if ($has_proc_pid_file) {
     }
 }
 
+use FindBin qw/$Bin/;
+use lib "$Bin/../../lib";
 use Foorum::ExternalUtils qw/theschwartz/;
 use Foorum::TheSchwartz::Worker::Hit;
 use Foorum::TheSchwartz::Worker::RemoveOldDataFromDB;

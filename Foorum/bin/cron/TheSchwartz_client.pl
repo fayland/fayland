@@ -1,7 +1,5 @@
 #!/usr/bin/perl
 
-# crontab: */5 * * * * perl update_hit_table.pl
-
 use strict;
 use warnings;
 use Schedule::Cron;
@@ -24,7 +22,6 @@ my $client = theschwartz();
 sub update_hit { # run every 5 minutes
     $client->insert('Foorum::TheSchwartz::Worker::Hit');
 }
-
 sub remove_old_data_from_db { # run everyday
     $client->insert('Foorum::TheSchwartz::Worker::RemoveOldDataFromDB');
 }

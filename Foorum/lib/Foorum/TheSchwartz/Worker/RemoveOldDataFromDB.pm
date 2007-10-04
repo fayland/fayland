@@ -37,6 +37,12 @@ sub work {
     my $banned_ip_status = $schema->resultset('BannedIp')->search( {
         time => { '<' , time() - $days_ago },
     } )->delete;
+    
+    # for table 'session'
+    # 2592000 = 30 * 24 * 60 * 60
+    my $session_status = $schema->resultset('Session')->search( {
+        expires => { '<', time() },
+    } )->delete;
 
     error_log($schema, 'info', <<LOG);
 remove_db_old_data - status:
@@ -44,6 +50,7 @@ remove_db_old_data - status:
     log_path - $log_path_status
     log_error - $log_error_status
     banned_ip - $banned_ip_status
+    session   - $session_status
 LOG
 
     $job->completed();
