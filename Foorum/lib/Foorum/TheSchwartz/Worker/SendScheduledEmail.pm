@@ -1,44 +1,23 @@
-#!/usr/bin/perl
+package Foorum::TheSchwartz::Worker::SendScheduledEmail;
 
-# daemon: perl send_scheduled_email.pl
-
-use strict;
-use warnings;
-use Data::Dumper;
-use FindBin qw/$Bin/;
-use lib "$Bin/../../lib";
-
-# for both Linux/Win32
-my $has_proc_pid_file = eval "use Proc::PID::File; 1;";
-if ($has_proc_pid_file) {
-    # If already running, then exit
-    if (Proc::PID::File->running()) {
-        exit(0);
-    }
-}
-
-use YAML qw(LoadFile);
+use TheSchwartz::Job;
+use base qw( TheSchwartz::Worker );
 use Foorum::ExternalUtils qw/schema/;
 use Foorum::Log qw/error_log/;
 
-# connect the db
-my $schema = schema();
-
-# for both Win32/Linux
-my $has_proc_daemon = eval "use Proc::Daemon; 1;";
-# Daemonize
-Proc::Daemon::Init() if ($has_proc_daemon);
-
-while (1) {
-
-    my $start_time = time();
+sub work {
+    my $class = shift;
+    my TheSchwartz::Job $job = shift;
+    
+    my @args = $job->arg;
+    
+    my $schema = schema();
 
     my $rs = $schema->resultset('ScheduledEmail')->search( { processed => 'N' } );
     
     my $handled = 0;
     while (my $rec = $rs->next) {
         
-        print 'To: ' . $rec->to_email . ' Subject: ' . $rec->subject . "\n";
         send_email( $rec->from_email, $rec->to_email, $rec->subject, $rec->plain_body, $rec->html_body );
         
         # update processed
@@ -46,17 +25,11 @@ while (1) {
         $handled++;
     }
     
-    my $cost_time = time() - $start_time;
-    
     if ($handled) {
         error_log($schema, 'info', "$0 - sent: $handled");
     }
 
-    if ($cost_time < 30) {
-        sleep 30;
-    } else {
-        sleep 5;
-    }
+    $job->completed();
 }
 
 use MIME::Entity;

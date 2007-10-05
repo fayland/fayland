@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Model';
 use Foorum::Utils qw/generate_random_word/;
+use Foorum::ExternalUtils qw/theschwartz/;
 use Data::Dumper;
 
 sub send_activation {
@@ -48,6 +49,8 @@ sub send_activation {
             processed  => 'N',
         }
     );
+    my $client = theschwartz();
+    $client->insert('Foorum::TheSchwartz::Worker::SendScheduledEmail');
 }
 
 sub send_forget_password {
@@ -74,6 +77,8 @@ sub send_forget_password {
             processed  => 'N',
         }
     );
+    my $client = theschwartz();
+    $client->insert('Foorum::TheSchwartz::Worker::SendScheduledEmail');
 }
 
 =pod

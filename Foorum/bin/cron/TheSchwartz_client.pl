@@ -20,16 +20,10 @@ use Foorum::ExternalUtils qw/theschwartz/;
 my $client = theschwartz();
 
 sub update_hit { # run every 5 minutes
-    my @already_has = $client->list_jobs( { funcname => 'Foorum::TheSchwartz::Worker::Hit' } );
-    unless (scalar @already_has) {
-        $client->insert('Foorum::TheSchwartz::Worker::Hit');
-    }
+    $client->insert('Foorum::TheSchwartz::Worker::Hit');
 }
 sub remove_old_data_from_db { # run everyday
-    my @already_has = $client->list_jobs( { funcname => 'Foorum::TheSchwartz::Worker::RemoveOldDataFromDB' } );
-    unless (scalar @already_has) {
-        $client->insert('Foorum::TheSchwartz::Worker::RemoveOldDataFromDB');
-    }
+    $client->insert('Foorum::TheSchwartz::Worker::RemoveOldDataFromDB');
 }
 
 my $cron =  new Schedule::Cron(sub { return 1;});

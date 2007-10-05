@@ -18,11 +18,13 @@ use Foorum::ExternalUtils qw/theschwartz/;
 use Foorum::TheSchwartz::Worker::Hit;
 use Foorum::TheSchwartz::Worker::RemoveOldDataFromDB;
 use Foorum::TheSchwartz::Worker::ResizeProfilePhoto;
+use Foorum::TheSchwartz::Worker::SendScheduledEmail;
 
 my $client = theschwartz();
 $client->can_do('Foorum::TheSchwartz::Worker::Hit');
 $client->can_do('Foorum::TheSchwartz::Worker::RemoveOldDataFromDB');
 $client->can_do('Foorum::TheSchwartz::Worker::ResizeProfilePhoto');
+$client->can_do('Foorum::TheSchwartz::Worker::SendScheduledEmail');
 $client->work();
 
 1;
