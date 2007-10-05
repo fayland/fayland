@@ -25,6 +25,16 @@
     END;
    END %]
 
+[% IF is_rss_template %]
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+<title>[% c.config.name %] : Error</title>
+<link>[% c.req.base %]</link>
+<description>[% error.msg %]</description>
+</channel>
+</rss>
+[% ELSE %]
 <style>
 	A:visited{text-decoration: underline}
 	A:link{text-decoration: underline;}
@@ -33,3 +43,4 @@
     <div class='highlight'>[% error.msg %]</div>
     <p>[% c.loc("Please click <a href='javascript:history.back()'>here</a> to go back.") %]</p>
 </div>
+[% END %]

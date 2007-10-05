@@ -11,24 +11,11 @@ use Locale::Country::Multilingual;
 use vars qw/$lcm/;
 $lcm = Locale::Country::Multilingual->new();
 
-sub user_profile : PathPart('u') Chained('/') CaptureArgs(1) {
-    my ( $self, $c, $username ) = @_;
-
-    my $user = $c->model('User')->get( $c, { username => $username } );
-    $c->detach( '/print_error', ['ERROR_USER_NON_EXSIT'] )
-        unless ($user);
-
-    if ($user->{status} eq 'banned' or $user->{status} eq 'blocked') {
-        $c->detach('/print_error', [ 'ERROR_ACCOUNT_CLOSED_STATUS' ] );
-    }
-
-    $c->stash->{user} = $user;
-}
-
-sub home : PathPart('') Chained('user_profile') Args(0) {
+sub user_profile : Regex('^u/(\w+)$') {
     my ( $self, $c ) = @_;
 
-    my $user = $c->stash->{user};
+    my $username = $c->req->snippets->[0];
+    my $user = $c->controller('Get')->user($c, $username);
 
     # get last_post
     if ( $user->{last_post_id} ) {

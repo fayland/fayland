@@ -8,26 +8,8 @@ use Data::Dumper;
 sub fill_user_role {
     my ( $self, $c, $field ) = @_;
 
-    my $user_id = $c->user->user_id;
-    my $mem_key = "policy|user_role|user_id=$user_id";
-    my $mem_val = $c->cache->get($mem_key);
-    if ($mem_val) {
-        $c->stash->{roles} = $mem_val;
-        return $mem_val;
-    }
-
-    my @field = ('site');    # 'site' means site-cross Administrator
-    push @field, $field if ( $field and $field ne 'site' );
-    my @roles = $c->model('DBIC')->resultset('UserRole')->search(
-        {   user_id => $c->user->user_id,
-            field   => \@field,
-        }
-    )->all;
-
-    my $roles;
-    foreach (@roles) {
-        $roles->{ $_->field }->{ $_->role } = 1;
-    }
+    my $roles = $c->user->obj->{roles};
+    $field ||= 'site';
 
     if ( $roles->{$field}->{user} ) {
         $roles->{is_member} = 1;
@@ -59,15 +41,13 @@ sub fill_user_role {
         $roles->{is_rejected} = 1;
     }
 
-    $c->cache->set( $mem_key, $roles, );
-
     $c->stash->{roles} = $roles;
+    return $roles;
 }
 
 sub is_admin {
     my ( $self, $c, $field ) = @_;
 
-    $field = 'site' unless ($field);
     &fill_user_role( $self, $c, $field ) unless ( $c->stash->{roles} );
 
     return $c->stash->{roles}->{is_admin};
@@ -76,7 +56,6 @@ sub is_admin {
 sub is_moderator {
     my ( $self, $c, $field ) = @_;
 
-    $field = 'site' unless ($field);
     &fill_user_role( $self, $c, $field ) unless ( $c->stash->{roles} );
 
     return $c->stash->{roles}->{is_moderator};
@@ -85,7 +64,6 @@ sub is_moderator {
 sub is_user {
     my ( $self, $c, $field ) = @_;
 
-    $field = 'site' unless ($field);
     &fill_user_role( $self, $c, $field ) unless ( $c->stash->{roles} );
 
     return $c->stash->{roles}->{is_member};
@@ -94,7 +72,6 @@ sub is_user {
 sub is_pending {
     my ( $self, $c, $field ) = @_;
 
-    return 0 unless ($field);
     &fill_user_role( $self, $c, $field ) unless ( $c->stash->{roles} );
 
     return $c->stash->{roles}->{is_pending};
@@ -103,7 +80,6 @@ sub is_pending {
 sub is_rejected {
     my ( $self, $c, $field ) = @_;
 
-    return 0 unless ($field);
     &fill_user_role( $self, $c, $field ) unless ( $c->stash->{roles} );
 
     return $c->stash->{roles}->{is_rejected};
@@ -112,7 +88,6 @@ sub is_rejected {
 sub is_blocked {
     my ( $self, $c, $field ) = @_;
 
-    $field = 'site' unless ($field);
     &fill_user_role(@_) unless ( $c->stash->{roles} );
 
     return $c->stash->{roles}->{is_blocked};
@@ -202,8 +177,6 @@ sub clear_cached_policy {
     my ( $self, $c, $info ) = @_;
 
     if ( $info->{user_id} ) {
-        $c->cache->delete("policy|user_role|user_id=$info->{user_id}");
-
         # clear user cache too
         $c->model('User')
             ->delete_cache_by_user_cond( $c,

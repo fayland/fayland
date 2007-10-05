@@ -9,7 +9,7 @@ use Data::Dumper;
 sub default : Private {
     my ($self, $c, undef, undef, $type) = @_;
     
-    if ($type ne 'weekly' and $type ne 'monthly' and $type ne 'yesterday' and $type ne 'all') {
+    unless ($type and grep { $type eq $_ } ('weekly', 'monthly', 'yesterday','all')) {
         $type = 'today'; # default
     }
     

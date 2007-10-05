@@ -9,17 +9,17 @@ use Data::Dumper;
 sub recent : Local {
     my ( $slef, $c, $recent_type ) = @_;
 
+    my $rss      = ( $c->req->path =~ /\/rss(\/|$)/ ) ? 1 : 0; # /site/recent/rss
+
     my @extra_cols;
     my $url_prefix;
     if ( $recent_type eq 'elite' ) {
         @extra_cols = ( 'elite', 1 );
-        $url_prefix .= '/site/recent/elite';
+        $url_prefix = '/site/recent/elite';
     } else {
         $recent_type = 'site';
         $url_prefix  = '/site/recent';
     }
-
-    $c->cache_page('300');
 
     my $page = get_page_from_url( $c->req->path );
     my $rs   = $c->model('DBIC::Topic')->search(
@@ -36,13 +36,41 @@ sub recent : Local {
     );
 
     $c->stash(
-        {   template    => 'site/recent.html',
-            topics      => [ $rs->all ],
-            pager       => $rs->pager,
+        {
             recent_type => $recent_type,
             url_prefix  => $url_prefix,
         }
     );
+
+    my @topics = $rs->all;
+    if ($rss) {
+        foreach (@topics) {
+            my $rs = $c->model('DBIC::Comment')->find(
+                {   object_type => 'topic',
+                    object_id   => $_->topic_id,
+                },
+                {   order_by => 'post_on',
+                    rows     => 1,
+                    page     => 1,
+                    columns  => ['text'],
+                }
+            );
+            next unless ($rs);
+            $_->{text} = $rs->text;
+        }
+        $c->stash->{topics} = \@topics;
+        
+        $c->cache_page('600');
+        $c->stash->{template} = 'site/recent.rss.html';
+    } else {
+        $c->cache_page('300');
+        $c->stash(
+            {   template    => 'site/recent.html',
+                pager       => $rs->pager,
+                topics      => \@topics,
+            }
+        );
+    }
 }
 
 sub online : Local {

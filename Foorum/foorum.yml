@@ -122,6 +122,7 @@ dir:
 mail:
   on: 1
   from_email: 'fayland@gmail.com'
+  daily_report_email: 'fayland@gmail.com'
 
 extra:
   urchin_account: UA-65008-1

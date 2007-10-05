@@ -408,7 +408,7 @@ sub _check_policy {
     my ( $self, $c ) = @_;
 
     # check policy
-    if ( $c->user->status eq 'banned' or $c->user->status eq 'blocked' ) {
+    if ( $c->user->obj->{status} eq 'banned' or $c->user->obj->{status} eq 'blocked' ) {
         $c->detach( '/print_error', ['ERROR_PERMISSION_DENIED'] );
     }
 

@@ -19,12 +19,14 @@ use Foorum::TheSchwartz::Worker::Hit;
 use Foorum::TheSchwartz::Worker::RemoveOldDataFromDB;
 use Foorum::TheSchwartz::Worker::ResizeProfilePhoto;
 use Foorum::TheSchwartz::Worker::SendScheduledEmail;
+use Foorum::TheSchwartz::Worker::DailyReport;
 
 my $client = theschwartz();
 $client->can_do('Foorum::TheSchwartz::Worker::Hit');
 $client->can_do('Foorum::TheSchwartz::Worker::RemoveOldDataFromDB');
 $client->can_do('Foorum::TheSchwartz::Worker::ResizeProfilePhoto');
 $client->can_do('Foorum::TheSchwartz::Worker::SendScheduledEmail');
+$client->can_do('Foorum::TheSchwartz::Worker::DailyReport');
 $client->work();
 
 1;

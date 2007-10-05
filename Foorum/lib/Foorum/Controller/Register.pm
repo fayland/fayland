@@ -68,6 +68,7 @@ sub default : Private {
             password    => $computed,
             email       => $email,
             register_on => \"NOW()",
+            register_time => time(),
             register_ip => $c->req->address,
             lang        => $c->config->{default_lang},
             status      => 'unverified',

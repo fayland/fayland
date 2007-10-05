@@ -40,6 +40,7 @@ requires 'YAML::Syck';
 requires 'File::Slurp';
 requires 'Net::IP::Match::Regexp';
 requires 'Net::CIDR::Lite';
+requires 'TheSchwartz';
 
 catalyst;
 

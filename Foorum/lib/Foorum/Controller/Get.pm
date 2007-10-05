@@ -8,7 +8,7 @@ use base 'Catalyst::Controller';
 # we can't use /print_error in Model/Topic.pm like.
 # so we move it here. Controller based.
 
-sub forum : Local {
+sub forum : Private {
     my ($self, $c, $forum_code, $attr ) = @_;
     
     my $forum = $c->model('Forum')->get($c, $forum_code, $attr );
@@ -48,7 +48,7 @@ sub forum : Local {
     return $forum;
 }
 
-sub topic : Local {
+sub topic : Private {
     my ($self, $c, $topic_id, $attrs) = @_;
     
     my $topic = $c->model('Topic')->get($c, $topic_id, $attrs);
@@ -68,6 +68,21 @@ sub topic : Local {
     
     $c->stash->{topic} = $topic;
     return $topic;
+}
+
+sub user : Private {
+    my ($self, $c, $username) = @_;
+    
+    my $user = $c->model('User')->get($c, { username => $username } );
+    
+    $c->detach( '/print_error', ['ERROR_USER_NON_EXSIT'] ) unless ($user);
+    
+    if ($user->{status} eq 'banned' or $user->{status} eq 'blocked') {
+        $c->detach('/print_error', [ 'ERROR_ACCOUNT_CLOSED_STATUS' ] );
+    }
+
+    $c->stash->{user} = $user;
+    return $user;
 }
 
 =pod

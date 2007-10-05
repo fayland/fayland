@@ -25,8 +25,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("option_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-03 15:37:22
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qL9FOCpxMYaJFMFYaVdnFA
+# Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-05 13:19:15
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qhQxpMXLkqfQFOX+2bWpxg
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

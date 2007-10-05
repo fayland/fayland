@@ -25,10 +25,14 @@ sub update_hit { # run every 5 minutes
 sub remove_old_data_from_db { # run everyday
     $client->insert('Foorum::TheSchwartz::Worker::RemoveOldDataFromDB');
 }
+sub daily_report {
+    $client->insert('Foorum::TheSchwartz::Worker::DailyReport');
+}
 
 my $cron =  new Schedule::Cron(sub { return 1;});
 $cron->add_entry("*/5 * * * *", \&update_hit);
-$cron->add_entry("1 0 * * *", \&remove_old_data_from_db);
+$cron->add_entry("10 3 * * *",  \&remove_old_data_from_db);
+$cron->add_entry("0 0 * * *",   \&daily_report);
 $cron->run();
 
 1;

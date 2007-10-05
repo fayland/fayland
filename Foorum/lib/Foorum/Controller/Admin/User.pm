@@ -92,6 +92,27 @@ sub edit : Local {
     }
 }
 
+sub ban : Local {
+    my ($self, $c) = @_;
+    
+    my $username = $c->req->param('username');
+    my $user = $c->controller('Get')->user($c, $username);
+    
+    $c->model('User')->update( $c, $user, { status => 'banned' } );
+    
+    $c->model('Log')->log_action(
+        $c,
+        {   action      => 'ban',
+            object_type => 'user',
+            object_id   => $user->user_id,
+            forum_id    => 0,
+            text        => $c->req->referer || 'unknown',
+        }
+    );
+    
+    $c->res->redirect("/u/$username");
+}
+
 =pod
 
 =head2 AUTHOR

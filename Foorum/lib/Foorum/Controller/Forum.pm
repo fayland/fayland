@@ -45,13 +45,50 @@ sub forum_list : Regex('^forum/(\w+)$') {
     my ( $self, $c ) = @_;
 
     my $is_elite = ( $c->req->path =~ /\/elite(\/|$)/ ) ? 1 : 0;
-    my $page_no = get_page_from_url( $c->req->path );
+    my $page_no  = get_page_from_url( $c->req->path );
+    my $rss      = ( $c->req->path =~ /\/rss(\/|$)/ ) ? 1 : 0; # /forum/1/rss
 
     # get the forum information
     my $forum_code = $c->req->snippets->[0];
     my $forum      = $c->controller('Get')->forum( $c, $forum_code );
     my $forum_id   = $forum->{forum_id};
-    $forum_code = $forum->{forum_code};
+       $forum_code = $forum->{forum_code};
+
+    my @extra_cols = ( 'elite', 1 ) if ($is_elite);
+    my $it = $c->model('DBIC')->resultset('Topic')->search(
+        {   forum_id    => $forum_id,
+            'me.status' => { '!=', 'banned' },
+            @extra_cols,
+        },
+        {   order_by => 'sticky DESC, last_update_date DESC',
+            rows     => $c->config->{per_page}->{forum},
+            page     => $page_no,
+            prefetch => [ 'author', 'last_updator' ],
+        }
+    );
+    my @topics = $it->all;
+
+    if ($rss) {
+        foreach (@topics) {
+            my $rs = $c->model('DBIC::Comment')->find(
+                {   object_type => 'topic',
+                    object_id   => $_->topic_id,
+                },
+                {   order_by => 'post_on',
+                    rows     => 1,
+                    page     => 1,
+                    columns  => ['text'],
+                }
+            );
+            next unless ($rs);
+            $_->{text} = $rs->text;
+        }
+        $c->stash->{topics} = \@topics;
+        $c->stash->{template} = 'forum/forum.rss.html';
+        $c->cache_page('600');
+        return;
+    }
+    # above is for RSS, left is for HTML
 
     # get all moderators
     $c->stash->{forum_roles}
@@ -92,21 +129,6 @@ sub forum_list : Regex('^forum/(\w+)$') {
 
     $c->cache_page('300');
 
-    my @extra_cols = ( 'elite', 1 ) if ($is_elite);
-
-    my $it = $c->model('DBIC')->resultset('Topic')->search(
-        {   forum_id    => $forum_id,
-            'me.status' => { '!=', 'banned' },
-            @extra_cols,
-        },
-        {   order_by => 'sticky DESC, last_update_date DESC',
-            rows     => $c->config->{per_page}->{forum},
-            page     => $page_no,
-            prefetch => [ 'author', 'last_updator' ],
-        }
-    );
-
-    my @topics = $it->all;
     if ( $c->user_exists ) {
         my @all_topic_ids = map { $_->topic_id } @topics;
         $c->stash->{is_visited}
@@ -125,8 +147,8 @@ sub forum_list : Regex('^forum/(\w+)$') {
     );
 
     $c->stash->{whos_view_this_page} = 1;
-    $c->stash->{topics}              = \@topics;
     $c->stash->{pager}               = $pager;
+    $c->stash->{topics}              = \@topics;
     $c->stash->{template}            = 'forum/forum.html';
 }
 
