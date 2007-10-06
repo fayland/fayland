@@ -24,7 +24,7 @@ use Catalyst qw/
 #
 
 use vars qw/$VERSION/;
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 __PACKAGE__->config( { VERSION => $VERSION } );
 
