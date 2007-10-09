@@ -203,6 +203,9 @@ msgstr "用户名"
 msgid "Nickname"
 msgstr "昵称"
 
+msgid "Email"
+msgstr "电子邮件"
+
 msgid "Gender"
 msgstr "性别"
 

@@ -21,7 +21,7 @@
 	    Please type your password correctly.
 	[% END %]
 	</td></tr>
-    <tr class='misc2'><td align='right'>Email:</td><td><input type='text' name='email' size='24' />
+    <tr class='misc2'><td align='right'>[% c.loc("Email") %]</td><td><input type='text' name='email' size='24' />
 	[% IF c.form.error('email') %]
 	    [% IF c.form.error('email', 'DBIC_UNIQUE') %]
 	    This email is used by another one.

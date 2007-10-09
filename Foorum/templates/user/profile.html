@@ -33,7 +33,7 @@
 	[% END %]
 
 	<tr class='title'><td colspan='2'>[% c.loc('Contact Information') %]</td></tr>
-	<tr class='misc1'><td align='right'>Email</td><td>
+	<tr class='misc1'><td align='right'>[% c.loc("Email") %]</td><td>
 	    <img src='[% c.config.dir.images %]/myprofile/mail.png' width='20' height='20' align='absmiddle' /> [% user.email | email_obfuscate %] <a href='/help/email'><img src='[% c.config.dir.images %]/site/help.gif' width='16' height='16' align='absmiddle' /></a>
 	</td></tr>	
 	[% IF user.details.qq OR user.details.msn OR user.details.gtalk OR user.details.skype OR user.details.yahoo %]
