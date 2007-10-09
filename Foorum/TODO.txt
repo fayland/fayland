@@ -1,10 +1,3 @@
-=pod Urgent
-
-=item add index for MySQL tables
-
-for all tables and check for what SQL is used most.
-
-
 =pod High
 
 
@@ -22,9 +15,3 @@ CSS rebuild for forum. need more #class and .id
 
 well, DBIC session is just too frequnce to load. we need add a thin memcached support for that.
 
-
-=pod Trivial
-
-=item try Window_JS instead of popup window or alert.
-
-http://prototype-window.xilinus.com/index.html
