@@ -14,7 +14,7 @@ sub setup_components {
     my $config  = $class->config->{ pick_components };
 
     unless ($config) {
-        $class->NEXT::setup_components(@_);
+        return $class->NEXT::setup_components(@_);
     }
     
     my @paths   = exists $config->{paths}   ? @{ delete $config->{paths} }   : ();
