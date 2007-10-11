@@ -120,6 +120,26 @@ an instance of L<DBIx::Class::QueryLog::Analyzer>.
     [% END %]
   </div>
 
+OR
+
+  my $total = sprintf('%0.6f', $c->model('DBIC')->querylog->time_elapsed);
+  $c->log->debug("Total SQL Time: $total seconds");
+  my $qcount = $c->model('DBIC')->querylog->count;
+  if ($qcount) {
+    $c->log->debug("Avg Statement Time: " . sprintf('%0.6f', $total / $qcount));
+    my $i = 0;
+    my $qs = $c->model('DBIC')->querylog_analyzer->get_sorted_queries();
+    foreach my $q (@$qs) {
+      my $q_total = sprintf('%0.6f', $q->time_elapsed);
+      my $q_percent = sprintf('%0.6f', ( ($q->time_elapsed / $total) * 100 ));
+      my $q_sql = $q->sql . ' : ' . join(', ', @{$q->params});
+      $c->log->debug("SQL: $q_sql");
+      $c->log->debug("Costs: $q_total, takes $q_percent");
+      last if ($i == 5);
+      $i++;
+    }
+  }
+
 =head1 SEE ALSO
 
 L<Catalyst::Model::DBIC::Schema>
