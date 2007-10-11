@@ -64,6 +64,9 @@ msgstr "登录"
 msgid "Log out"
 msgstr "退出"
 
+msgid "Search"
+msgstr "搜索"
+
 msgid "Forum Admin"
 msgstr "管理论坛"
 
