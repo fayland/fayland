@@ -14,6 +14,7 @@ requires 'Cache::Memcached';
 requires 'MIME::Entity';
 requires 'Mail::Mailer';
 requires 'Catalyst::View::TT';
+requires 'Catalyst::View::JSON';
 requires 'Catalyst::Model::DBIC::Schema';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::ConfigLoader';

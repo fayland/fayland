@@ -12,6 +12,9 @@ View::TT:
   CONTEXT: ''
   DELIMITER: ';'
 
+View::JSON:
+  expose_stash: json_data
+
 cache:
   servers:
     - '127.0.0.1:11211'
