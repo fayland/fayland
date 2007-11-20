@@ -9,6 +9,7 @@ use vars qw/@EXPORT_OK/;
     is_color
     generate_random_word
     get_page_from_url
+    datetime_to_tt2_acceptable
     /;
 
 =pod
@@ -100,6 +101,25 @@ sub get_page_from_url {
         $page = $1;
     }
     return $page;
+}
+
+=pod
+
+=item datetime_to_tt2_acceptable
+
+convert MySQL DateTime format to TT2 date.format
+
+=cut
+
+sub datetime_to_tt2_acceptable {
+    my ($datetime) = @_;
+    
+    # from MySQL DateTime
+    my ($YYYY, $MM, $DD, $hour, $minute) = ($datetime =~ /^(\d+)-0?(\d+)-0?(\d+)\s+0?(\d+)\S+0?(\d+)/);
+
+    # 4:20:36 21/12/2007 TT2 accept this format
+    my $ret = sprintf( "%d:%d:10 %d/%d/%d", $hour, $minute, $DD, $MM, $YYYY );
+    return $ret;
 }
 
 =pod
