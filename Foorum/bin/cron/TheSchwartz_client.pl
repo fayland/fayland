@@ -18,30 +18,43 @@ use Foorum::ExternalUtils qw/theschwartz/;
 
 my $client = theschwartz();
 
-sub update_hit { # run every 5 minutes
-    debug('update_hit');
-    $client->insert('Foorum::TheSchwartz::Worker::Hit');
-}
-sub remove_old_data_from_db { # run everyday
-    debug('remove_old_data_from_db');
-    $client->insert('Foorum::TheSchwartz::Worker::RemoveOldDataFromDB');
-}
-sub daily_report {
-    debug('daily_report');
-    $client->insert('Foorum::TheSchwartz::Worker::DailyReport');
+use Getopt::Long;
+my $debug = 1;
+my $daemon = 0;
+my $worker;
+
+GetOptions("debug=i"  => \$debug,    # debug
+           "daemon=i" => \$daemon,   # daemon
+           "worker=s" => \$worker);  # manually inser a $worker
+
+if ($worker) {
+    run_worker($worker);
+} elsif ($daemon) {
+
+    use Schedule::Cron;
+    my $cron =  new Schedule::Cron(sub { return 1; });
+    $cron->add_entry("*/5 * * * *", \&run_worker('Hit')); # run every 5 minutes
+    $cron->add_entry("10 3 * * *",  \&run_worker('RemoveOldDataFromDB')); # run everyday
+    $cron->add_entry("0 0 * * *",   \&run_worker('DailyReport'));
+    $cron->add_entry("0 0 * * *",   \&run_worker('DailyChart'));
+    $cron->run();
+} else {
+    print <<USAGE;
+    Usage: perl $0 --debug 1 --daemon 1
+           perl $0 --debug 1 --worker DailyReport
+USAGE
 }
 
-use Schedule::Cron;
-my $cron =  new Schedule::Cron(sub { return 1; });
-$cron->add_entry("*/5 * * * *", \&update_hit);
-$cron->add_entry("10 3 * * *",  \&remove_old_data_from_db);
-$cron->add_entry("0 0 * * *",   \&daily_report);
-$cron->run();
+sub run_worker {
+    my ($worker) = @_;
+    debug($worker);
+    $client->insert("Foorum::TheSchwartz::Worker::$worker");
+}
 
 sub debug {
     my ($msg) = @_;
     
-    print "$msg \@" . localtime() . "\n";
+    print "$msg \@" . localtime() . "\n" if ($debug);
 }
 
 1;
