@@ -42,6 +42,8 @@ requires 'Net::CIDR::Lite';
 requires 'TheSchwartz';
 
 recommends 'HTML::BBCode' => '2.00';
+recommends 'Text::Textile';
+recommends 'Catalyst::Model::DBIC::Schema::QueryLog';
 
 catalyst;
 
