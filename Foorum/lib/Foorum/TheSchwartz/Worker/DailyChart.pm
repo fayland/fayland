@@ -25,14 +25,26 @@ sub work {
 sub register_stat {
     my ($schema, $table) = @_;
     
-    my $count = $schema->resultset($table)->count();
+    my $stat_value = $schema->resultset($table)->count();
     
-    my $key = 'count_' . lc($table);
-    $schema->resultset('Stat')->create( {
-        stat_key   => $key,
-        stat_value => $count,
-        date  => \'NOW()',
-    } );
+    my $stat_key = 'count_' . lc($table);
+    
+    my $dbh = $schema->storage->dbh;
+    
+    my $sql = q~SELECT COUNT(*) FROM stat WHERE stat_key = ? AND date = NOW()~;
+    my $sth = $dbh->prepare($sql);
+    $sth->execute($stat_key);
+    
+    my ($count) = $sth->fetchrow_array;
+    
+    unless ($count) {
+        $sql = q~INSERT INTO stat SET stat_key = ?, stat_value = ?, date = NOW()~;
+    } else {
+        $sql = q~UPDATE stat SET stat_key = ?, date = NOW() WHERE stat_value = ?~;
+    }
+    $sth = $dbh->prepare($sql);
+    $sth->execute($stat_key, $stat_value);
+    
 }
 
 1;

@@ -42,7 +42,7 @@ sub work {
         LogPathCount:   $log_path_count\n
     ~;
     
-    $c->model('DBIC')->resultset('ScheduledEmail')->create(
+    $schema->resultset('ScheduledEmail')->create(
         {   email_type => 'daily_report',
             from_email => $config->{mail}->{from_email},
             to_email   => $config->{mail}->{daily_report_email},
