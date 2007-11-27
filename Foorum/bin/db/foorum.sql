@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 03, 2007 at 06:42 AM
+-- Generation Time: Nov 27, 2007 at 04:15 AM
 -- Server version: 5.0.21
 -- PHP Version: 5.2.4
 
@@ -337,6 +337,23 @@ CREATE TABLE IF NOT EXISTS `star` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `stat`
+--
+
+DROP TABLE IF EXISTS `stat`;
+CREATE TABLE IF NOT EXISTS `stat` (
+  `stat_id` int(11) unsigned NOT NULL auto_increment,
+  `key` varchar(255) NOT NULL,
+  `value` bigint(21) NOT NULL default '0',
+  `date` date NOT NULL,
+  PRIMARY KEY  (`stat_id`),
+  KEY `key` (`key`),
+  KEY `date` (`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `topic`
 --
 
@@ -394,11 +411,12 @@ CREATE TABLE IF NOT EXISTS `user` (
   `gender` enum('F','M','NA') NOT NULL default 'NA',
   `email` varchar(255) NOT NULL,
   `register_on` date default NULL,
+  `register_time` int(11) unsigned NOT NULL default '0',
   `register_ip` varchar(32) NOT NULL,
   `last_login_on` datetime default NULL,
   `last_login_ip` varchar(32) default NULL,
   `login_times` mediumint(8) unsigned NOT NULL default '1',
-  `status` varchar(16) default NULL,
+  `status` enum('banned','blocked','verified','unverified','terminated') NOT NULL default 'unverified',
   `threads` int(11) unsigned NOT NULL default '0',
   `replies` int(11) unsigned NOT NULL default '0',
   `last_post_id` int(11) unsigned NOT NULL default '0',
@@ -409,7 +427,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`),
-  KEY `user_id` (`user_id`)
+  KEY `register_time` (`register_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
