@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 use Foorum::Utils qw/get_page_from_url/;
-use Foorum::Filter qw/filter_format/;
+use Foorum::Formatter qw/filter_format/;
 use Data::Dumper;
 
 sub board : Path {

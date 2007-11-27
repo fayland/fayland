@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base 'Catalyst::Model';
 use Foorum::Utils qw/get_page_from_url encodeHTML/;
-use Foorum::Filter qw/filter_format/;
+use Foorum::Formatter qw/filter_format/;
 use Data::Page;
 use Data::Dumper;
 

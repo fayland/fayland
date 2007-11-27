@@ -41,6 +41,8 @@ requires 'Net::IP::Match::Regexp';
 requires 'Net::CIDR::Lite';
 requires 'TheSchwartz';
 
+recommends 'HTML::BBCode' => '2.00';
+
 catalyst;
 
 install_script glob('script/*.pl');
