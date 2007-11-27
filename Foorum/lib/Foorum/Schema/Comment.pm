@@ -53,8 +53,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("comment_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04004 @ 2007-11-27 12:07:48
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:bL0uti2dbFuDn9PPoUuAVw
+# Created by DBIx::Class::Schema::Loader v0.04004 @ 2007-11-27 13:27:31
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6D2rOUYwma7PssP9pQz2qg
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
