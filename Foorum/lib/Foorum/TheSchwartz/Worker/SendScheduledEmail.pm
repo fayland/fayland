@@ -2,7 +2,7 @@ package Foorum::TheSchwartz::Worker::SendScheduledEmail;
 
 use TheSchwartz::Job;
 use base qw( TheSchwartz::Worker );
-use Foorum::ExternalUtils qw/schema/;
+use Foorum::ExternalUtils qw/schema config/;
 use Foorum::Log qw/error_log/;
 
 sub work {
@@ -33,7 +33,14 @@ sub work {
 }
 
 use MIME::Entity;
-use Mail::Mailer qw(sendmail);
+use Email::Send;
+use YAML qw/LoadFile/;
+use File::Spec;
+
+my (undef, $path) = File::Spec->splitpath(__FILE__);
+my $config = LoadFile("$path/../../../../conf/mail.yml");
+
+my $mailer = Email::Send->new( $config );
 
 sub send_email {
     my ($from, $to, $subject, $plain_body, $html_body) = @_;
@@ -63,18 +70,8 @@ sub send_email {
     	);
     }
 
-    my $headers;
-	# read all headers' info , and set them into a hash
-	foreach ($top->head->tags) {
-		$headers->{$_} = $top->head->get($_);
-	}
-	$headers->{'Z-To'} = $to if ($to =~ /aol\.com/);
-	my $body = $top->stringify_body;
-
-    my $mailer = new Mail::Mailer;
-    $mailer->open($headers);
-	print $mailer $body;
-	$mailer->close;
+	my $email = $top->stringify;
+    $mailer->send($email);
 }
 
 1;

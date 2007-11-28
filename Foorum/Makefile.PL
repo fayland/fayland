@@ -11,8 +11,6 @@ requires 'Switch';
 requires 'DateTime';
 requires 'File::Path';
 requires 'Cache::Memcached';
-requires 'MIME::Entity';
-requires 'Mail::Mailer';
 requires 'Catalyst::View::TT';
 requires 'Catalyst::View::JSON';
 requires 'Catalyst::Model::DBIC::Schema';
@@ -39,12 +37,21 @@ requires 'YAML::Syck';
 requires 'File::Slurp';
 requires 'Net::IP::Match::Regexp';
 requires 'Net::CIDR::Lite';
-requires 'TheSchwartz';
 
+# cron
+recommends 'TheSchwartz';
+recommends 'GD::Graph';
+
+# mail
+recommends 'MIME::Entity';
+recommends 'Email::Send::SMTP::TLS';
+
+# formatter
 recommends 'HTML::BBCode' => '2.00';
 recommends 'Text::Textile';
+
+# db debug
 recommends 'Catalyst::Model::DBIC::Schema::QueryLog';
-recommends 'GD::Graph';
 
 catalyst;
 
