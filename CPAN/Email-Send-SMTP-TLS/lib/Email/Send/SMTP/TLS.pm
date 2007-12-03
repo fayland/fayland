@@ -7,7 +7,7 @@ use Email::Address;
 use Net::SMTP::TLS;
 use Return::Value;
 
-$VERSION   = '0.01';
+$VERSION   = '0.02';
 
 sub is_available {
     return 1;
@@ -67,7 +67,7 @@ __END__
 
 =head1 NAME
 
-Email::Send::SMTP::TLS - Send Messages using Net::SMTP::TLS
+Email::Send::SMTP::TLS - Send Email using Net::SMTP::TLS (esp. Gmail)
 
 =head1 SYNOPSIS
 
