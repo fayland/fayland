@@ -10,10 +10,8 @@ my $builder = Module::Build->new(
     create_makefile_pl  => 'traditional',
     build_requires => {
         'Test::More' => 0,
-        'Sort::Key'  => 0,
         'Catalyst' => 0,
         'DBIx::Class::QueryLog' => 0,
-        'Moose' => 0,
         'Catalyst::Component::InstancePerContext' => 0,
     },
     add_to_cleanup      => [ 'Catalyst-Model-DBIC-Schema-QueryLog-*' ],
