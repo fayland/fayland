@@ -114,12 +114,6 @@ sub delete_cache_by_user {
 
     return unless ($user);
 
-    if ( Scalar::Util::blessed($user)
-        and $user->isa('Catalyst::Plugin::Authentication::User') )
-    {
-        $user = $user->obj;
-    }
-
     my @ckeys;
     push @ckeys, 'user|'
         . Object::Signature::signature( { user_id => $user->{user_id} } );
@@ -146,12 +140,6 @@ sub delete_cache_by_user_cond {
 # call this update will delete cache.
 sub update {
     my ( $self, $c, $user, $update ) = @_;
-
-    if ( Scalar::Util::blessed($user)
-        and $user->isa('Catalyst::Plugin::Authentication::User') )
-    {
-        $user = $user->obj;
-    }
 
     $self->delete_cache_by_user( $c, $user );
     $c->model('DBIC')->resultset('User')

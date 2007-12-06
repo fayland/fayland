@@ -39,7 +39,7 @@ authentication:
         password_hash_type: "SHA-1"
       store:
         class: 'Sub'
-        user_class: "PluginHack"
+        model_class: "PluginHack"
     
 session:
   dbic_class: "DBIC::Session"

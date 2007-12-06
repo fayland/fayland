@@ -5,7 +5,7 @@ use warnings;
 use base 'Catalyst::Model';
 
 sub get {
-    my ($self, $c, $user_info);
+    my ($self, $c, $user_info) = @_;
     
     my $where;
     if (exists $user_info->{user_id}) {

@@ -42,10 +42,6 @@ sub login : Global {
         $can_login = ( $failure_login_times < 3 or $captcha_ok );
 
         if ( $can_login and $c->authenticate( { username => $username, password => $password } ) ) {
-
-            use Data::Dumper;
-            $c->log->debug(Dumper(\$c->user));
-
             # check if he is activated
             if (    $c->config->{mail}->{on}
                 and $c->config->{register}->{activation}
