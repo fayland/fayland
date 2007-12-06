@@ -22,6 +22,7 @@ requires 'Catalyst::Plugin::Authentication';
 requires 'Catalyst::Plugin::Authentication::Credential::Password';
 requires 'Catalyst::Plugin::Session';
 requires 'Catalyst::Plugin::Session::State::Cookie';
+requires 'Catalyst::Plugin::Session::Store::Delegate'; # for DBIC next line
 requires 'Catalyst::Plugin::Session::Store::DBIC';
 requires 'Catalyst::Plugin::Session::DynamicExpiry';
 requires 'Catalyst::Plugin::FormValidator::Simple';
