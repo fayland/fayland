@@ -18,6 +18,7 @@ requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Cache::Memcached';
 requires 'Catalyst::Plugin::PageCache';
+requires 'Set::Object';
 requires 'Catalyst::Plugin::Authentication';
 requires 'Catalyst::Plugin::Authentication::Credential::Password';
 requires 'Catalyst::Plugin::Session';
