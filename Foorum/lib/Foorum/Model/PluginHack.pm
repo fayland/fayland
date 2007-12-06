@@ -4,12 +4,17 @@ use strict;
 use warnings;
 use base 'Catalyst::Model';
 
-sub get_user {
-    my $self = shift;
+sub get {
+    my ($self, $c, $user_info);
+    
+    my $where;
+    if (exists $user_info->{user_id}) {
+        $where = { user_id => $user_info->{user_id} };
+    } elsif (exists $user_info->{username}) {
+        $where = { username => $user_info->{username} };
+    } else { return; }
 
-    my $c = ${ Foorum->config->{user_auth} };
-    my $user = $c->model('User')->get( $c, @_ );
-
+    my $user = $c->model('User')->get( $c, $where );
     return $user;
 }
 

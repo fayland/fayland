@@ -41,19 +41,22 @@ sub login : Global {
                 and $c->validate_captcha( $c->req->param('captcha') ) );
         $can_login = ( $failure_login_times < 3 or $captcha_ok );
 
-        if ( $can_login and $c->login( $username, $password ) ) {
+        if ( $can_login and $c->authenticate( { username => $username, password => $password } ) ) {
+
+            use Data::Dumper;
+            $c->log->debug(Dumper(\$c->user));
 
             # check if he is activated
             if (    $c->config->{mail}->{on}
                 and $c->config->{register}->{activation}
-                and $c->user->obj->{status} eq 'unverified' )
+                and $c->user->get('status') eq 'unverified' )
             {
                 my $username = $c->user->username;
                 $c->logout;
                 return $c->res->redirect("/register/activation/$username");
             }
             
-            if ($c->user->obj->{status} eq 'banned' or $c->user->obj->{status} eq 'blocked') {
+            if ($c->user->get('status') eq 'banned' or $c->user->get('status') eq 'blocked') {
                 $c->logout;
                 $c->detach('/print_error', [ 'ERROR_ACCOUNT_CLOSED_STATUS' ] );
             }

@@ -58,7 +58,7 @@ sub default : Private {
     # password
     my $password = $c->req->param('password');
     my $d        = Digest->new(
-        $c->config->{authentication}->{dbic}->{password_hash_type} );
+        $c->config->{authentication}->{password_hash_type} );
     $d->add($password);
     my $computed = $d->digest;
 

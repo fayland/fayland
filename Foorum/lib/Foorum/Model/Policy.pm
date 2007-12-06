@@ -8,7 +8,7 @@ use Data::Dumper;
 sub fill_user_role {
     my ( $self, $c, $field ) = @_;
 
-    my $roles = $c->user->obj->{roles};
+    my $roles = $c->user->{roles};
     $field ||= 'site';
 
     if ( $roles->{$field}->{user} ) {

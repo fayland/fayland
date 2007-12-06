@@ -28,12 +28,19 @@ page_cache:
   auto_check_user: 1
 
 authentication:
-  dbic:
-    user_class: "Foorum::Model::PluginHack"
-    user_field: "username"
-    password_field: "password"
-    password_type: "hashed"
-    password_hash_type: "SHA-1"
+  default_realm: 'members'
+  password_hash_type: "SHA-1"
+  realms:
+    members:
+      credential:
+        class: 'Password'
+        password_field: 'password'
+        password_type: "hashed"
+        password_hash_type: "SHA-1"
+      store:
+        class: 'Sub'
+        user_class: "PluginHack"
+    
 session:
   dbic_class: "DBIC::Session"
   expires: 604800
