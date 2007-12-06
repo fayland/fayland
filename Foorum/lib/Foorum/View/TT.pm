@@ -7,14 +7,15 @@ use File::Spec;
 
 #use Template::Constants qw( :debug );
 use NEXT;
-use Email::Obfuscate qw(obfuscate_email_address);
+use HTML::Email::Obfuscate;
 use Foorum::Utils qw/decodeHTML/;
 use Locale::Country::Multilingual;
 use Encode qw/decode/;
-use vars qw/$lcm/;
-$lcm = Locale::Country::Multilingual->new();
+use vars qw/$lcm $Email/;
 
 my $tmpdir = File::Spec->tmpdir();
+$lcm = Locale::Country::Multilingual->new();
+$Email = HTML::Email::Obfuscate->new();
 
 __PACKAGE__->config(
 
@@ -24,7 +25,7 @@ __PACKAGE__->config(
     COMPILE_EXT  => '.ttp1',
     STASH        => Template::Stash::XS->new,
     FILTERS      => {
-        email_obfuscate => sub { obfuscate_email_address(shift) },
+        email_obfuscate => sub { $Email->escape_html(shift) },
         decodeHTML      => sub { decodeHTML(shift) },
         code2country => [ \&code2country, 1 ],
     }

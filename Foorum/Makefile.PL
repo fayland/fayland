@@ -32,7 +32,7 @@ requires 'Template::Plugin::FillInForm';
 requires 'Template::Plugin::Date';
 requires 'Template::Plugin::String::Compare';
 requires 'File::Remove';
-requires 'Email::Obfuscate';
+requires 'HTML::Email::Obfuscate';
 requires 'Locale::Country::Multilingual';
 requires 'YAML::Syck';
 requires 'File::Slurp';
