@@ -35,6 +35,7 @@ sub filter_format {
     return $text;
 }
 
+1;
 __END__
 
 =pod
@@ -57,5 +58,3 @@ Foorum::Formatter - format content for Foorum
 Fayland Lam <fayland@gmail.com>
 
 =cut
-
-1;
