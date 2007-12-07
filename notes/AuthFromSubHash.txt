@@ -1,6 +1,6 @@
 C::A::S::FromSub::Hash
 
-I just release a new CPAN module for Catalyst - <a href="http://search.cpan.org/perldoc?Catalyst::Authentication::Store::FromSub::Hash'>Catalyst::Authentication::Store::FromSub::Hash</a>.
+I just release a new CPAN module for Catalyst - <a href="http://search.cpan.org/perldoc?Catalyst::Authentication::Store::FromSub::Hash">Catalyst::Authentication::Store::FromSub::Hash</a>.
 
 Generally I always hate one situation that <a href="http://search.cpan.org/perldoc?Catalyst::Authentication::Store::DBIx::Class">http://search.cpan.org/perldoc?Catalyst::Authentication::Store::DBIx::Class</a> hits database every request. to ease database, I create one cache layout between Authentication and database.
 
