@@ -1,0 +1,42 @@
+C::A::S::FromSub::Hash
+
+I just release a new CPAN module for Catalyst - <a href="http://search.cpan.org/perldoc?Catalyst::Authentication::Store::FromSub::Hash'>Catalyst::Authentication::Store::FromSub::Hash</a>.
+
+Generally I always hate one situation that <a href="http://search.cpan.org/perldoc?Catalyst::Authentication::Store::DBIx::Class">http://search.cpan.org/perldoc?Catalyst::Authentication::Store::DBIx::Class</a> hits database every request. to ease database, I create one cache layout between Authentication and database.
+
+In my <a href="http://code.google.com/p/fayland">Foorum</a>,
+Foorum.pm<pre><code>use Catalyst qw/Authentication ../;</code></pre>
+foorum.yml<pre><code>authentication:
+  default_realm: 'members'
+  realms:
+    members:
+      credential:
+        class: 'Password'
+        password_field: 'password'
+        password_type: "hashed"
+        password_hash_type: "SHA-1"
+      store:
+        class: 'FromSub::Hash'
+        model_class: "UserAuth"</code></pre>
+In this config, we use store "FromSub::Hash" and model_class "UserAuth". so we need create a Foorum::Model::UserAuth:<pre><code>package Foorum::Model::UserAuth;
+use base 'Catalyst::Model';
+
+sub auth {
+    my ($self, $c, $userinfo) = @_;
+    
+    my $where;
+    if (exists $userinfo->{user_id}) {
+        $where = { user_id => $userinfo->{user_id} };
+    } elsif (exists $userinfo->{username}) {
+        $where = { username => $userinfo->{username} };
+    } else { return; }
+
+    my $user = $c->model('User')->get( $c, $where );
+    return $user;
+}</code></pre>
+$c->model('User')->get($c, $where); has built-in cache layout. and it return hash from/to cache.
+
+I guess I would create another module - Catalyst::Authentication::Store::FromSub::Object later.
+but since I don't use it, I'm not sure when will it kick out.
+
+@Enjoy!
