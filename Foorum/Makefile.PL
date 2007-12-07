@@ -21,6 +21,7 @@ requires 'Catalyst::Plugin::PageCache';
 requires 'Set::Object';
 requires 'Catalyst::Plugin::Authentication';
 requires 'Catalyst::Plugin::Authentication::Credential::Password';
+requires 'Catalyst::Authentication::Store::FromSub::Hash';
 requires 'Catalyst::Plugin::Session';
 requires 'Catalyst::Plugin::Session::State::Cookie';
 requires 'Catalyst::Plugin::Session::Store::Delegate'; # for DBIC next line

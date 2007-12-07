@@ -38,8 +38,8 @@ authentication:
         password_type: "hashed"
         password_hash_type: "SHA-1"
       store:
-        class: 'Sub'
-        model_class: "PluginHack"
+        class: 'FromSub::Hash'
+        model_class: "UserAuth"
     
 session:
   dbic_class: "DBIC::Session"
