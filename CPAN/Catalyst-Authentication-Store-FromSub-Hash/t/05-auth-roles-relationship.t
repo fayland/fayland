@@ -13,6 +13,10 @@ BEGIN {
     plan skip_all =>
         "TODO";
 
+    eval { require Catalyst::Model::DBIC::Schema }
+        or plan skip_all =>
+        "Catalyst::Model::DBIC::Schema is required for this test";
+
     eval { require Catalyst::Plugin::Authorization::Roles }
         or plan skip_all =>
         "Catalyst::Plugin::Authorization::Roles is required for this test";

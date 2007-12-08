@@ -9,6 +9,11 @@ use Test::More;
 use lib "$FindBin::Bin/lib";
 
 BEGIN {
+
+    eval { require Catalyst::Model::DBIC::Schema }
+        or plan skip_all =>
+        "Catalyst::Model::DBIC::Schema is required for this test";
+
     eval { require Test::WWW::Mechanize::Catalyst }
       or plan skip_all =>
       "Test::WWW::Mechanize::Catalyst is required for this test";
