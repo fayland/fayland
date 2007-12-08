@@ -2,7 +2,10 @@ This file documents the revision history for Foorum.
 
 0.08 unknown
     - I18N encoding fix
-    - use the lastest Catalyst::Plugin::Authentication (Store::Sub)
+    - use the lastest Catalyst::Plugin::Authentication (Store::FromSub::Hash)
+    - use jQuery flot to do daily chart
+    - bin/setup.pl
+    - RSS text fix
 
 0.07  Fri Oct 5 18:33:21 2007
     - use TheSchwartz to queue cron scirpt.

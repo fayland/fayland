@@ -1,0 +1,49 @@
+jQuery Flot For Daily Chart in Foorum
+
+I know Google just release his <a href="http://code.google.com/apis/chart/">Chart</a> days ago. it's powerful, more than jQuery <a href="http://code.google.com/p/flot/">flot</a>.
+
+but I still want to use flot because it's simpler. yet badly it's not supporting day as its X. like 20071131 is next to 20071201, not far away as treated in flot.
+
+Foorum has a feature that it will record the count of some tables every day. we have a table named 'stat', and columns are "stat_id", "stat_key", "stat_value", "date". so somehow we would have something like
+20071201 user_counts 510
+20071202 user_counts 640
+then go on.
+we use a cron script to collect those data.
+
+data is not so straight for human being. we need CHART.
+so I just make vars from stat table like:<pre><code>stats => {
+    user_counts => {
+        20071201 => 510,
+        20071202 => 640,
+        20071203 => ...</code></pre>
+then we use a TT file to create a HTML file.<pre><code>$(function () {
+
+    [% i = 0 %]
+    [% FOREACH ctype IN stats.keys %]
+    
+    $('body').append("&lt;h2>[% ctype %]&lt;/h2>&lt;div class='placeholder' id='placeholder[% i %]' style='height:300px;'>&lt;/div>");
+    
+    var d[% i %] = [];
+    
+    [% FOREACH key IN stats.${ctype}.keys.sort %]
+    
+    d[% i %].push([[% key %], [% stats.${ctype}.$key %]]);
+    
+    [% END %]
+    
+    $.plot($("#placeholder[% i %]"), [
+        {
+            data: d[% i %],
+            lines: { show: true },
+            points: { show: true }
+        }
+    ]);
+    [% i = i + 1 %]
+    [% END %]
+});</code></pre>
+
+more details @
+<a href="http://fayland.googlecode.com/svn/trunk/Foorum/lib/Foorum/TheSchwartz/Worker/DailyChart.pm">http://fayland.googlecode.com/svn/trunk/Foorum/lib/Foorum/TheSchwartz/Worker/DailyChart.pm</a>
+<a href="http://fayland.googlecode.com/svn/trunk/Foorum/templates/stats/chart.html">http://fayland.googlecode.com/svn/trunk/Foorum/templates/stats/chart.html</a>
+
+@Enjoy;
