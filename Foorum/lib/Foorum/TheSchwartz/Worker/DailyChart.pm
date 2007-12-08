@@ -2,7 +2,7 @@ package Foorum::TheSchwartz::Worker::DailyChart;
 
 use TheSchwartz::Job;
 use base qw( TheSchwartz::Worker );
-use Foorum::ExternalUtils qw/schema/;
+use Foorum::ExternalUtils qw/schema tt2/;
 use Foorum::Log qw/error_log/;
 
 sub work {
@@ -18,6 +18,33 @@ sub work {
     register_stat($schema, 'Forum');
     register_stat($schema, 'Topic');
     register_stat($schema, 'Message');
+    
+    my $tt2 = tt2();
+    
+    my @atime = localtime();
+    my $year = $atime[5] + 1900; my $month = $atime[4] + 1; my $day = $atime[3];
+    
+    my @stats =$schema->resultset('Stat')->search( {
+        date => \"> DATE_SUB(NOW(), INTERVAL 7 DAY)",
+    } )->all;
+    
+    my $stats;
+    foreach (@stats) {
+        my $date = $_->date;
+        $date =~ s/\-//isg;
+        $stats->{$_->stat_key}->{$date} = $_->stat_value;
+    }
+    
+    my $var = {
+        title => "$month/$day/$year Chart",
+        stats => $stats,
+    };
+    
+    my $filename = sprintf("%04d%02d%02d", $year, $month, $day);
+    use File::Spec;
+    my (undef, $path) = File::Spec->splitpath(__FILE__);
+    
+    $tt2->process('stats/chart.html', $var, "$path/../../../../root/stats/$filename.html");
 
     $job->completed();
 }
@@ -27,7 +54,7 @@ sub register_stat {
     
     my $stat_value = $schema->resultset($table)->count();
     
-    my $stat_key = 'count_' . lc($table);
+    my $stat_key = lc($table) . '_counts';
     
     my $dbh = $schema->storage->dbh;
     

@@ -42,8 +42,9 @@ requires 'Net::IP::Match::Regexp';
 requires 'Net::CIDR::Lite';
 
 # cron
-recommends 'TheSchwartz';
-recommends 'GD::Graph';
+requires 'TheSchwartz';
+recommends 'Schedule::Cron';
+recommends 'Proc::PID::File';
 
 # mail
 recommends 'MIME::Entity';

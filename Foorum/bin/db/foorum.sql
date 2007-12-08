@@ -343,11 +343,11 @@ CREATE TABLE IF NOT EXISTS `star` (
 DROP TABLE IF EXISTS `stat`;
 CREATE TABLE IF NOT EXISTS `stat` (
   `stat_id` int(11) unsigned NOT NULL auto_increment,
-  `key` varchar(255) NOT NULL,
-  `value` bigint(21) NOT NULL default '0',
+  `stat_key` varchar(255) NOT NULL,
+  `stat_value` bigint(21) NOT NULL default '0',
   `date` date NOT NULL,
   PRIMARY KEY  (`stat_id`),
-  KEY `key` (`key`),
+  KEY `key` (`stat_key`),
   KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

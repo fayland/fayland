@@ -44,3 +44,59 @@ if ( __PACKAGE__->config->{debug_mode} ) {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+Foorum - forum system based on Catalyst
+
+=head1 DESCRIPTION
+
+nothing for now.
+
+=head1 FEATURES
+
+=over 4
+
+=item open source
+
+u can FETCH all code from L<http://fayland.googlecode.com/svn/trunk/Foorum/> any time any where.
+
+=item Win32 compatibility
+
+Linux/Unix/Win32 both OK.
+
+=item templates
+
+use L<Template>; for UI.
+
+=item built-in cache
+
+use L<Cache::Memcached>;
+
+=item reliable job queue
+
+use L<TheSchwartz>;
+
+=item Captcha
+
+To keep robot out.
+
+=back
+
+=head1 SEE ALSO
+
+L<Catalyst::Runtime>
+
+=head1 AUTHOR
+
+Fayland Lam, C<< <fayland at gmail.com> >>
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2007 Fayland Lam, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut

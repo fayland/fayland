@@ -2,24 +2,28 @@ package Foorum::ExternalUtils;
 
 use strict;
 use warnings;
-use File::Spec;
-use YAML qw/LoadFile/;
-use Foorum::Schema;
-use TheSchwartz;
+use YAML qw/LoadFile/; # config
+use Foorum::Schema; # schema
+use Cache::Memcached; # memcached
+use TheSchwartz; # theschwartz
+use Template; # template
+use Template::Stash::XS;
 use base 'Exporter';
-use vars qw/@EXPORT_OK $config $schema $memcached $theschwartz/;
+use vars qw/@EXPORT_OK $config $schema $memcached $theschwartz $tt2/;
 @EXPORT_OK = qw/
     config
     schema
     memcached
     theschwartz
+    tt2
 /;
+
+use File::Spec;
+my (undef, $path) = File::Spec->splitpath(__FILE__);
 
 sub config {
     
     return $config if ($config);
-    
-    my (undef, $path) = File::Spec->splitpath(__FILE__);
     
     $config = LoadFile("$path/../../foorum.yml");
     my $extra_config = LoadFile("$path/../../foorum_local.yml");
@@ -56,7 +60,7 @@ sub theschwartz {
     return $theschwartz if ($theschwartz);
     $config = config() unless ($config);
     
-    my $theschwartz = TheSchwartz->new(
+    $theschwartz = TheSchwartz->new(
         databases => [ {
             dsn  => $config->{theschwartz_dsn},
             user => $config->{dsn_user},
@@ -67,5 +71,18 @@ sub theschwartz {
     return $theschwartz;
 }
 
+sub tt2 {
+    
+    return $tt2 if ($tt2);
+    $config = config() unless ($config);
+    
+    $tt2 = Template->new( {
+	    INCLUDE_PATH => [ "$path/../../templates" ],
+		PRE_CHOMP  => 1,
+        POST_CHOMP => 1,
+        STASH      => Template::Stash::XS->new,
+	} );
+    return $tt2;
+}
 
 1;

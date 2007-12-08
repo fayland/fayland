@@ -98,7 +98,6 @@ logger:
   path_load_time_more_than: 2
 
 site:
-  copy_rights_start_year: 2006
   maintain: 0
 
 topic:

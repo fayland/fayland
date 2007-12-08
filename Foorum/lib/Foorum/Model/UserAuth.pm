@@ -12,6 +12,8 @@ sub auth {
         $where = { user_id => $userinfo->{user_id} };
     } elsif (exists $userinfo->{username}) {
         $where = { username => $userinfo->{username} };
+    } elsif (exists $userinfo->{email}) {
+        $where = { email => $userinfo->{email} };
     } else { return; }
 
     my $user = $c->model('User')->get( $c, $where );

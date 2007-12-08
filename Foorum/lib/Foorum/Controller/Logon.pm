@@ -100,9 +100,6 @@ sub login : Global {
 sub logout : Global {
     my ( $self, $c ) = @_;
 
-    # delete the user_id in session
-    $c->delete_session('log out');
-
     # log the user out
     $c->logout;
 
