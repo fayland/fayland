@@ -1,8 +1,0 @@
-Build.PL
-Changes
-MANIFEST
-README
-lib/Catalyst/Authentication/Store/FromSub/Hash.pm
-t/00-load.t
-t/pod-coverage.t
-t/pod.t
