@@ -59,6 +59,6 @@ recommends 'Catalyst::Model::DBIC::Schema::QueryLog';
 
 catalyst;
 
-install_script glob('script/*.pl');
+install_script glob('bin/foorum_server.pl');
 auto_install;
 WriteAll;
