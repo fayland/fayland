@@ -18,6 +18,10 @@ BEGIN {
         or plan skip_all =>
         "Catalyst::Model::DBIC::Schema is required for this test";
 
+    eval { require Catalyst::Plugin::Session::State::Cookie }
+        or plan skip_all =>
+        "Catalyst::Plugin::Session::State::Cookie is required for this test";
+
     eval { require DBD::SQLite }
         or plan skip_all =>
         "DBD::SQLite is required for this test";
