@@ -1,5 +1,8 @@
 Revision history for Catalyst-Authentication-Store-FromSub-Hash
 
+0¡¢03   12/11/2007 16:17
+        add require 'Catalyst::Plugin::Session::State::Cookie' or skip in t/*.t
+
 0.02    12/8/2007 18:30
         add require 'require Catalyst::Model::DBIC::Schema' or skip in t/*.t
 
