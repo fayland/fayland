@@ -1,11 +1,15 @@
 #!perl -T
 
-use Test::More tests => 12;
+use Test::More tests => 13;
 use Text::GooglewikiFormat;
 
 my $raw  = '*bold* _italic_ ~~strike~~';
 my $html = Text::GooglewikiFormat::format($raw);
-is($html, '<p><strong>bold</strong> <i>italic</i> <span style="text-decoration: line-through">strike</span></p>', '*bold* _italic_ ~~strike~~ works');
+is($html, '<p> <strong>bold</strong> <i>italic</i> <span style="text-decoration: line-through">strike</span> </p>', '*bold* _italic_ ~~strike~~ works');
+
+$raw  = 'a*bold*a i_italic_i s~~strike~~s';
+$html = Text::GooglewikiFormat::format($raw);
+is($html, '<p>a*bold*a i_italic_i s~~strike~~s</p>', 'a*bold*a i_italic_i s~~strike~~s works');
 
 $raw  = '^superscript^ ,,subscript,, `inline code`';
 $html = Text::GooglewikiFormat::format($raw);

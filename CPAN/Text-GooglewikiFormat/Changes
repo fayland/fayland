@@ -1,5 +1,8 @@
 Revision history for Text-GooglewikiFormat
 
+0.03    12/19/2007 2:47
+        a*bold*a i_italic_i s~~strike~~s is stay the same
+
 0.02    12/19/2007 9:40
         remove warnings
         rename NAME in POD

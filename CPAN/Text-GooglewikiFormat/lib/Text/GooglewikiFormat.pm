@@ -9,22 +9,22 @@ use Scalar::Util qw( blessed reftype );
 use URI::Find;
 
 use vars qw( $VERSION %tags $indent $code_delimiters);
-$VERSION = '0.02';
+$VERSION = '0.03';
 $indent  = qr/^(?:\t+|\s{4,})/;
 $code_delimiters = 0;
 %tags    = (
 	indent		=> qr/^(?:\t+|\s{1,})/,
 	newline		=> '<br />',
 
-	strong		=> sub { "<strong>$_[0]</strong>" },
-	italic      => sub { "<i>$_[0]</i>" },
-	strike   	=> sub { qq~<span style="text-decoration: line-through">$_[0]</span>~ },
+	strong		=> sub { " <strong>$_[0]</strong> " },
+	italic      => sub { " <i>$_[0]</i> " },
+	strike   	=> sub { qq~ <span style="text-decoration: line-through">$_[0]</span> ~ },
 	superscript => sub { "<sup>$_[0]</sup>" },
 	subscript   => sub { "<sub>$_[0]</sub>" },
 	inline      => sub { "<tt>$_[0]</tt>" },
-	strong_tag  => qr/\*(.+?)\*/,
-	italic_tag  => qr/_(.+?)_/,
-	strike_tag  => qr/\~\~(.+?)\~\~/,
+	strong_tag  => qr/(^|\s+)\*(.+?)\*(\s+|$)/,
+	italic_tag  => qr/(^|\s+)_(.+?)_(\s+|$)/,
+	strike_tag  => qr/(^|\s+)\~\~(.+?)\~\~(\s+|$)/,
 	superscript_tag => qr/\^(.+?)\^/,
 	subscript_tag   => qr/\,\,(.+?)\,\,/,
 	inline_tag  => qr/\`(.+?)\`/,
@@ -279,9 +279,9 @@ sub format_line {
 	my ($text, $tags, $opts) = @_;
 	$opts ||= {};
 
-	$text =~ s!$tags->{strong_tag}!$tags->{strong}->($1, $opts)!eg;
-	$text =~ s!$tags->{italic_tag}!$tags->{italic}->($1, $opts)!eg;
-	$text =~ s!$tags->{strike_tag}!$tags->{strike}->($1, $opts)!eg;
+	$text =~ s!$tags->{strong_tag}!$tags->{strong}->($2, $opts)!eg;
+	$text =~ s!$tags->{italic_tag}!$tags->{italic}->($2, $opts)!eg;
+	$text =~ s!$tags->{strike_tag}!$tags->{strike}->($2, $opts)!eg;
 	$text =~ s!$tags->{superscript_tag}!$tags->{superscript}->($1, $opts)!eg;
 	$text =~ s!$tags->{subscript_tag}!$tags->{subscript}->($1, $opts)!eg;
 	$text =~ s!$tags->{inline_tag}!$tags->{inline}->($1, $opts)!eg;
