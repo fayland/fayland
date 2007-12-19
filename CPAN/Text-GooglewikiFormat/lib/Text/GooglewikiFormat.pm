@@ -9,7 +9,7 @@ use Scalar::Util qw( blessed reftype );
 use URI::Find;
 
 use vars qw( $VERSION %tags $indent $code_delimiters);
-$VERSION = '0.01';
+$VERSION = '0.02';
 $indent  = qr/^(?:\t+|\s{4,})/;
 $code_delimiters = 0;
 %tags    = (
@@ -262,6 +262,8 @@ sub process_block {
 	}
 
 	pop @text if $between;
+	
+	@text = grep { defined $_ } @text; # remove warnings
 	return join('', $start, @text, $end);
 }
 
@@ -375,7 +377,7 @@ __END__
 
 =head1 NAME
 
-Text::GooglewikiFormat - The great new Text::GooglewikiFormat!
+Text::GooglewikiFormat - Translate Google Code Wiki markup into HTML
 
 =head1 SYNOPSIS
 

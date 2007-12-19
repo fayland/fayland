@@ -1,5 +1,9 @@
 Revision history for Text-GooglewikiFormat
 
+0.02    12/19/2007 9:40
+        remove warnings
+        rename NAME in POD
+
 0.01    Date/time
         First version, released on an unsuspecting world.
 

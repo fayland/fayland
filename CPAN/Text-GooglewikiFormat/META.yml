@@ -1,9 +1,9 @@
 ---
 name: Text-GooglewikiFormat
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
-abstract: The great new Text::GooglewikiFormat!
+abstract: Translate Google Code Wiki markup into HTML
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
@@ -16,7 +16,7 @@ build_requires:
 provides:
   Text::GooglewikiFormat:
     file: lib/Text/GooglewikiFormat.pm
-    version: 0.01
+    version: 0.02
   Text::GooglewikiFormat::Block:
     file: lib/Text/GooglewikiFormat/Blocks.pm
   Text::GooglewikiFormat::Blocks:
