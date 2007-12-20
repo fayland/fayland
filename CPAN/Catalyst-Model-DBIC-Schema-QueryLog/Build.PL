@@ -10,6 +10,7 @@ my $builder = Module::Build->new(
     create_makefile_pl  => 'traditional',
     build_requires => {
         'Test::More' => 0,
+        'Class::Accessor::Fast' => 0,
         'Catalyst' => 0,
         'DBIx::Class::QueryLog' => 0,
         'Catalyst::Component::InstancePerContext' => 0,

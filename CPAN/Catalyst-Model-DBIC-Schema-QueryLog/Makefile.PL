@@ -5,12 +5,11 @@ WriteMakefile
           'NAME' => 'Catalyst::Model::DBIC::Schema::QueryLog',
           'VERSION_FROM' => 'lib/Catalyst/Model/DBIC/Schema/QueryLog.pm',
           'PREREQ_PM' => {
-                           'Catalyst' => '0',
-                           'Catalyst::Component::InstancePerContext' => '0',
-                           'DBIx::Class::QueryLog' => '0',
-                           'Moose' => '0',
-                           'Sort::Key' => '0',
-                           'Test::More' => '0'
+                           'Catalyst' => 0,
+                           'Catalyst::Component::InstancePerContext' => 0,
+                           'Class::Accessor::Fast' => 0,
+                           'DBIx::Class::QueryLog' => 0,
+                           'Test::More' => 0
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],

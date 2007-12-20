@@ -3,9 +3,9 @@ package Catalyst::Model::DBIC::Schema::QueryLog;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.04';
+$VERSION = '0.05';
 
-use base 'Catalyst::Model::DBIC::Schema';
+use base qw/Catalyst::Model::DBIC::Schema Class::Accessor::Fast/;
 __PACKAGE__->mk_accessors('querylog');
 __PACKAGE__->mk_accessors('_querylog_analyzer');
 
