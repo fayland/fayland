@@ -10,8 +10,13 @@ use lib "$FindBin::Bin/lib";
 
 BEGIN {
     # SKIP
-    plan skip_all =>
+    eval { die; }
+        or plan skip_all =>
         "TODO";
+
+    eval { require DBI }
+        or plan skip_all =>
+        "DBI is required for this test";
 
     eval { require Catalyst::Model::DBIC::Schema }
         or plan skip_all =>
