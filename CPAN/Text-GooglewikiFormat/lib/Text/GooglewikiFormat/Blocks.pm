@@ -3,17 +3,20 @@ package Text::GooglewikiFormat::Blocks;
 use warnings;
 use strict;
 
-sub import
-{
+sub import {
 	my $caller = caller();
 	no strict 'refs';
 	*{ $caller . '::new_block' } = sub
 	{
 		my $type  = shift;
 		my $class = "Text::GooglewikiFormat::Block::$type";
+		my $ctor;
 		
-		*{ $class . '::ISA' } = [ 'Text::GooglewikiFormat::Block' ]
-			unless $class->can( 'new' );
+		unless ($ctor = $class->can( 'new' ))
+		{
+			@{ $class . '::ISA' } = ( 'Text::GooglewikiFormat::Block' );
+			$ctor = $class->can( 'new' );
+		}
 
 		return $class->new( type => $type, @_ );
 	};
@@ -27,8 +30,8 @@ sub new
 {
 	my ($class, %args) = @_;
 
-	$args{text} = $class->arg_to_ref (delete $args{text} || '');
-	$args{args} = [$class->arg_to_ref (delete $args{args} || [])];
+	$args{text}        =   $class->arg_to_ref( delete $args{text} || '' );
+	$args{args}        = [ $class->arg_to_ref( delete $args{args} || [] ) ];
 
 	bless \%args, $class;
 }
@@ -77,8 +80,7 @@ sub formatted_text
 sub formatter
 {
 	my ($self, $line) = @_;
-	Text::GooglewikiFormat::format_line ($line, $self->tags(),
-					    $self->opts());
+	Text::GooglewikiFormat::format_line( $line, $self->tags(), $self->opts() );
 }
 
 sub add_args
@@ -109,22 +111,17 @@ sub merge
 
 sub nests
 {
-	my ($self, $maynest) = @_;
-	my $tags = $self->{tags};
-
-	return exists $tags->{nests}{$self->type()}
-	       && exists $tags->{nests}{$maynest->type()}
-	       && $self->level() < $maynest->level()
-	       # <nowiki> tags nest anywhere, regardless of level and parent
-	       || exists $tags->{nests_anywhere}{$maynest->type()};
+	my $self = shift;
+	return exists $self->{tags}{nests}{ $self->type() };
 }
 
 sub nest
 {
 	my ($self, $next_block) = @_;
 
-	return unless $next_block = $self->merge ($next_block);
-	return $next_block unless $self->nests ($next_block);
+	return unless $next_block = $self->merge( $next_block );
+	return $next_block unless $self->nests() and $next_block->nests();
+	return $next_block unless $self->level()  <  $next_block->level();
 
 	# if there's a nested block at the end, maybe it can nest too
 	my $last_item = ( $self->text() )[-1];
@@ -134,8 +131,15 @@ sub nest
 	return;
 }
 
+package Text::GooglewikiFormat::Block::code;
 
-1; # End of Text::GooglewikiFormat::Blocks
+use base 'Text::GooglewikiFormat::Block';
+
+sub formatter { $_[1] }
+
+package Text::GooglewikiFormat::Blocks;
+
+1;
 __END__
 
 =head1 NAME

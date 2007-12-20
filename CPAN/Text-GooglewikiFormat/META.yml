@@ -1,6 +1,6 @@
 ---
 name: Text-GooglewikiFormat
-version: 0.03
+version: 0.04
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: Translate Google Code Wiki markup into HTML
@@ -16,8 +16,10 @@ build_requires:
 provides:
   Text::GooglewikiFormat:
     file: lib/Text/GooglewikiFormat.pm
-    version: 0.03
+    version: 0.04
   Text::GooglewikiFormat::Block:
+    file: lib/Text/GooglewikiFormat/Blocks.pm
+  Text::GooglewikiFormat::Block::code:
     file: lib/Text/GooglewikiFormat/Blocks.pm
   Text::GooglewikiFormat::Blocks:
     file: lib/Text/GooglewikiFormat/Blocks.pm

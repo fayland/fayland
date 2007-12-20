@@ -9,7 +9,7 @@ use Scalar::Util qw( blessed reftype );
 use URI::Find;
 
 use vars qw( $VERSION %tags $indent $code_delimiters);
-$VERSION = '0.03';
+$VERSION = '0.04';
 $indent  = qr/^(?:\t+|\s{4,})/;
 $code_delimiters = 0;
 %tags    = (

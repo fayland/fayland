@@ -1,5 +1,11 @@
 Revision history for Text-GooglewikiFormat
 
+0.04    12/20/3007 9:01
+        {{{
+        *verbatim code block*
+        }}}
+        should works as expected
+
 0.03    12/19/2007 2:47
         a*bold*a i_italic_i s~~strike~~s is stay the same
 

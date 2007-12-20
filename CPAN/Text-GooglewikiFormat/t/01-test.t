@@ -1,6 +1,6 @@
 #!perl -T
 
-use Test::More tests => 13;
+use Test::More tests => 14;
 use Text::GooglewikiFormat;
 
 my $raw  = '*bold* _italic_ ~~strike~~';
@@ -81,3 +81,11 @@ verbatim code block
 RAW
 $html = Text::GooglewikiFormat::format($raw);
 is($html, '<pre class="prettyprint">verbatim code block</pre>', 'code block works');
+
+$raw  = <<RAW;
+{{{
+*verbatim code block*
+}}}
+RAW
+$html = Text::GooglewikiFormat::format($raw);
+is($html, '<pre class="prettyprint">*verbatim code block*</pre>', 'code block works');
