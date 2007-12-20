@@ -4,7 +4,7 @@ package Catalyst::Authentication::Store::FromSub::Hash;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 use Catalyst::Authentication::User::Hash;
 use Scalar::Util qw( blessed );
@@ -122,7 +122,7 @@ Catalyst::Authentication::Store::FromSub::Hash - A storage class for Catalyst Au
     use base qw/Catalyst::Model/;
     use strict;
     
-    sub auth {
+    sub auth { # sub name needs to be 'auth'
         my ($self, $c, $userinfo) = @_;
         
         my $where;
@@ -202,6 +202,31 @@ through the $c->authenticate() call.
 
 =head2 Adv.
 
+    # for login
+    sub login : Global {
+        my ( $self, $c ) = @_;
+        
+        $c->authenticate({  
+                          username => $c->req->params->username,
+                          password => $c->req->params->password,
+                          status => [ 'active', 'registered' ],
+                          }))
+    }
+
+    sub is_admin : Global {
+        my ( $self, $c ) = @_;
+        
+        # use Set::Object in C::P::A::Roles
+        eval {
+            if ( $c->assert_user_roles( qw/admin/ ) ) {
+                $c->res->body( 'ok' );
+            }
+        };
+        if ($@) {
+            $c->res->body( 'failed' );
+        }
+    }
+    
     package MyApp::Model::UserAuth; # map with model_class in config above
     use base qw/Catalyst::Model/;
     use strict;
@@ -224,6 +249,28 @@ through the $c->authenticate() call.
         } else {
             $user = $c->model('TestApp')->resultset('User')->search( $where )->first;
             $user = $user->{_column_data}; # hash to cache
+            # get user roles
+            my $role_rs = $c->model('TestApp')->resultset('UserRole')->search( {
+                user => $user->{id}
+            } );
+            while (my $r = $role_rs->next) {
+                my $role = $c->model('TestApp')->resultset('Role')->find( {
+                    id => $r->roleid
+                } );
+                push @{$user->{roles}}, $role->role;
+            }
+            # $user = {
+            #     'roles' => [
+            #         'admin',
+            #         'user'
+            #     ],
+            #    'status' => 'active',
+            #    'session_data' => undef,
+            #    'username' => 'jayk',
+            #    'email' => 'j@cpants.org',
+            #    'password' => 'letmein',
+            #    'id' => '3'
+            #}
             $c->cache->set($cache_key, $user);
         }
         
@@ -236,21 +283,6 @@ through the $c->authenticate() call.
 
         return $user;
     }
-    
-    # for login
-    sub login : Global {
-        my ( $self, $c ) = @_;
-        
-        $c->authenticate({  
-                          username => $c->req->params->username,
-                          password => $c->req->params->password,
-                          status => [ 'active', 'registered' ],
-                          }))
-    }
-
-=head1 TODO
-
-L<Catalyst::Plugin::Authorization::Roles> is not supported or tested yet.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -258,7 +290,7 @@ None known currently, please email the author if you find any.
 
 =head1 SEE ALSO
 
-L<Catalyst::Plugin::Authentication>, L<Catalyst::Plugin::Authentication::Internals>
+L<Catalyst::Plugin::Authentication>, L<Catalyst::Plugin::Authentication::Internals>, L<Catalyst::Plugin::Authorization::Roles>
 
 =head1 AUTHOR
 

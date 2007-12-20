@@ -9,10 +9,6 @@ use Test::More;
 use lib "$FindBin::Bin/lib";
 
 BEGIN {
-    # SKIP
-    eval { die; }
-        or plan skip_all =>
-        "TODO";
 
     eval { require DBI }
         or plan skip_all =>
@@ -48,9 +44,7 @@ BEGIN {
                     },
                     store => {
                         'class' => 'FromSub::Hash',
-                        'user_class' => 'TestApp::User',
-                        'role_relation' => 'roles',
-                        'role_field' => 'role'
+                        'model_class' => 'UserAuth',
                     },
                 },
             },

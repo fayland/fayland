@@ -126,8 +126,6 @@ sub get_session_user : Global {
     }
 }
 
-=pod
-
 sub is_admin : Global {
     my ( $self, $c ) = @_;
 
@@ -153,8 +151,6 @@ sub is_admin_user : Global {
         $c->res->body( 'failed' );
     }
 }
-
-=cut
 
 sub set_usersession : Global {
     my ( $self, $c, $value ) = @_;

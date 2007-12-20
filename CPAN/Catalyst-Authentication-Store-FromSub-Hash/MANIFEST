@@ -8,7 +8,6 @@ t/01-pod.t
 t/03-authtest.t
 t/04-authsessions.t
 t/05-auth-roles-relationship.t
-t/06-auth-roles-column.t
 t/auth.db
 t/lib/SetupDB.pm
 t/lib/TestApp.pm

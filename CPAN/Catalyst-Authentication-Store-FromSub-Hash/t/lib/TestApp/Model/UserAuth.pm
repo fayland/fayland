@@ -22,6 +22,17 @@ sub auth {
         }
     }
     
+    # get user roles
+    my $role_rs = $c->model('TestApp')->resultset('UserRole')->search( {
+        user => $user->{id}
+    } );
+    while (my $r = $role_rs->next) {
+        my $role = $c->model('TestApp')->resultset('Role')->find( {
+            id => $r->roleid
+        } );
+        push @{$user->{roles}}, $role->role;
+    }
+    
     return $user;
 }
 

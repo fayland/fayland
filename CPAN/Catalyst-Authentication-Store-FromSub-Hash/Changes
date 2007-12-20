@@ -1,5 +1,8 @@
 Revision history for Catalyst-Authentication-Store-FromSub-Hash
 
+0.05    12/21/2007 6:21
+        L<Catalyst::Plugin::Authorization::Roles> support
+
 0.04    12/20/2007 9:14
         add require 'DBI' or skip in t/*.t
 
