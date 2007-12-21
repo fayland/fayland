@@ -1,6 +1,6 @@
 #!perl -T
 
-use Test::More tests => 11;
+use Test::More tests => 12;
 
 use Locale::Country::Multilingual;
 my $lcm = Locale::Country::Multilingual->new();
@@ -42,3 +42,7 @@ is($code, '578', "NUMERIC: country2code('Norway', 'LOCALE_CODE_NUMERIC') works")
 
 $code    = $lcm->country2code('挪威', $CODE, 'cn');
 is($code, '578', "NUMERIC: country2code('挪威', 'LOCALE_CODE_NUMERIC', 'cn') works");
+
+$lcm->set_lang('tw');
+$country = $lcm->code2country('tw'); 
+is($country, '台灣', "code2country('tw') works after set_lang=tw");

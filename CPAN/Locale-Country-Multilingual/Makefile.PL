@@ -5,8 +5,8 @@ WriteMakefile
           'NAME' => 'Locale::Country::Multilingual',
           'VERSION_FROM' => 'lib/Locale/Country/Multilingual.pm',
           'PREREQ_PM' => {
-                           'File::Spec' => '0',
-                           'Test::More' => '0'
+                           'File::Spec' => 0,
+                           'Test::More' => 0
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],

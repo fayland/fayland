@@ -3,6 +3,7 @@ Changes
 lib/Locale/Country/Multilingual.pm
 lib/Locale/Country/Multilingual/cn.dat
 lib/Locale/Country/Multilingual/en.dat
+lib/Locale/Country/Multilingual/tw.dat
 MANIFEST
 META.yml			# Will be created by "make dist"
 README

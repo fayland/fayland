@@ -6,7 +6,7 @@ use vars qw/$VERSION/;
 use File::Spec;
 use Carp;
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 sub new {
 	my $class = shift;
