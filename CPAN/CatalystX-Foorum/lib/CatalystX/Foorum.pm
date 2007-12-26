@@ -16,7 +16,7 @@ CatalystX::Foorum - Forum/BBS system based on Catalyst
 
 =head1 VERSION
 
-Version 0.01
+Version 0.1.0
 
 =head1 DESCRIPTION
 
@@ -40,7 +40,7 @@ Linux/Unix/Win32 both OK.
 
 =item templates
 
-use L<Template>; for UI.
+use L<Template> for UI.
 
 =item built-in cache
 
@@ -48,7 +48,7 @@ use L<Cache::Memcached> or use L<Cache::FileCache> or others;
 
 =item reliable job queue
 
-use L<TheSchwartz>;
+use L<TheSchwartz>
 
 =item Multi Formatter
 
