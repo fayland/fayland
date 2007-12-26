@@ -5,7 +5,7 @@ use strict;
 use version;
 use vars qw/$VERSION/;
 
-$VERSION = version->new("0.1.0");
+$VERSION = version->new("0.1.1");
 
 1;
 __END__
@@ -24,7 +24,11 @@ It's just a placeholder for the project Foorum. L<http://code.google.com/p/fooru
 
 =head1 DOWNLOAD
 
-L<http://foorum.googlecode.com/files/Foorum-0.1.0.tar.gz>
+L<http://foorum.googlecode.com/files/Foorum-0.1.1.tar.gz>
+
+=head1 LIVE DEMO
+
+L<http://www.foorumbbs.com/>
 
 =head1 FEATURES
 
@@ -32,7 +36,7 @@ L<http://foorum.googlecode.com/files/Foorum-0.1.0.tar.gz>
 
 =item open source
 
-u can FETCH all code from L<http://fayland.googlecode.com/svn/trunk/Foorum/> any time any where.
+u can FETCH all code from L<http://foorum.googlecode.com/svn/trunk/> any time any where.
 
 =item Win32 compatibility
 
