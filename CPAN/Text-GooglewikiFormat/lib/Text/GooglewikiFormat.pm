@@ -9,7 +9,7 @@ use Scalar::Util qw( blessed reftype );
 use URI::Find;
 
 use vars qw( $VERSION %tags $indent $code_delimiters);
-$VERSION = '0.04';
+$VERSION = '0.05';
 $indent  = qr/^(?:\t+|\s{4,})/;
 $code_delimiters = 0;
 %tags    = (
@@ -39,7 +39,7 @@ $code_delimiters = 0;
 	code		=> [ '<pre class="prettyprint">', "</pre>", sub {
 	    my ($line, $level, $args, $tags, $opts) = @_;
 	    $line =~ s/(^\{\{\{|\}\}\}$)//isg;
-	    return $line;
+	    return (length($line)) ? $line . "\n" : '';
 	} ],
 	paragraph	=> [ '<p>', "</p>", '', "<br />", 1 ],
 	quote       => [ '<blockquote>', "</blockquote>", '', "\n"],
@@ -388,7 +388,7 @@ Text::GooglewikiFormat - Translate Google Code Wiki markup into HTML
 
 =head1 DESCRIPTION
 
-L<Google Code|http://code.google.com/> is a great code hosting place.
+Google Code L<http://code.google.com/> is a great code hosting place.
 
 This module is aim to convert L<http://code.google.com/p/support/wiki/WikiSyntax> to HTML.
 

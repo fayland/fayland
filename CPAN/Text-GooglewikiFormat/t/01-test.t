@@ -77,10 +77,11 @@ is($html, q~<table><tr><td style="border: 1px solid #aaa; padding: 5px;"> <stron
 $raw  = <<RAW;
 {{{
 verbatim code block
+next line
 }}}
 RAW
 $html = Text::GooglewikiFormat::format($raw);
-is($html, '<pre class="prettyprint">verbatim code block</pre>', 'code block works');
+is($html, qq~<pre class="prettyprint">verbatim code block\nnext line\n</pre>~, 'code block works');
 
 $raw  = <<RAW;
 {{{
@@ -88,4 +89,4 @@ $raw  = <<RAW;
 }}}
 RAW
 $html = Text::GooglewikiFormat::format($raw);
-is($html, '<pre class="prettyprint">*verbatim code block*</pre>', 'code block works');
+is($html, qq~<pre class="prettyprint">*verbatim code block*\n</pre>~, 'code block works');
