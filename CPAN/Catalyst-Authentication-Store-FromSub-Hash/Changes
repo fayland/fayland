@@ -1,5 +1,8 @@
 Revision history for Catalyst-Authentication-Store-FromSub-Hash
 
+0.06    12/29/2007 21:48
+        change from_session to hit model_class sub auth every request
+
 0.05    12/21/2007 6:21
         L<Catalyst::Plugin::Authorization::Roles> support
 

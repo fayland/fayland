@@ -4,10 +4,9 @@ package Catalyst::Authentication::Store::FromSub::Hash;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 use Catalyst::Authentication::User::Hash;
-use Scalar::Util qw( blessed );
 
 sub new {
     my ( $class, $config, $app, $realm) = @_;
@@ -18,32 +17,39 @@ sub new {
 sub from_session {
 	my ( $self, $c, $id ) = @_;
 
-	return $id if ref $id;
+    # XXX? Don't use data in session because data maybe changed in model_class sub auth.
+	# return $id if ref $id;
+	
+	if (ref $id) {
+    	if ($id->{user_id}) {
+    	    return $self->find_user( { user_id  => $id->{user_id}  }, $c );
+    	} elsif ($id->{username}) {
+    	    return $self->find_user( { username => $id->{username} }, $c );
+    	} elsif ($id->{id}) {
+    	    return $self->find_user( { id => $id->{id} }, $c );
+    	} else {
+    	    return $id;
+    	}
+    }
 
-	$self->find_user( { id => $id } );
+	$self->find_user( { id => $id }, $c );
 }
 
 sub find_user {
     my ( $self, $userinfo, $c ) = @_;
 
-    my $id = $userinfo->{'id'};
-    
-    $id ||= $userinfo->{'username'};
-    
     my $model_class = $self->{config}->{model_class};
     my $model = $c->model($model_class);
     
     my $user = $model->auth($c, $userinfo);
     return unless $user;
 
+    my $id = $userinfo->{'id'} || $userinfo->{'user_id'} || $userinfo->{'username'};
     if ( ref($user) eq "HASH") {
         $user->{id} ||= $id;
         return bless $user, "Catalyst::Authentication::User::Hash";
-    } elsif ( ref($user) && blessed($user) && $user->isa('Catalyst::Authentication::User::Hash')) {
-        return $user;
     } else {
-        Catalyst::Exception->throw( "The user '$id' must be a hash reference or an " .
-                "object of class Catalyst::Authentication::User::Hash");
+        Catalyst::Exception->throw( "The user '$id' must be a hash reference");
     }
     return $user;
 }
@@ -179,6 +185,20 @@ The FromSub::Hash storage module has several configuration options
                     	}
                     };
 
+    authentication:
+      default_realm: 'members'
+      password_hash_type: "clear"
+      realms:
+        members:
+          credential:
+            class: 'Password'
+            password_field: 'password'
+            password_type: "hashed"
+            password_hash_type: "SHA-1"
+          store:
+            class: 'FromSub::Hash'
+            model_class: "UserAuth"
+
 =over 4
 
 =item class
@@ -196,7 +216,11 @@ Contains the class name (as passed to $c->model()) of Catalyst.  This config ite
 
 The L<Catalyst::Authentication::Store::FromSub::Hash> storage module
 is not called directly from application code.  You interface with it 
-through the $c->authenticate() call.  
+through the $c->authenticate() call.
+
+=head1 LIMITATIONS
+
+BE CAREFUL! the sub auth return $user must contain a hash key in one of ('user_id', 'username', 'id'); to get refresh $user from sub per request. or else, $c->session->{__user} would be used.
 
 =head1 EXAMPLES
 
@@ -284,7 +308,11 @@ through the $c->authenticate() call.
         return $user;
     }
 
-=head1 BUGS AND LIMITATIONS
+=head1 CODE USED IN LIVE
+
+L<http://foorum.googlecode.com/svn/trunk/>
+
+=head1 BUGS
 
 None known currently, please email the author if you find any.
 

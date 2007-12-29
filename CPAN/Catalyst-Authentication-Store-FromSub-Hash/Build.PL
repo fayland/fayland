@@ -9,7 +9,6 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Catalyst/Authentication/Store/FromSub/Hash.pm',
     build_requires => {
         'Test::More' => 0,
-        'Scalar::Util' => 0,
         'Catalyst'   => 0,
         'Catalyst::Plugin::Authentication' => '0.10004',
     },

@@ -7,7 +7,6 @@ WriteMakefile
           'PREREQ_PM' => {
                            'Catalyst' => 0,
                            'Catalyst::Plugin::Authentication' => '0.10004',
-                           'Scalar::Util' => 0,
                            'Test::More' => 0
                          },
           'INSTALLDIRS' => 'site',
