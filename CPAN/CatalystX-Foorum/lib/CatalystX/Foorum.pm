@@ -14,10 +14,6 @@ __END__
 
 CatalystX::Foorum - Forum/BBS system based on Catalyst
 
-=head1 VERSION
-
-Version 0.1.0
-
 =head1 DESCRIPTION
 
 It's just a placeholder for the project Foorum. L<http://code.google.com/p/foorum/>
@@ -74,7 +70,7 @@ L<http://code.google.com/p/foorum/issues/list>
 
 =head1 SEE ALSO
 
-L<Catalyst::Runtime>, L<DBIx::Class>, L<Template>
+L<Catalyst>, L<DBIx::Class>, L<Template>
 
 =head1 AUTHOR
 
