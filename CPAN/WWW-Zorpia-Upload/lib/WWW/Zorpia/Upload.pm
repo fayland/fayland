@@ -6,78 +6,85 @@ use vars qw/$VERSION/;
 use File::Spec;
 use WWW::Mechanize;
 
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 sub new {
     my $class = shift;
 
-    my $self = { };
+    my $self = {@_};
     $self->{ua} = WWW::Mechanize->new(
-        agent => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)',
-        cookie_jar => {},
+        agent       => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)',
+        cookie_jar  => {},
         stack_depth => 1,
     );
-	return bless $self => $class;
+    $self->{domain} = 'http://www.zorpia.com'
+        unless ( $self->{domain} );    # flexible for test
+    return bless $self => $class;
 }
 
 sub login {
-    my ($self, $username, $password) = @_;
-    
+    my ( $self, $username, $password ) = @_;
+
     $self->{_username} = $username;
-    $self->{ua}->get('http://www.zorpia.com/login');
-    return 0 unless ($self->{ua}->success);
-    
+    $self->{ua}->get( $self->{domain} . '/login?goto=/help' );
+    return 0 unless ( $self->{ua}->success );
+
     $self->{ua}->submit_form(
         form_name => 'Login',
         fields    => {
             username => $username,
             password => $password,
-            'goto'   => '/help',
         },
     );
-    return 0 unless ($self->{ua}->success);
-    
-    my $login = ($self->{ua}->{base}->path =~ /login/) ? 0 : 1;
+    return 0 unless ( $self->{ua}->success );
+
+    my $login = ( $self->{ua}->{base}->path =~ /login/ ) ? 0 : 1;
     $self->{_login_status} = $login;
     return $login;
 }
 
 sub upload {
-    my ($self, $upload) = @_;
-    
-    return 0 unless ($self->{_login_status});
-    
-    my $album_id = ($upload->{album_id} and $upload->{album_id} =~ /^\d+$/) ? $upload->{album_id} : -1;
+    my ( $self, $upload ) = @_;
+
+    return 0 unless ( $self->{_login_status} );
+
+    my $album_id
+        = ( $upload->{album_id} and $upload->{album_id} =~ /^\d+$/ )
+        ? $upload->{album_id}
+        : -1;
     my $upload_file;
-    if ($upload->{url}) {
+    if ( $upload->{url} ) {
+
         # get file to local first
         my $tmpdir = File::Spec->tmpdir();
-        my $tmpfile = File::Spec->catfile( $tmpdir, $self->{_username} . time() );
+        my $tmpfile
+            = File::Spec->catfile( $tmpdir, $self->{_username} . time() );
         $self->{ua}->get( $upload->{url}, ":content_file" => $tmpfile );
-        return 0 unless ($self->{ua}->success);
+        return 0 unless ( $self->{ua}->success );
         $upload_file = $tmpfile;
-    } elsif ($upload->{file}) {
+    } elsif ( $upload->{file} ) {
         $upload_file = $upload->{file};
-    } else { return 0; }
-    return 0 unless (-e $upload_file);
-    
-    my $upload_url = 'http://www.zorpia.com/photo/html_form/' . $album_id;
-    $upload_url .= '/' . $upload->{group_code} if ($upload->{group_code});
+    } else {
+        return 0;
+    }
+    return 0 unless ( -e $upload_file );
+
+    my $upload_url = $self->{domain};
+    $upload_url .= ( $upload->{group_code} ) ? "/$upload->{group_code}" : '';
+    $upload_url .= "/album/$album_id/html_uploader";
     $self->{ua}->get($upload_url);
-    return 0 unless ($self->{ua}->success);
+    return 0 unless ( $self->{ua}->success );
     $self->{ua}->submit_form(
         form_name => 'Upload_JPEG',
-        fields    => {
-            SourceFile_1 => $upload_file,
-        },
+        fields    => { SourceFile_1 => $upload_file, },
     );
-    
+
     # remove tmpfile
-    if ($upload->{url}) {
+    if ( $upload->{url} ) {
         unlink $upload_file;
     }
-    
-    return 0 unless ($self->{ua}->success);
+
+    return 0 unless ( $self->{ua}->success );
     return 1;
 }
 
