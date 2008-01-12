@@ -1,5 +1,16 @@
 Revision history for CatalystX-Foorum
 
+0.1.2   Sat Jan 12 9:39:21 2008
+        - preview function
+        - use jquery.lightbox for comments photos
+        - options for create threads or replies
+        - send request email for private forum
+        - add require Authentication verion (thanks for viacheslav.t)
+        - Scraper::MailMan, hmm, just a scrapper test
+        - thread mode for Topic/Comments
+        - configurable PageCache
+        - add CSS::Minifier
+
 0.1.1   Sun Dec 30 16:19:11 2007
         - use Perl::Critic to fix some errors, bin/misc/perlcritic.pl
         - use JavaScript::Minifier to minify js files, bin/misc/js-min.pl

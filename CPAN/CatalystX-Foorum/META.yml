@@ -1,6 +1,6 @@
 ---
 name: CatalystX-Foorum
-version: 0.1.1
+version: 0.1.2
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: Forum/BBS system based on Catalyst
@@ -13,7 +13,7 @@ build_requires:
 provides:
   CatalystX::Foorum:
     file: lib/CatalystX/Foorum.pm
-    version: 0.1.1
+    version: 0.1.2
 generated_by: Module::Build version 0.2808
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

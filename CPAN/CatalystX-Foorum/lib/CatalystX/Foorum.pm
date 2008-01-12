@@ -5,7 +5,7 @@ use strict;
 use version;
 use vars qw/$VERSION/;
 
-$VERSION = version->new("0.1.1");
+$VERSION = version->new("0.1.2");
 
 1;
 __END__
@@ -20,7 +20,7 @@ It's just a placeholder for the project Foorum. L<http://code.google.com/p/fooru
 
 =head1 DOWNLOAD
 
-L<http://foorum.googlecode.com/files/Foorum-0.1.1.tar.gz>
+L<http://foorum.googlecode.com/files/Foorum-0.1.2.tar.gz>
 
 =head1 LIVE DEMO
 
