@@ -7,7 +7,7 @@ use FindBin qw/$Bin/;
 
 my $dbh = DBI->connect("dbi:SQLite:$Bin/../pastebin.sqlite", '', '');
 my $sql = <<'SQL';
-CREATE TABLE `pastebin` (`id` CHAR PRIMARY KEY  NOT NULL , `test` TEXT NOT NULL );
+CREATE TABLE `pastebin` (`id` CHAR PRIMARY KEY  NOT NULL , `text` TEXT NOT NULL );
 SQL
 $dbh->do($sql) or die $DBI::errstr;
 

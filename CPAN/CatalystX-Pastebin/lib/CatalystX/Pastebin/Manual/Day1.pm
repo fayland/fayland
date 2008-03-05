@@ -59,6 +59,7 @@ CatalystX::Pastebin::Manual::Day1 - Setup and Database Schema
 
     requires 'DBIx::Class';
     requires 'DBD::SQLite';
+    requires 'Catalyst::Model::DBIC::Schema';
 
 =item 3, create SQLite db. script/db.pl
 
@@ -71,11 +72,46 @@ CatalystX::Pastebin::Manual::Day1 - Setup and Database Schema
     
     my $dbh = DBI->connect("dbi:SQLite:$Bin/../pastebin.sqlite", '', '');
     my $sql = <<'SQL';
-    CREATE TABLE `pastebin` (`id` CHAR PRIMARY KEY  NOT NULL , `test` TEXT NOT NULL );
+    CREATE TABLE `pastebin` (`id` CHAR PRIMARY KEY  NOT NULL , `text` TEXT NOT NULL );
     SQL
     $dbh->do($sql) or die $DBI::errstr;
     
     print "OK\n";
+
+=item 4, write schema stuff
+
+    # lib/CatalystX/Pastebin/Schema.pm
+    package CatalystX::Pastebin::Schema;
+    
+    use strict;
+    use warnings;
+    use base 'DBIx::Class::Schema';
+    __PACKAGE__->load_classes;
+    
+    1;
+    
+    # lib/CatalystX/Pastebin/Schema/Pastebin.pm
+    package CatalystX::Pastebin::Schema::Pastebin;
+
+    use strict;
+    use warnings;
+    use base 'DBIx::Class';
+    __PACKAGE__->load_components("Core");
+    __PACKAGE__->table("pastebin");
+    __PACKAGE__->add_columns(
+      "id",
+      { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 12 },
+      "text",
+      {
+        data_type => "TEXT",
+        default_value => undef,
+        is_nullable => 0,
+        size => 65535,
+      }
+    );
+    __PACKAGE__->set_primary_key("id");
+    
+    1;
 
 =back
 

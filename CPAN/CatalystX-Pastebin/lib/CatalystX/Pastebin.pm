@@ -31,18 +31,21 @@ __PACKAGE__->config( name => 'CatalystX::Pastebin' );
 # Start the application
 __PACKAGE__->setup;
 
+1;
+__END__
 
 =head1 NAME
 
-CatalystX::Pastebin - Catalyst based application
+CatalystX::Pastebin - pastebin example (Catalyst based application)
 
 =head1 SYNOPSIS
 
-    script/catalystx_pastebin_server.pl
+    $ script/db.pl
+    $ script/catalystx_pastebin_server.pl
 
 =head1 DESCRIPTION
 
-[enter your description here]
+
 
 =head1 SEE ALSO
 
@@ -50,7 +53,7 @@ L<CatalystX::Pastebin::Controller::Root>, L<Catalyst>
 
 =head1 AUTHOR
 
-Catalyst developer
+Fayland Lam L<fayland at gmail.com>
 
 =head1 LICENSE
 
@@ -58,5 +61,3 @@ This library is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-1;
