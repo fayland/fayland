@@ -117,6 +117,8 @@ CatalystX::Pastebin::Manual::Day1 - Setup and Database Schema
 
 =head1 SEE ALSO
 
+L<http://fayland.googlecode.com/svn/trunk/CPAN/CatalystX-Pastebin/script/db.pl>
+
 =head1 AUTHOR
 
 Fayland Lam L<fayland at gmail.com>
