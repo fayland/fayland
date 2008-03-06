@@ -113,11 +113,25 @@ CatalystX::Pastebin::Manual::Day1 - Setup and Database Schema
     
     1;
 
+=item 5, create DBIC model
+
+    E:\Fayland\googlesvn\trunk\CPAN\CatalystX-Pastebin>perl script\catalystx_pastebi
+    n_create.pl model DBIC DBIC::Schema CatalystX::Pastebin::Schema dbi:SQLite:paste
+    bin.sqlite
+     exists "E:\Fayland\googlesvn\trunk\CPAN\CatalystX-Pastebin\lib\CatalystX\Pasteb
+    in\Model"
+     exists "E:\Fayland\googlesvn\trunk\CPAN\CatalystX-Pastebin\t"
+    created "E:\Fayland\googlesvn\trunk\CPAN\CatalystX-Pastebin\lib\CatalystX\Pasteb
+    in\Model\DBIC.pm"
+    created "E:\Fayland\googlesvn\trunk\CPAN\CatalystX-Pastebin\t\model_DBIC.t"
+
 =back
 
 =head1 SEE ALSO
 
 L<http://fayland.googlecode.com/svn/trunk/CPAN/CatalystX-Pastebin/script/db.pl>
+L<http://fayland.googlecode.com/svn/trunk/CPAN/CatalystX-Pastebin/lib/CatalystX/Pastebin/Schema.pm>
+L<http://fayland.googlecode.com/svn/trunk/CPAN/CatalystX-Pastebin/lib/CatalystX/Pastebin/Schema/Pastebin.pm>
 
 =head1 AUTHOR
 
