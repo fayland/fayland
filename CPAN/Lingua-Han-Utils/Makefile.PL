@@ -5,10 +5,11 @@ WriteMakefile
           'NAME' => 'Lingua::Han::Utils',
           'VERSION_FROM' => 'lib/Lingua/Han/Utils.pm',
           'PREREQ_PM' => {
-                           'Encode::Guess' => '0',
-                           'Test::More' => '0'
+                           'Encode::Guess' => 0,
+                           'Test::More' => 0
                          },
           'INSTALLDIRS' => 'site',
+          'EXE_FILES' => [],
           'PL_FILES' => {}
         )
 ;
