@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use base 'Exporter';
 use vars qw/$VERSION @EXPORT_OK/;
-$VERSION = '0.07';
+$VERSION = '0.08';
 @EXPORT_OK = qw/Unihan_value csplit cdecode csubstr clength/;
 
 use Encode;
@@ -15,7 +15,7 @@ sub cdecode {
 	my $enc = Encode::Guess->guess($word);
 	my $encoding;
 	unless (ref($enc)) {
-		$encoding = 'utf8'; # use 'enc-cn' by default
+		$encoding = 'utf8'; # use 'utf8' by default
 	} else {
 		$encoding = $enc->name;
 	}
@@ -70,7 +70,7 @@ Lingua::Han::Utils - The utility tools of Chinese character(HanZi)
     use Lingua::Han::Utils qw/Unihan_value csplit cdecode csubstr clength/;
     
     # cdecode
-    # the same as decode('euc-cn', $word) in ASCII editing mode
+    # the same as decode('cp936', $word) in ASCII editing mode
     #         and decode('utf8', $word) in Unicode editing mode
     my $word = cdecode($word);
     
@@ -110,7 +110,7 @@ Nothing is exported by default.
 
 =item cdecode
 
-use L<Encode::Guess> to decode the character. It behavers like: decode('euc-cn', $word) under ASCII editing mode and decode('utf8', $word) under Unicode editing mode.
+use L<Encode::Guess> to decode the character. It behavers like: decode('cp936', $word) under ASCII editing mode and decode('utf8', $word) under Unicode editing mode.
 
 =item Unihan_value
 
