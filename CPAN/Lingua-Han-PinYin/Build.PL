@@ -6,7 +6,7 @@ my $build = Module::Build->new(
     license            => 'perl',
     module_name        => 'Lingua::Han::PinYin',
     requires           => {
-        'Lingua::Han::Utils' => '0.05',
+        'Lingua::Han::Utils' => '0.07',
         'File::Spec' => 0,
     },
 );

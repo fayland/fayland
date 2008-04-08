@@ -3,6 +3,7 @@ use inc::Module::Install;
 name 'CatalystX-Pastebin';
 all_from 'lib\CatalystX\Pastebin.pm';
 
+requires 'File::Copy';
 requires 'Catalyst::Runtime' => '5.7012';
 requires 'DBIx::Class';
 requires 'DBD::SQLite';

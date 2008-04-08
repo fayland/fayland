@@ -4,18 +4,18 @@ use warnings;
 use strict;
 use base 'Exporter';
 use vars qw/$VERSION @EXPORT_OK/;
-$VERSION = '0.06';
+$VERSION = '0.07';
 @EXPORT_OK = qw/Unihan_value csplit cdecode csubstr clength/;
 
 use Encode;
-use Encode::Guess qw/euc-cn gbk/;
+use Encode::Guess qw/cp936/;
 
 sub cdecode {
 	my $word = shift;
 	my $enc = Encode::Guess->guess($word);
 	my $encoding;
 	unless (ref($enc)) {
-		$encoding = 'euc-cn'; # use 'enc-cn' by default
+		$encoding = 'utf8'; # use 'enc-cn' by default
 	} else {
 		$encoding = $enc->name;
 	}

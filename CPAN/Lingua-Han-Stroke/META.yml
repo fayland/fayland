@@ -1,6 +1,6 @@
 ---
 name: Lingua-Han-Stroke
-version: 0.05
+version: 0.06
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: Retrieve the stroke count of Chinese character.
@@ -13,8 +13,8 @@ build_requires:
 provides:
   Lingua::Han::Stroke:
     file: lib/Lingua/Han/Stroke.pm
-    version: 0.05
-generated_by: Module::Build version 0.2801
+    version: 0.06
+generated_by: Module::Build version 0.2808
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2

@@ -5,8 +5,8 @@ WriteMakefile
           'NAME' => 'Lingua::Han::PinYin',
           'VERSION_FROM' => 'lib/Lingua/Han/PinYin.pm',
           'PREREQ_PM' => {
-                           'File::Spec' => '0',
-                           'Lingua::Han::Utils' => '0.05'
+                           'File::Spec' => 0,
+                           'Lingua::Han::Utils' => '0.07'
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],

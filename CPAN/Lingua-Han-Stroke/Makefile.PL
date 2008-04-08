@@ -5,8 +5,8 @@ WriteMakefile
           'NAME' => 'Lingua::Han::Stroke',
           'VERSION_FROM' => 'lib/Lingua/Han/Stroke.pm',
           'PREREQ_PM' => {
-                           'Lingua::Han::Utils' => '0',
-                           'Test::More' => '0'
+                           'Lingua::Han::Utils' => 0,
+                           'Test::More' => 0
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],
