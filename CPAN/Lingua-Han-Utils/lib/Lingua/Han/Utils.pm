@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use base 'Exporter';
 use vars qw/$VERSION @EXPORT_OK/;
-$VERSION = '0.08';
+$VERSION = '0.09';
 @EXPORT_OK = qw/Unihan_value csplit cdecode csubstr clength/;
 
 use Encode;
@@ -15,7 +15,7 @@ sub cdecode {
 	my $enc = Encode::Guess->guess($word);
 	my $encoding;
 	unless (ref($enc)) {
-		$encoding = 'utf8'; # use 'utf8' by default
+		$encoding = 'cp936'; # use 'cp936' by default
 	} else {
 		$encoding = $enc->name;
 	}
