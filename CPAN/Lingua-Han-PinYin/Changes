@@ -23,3 +23,6 @@ Revision history for Perl extension Lingua::Han::PinYin.
 
 0.09    2008.4.8
         use the recent Unihan.txt
+
+0.10    2008.4.9
+        require Lingua::Han::Utils 0.08
