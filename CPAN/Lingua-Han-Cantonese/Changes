@@ -1,5 +1,8 @@
 Revision history for Lingua-Han-Cantonese
 
+0.06    2008.4.11
+        require Lingua::Han::Utils 0.10
+
 0.05    2008.4.8
         use the recent Unicode.txt
 

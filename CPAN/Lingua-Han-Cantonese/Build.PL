@@ -11,7 +11,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'File::Spec' => 0,
-        'Lingua::Han::Utils' => 0,
+        'Lingua::Han::Utils' => '0.10',
     },
 );
 $builder->add_build_element('dat');

@@ -6,7 +6,7 @@ WriteMakefile
           'VERSION_FROM' => 'lib/Lingua/Han/Cantonese.pm',
           'PREREQ_PM' => {
                            'File::Spec' => 0,
-                           'Lingua::Han::Utils' => 0,
+                           'Lingua::Han::Utils' => '0.10',
                            'Test::More' => 0
                          },
           'INSTALLDIRS' => 'site',
