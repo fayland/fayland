@@ -4,11 +4,11 @@ use warnings;
 use strict;
 use base 'Exporter';
 use vars qw/$VERSION @EXPORT_OK/;
-$VERSION = '0.09';
+$VERSION = '0.10';
 @EXPORT_OK = qw/Unihan_value csplit cdecode csubstr clength/;
 
 use Encode;
-use Encode::Guess qw/cp936/;
+use Encode::Guess qw/euc-cn/; # XXX? can't explain
 
 sub cdecode {
 	my $word = shift;

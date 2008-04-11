@@ -11,3 +11,6 @@ Revision history for Lingua-Han-Utils
 
 0.09    2008.4.9
         use cp936 as default
+
+0.10    2008.4.11
+        use Encode::Guess qw/euc-cn/; instead of qw/cp936/;
