@@ -26,3 +26,6 @@ Revision history for Perl extension Lingua::Han::PinYin.
 
 0.10    2008.4.9
         require Lingua::Han::Utils 0.08
+
+0.11    2008.4.9
+        require Lingua::Han::Utils 0.10 and more test cases
