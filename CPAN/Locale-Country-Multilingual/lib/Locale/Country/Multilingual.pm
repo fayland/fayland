@@ -6,7 +6,7 @@ use vars qw/$VERSION/;
 use File::Spec;
 use Carp;
 
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 sub new {
 	my $class = shift;
@@ -148,11 +148,35 @@ Locale::Country::Multilingual - ISO codes for country identification with multi-
 
 =head1 AVAILABLE LANGAUGES
 
-en - English by default. cn is available for this moment. other languages are welcome to send by email.
+=over 4
+
+=item en - English
+
+=item cn - Chinese Simp.
+
+=item tw - Chinese Trad.
+
+=item it - Italian
+
+=item es - Spanish
+
+=item pt - Portuguese
+
+=item de - German
+
+=item fr - French
+
+=back
+
+other languages are welcome to send by email.
 
 =head1 SEE ALSO
 
 L<Locale::Country>
+
+=head1 ACKNOWLEDGEMENTS
+
+Thanks to michele ongaro for Italian/Spanish/Portuguese/German/French dat files.
 
 =head1 AUTHOR
 
@@ -162,7 +186,7 @@ Fayland Lam, C<< <fayland at gmail.com> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2007 Fayland Lam, all rights reserved.
+Copyright 2007-2008 Fayland Lam, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
