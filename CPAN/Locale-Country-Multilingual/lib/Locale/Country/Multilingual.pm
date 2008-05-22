@@ -6,7 +6,7 @@ use vars qw/$VERSION/;
 use File::Spec;
 use Carp;
 
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 sub new {
 	my $class = shift;
@@ -104,7 +104,6 @@ sub _load_data {
 
 1;
 __END__
-=encoding utf8
 
 =head1 NAME
 
@@ -166,6 +165,8 @@ Locale::Country::Multilingual - ISO codes for country identification with multi-
 
 =item fr - French
 
+=item ja - Japanese
+
 =back
 
 other languages are welcome to send by email.
@@ -176,13 +177,11 @@ L<Locale::Country>
 
 =head1 ACKNOWLEDGEMENTS
 
-Thanks to michele ongaro for Italian/Spanish/Portuguese/German/French dat files.
+Thanks to michele ongaro for Italian/Spanish/Portuguese/German/French/Japanese dat files.
 
 =head1 AUTHOR
 
 Fayland Lam, C<< <fayland at gmail.com> >>
-
-=head1 ACKNOWLEDGEMENTS
 
 =head1 COPYRIGHT & LICENSE
 
