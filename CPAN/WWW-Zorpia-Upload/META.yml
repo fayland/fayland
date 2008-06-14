@@ -1,9 +1,9 @@
 ---
 name: WWW-Zorpia-Upload
-version: 0.04
+version: 0.05
 author:
   - 'Fayland Lam <fayland@gmail.com>'
-abstract: upload photos to www.zorpia.com
+abstract: (DEPERCATED) upload photos to www.zorpia.com
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
@@ -14,7 +14,7 @@ build_requires:
 provides:
   WWW::Zorpia::Upload:
     file: lib/WWW/Zorpia/Upload.pm
-    version: 0.04
+    version: 0.05
 generated_by: Module::Build version 0.2808
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

@@ -5,9 +5,9 @@ WriteMakefile
           'NAME' => 'WWW::Zorpia::Journal',
           'VERSION_FROM' => 'lib/WWW/Zorpia/Journal.pm',
           'PREREQ_PM' => {
-                           'File::Spec' => '0',
-                           'Test::More' => '0',
-                           'WWW::Mechanize' => '0'
+                           'File::Spec' => 0,
+                           'Test::More' => 0,
+                           'WWW::Mechanize' => 0
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],
