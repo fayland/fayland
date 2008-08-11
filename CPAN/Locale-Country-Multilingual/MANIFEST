@@ -8,6 +8,7 @@ lib/Locale/Country/Multilingual/es.dat
 lib/Locale/Country/Multilingual/fr.dat
 lib/Locale/Country/Multilingual/it.dat
 lib/Locale/Country/Multilingual/ja.dat
+lib/Locale/Country/Multilingual/no.dat
 lib/Locale/Country/Multilingual/pt.dat
 lib/Locale/Country/Multilingual/tw.dat
 Makefile.PL

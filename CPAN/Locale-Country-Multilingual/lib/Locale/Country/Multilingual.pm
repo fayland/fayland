@@ -6,7 +6,7 @@ use vars qw/$VERSION/;
 use File::Spec;
 use Carp;
 
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 sub new {
 	my $class = shift;
@@ -167,6 +167,8 @@ Locale::Country::Multilingual - ISO codes for country identification with multi-
 
 =item ja - Japanese
 
+=item no - Norwegian
+
 =back
 
 other languages are welcome to send by email.
@@ -178,6 +180,8 @@ L<Locale::Country>
 =head1 ACKNOWLEDGEMENTS
 
 Thanks to michele ongaro for Italian/Spanish/Portuguese/German/French/Japanese dat files.
+
+Thanks to Andreas Marienborg for Norwegian dat file.
 
 =head1 AUTHOR
 
