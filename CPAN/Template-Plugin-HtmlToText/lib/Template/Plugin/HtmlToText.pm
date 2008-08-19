@@ -5,7 +5,7 @@ use vars qw( @ISA $VERSION );
 use base qw( Template::Plugin );
 use Template::Plugin;
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 sub new {
     my ($class, $context, $arg) = @_;
@@ -72,5 +72,3 @@ This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 =cut
-
-1; # End of Template::Plugin::HtmlToText
