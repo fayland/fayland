@@ -7,7 +7,7 @@ use Net::SMTP_auth;
 use Mail::Util qw(mailaddress);
 use Carp;
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 require Mail::Mailer::rfc822;
 @ISA = qw(Mail::Mailer::rfc822);
@@ -131,7 +131,7 @@ Fayland, C<< <fayland at gmail.com> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2006 'Fayland, all rights reserved.
+Copyright 2006, 2008 Fayland, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
