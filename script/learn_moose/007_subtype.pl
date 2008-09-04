@@ -57,5 +57,7 @@ my $subtype3 = new TestSubtype( verbose => sub {
     print STDERR "[CUS2] $msg\n";
 } );
 $subtype3->debug("line 5");
+$subtype3->verbose(0);
+$subtype3->debug("line 6");
 
 1;
