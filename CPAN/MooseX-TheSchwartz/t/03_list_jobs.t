@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use t::Utils;
 use MooseX::TheSchwartz;
-plan tests => 9;
+plan tests => 10;
 
 run_test {
     my $dbh = shift;
@@ -32,5 +32,5 @@ run_test {
     is $row->jobid,    2;
     is $row->funcid,   $sch->funcname_to_id( $dbh, 'fetch' );
     is $row->arg,      'http://pathtraq.com/';
-#    is $row->priority, 3;
+    is $row->priority, 3;
 };

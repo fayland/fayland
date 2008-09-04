@@ -179,7 +179,7 @@ sub list_jobs {
         eval {
             my $funcid = $self->funcname_to_id( $dbh, $arg->{funcname} );
 
-            my $sql   = 'SELECT jobid, arg, funcid, priority FROM job WHERE funcid = ?';
+            my $sql   = 'SELECT * FROM job WHERE funcid = ?';
             my @value = ($funcid);
             for (@options) {
                 $sql .= " AND $_->{key} $_->{op} ?";
@@ -189,12 +189,7 @@ sub list_jobs {
             my $sth = $dbh->prepare_cached($sql);
             $sth->execute(@value);
             while ( my $ref = $sth->fetchrow_hashref ) {
-                # XXX? FIX ME! need fix it here!!! can't add priority => $ref->{priority},
-                my $job = MooseX::TheSchwartz::Job->new( {
-                    jobid => $ref->{jobid},
-                    arg => $ref->{arg},
-                    funcid => $ref->{funcid},
-                } );
+                my $job = MooseX::TheSchwartz::Job->new( $ref );
                 push @jobs, $job;
             }
         };
