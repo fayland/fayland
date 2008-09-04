@@ -5,8 +5,8 @@ use MooseX::TheSchwartz;
 
 BEGIN {
 
-    eval "use Test::Output; 1;"
-        or plan skip_all => "Test::Output is required for this test";
+    eval "use Test::Output;";
+    plan skip_all => "Test::Output is required for this test" if $@;
 
     plan tests => 3;
 };
