@@ -9,6 +9,9 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/MooseX/TheSchwartz.pm',
     build_requires => {
         'Test::More' => 0,
+        'Moose' => 0,
+        'DBI' => 0,
+        'Scalar::Util' => 0,
     },
     add_to_cleanup      => [ 'MooseX-TheSchwartz-*' ],
     create_makefile_pl => 'traditional',

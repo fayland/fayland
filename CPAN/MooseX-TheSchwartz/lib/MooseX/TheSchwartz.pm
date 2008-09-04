@@ -2,9 +2,7 @@ package MooseX::TheSchwartz;
 
 use Moose;
 use Moose::Util::TypeConstraints;
-use Digest::MD5 qw( md5_hex );
 use Scalar::Util qw( refaddr );
-use List::Util qw( shuffle );
 use DBI;
 use Carp;
 use MooseX::TheSchwartz::Job;
