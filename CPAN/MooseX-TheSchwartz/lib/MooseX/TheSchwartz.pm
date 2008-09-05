@@ -45,7 +45,6 @@ has 'databases' => (
     isa => 'ArrayRef',
     default => sub { [] },
 );
-has 'dead_dsns' => ( is => 'rw', isa => 'ArrayRef', lazy => 1, default => sub { [] } );
 
 has 'all_abilities'     => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'current_abilities' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
