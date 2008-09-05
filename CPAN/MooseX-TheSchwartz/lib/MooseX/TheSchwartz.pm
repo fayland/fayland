@@ -282,7 +282,7 @@ sub list_jobs {
                 $funcop = '=';
             }
 
-            my $sql   = qq~SELECT * FROM job WHERE funcid $funcop $funcid $order_by LIMIT 0, $limit~;
+            my $sql = qq~SELECT * FROM job WHERE funcid $funcop $funcid $order_by LIMIT 0, $limit~;
             my @value = ();
             for (@options) {
                 $sql .= " AND $_->{key} $_->{op} ?";
@@ -293,6 +293,14 @@ sub list_jobs {
             $sth->execute(@value);
             while ( my $ref = $sth->fetchrow_hashref ) {
                 my $job = MooseX::TheSchwartz::Job->new( $ref );
+                if ($arg->{want_handle}) {
+                    my $handle = MooseX::TheSchwartz::JobHandle->new({
+                        dbh    => $dbh,
+                        client => $self,
+                        jobid  => $job->jobid
+                    });
+                    $job->handle($handle);
+                }
                 push @jobs, $job;
             }
         };
