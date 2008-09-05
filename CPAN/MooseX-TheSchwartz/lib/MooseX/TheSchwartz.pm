@@ -2,10 +2,12 @@ package MooseX::TheSchwartz;
 
 use Moose;
 use Moose::Util::TypeConstraints;
-use Scalar::Util qw( refaddr );
 use Carp;
-use MooseX::TheSchwartz::Job;
+use Scalar::Util qw( refaddr );
+use List::Util qw( shuffle );
+use File::Spec ();
 use Storable ();
+use MooseX::TheSchwartz::Job;
 
 our $VERSION = '0.01';
 
@@ -29,22 +31,67 @@ coerce 'Verbose'
     };
 
 has 'verbose' => ( is => 'rw', isa => 'Verbose', coerce => 1, default => 0 );
+has 'prioritize' => ( is => 'rw', isa => 'Bool', default => 0 );
 
 has 'retry_seconds' => (is => 'rw', isa => 'Int', default => 30);
-has '_funcmap' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
+has 'funcmap_cache' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
+has 'retry_at' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
 
-has 'databases' => ( is => 'rw', isa => 'ArrayRef', lazy => 1, default => sub { [] } );
+has 'databases' => (
+    is => 'rw',
+    isa => 'ArrayRef',
+    default => sub { [] },
+);
+has 'dead_dsns' => ( is => 'rw', isa => 'ArrayRef', lazy => 1, default => sub { [] } );
 
 has 'all_abilities'     => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'current_abilities' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 
-has 'scoreboard' => ( is => 'rw', isa => 'Str' );
+has 'scoreboard'  => (
+    is => 'rw',
+    isa => 'Str',
+    trigger => sub {
+        my ($self, $dir) = @_;
+        
+        return unless $dir;
+        # no endless loop when it's a file
+        if ($dir =~ /\/theschwartz\/scoreboard\./is) {
+            # get the real dir from $dir regardless a file
+            my (undef, $dir) = File::Spec->splitpath( $dir );
+            unless (-e $dir) {
+                mkdir($dir, 0755) or die "Can't create scoreboard directory '$dir': $!";
+            }
+            return;
+        }
+
+        # They want the scoreboard but don't care where it goes
+        if (($dir eq '1') or ($dir eq 'on')) {
+            $dir = File::Spec->tmpdir();
+        }
+    
+        $dir .= '/theschwartz';
+        unless (-e $dir) {
+            mkdir($dir, 0755) or die "Can't create scoreboard directory '$dir': $!";
+        }
+        
+        $self->{scoreboard} = $dir."/scoreboard.$$";
+    }
+);
+has 'current_job' => ( is => 'rw', isa => 'Object' );
+
+## Number of jobs to fetch at a time in find_job_for_workers.
+our $FIND_JOB_BATCH_SIZE = 50;
 
 sub debug {
     my $self = shift;
     
     return unless $self->verbose;
     $self->verbose->(@_);
+}
+
+sub shuffled_databases {
+    my $self = shift;
+    return shuffle( @{ $self->databases } );
 }
 
 sub insert {
@@ -59,7 +106,7 @@ sub insert {
     }
     $job->arg( Storable::nfreeze( $job->arg ) ) if ref $job->arg;
 
-    for my $dbh ( @{ $self->databases } ) {
+    for my $dbh ( $self->shuffled_databases ) {
         my $jobid;
         eval {
             $job->funcid( $self->funcname_to_id( $dbh, $job->funcname ) );
@@ -83,21 +130,19 @@ sub insert {
     return;
 }
 
+sub funcid_to_name {
+    my ( $client, $dbh, $funcid ) = @_;
+    my $cache = $client->_funcmap_cache($dbh);
+    return $cache->{funcid2name}{$funcid};
+}
+
 sub funcname_to_id {
     my ( $self, $dbh, $funcname ) = @_;
 
-    my $dbid = refaddr $dbh;
-    unless ( exists $self->_funcmap->{$dbid} ) {
-        my $sth
-            = $dbh->prepare_cached('SELECT funcid, funcname FROM funcmap');
-        $sth->execute;
-        while ( my $row = $sth->fetchrow_arrayref ) {
-            $self->_funcmap->{$dbid}{ $row->[1] } = $row->[0];
-        }
-        $sth->finish;
-    }
+    my $dbid  = refaddr $dbh;
+    my $cache = $self->_funcmap_cache($dbh);
 
-    unless ( exists $self->_funcmap->{$dbid}{$funcname} ) {
+    unless ( exists $cache->{funcname2id}{$funcname} ) {
         ## This might fail in a race condition since funcname is UNIQUE
         my $sth = $dbh->prepare_cached(
             'INSERT INTO funcmap (funcname) VALUES (?)');
@@ -114,10 +159,28 @@ sub funcname_to_id {
                 or croak "Can't find or create funcname $funcname: $@";
         }
 
-        $self->_funcmap->{$dbid}{$funcname} = $id;
+        $cache->{funcname2id}{ $funcname } = $id;
+        $cache->{funcid2name}{ $id } = $funcname;
+        $self->funcmap_cache->{$dbid} = $cache;
     }
 
-    $self->_funcmap->{$dbid}{$funcname};
+    $cache->{funcname2id}{$funcname};
+}
+
+sub _funcmap_cache {
+    my ( $client, $dbh ) = @_;
+    my $dbid = refaddr $dbh;
+    unless ( exists $client->funcmap_cache->{$dbid} ) {
+        my $cache = { funcname2id => {}, funcid2name => {} };
+        my $sth = $dbh->prepare_cached('SELECT funcid, funcname FROM funcmap');
+        $sth->execute;
+        while ( my $row = $sth->fetchrow_arrayref ) {
+            $cache->{funcname2id}{ $row->[1] } = $row->[0];
+            $cache->{funcid2name}{ $row->[0] } = $row->[1];
+        }
+        $client->funcmap_cache->{$dbid} = $cache;
+    }
+    return $client->funcmap_cache->{$dbid};
 }
 
 sub _insert_id {
@@ -164,13 +227,16 @@ sub list_jobs {
             value => $arg->{coalesce}
         };
     }
+    
+    my $limit    = $arg->{limit} || $FIND_JOB_BATCH_SIZE;
+    my $order_by = $self->prioritize ? 'ORDER BY priority DESC' : '';
 
     my @jobs;
-    for my $dbh ( @{ $self->databases } ) {
+    for my $dbh ( $self->shuffled_databases ) {
         eval {
             my $funcid = $self->funcname_to_id( $dbh, $arg->{funcname} );
 
-            my $sql   = 'SELECT * FROM job WHERE funcid = ?';
+            my $sql   = qq~SELECT * FROM job WHERE funcid = ? $order_by LIMIT 0, $limit~;
             my @value = ($funcid);
             for (@options) {
                 $sql .= " AND $_->{key} $_->{op} ?";
@@ -187,6 +253,33 @@ sub list_jobs {
     }
 
     return @jobs;
+}
+
+sub start_scoreboard {
+    my $client = shift;
+
+    # Don't do anything if we're not configured to write to the scoreboard
+    my $scoreboard = $client->scoreboard;
+    return unless $scoreboard;
+
+    # Don't do anything of (for some reason) we don't have a current job
+    my $job = $client->current_job;
+    return unless $job;
+
+    my $class = $job->funcname;
+
+    # XXX? TODO
+    open(my $sb, '>', $scoreboard)
+      or $job->debug("Could not write scoreboard '$scoreboard': $!");
+    print $sb join("\n", ("pid=$$",
+                         'funcname='.($class||''),
+                         'started='.($job->grabbed_until-($class->grab_for||1)),
+                         'arg='._serialize_args($job->arg),
+                        )
+                 ), "\n";
+    close($sb);
+
+    return;
 }
 
 1; # End of MooseX::TheSchwartz
