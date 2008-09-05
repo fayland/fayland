@@ -11,6 +11,9 @@ use MooseX::TheSchwartz::Job;
 
 our $VERSION = '0.01';
 
+## Number of jobs to fetch at a time in find_job_for_workers.
+our $FIND_JOB_BATCH_SIZE = 50;
+
 # subtype-s
 my $sub_verbose = sub {
     my $msg = shift;
@@ -34,7 +37,6 @@ has 'verbose' => ( is => 'rw', isa => 'Verbose', coerce => 1, default => 0 );
 has 'prioritize' => ( is => 'rw', isa => 'Bool', default => 0 );
 
 has 'retry_seconds' => (is => 'rw', isa => 'Int', default => 30);
-has 'funcmap_cache' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
 has 'retry_at' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
 
 has 'databases' => (
@@ -46,6 +48,9 @@ has 'dead_dsns' => ( is => 'rw', isa => 'ArrayRef', lazy => 1, default => sub { 
 
 has 'all_abilities'     => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'current_abilities' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'current_job' => ( is => 'rw', isa => 'Object' );
+
+has 'funcmap_cache' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
 
 has 'scoreboard'  => (
     is => 'rw',
@@ -77,10 +82,6 @@ has 'scoreboard'  => (
         $self->{scoreboard} = $dir."/scoreboard.$$";
     }
 );
-has 'current_job' => ( is => 'rw', isa => 'Object' );
-
-## Number of jobs to fetch at a time in find_job_for_workers.
-our $FIND_JOB_BATCH_SIZE = 50;
 
 sub debug {
     my $self = shift;
@@ -280,6 +281,62 @@ sub start_scoreboard {
     close($sb);
 
     return;
+}
+
+# Quick and dirty serializer.  Don't use Data::Dumper because we don't need to
+# recurse indefinitely and we want to truncate the output produced
+sub _serialize_args {
+    my ($args) = @_;
+
+    if (ref $args) {
+        if (ref $args eq 'HASH') {
+            return join ',',
+                   map { ($_||'').'='.substr($args->{$_}||'', 0, 200) }
+                   keys %$args;
+        } elsif (ref $args eq 'ARRAY') {
+            return join ',',
+                   map { substr($_||'', 0, 200) }
+                   @$args;
+        }
+    } else {
+        return $args;
+    }
+}
+
+sub end_scoreboard {
+    my $client = shift;
+
+    # Don't do anything if we're not configured to write to the scoreboard
+    my $scoreboard = $client->scoreboard;
+    return unless $scoreboard;
+
+    my $job = $client->current_job;
+
+    open(my $sb, '>>', $scoreboard)
+      or $client->debug("Could not append scoreboard '$scoreboard': $!");
+    print $sb "done=".time."\n";
+    close($sb);
+
+    return;
+}
+
+sub clean_scoreboard {
+    my $client = shift;
+
+    # Don't do anything if we're not configured to write to the scoreboard
+    my $scoreboard = $client->scoreboard;
+    return unless $scoreboard;
+
+    unlink($scoreboard);
+}
+
+sub DEMOLISH {
+    foreach my $arg (@_) {
+        # Call 'clean_scoreboard' on TheSchwartz objects
+        if (ref($arg) and $arg->isa('MooseX::TheSchwartz')) {
+            $arg->clean_scoreboard;
+        }
+    }
 }
 
 1; # End of MooseX::TheSchwartz
