@@ -123,9 +123,20 @@ sub insert {
             $sth->execute( @$row{@col} );
 
             $jobid = _insert_id( $dbh, $sth, "job", "jobid" );
+            $job->jobid($jobid);
         };
 
-        return $jobid if defined $jobid;
+        if ($job->jobid) {
+            ## We inserted the job successfully!
+            ## Attach a handle to the job, and return the handle.
+            my $handle = MooseX::TheSchwartz::JobHandle->new({
+                    dbh    => $dbh,
+                    client => $self,
+                    jobid  => $job->jobid
+                });
+            $job->handle($handle);
+            return $handle;
+        }
     }
 
     return;
@@ -218,10 +229,10 @@ sub _grab_a_job {
 
         ## Now prepare the job, and return it.
         my $handle = MooseX::TheSchwartz::JobHandle->new({
-            dbh   => $dbh,
-            jobid => $job->jobid,
+            dbh    => $dbh,
+            client => $client,
+            jobid  => $job->jobid,
         });
-        $handle->client($client);
         $job->handle($handle);
         return $job;
     }
@@ -261,10 +272,18 @@ sub list_jobs {
     my @jobs;
     for my $dbh ( $self->shuffled_databases ) {
         eval {
-            my $funcid = $self->funcname_to_id( $dbh, $arg->{funcname} );
+            
+            my ($funcid, $funcop);
+            if ( ref($arg->{funcname}) ) { # ARRAYREF
+                $funcid = '(' . join(',', map { $self->funcname_to_id($dbh, $_) } @{$arg->{funcname}}) . ')';
+                $funcop = 'IN';
+            } else {
+                $funcid = $self->funcname_to_id($dbh, $arg->{funcname});
+                $funcop = '=';
+            }
 
-            my $sql   = qq~SELECT * FROM job WHERE funcid = ? $order_by LIMIT 0, $limit~;
-            my @value = ($funcid);
+            my $sql   = qq~SELECT * FROM job WHERE funcid $funcop $funcid $order_by LIMIT 0, $limit~;
+            my @value = ();
             for (@options) {
                 $sql .= " AND $_->{key} $_->{op} ?";
                 push @value, $_->{value};
@@ -309,14 +328,6 @@ sub temporarily_remove_ability {
     if (!@{ $client->{current_abilities} }) {
         $client->restore_full_abilities;
     }
-}
-
-sub work_on {
-    my $client = shift;
-    my $hstr = shift;  # Handle string
-    my $job = $client->lookup_job($hstr) or
-        return 0;
-    return $client->work_once($job);
 }
 
 sub work {
@@ -443,7 +454,6 @@ sub start_scoreboard {
 
     my $class = $job->funcname;
 
-    # XXX? TODO
     open(my $sb, '>', $scoreboard)
       or $job->debug("Could not write scoreboard '$scoreboard': $!");
     print $sb join("\n", ("pid=$$",

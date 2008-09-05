@@ -3,6 +3,7 @@ package MooseX::TheSchwartz::Job;
 use Moose;
 use Moose::Util::TypeConstraints;
 use Storable ();
+use MooseX::TheSchwartz::JobHandle;
 
 subtype 'Args'
     => as 'Any'
@@ -23,7 +24,23 @@ has 'grabbed_until' => ( is => 'rw', isa => 'Int', default => 0 );
 has 'priority'      => ( is => 'rw', isa => 'Maybe[Int]' );
 has 'coalesce'      => ( is => 'rw', isa => 'Maybe[Str]' );
 
-has 'funcname'      => ( is => 'rw', isa => 'Str' );
+has 'funcname' => (
+    is => 'rw',
+    isa => 'Str',
+    lazy => 1,
+    default => sub {
+        my ($self) = @_;
+        
+        my $handle = $self->handle;
+        my $client = $handle->client;
+        my $dbh    = $handle->dbh;
+        my $funcname = $client->funcid_to_name($dbh, $self->funcid)
+            or die "Failed to lookup funcname of job $self";
+        return $funcname;
+    }
+);
+has 'handle' => ( is => 'rw', isa => 'MooseX::TheSchwartz::JobHandle' );
+
 
 sub as_hashref {
     my $self = shift;

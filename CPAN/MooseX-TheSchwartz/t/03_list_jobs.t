@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use t::Utils;
 use MooseX::TheSchwartz;
-plan tests => 18;
+plan tests => 19;
 
 run_test {
     my $dbh = shift;
@@ -58,4 +58,8 @@ run_test {
     is $row->jobid,    3;
     is $row->arg,      'http://fayland.org/';
     is $row->priority, undef;
+    
+    # test funcname as arrayref
+    @jobs = $sch2->list_jobs({funcname => ['fetch', 'fetch2']});
+    is(scalar @jobs, 4, 'funcname is arrayref');
 };
