@@ -1,6 +1,6 @@
 package MooseX::TheSchwartz::JobHandle;
 
-use TheSchwartz::Job;
+use MooseX::TheSchwartz::Job;
 use Moose;
 
 has 'jobid'  => ( is => 'rw', isa => 'Int' );
