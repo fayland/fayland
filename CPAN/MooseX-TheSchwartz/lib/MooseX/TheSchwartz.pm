@@ -3,7 +3,6 @@ package MooseX::TheSchwartz;
 use Moose;
 use Moose::Util::TypeConstraints;
 use Scalar::Util qw( refaddr );
-use DBI;
 use Carp;
 use MooseX::TheSchwartz::Job;
 use Storable ();
@@ -29,25 +28,17 @@ coerce 'Verbose'
         }
     };
 
-subtype 'DBI'
-    => as 'Object'
-    => where { 1; };
-coerce 'DBI'
-    => from 'ArrayRef'
-    => via { DBI->connect(@$_); }
-    => from 'Object'
-    => via { $_->isa('DBI::db') ? $_ :
-             $_->isa('DBIx::Class::Schema') ? $_->storage->dbh :
-             undef;
-    };
-
 has 'verbose' => ( is => 'rw', isa => 'Verbose', coerce => 1, default => 0 );
 
-has 'dbh' => ( is => 'rw', isa => 'DBI', coerce => 1 );
 has 'retry_seconds' => (is => 'rw', isa => 'Int', default => 30);
 has '_funcmap' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
 
-has 'databases' => ( is => 'rw', isa => 'ArrayRef', lazy => 1, default => sub { return [ shift->dbh ] } );
+has 'databases' => ( is => 'rw', isa => 'ArrayRef', lazy => 1, default => sub { [] } );
+
+has 'all_abilities'     => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'current_abilities' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+
+has 'scoreboard' => ( is => 'rw', isa => 'Str' );
 
 sub debug {
     my $self = shift;

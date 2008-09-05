@@ -7,7 +7,8 @@ plan tests => 10;
 
 run_test {
     my $dbh = shift;
-    my $sch = MooseX::TheSchwartz->new(dbh => $dbh);
+    my $sch = MooseX::TheSchwartz->new();
+    $sch->databases([$dbh]);
 
     $sch->insert('fetch', 'http://wassr.jp/');
     $sch->insert(
