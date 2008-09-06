@@ -1,8 +1,6 @@
 package MooseX::TheSchwartz::Worker;
 
-use Moose::Role;
-
-requires 'work';
+use Moose;
 
 has 'keep_exit_status_for' => ( is => 'rw', isa => 'Int', default => 0 );
 has 'max_retries' => ( is => 'rw', isa => 'Int', default => 0 );

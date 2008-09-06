@@ -168,11 +168,11 @@ sub find_job_for_workers {
             my @ids = map { $client->funcname_to_id( $dbh, $_ ) }
                       @$worker_classes;
 
-            my $sql   = qq~SELECT * FROM job WHERE funcid IN (?) AND run_after <= $unixtime AND grabbed_until <= $unixtime $order_by LIMIT 0, $limit~;
-            my @value = (join(',', @ids));
+            my $ids = join(',', @ids);
+            my $sql   = qq~SELECT * FROM job WHERE funcid IN ($ids) AND run_after <= $unixtime AND grabbed_until <= $unixtime $order_by LIMIT 0, $limit~;
 
             my $sth = $dbh->prepare_cached($sql);
-            $sth->execute(@value);
+            $sth->execute();
             while ( my $ref = $sth->fetchrow_hashref ) {
                 my $job = MooseX::TheSchwartz::Job->new( $ref );
                 push @jobs, $job;

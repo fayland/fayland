@@ -65,7 +65,7 @@ sub add_failure {
     my $job = shift;
     my ($msg) = @_;
     
-    my $sql = q~INSERT INTO error SET error_time = ?, jobid = ?, message = ?, funcid = ?~;
+    my $sql = q~INSERT INTO error (error_time, jobid, message, funcid) VALUES (?, ?, ?, ?)~;
     my $dbh = $job->handle->dbh;
     my $sth = $dbh->prepare($sql);
     $sth->execute(time(), $job->jobid, $msg || '', $job->funcid);
@@ -109,7 +109,7 @@ sub set_exit_status {
     my $class = $job->funcname;
     my $secs = $class->keep_exit_status_for or return;
     
-    my $sql = q~INSERT INTO exitstatus SET jobid=?, funcid=?, status=?, completion_time=?, delete_after=?~;
+    my $sql = q~INSERT INTO exitstatus (jobid, funcid, status, completion_time, delete_after) VALUES (?, ?, ?, ?, ?)~;
     my $dbh = $job->handle->dbh;
     my $sth = $dbh->prepare($sql);
     $sth->execute( $job->jobid, $job->funcid, $exit, time(), time() + $secs );
@@ -212,7 +212,7 @@ sub replace_with {
 sub set_as_current {
     my $job = shift;
     my $client = $job->handle->client;
-    $client->set_current_job($job);
+    $client->current_job($job);
 }
 
 sub _cond_thaw {
