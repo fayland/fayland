@@ -7,6 +7,7 @@ use Scalar::Util qw( refaddr );
 use List::Util qw( shuffle );
 use File::Spec ();
 use Storable ();
+use MooseX::TheSchwartz::Utils qw/insert_id sql_for_unixtime/;
 use MooseX::TheSchwartz::Job;
 use MooseX::TheSchwartz::JobHandle;
 
@@ -122,7 +123,7 @@ sub insert {
             my $sth = $dbh->prepare_cached($sql);
             $sth->execute( @$row{@col} );
 
-            $jobid = _insert_id( $dbh, $sth, "job", "jobid" );
+            $jobid = insert_id( $dbh, $sth, "job", "jobid" );
             $job->jobid($jobid);
         };
 
@@ -155,7 +156,7 @@ sub find_job_for_workers {
 
     for my $dbh ( $client->shuffled_databases ) {
 
-        my $unixtime = _sql_for_unixtime($dbh);
+        my $unixtime = sql_for_unixtime($dbh);
 
         my @jobs;
         eval {
@@ -190,7 +191,7 @@ sub find_job_for_workers {
 
 sub get_server_time {
     my ( $client, $dbh ) = @_;
-    my $unixtime_sql = _sql_for_unixtime($dbh);
+    my $unixtime_sql = sql_for_unixtime($dbh);
     return $dbh->selectrow_array("SELECT $unixtime_sql");
 }
 
@@ -414,7 +415,7 @@ sub funcname_to_id {
             'INSERT INTO funcmap (funcname) VALUES (?)');
         eval { $sth->execute($funcname) };
 
-        my $id = _insert_id( $dbh, $sth, "funcmap", "funcid" );
+        my $id = insert_id( $dbh, $sth, "funcmap", "funcid" );
 
         ## If we got an exception, try to load the record again
         if ($@) {
@@ -529,40 +530,6 @@ sub DEMOLISH {
             $arg->clean_scoreboard;
         }
     }
-}
-
-sub _insert_id {
-    my ( $dbh, $sth, $table, $col ) = @_;
-
-    my $driver = $dbh->{Driver}{Name};
-    if ( $driver eq 'mysql' ) {
-        return $dbh->{mysql_insertid};
-    }
-    elsif ( $driver eq 'Pg' ) {
-        return $dbh->last_insert_id( undef, undef, undef, undef,
-            { sequence => join( "_", $table, $col, 'seq' ) } );
-    }
-    elsif ( $driver eq 'SQLite' ) {
-        return $dbh->func('last_insert_rowid');
-    }
-    else {
-        croak "Don't know how to get last insert id for $driver";
-    }
-}
-
-# SQL doesn't define a function to ask a machine of its time in
-# unixtime form.  MySQL does
-# but for sqlite and others, we assume "remote" time is same as local
-# machine's time, which is especially true for sqlite.
-sub _sql_for_unixtime {
-    my ($dbh) = @_;
-    
-    my $driver = $dbh->{Driver}{Name};
-    if ( $driver eq 'mysql' ) {
-        return "UNIX_TIMESTAMP()";
-    }
-    
-    return time();
 }
 
 1; # End of MooseX::TheSchwartz
