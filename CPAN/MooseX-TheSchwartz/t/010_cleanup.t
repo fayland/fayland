@@ -59,7 +59,7 @@ run_test {
 ############################################################################
 ############################################################################
 package Worker::Fail;
-use base 'TheSchwartz::Worker';
+use base 'MooseX::TheSchwartz::Worker';
 
 sub work {
     my ($class, $job) = @_;
@@ -76,7 +76,7 @@ sub retry_delay { 1 }
 # ---------------
 
 package Worker::Complete;
-use base 'TheSchwartz::Worker';
+use base 'MooseX::TheSchwartz::Worker';
 sub work {
     my ($class, $job) = @_;
     $job->completed;
