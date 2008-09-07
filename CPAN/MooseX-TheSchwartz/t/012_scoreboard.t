@@ -48,7 +48,7 @@ run_test {
 
 ############################################################################
 package Worker::Addition;
-use base 'TheSchwartz::Worker';
+use base 'MooseX::TheSchwartz::Worker';
 
 sub work {
     my ($class, $job) = @_;
