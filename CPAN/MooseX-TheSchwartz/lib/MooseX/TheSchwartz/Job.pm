@@ -168,7 +168,7 @@ sub _failed {
         if (my $delay = $class->retry_delay($failures)) {
             my $run_after = time() + $delay;
             $job->run_after($run_after);
-            $sql .= q~run_after = $run_after, ~;
+            $sql .= qq~run_after = $run_after, ~;
         }
         $sql .= q~grabbed_until=0~;
         $job->handle->dbh->do($sql);

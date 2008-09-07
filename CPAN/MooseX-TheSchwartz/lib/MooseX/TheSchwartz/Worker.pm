@@ -46,14 +46,13 @@ __END__
 
 =head1 NAME
 
-TheSchwartz::Worker - superclass for defining task behavior
+MooseX::TheSchwartz::Worker - superclass for defining task behavior
 
 =head1 SYNOPSIS
 
     package MyWorker;
     
-    use Moose;
-    with 'MooseX::TheSchwartz::Worker';
+    use base 'MooseX::TheSchwartz::Worker';
 
     sub work {
         my $class = shift;
@@ -66,3 +65,17 @@ TheSchwartz::Worker - superclass for defining task behavior
 
 =head1 DESCRIPTION
 
+MooseX::TheSchwartz::Worker is just a copy of L<TheSchwartz::Worker> to avoid an install of L<TheSchwartz>
+
+=head1 AUTHOR
+
+Fayland Lam, C<< <fayland at gmail.com> >>
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2008 Fayland Lam, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut

@@ -15,9 +15,11 @@ sub job {
     my $sth = $dbh->prepare_cached($sql);
     $sth->execute($handle->jobid);
     my $row = $sth->fetchrow_hashref;
-    my $job = MooseX::TheSchwartz::Job->new( $row );
-    $job->handle($handle);
-    return $job;
+    if ($row) {
+        my $job = MooseX::TheSchwartz::Job->new( $row );
+        $job->handle($handle);
+        return $job;
+    }
 }
 
 sub is_pending {

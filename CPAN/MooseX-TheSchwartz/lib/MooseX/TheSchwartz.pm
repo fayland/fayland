@@ -541,14 +541,16 @@ MooseX::TheSchwartz - TheSchwartz based on Moose!
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use MooseX::TheSchwartz;
 
-    my $foo = MooseX::TheSchwartz->new();
-    ...
+    my $client = MooseX::TheSchwartz->new();
+    $client->databases([$dbh]);
+    
+    # rest are the same as TheSchwartz
+
+=head1 DESCRIPTION
+
+Read L<TheSchwartz> for more details for now. more documents will be added later.
 
 =head1 AUTHOR
 
