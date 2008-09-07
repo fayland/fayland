@@ -5,19 +5,19 @@ lib/MooseX/TheSchwartz/Job.pm
 lib/MooseX/TheSchwartz/JobHandle.pm
 lib/MooseX/TheSchwartz/Utils.pm
 lib/MooseX/TheSchwartz/Worker.pm
+Makefile.PL
 MANIFEST			This list of files
+META.yml
 README
 t/00-load.t
 t/001-debug.t
+t/002_funcname_to_id.t
+t/003_insert.t
+t/004_list_jobs.t
+t/005_unique.t
+t/006_worker.t
 t/010_cleanup.t
 t/011_retry-delay.t
 t/012_scoreboard.t
-t/01_funcname_to_id.t
-t/02_insert.t
-t/03_list_jobs.t
-t/05_worker.t
 t/pod.t
-t/schema-sqlite.sql
 t/Utils.pm
-Makefile.PL
-META.yml
