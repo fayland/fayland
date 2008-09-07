@@ -19,5 +19,3 @@ t/05_worker.t
 t/pod.t
 t/schema-sqlite.sql
 t/Utils.pm
-Makefile.PL
-META.yml

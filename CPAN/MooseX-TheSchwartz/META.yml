@@ -1,0 +1,30 @@
+---
+name: MooseX-TheSchwartz
+version: 0.01
+author:
+  - 'Fayland Lam <fayland@gmail.com>'
+abstract: TheSchwartz based on Moose!
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+build_requires:
+  DBI: 0
+  Moose: 0
+  Scalar::Util: 0
+  Test::More: 0
+provides:
+  MooseX::TheSchwartz:
+    file: lib/MooseX/TheSchwartz.pm
+    version: 0.01
+  MooseX::TheSchwartz::Job:
+    file: lib/MooseX/TheSchwartz/Job.pm
+  MooseX::TheSchwartz::JobHandle:
+    file: lib/MooseX/TheSchwartz/JobHandle.pm
+  MooseX::TheSchwartz::Utils:
+    file: lib/MooseX/TheSchwartz/Utils.pm
+  MooseX::TheSchwartz::Worker:
+    file: lib/MooseX/TheSchwartz/Worker.pm
+generated_by: Module::Build version 0.280801
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
