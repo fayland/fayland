@@ -1,23 +1,13 @@
 package MooseX::TheSchwartz::Job;
 
 use Moose;
-use Moose::Util::TypeConstraints;
 use Storable ();
 use MooseX::TheSchwartz::Utils qw/sql_for_unixtime/;
 use MooseX::TheSchwartz::JobHandle;
 
-subtype 'Args'
-    => as 'Any'
-    => where { 1; };
-coerce 'Args'
-    => from 'Str'
-    => via { _cond_thaw($_) }
-    => from 'ScalarRef'
-    => via { Storable::thaw($$_) };
-
 has 'jobid'         => ( is => 'rw', isa => 'Int' );
 has 'funcid'        => ( is => 'rw', isa => 'Int' );
-has 'arg'           => ( is => 'rw', isa => 'Args' );
+has 'arg'           => ( is => 'rw', isa => 'Any' );
 has 'uniqkey'       => ( is => 'rw', isa => 'Maybe[Str]' );
 has 'insert_time'   => ( is => 'rw', isa => 'Maybe[Int]' );
 has 'run_after'     => ( is => 'rw', isa => 'Int', default => time() );
@@ -43,6 +33,20 @@ has 'funcname' => (
 has 'handle' => ( is => 'rw', isa => 'MooseX::TheSchwartz::JobHandle' );
 
 has 'did_something' => ( is => 'rw', isa => 'Bool', default => 0 );
+
+sub BUILD {
+    my ($self, $params) = @_;
+        
+    if (my $arg = $params->{arg}) {
+        if (ref($arg) eq 'SCALAR') {
+            $params->{arg} = Storable::thaw($$arg);
+        } elsif (!ref($arg)) {
+            # if a regular scalar, test to see if it's a storable or not.
+            $params->{arg} = _cond_thaw($arg);
+        }
+        $self->arg( $params->{arg} );
+    }
+}
 
 sub debug {
     my ($self, $msg) = @_;

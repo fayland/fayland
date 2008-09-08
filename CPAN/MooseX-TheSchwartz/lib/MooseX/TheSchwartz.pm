@@ -169,7 +169,7 @@ sub find_job_for_workers {
                       @$worker_classes;
 
             my $ids = join(',', @ids);
-            my $sql   = qq~SELECT * FROM job WHERE funcid IN ($ids) AND run_after <= $unixtime AND grabbed_until <= $unixtime $order_by LIMIT 0, $limit~;
+            my $sql = qq~SELECT * FROM job WHERE funcid IN ($ids) AND run_after <= $unixtime AND grabbed_until <= $unixtime $order_by LIMIT 0, $limit~;
 
             my $sth = $dbh->prepare_cached($sql);
             $sth->execute();
@@ -178,11 +178,9 @@ sub find_job_for_workers {
                 push @jobs, $job;
             }
         };
-        if ($@) {
-#            unless (OK_ERRORS->{ $driver->last_error || 0 }) {
-#                $client->mark_database_as_dead($hashdsn);
-#            }
-        }
+#        if ($@) {
+#
+#        }
 
         my $job = $client->_grab_a_job($dbh, @jobs);
         return $job if $job;
@@ -308,6 +306,54 @@ sub list_jobs {
     }
 
     return @jobs;
+}
+
+sub find_job_with_coalescing_prefix {
+    my $client = shift;
+    my ($funcname, $coval) = @_;
+    $coval .= "%";
+    return $client->_find_job_with_coalescing('LIKE', $funcname, $coval);
+}
+
+sub find_job_with_coalescing_value {
+    my $client = shift;
+    return $client->_find_job_with_coalescing('=', @_);
+}
+
+sub _find_job_with_coalescing {
+    my $client = shift;
+    my ($op, $funcname, $coval) = @_;
+
+    my $limit    = $FIND_JOB_BATCH_SIZE;
+    my $order_by = $client->prioritize ? 'ORDER BY priority DESC' : '';
+
+    for my $dbh ( $client->shuffled_databases ) {
+        my $unixtime = sql_for_unixtime();
+
+        my @jobs;
+        eval {
+            ## Search for jobs in this database where:
+            ## 1. funcname is in the list of abilities this $client supports;
+            ## 2. the job is scheduled to be run (run_after is in the past);
+            ## 3. no one else is working on the job (grabbed_until is in
+            ##    in the past).
+            my $funcid = $client->funcname_to_id($dbh, $funcname);
+
+            my $sql = qq~SELECT * FROM job WHERE funcid = ? AND run_after <= $unixtime AND grabbed_until <= $unixtime AND coalesce $op ? $order_by LIMIT 0, $limit~;
+            my $sth = $dbh->prepare_cached($sql);
+            $sth->execute( $funcid, $coval );
+            while ( my $ref = $sth->fetchrow_hashref ) {
+                my $job = MooseX::TheSchwartz::Job->new( $ref );
+                push @jobs, $job;
+            }
+        };
+#        if ($@) {
+#
+#        }
+
+        my $job = $client->_grab_a_job($dbh, @jobs);
+        return $job if $job;
+    }
 }
 
 sub can_do {

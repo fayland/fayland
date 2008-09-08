@@ -36,7 +36,7 @@ run_test {
         ok($info{funcname} eq 'Worker::Addition', 'Has our funcname');
         ok($info{started} =~ /\d+/, 'Started time is a number');
         ok($info{started} <= time, 'Started time is in the past');
-        ok($info{arg} =~ /numbers/, 'Has right args');
+        ok($info{arg} =~ /^numbers=ARRAY/, 'Has right args');
         ok($info{done} =~ /\d+/, 'Job has done time');
     }
 
