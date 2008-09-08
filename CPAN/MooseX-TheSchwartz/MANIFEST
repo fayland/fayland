@@ -19,5 +19,6 @@ t/006_worker.t
 t/010_cleanup.t
 t/011_retry-delay.t
 t/012_scoreboard.t
+t/013_coalesce.t
 t/pod.t
 t/Utils.pm

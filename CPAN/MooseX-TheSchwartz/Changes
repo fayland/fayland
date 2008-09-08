@@ -1,5 +1,9 @@
 Revision history for MooseX-TheSchwartz
 
+0.02    2008/09/08 9:18
+        - add coalesce things
+        - bug fix and test fix.
+
 0.01    Date/time
         First version, released on an unsuspecting world.
 

@@ -1,6 +1,6 @@
 ---
 name: MooseX-TheSchwartz
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: TheSchwartz based on Moose!
@@ -15,7 +15,7 @@ build_requires:
 provides:
   MooseX::TheSchwartz:
     file: lib/MooseX/TheSchwartz.pm
-    version: 0.01
+    version: 0.02
   MooseX::TheSchwartz::Job:
     file: lib/MooseX/TheSchwartz/Job.pm
   MooseX::TheSchwartz::JobHandle:
