@@ -11,7 +11,7 @@ use MooseX::TheSchwartz::Utils qw/insert_id sql_for_unixtime/;
 use MooseX::TheSchwartz::Job;
 use MooseX::TheSchwartz::JobHandle;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 ## Number of jobs to fetch at a time in find_job_for_workers.
 our $FIND_JOB_BATCH_SIZE = 50;
@@ -60,15 +60,7 @@ has 'scoreboard'  => (
         my ($self, $dir) = @_;
         
         return unless $dir;
-        # no endless loop when it's a file
-        if ($dir =~ /\/theschwartz\/scoreboard\./is) {
-            # get the real dir from $dir regardless a file
-            my (undef, $dir) = File::Spec->splitpath( $dir );
-            unless (-e $dir) {
-                mkdir($dir, 0755) or die "Can't create scoreboard directory '$dir': $!";
-            }
-            return;
-        }
+        return if (-f $dir); # no endless loop
 
         # They want the scoreboard but don't care where it goes
         if (($dir eq '1') or ($dir eq 'on')) {
@@ -593,10 +585,141 @@ MooseX::TheSchwartz - TheSchwartz based on Moose!
     $client->databases([$dbh]);
     
     # rest are the same as TheSchwartz
+    
+    # in some place we insert job into MooseX::TheSchwartz
+    # in another place we run this job
+    
+    # 1, insert job in cgi/Catalyst
+    use MooseX::TheSchwartz;
+    my $client = MooseX::TheSchwartz->new();
+    $client->databases([$dbh]);
+    $client->insert('My::Worker::A', { args1 => 1, args2 => 2 } );
+    
+    # 2, defined the heavy things in My::Worker::A
+    package My::Worker::A;
+    use base 'MooseX::TheSchwartz::Worker';
+    sub work {
+        my ($class, $job) = @_;
+    
+        # $job is an instance of MooseX::TheSchwartz::Job
+        my $args = $job->args;
+        # do heavy things like resize photos, add 1 to 2 etc.
+        $job->completed;
+    }
+    
+    # 3, run the worker in a non-stop script
+    use MooseX::TheSchwartz;
+    my $client = MooseX::TheSchwartz->new();
+    $client->databases([$dbh]);
+    $client->can_do('My::Worker::A');
+    $client->work();
 
 =head1 DESCRIPTION
 
-Read L<TheSchwartz> for more details for now. more documents will be added later.
+L<TheSchwartz> is a powerful job queue. This module is a Moose implemention.
+
+read more on L<TheSchwartz>
+
+=head1 SETTING
+
+=over 4
+
+=item * C<databases>
+
+An arrayref of dbh.
+
+    my $dbh1 = DBI->conncet(@dbi_info);
+    my $dbh2 = $schema->storage->dbh;
+    my $client = MooseX::TheSchwartz->new( databases => [ $dbh1, $dbh2 ] );
+    
+    # or
+    my $client = MooseX::TheSchwartz->new();
+    $client->databases( [ $dbh1, $dbh2 ] );
+
+=item * C<verbose>
+
+control the debug.
+
+    my $client = MooseX::TheSchwartz->new( verbose => 1 );
+    
+    # or
+    my $client = MooseX::TheSchwartz->new();
+    $client->verbose( 1 );
+    $client->verbose( sub {
+        my $msg = shift;
+        print STDERR "[INFO] $msg\n";
+    } );
+
+=item * C<scoreboard>
+
+save job info to file. by default, the file will be saved at $tmpdir/theschwartz/scoreboard.$$
+
+    my $client = MooseX::TheSchwartz->new( scoreboard => 1 );
+    
+    # or
+    my $client = MooseX::TheSchwartz->new();
+    # be sure the file is there
+    $client->scoreboard( "/home/fayland/theschwartz/scoreboard.log" );
+
+=back
+
+=head1 POSTING JOBS
+
+The methods of TheSchwartz clients used by applications posting jobs to the
+queue are:
+
+=head2 C<$client-E<gt>insert( $job )>
+
+Adds the given C<TheSchwartz::Job> to one of the client's job databases.
+
+=head2 C<$client-E<gt>insert( $funcname, $arg )>
+
+Adds a new job with funcname C<$funcname> and arguments C<$arg> to the queue.
+
+=head1 WORKING
+
+The methods of TheSchwartz clients for use in worker processes are:
+
+=head2 C<$client-E<gt>can_do( $ability )>
+
+Adds C<$ability> to the list of abilities C<$client> is capable of performing.
+Subsequent calls to that client's C<work> methods will find jobs requiring the
+given ability.
+
+=head2 C<$client-E<gt>work_once()>
+
+Find and perform one job C<$client> can do.
+
+=head2 C<$client-E<gt>work_until_done()>
+
+Find and perform jobs C<$client> can do until no more such jobs are found in
+any of the client's job databases.
+
+=head2 C<$client-E<gt>work( [$delay] )>
+
+Find and perform any jobs C<$client> can do, forever. When no job is available,
+the working process will sleep for C<$delay> seconds (or 5, if not specified)
+before looking again.
+
+=head2 C<$client-E<gt>find_job_for_workers( [$abilities] )>
+
+Returns a C<TheSchwartz::Job> for a random job that the client can do. If
+specified, the job returned matches one of the abilities in the arrayref
+C<$abilities>, rather than C<$client>'s abilities.
+
+=head2 C<$client-E<gt>find_job_with_coalescing_value( $ability, $coval )>
+
+Returns a C<TheSchwartz::Job> for a random job for a worker capable of
+C<$ability> and with a coalescing value of C<$coval>.
+
+=head2 C<$client-E<gt>find_job_with_coalescing_prefix( $ability, $coval )>
+
+Returns a C<TheSchwartz::Job> for a random job for a worker capable of
+C<$ability> and with a coalescing value beginning with C<$coval>.
+
+Note the C<TheSchwartz> implementation of this function uses a C<LIKE> query to
+find matching jobs, with all the attendant performance implications for your
+job databases.
 
 =head1 AUTHOR
 
