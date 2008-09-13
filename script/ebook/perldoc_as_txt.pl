@@ -6,13 +6,16 @@ use File::Next;
 
 my @modules = @ARGV;
 
-my $save_text;
+my $save_text; my @ex_modules;
 foreach my $module (@modules) {
     my $file = find_module_place($module);
     unless ($file) {
         warn "$module is missing, please retry\n";
         next;
     }
+    
+    push @ex_modules, $module;
+    
     # get all the sub-modules
     my @sub_modules_files = get_sub_modules($file);
     unshift @sub_modules_files, $file;
@@ -28,10 +31,13 @@ foreach my $module (@modules) {
 }
 
 if ($save_text) {
-    open(my $fh, '>', $$ . ".txt");
+    my $file = join('-', @ex_modules);
+    $file =~ s/\:\:/\_/isg;
+    $file .= '.txt';
+    open(my $fh, '>', $file);
     print $fh $save_text;
     close($fh);
-    print "Done as $$\.txt\n";
+    print "Done as $file\n";
 }
 
 sub find_module_place {
