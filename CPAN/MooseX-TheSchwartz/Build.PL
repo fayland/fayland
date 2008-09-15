@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/MooseX/TheSchwartz.pm',
     build_requires => {
         'Test::More' => 0,
-        'Moose' => 0,
+        'Moose' => '0.57',
         'DBI' => 0,
         'Scalar::Util' => 0,
     },

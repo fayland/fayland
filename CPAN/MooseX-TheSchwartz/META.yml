@@ -1,6 +1,6 @@
 ---
 name: MooseX-TheSchwartz
-version: 0.03
+version: 0.04
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: TheSchwartz based on Moose!
@@ -9,13 +9,13 @@ resources:
   license: http://dev.perl.org/licenses/
 build_requires:
   DBI: 0
-  Moose: 0
+  Moose: 0.57
   Scalar::Util: 0
   Test::More: 0
 provides:
   MooseX::TheSchwartz:
     file: lib/MooseX/TheSchwartz.pm
-    version: 0.03
+    version: 0.04
   MooseX::TheSchwartz::Job:
     file: lib/MooseX/TheSchwartz/Job.pm
   MooseX::TheSchwartz::JobHandle:

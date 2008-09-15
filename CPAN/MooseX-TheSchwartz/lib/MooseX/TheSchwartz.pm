@@ -11,7 +11,7 @@ use MooseX::TheSchwartz::Utils qw/insert_id sql_for_unixtime/;
 use MooseX::TheSchwartz::Job;
 use MooseX::TheSchwartz::JobHandle;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 ## Number of jobs to fetch at a time in find_job_for_workers.
 our $FIND_JOB_BATCH_SIZE = 50;

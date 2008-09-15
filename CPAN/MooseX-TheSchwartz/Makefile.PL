@@ -6,7 +6,7 @@ WriteMakefile
           'VERSION_FROM' => 'lib/MooseX/TheSchwartz.pm',
           'PREREQ_PM' => {
                            'DBI' => 0,
-                           'Moose' => 0,
+                           'Moose' => '0.57',
                            'Scalar::Util' => 0,
                            'Test::More' => 0
                          },

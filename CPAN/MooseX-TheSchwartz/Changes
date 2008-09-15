@@ -1,5 +1,8 @@
 Revision history for MooseX-TheSchwartz
 
+0.04    
+        - add 'Moose' => '0.57' requirement
+
 0.03    2008/09/11 9:48
         - pod update
 
