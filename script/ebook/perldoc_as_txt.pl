@@ -59,7 +59,7 @@ sub get_sub_modules {
     my @modules;
     my $files = File::Next::files( $dir );
     while ( defined ( my $file = $files->() ) ) {
-        push @modules, $file if ($file =~ /\.pm/);
+        push @modules, $file if ($file =~ /\.p(m|od)/);
     }
 
     return @modules;
