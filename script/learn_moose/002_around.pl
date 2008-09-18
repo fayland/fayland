@@ -12,11 +12,11 @@ has 'shuffled_list' => (
 
 around 'shuffled_list' => sub {
     my $next = shift;
-    my ($self, $list) = @_;
     
-    $list = [ shuffle( @$list ) ];
+    my $ret = $next->(@_);
+    $ret = [ shuffle( @$ret ) ];
     
-    $next->($self, $list);
+    return $ret;
 };
 
 package main;
