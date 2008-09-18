@@ -5,7 +5,7 @@ use strict;
 use vars qw(@ISA $VERSION);
 
 @ISA     = qw(Pod::Simple::Wiki);
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 ###############################################################################
 #
@@ -203,15 +203,12 @@ __END__
 
 =head1 NAME
 
-Pod::Simple::Wiki::GoogleCode -  A class for creating Pod to Google Code Wiki filters.
+Pod::Simple::Wiki::Googlecode -  A class for creating Pod to Google Code Wiki filters.
 
 =head1 SYNOPSIS
 
-This module isn't used directly. Instead it is called via C<Pod::Simple::Wiki>:
+This module isn't used directly. Instead it is called via L<Pod::Simple::Wiki>:
 
-    #!/usr/bin/perl -w
-
-    use strict;
     use Pod::Simple::Wiki;
 
 
@@ -239,11 +236,6 @@ This module isn't generally invoked directly. Instead it is called via C<Pod::Si
 =head1 METHODS
 
 Pod::Simple::Wiki::GoogleCode inherits all of the methods of C<Pod::Simple> and C<Pod::Simple::Wiki>. See L<Pod::Simple> and L<Pod::Simple::Wiki> for more details.
-
-
-=head1 SEE ALSO
-
-This module also installs a C<pod2wiki> command line utility. See C<pod2wiki --help> for details.
 
 =head1 AUTHOR
 
