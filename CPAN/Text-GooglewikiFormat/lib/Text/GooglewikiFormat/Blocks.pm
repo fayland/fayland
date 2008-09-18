@@ -22,7 +22,8 @@ sub import {
 	};
 }
 
-package Text::GooglewikiFormat::Block;
+package # hidden from PAUSE
+    Text::GooglewikiFormat::Block;
 
 use Scalar::Util qw( blessed reftype );
 
@@ -131,13 +132,15 @@ sub nest
 	return;
 }
 
-package Text::GooglewikiFormat::Block::code;
+package # hidden from PAUSE
+    Text::GooglewikiFormat::Block::code;
 
 use base 'Text::GooglewikiFormat::Block';
 
 sub formatter { $_[1] }
 
-package Text::GooglewikiFormat::Blocks;
+package # hidden from PAUSE
+    Text::GooglewikiFormat::Blocks;
 
 1;
 __END__

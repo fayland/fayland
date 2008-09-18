@@ -8,9 +8,8 @@ use Text::GooglewikiFormat::Blocks;
 use Scalar::Util qw( blessed reftype );
 use URI::Find;
 
-use vars qw( $VERSION %tags $indent $code_delimiters);
-$VERSION = '0.05';
-$indent  = qr/^(?:\t+|\s{4,})/;
+use vars qw( $VERSION %tags $code_delimiters);
+$VERSION = '0.06';
 $code_delimiters = 0;
 %tags    = (
 	indent		=> qr/^(?:\t+|\s{1,})/,
