@@ -69,7 +69,9 @@ sub _indent_item {
          $self->_append('  ' x $indent_level . '# ');
     }
     elsif ($item_type eq 'text') {
-         $self->_append(' ' x $indent_level);
+         $self->_append('==' . '=' x $indent_level . ' ');
+         $self->{_googlecode_list} = 1;
+         $self->{_googlecode_num} = $indent_level + 2;
     }
 }
 
@@ -134,7 +136,10 @@ sub _handle_text {
 # Text     lists
 # Block    lists
 #
-sub _end_item_text     {$_[0]->_output(' ; ')}
+sub _end_item_text     {
+    $_[0]->_output(' ' . '=' x $_[0]->{_googlecode_num} . "\n");
+    $_[0]->{_googlecode_list} = 0;
+}
 
 
 ###############################################################################
@@ -150,6 +155,22 @@ sub _start_Para {
 
     if ($self->{_in_over_block}) {
         # Do something here is necessary
+    }
+    
+    if ($self->{_googlecode_list}) {
+        if (not $self->{_in_over_text} and $self->{_googlecode_list} == 1) {
+             $self->_append("\n");
+        }
+
+        if ($self->{_in_over_text} and $self->{_googlecode_list} == 2) {
+             $self->_append("\n");
+        }
+
+        if (not ($self->{_in_over_text} and $self->{_googlecode_list} == 1)) {
+             $self->_append(' ' x $indent_level);
+        }
+
+        $self->{_googlecode_list}++;
     }
 }
 

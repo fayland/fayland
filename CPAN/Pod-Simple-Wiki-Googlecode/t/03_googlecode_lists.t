@@ -14,7 +14,7 @@
 use strict;
 
 use Pod::Simple::Wiki;
-use Test::More tests => 12;
+use Test::More tests => 10;
 
 my $style = 'googlecode';
 
@@ -346,7 +346,8 @@ Definition item
 # Expected output.
 #
 #
-; Foo ; Definition item
+=== Foo ===
+Definition item
 
 ###############################################################################
 #
@@ -376,9 +377,12 @@ Definition item 3.0
 # Expected output.
 #
 #
-; Foo ; Definition item 1.0
-; Bar ; Definition item 2.0
-; Baz ; Definition item 3.0
+=== Foo ===
+Definition item 1.0
+=== Bar ===
+Definition item 2.0
+=== Baz ===
+Definition item 3.0
 
 ###############################################################################
 #
@@ -428,12 +432,18 @@ Definition item 2.0
 # Expected output.
 #
 #
-; Foo ; Definition item 1.0
-;; Foo ; Definition item 1.1
-;;; Foo ; Definition item 1.2
-;;; Bar ; Definition item 2.2
-;; Bar ; Definition item 2.1
-; Bar ; Definition item 2.0
+=== Foo ===
+Definition item 1.0
+==== Foo ====
+Definition item 1.1
+===== Foo =====
+Definition item 1.2
+===== Bar =====
+Definition item 2.2
+==== Bar ====
+Definition item 2.1
+=== Bar ===
+Definition item 2.0
 
 ###############################################################################
 #
@@ -485,54 +495,12 @@ Bullet item 2.0
 #
   * Bullet item 1.0
     # Number item 1.1
-;;; Foo ; Definition item 1.2
-;;; Bar ; Definition item 2.2
+===== Foo =====
+Definition item 1.2
+===== Bar =====
+Definition item 2.2
     # Number item 2.1
   * Bullet item 2.0
-
-################################################################################
-#
-# NAME: Test for definition list without =items, <blockquote>.
-#
-# TODO: Fix this later.
-#
-=pod
-
-=over
-
-This is a long sentence that forms part of a definition block.
-
-=back
-
-=cut
-#
-#
-# Expected output.
-#
-#
-; ; This is a long sentence that forms part of a definition block.
-
-################################################################################
-#
-# NAME: Test for definition list without a definition.
-#
-# TODO: Fix this later.
-#
-=pod
-
-=over
-
-=item This is a long sentence that forms part of a definition block.
-
-=back
-
-=cut
-#
-#
-# Expected output.
-#
-#
-; This is a long sentence that forms part of a definition block. ;
 
 ###############################################################################
 #

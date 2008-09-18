@@ -9,6 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Pod/Simple/Wiki/Googlecode.pm',
     build_requires => {
         'Test::More' => 0,
+        'Pod::Simple::Wiki' => 0,
     },
     add_to_cleanup      => [ 'Pod-Simple-Wiki-Googlecode-*' ],
     create_makefile_pl => 'traditional',
