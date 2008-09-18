@@ -7,6 +7,39 @@ $VERSION = '0.01';
 
 use Moose;
 
+has 'tags' => (
+    is => 'rw',
+    isa => 'HashRef',
+    default => sub {
+        {
+            indent      => qr/^\s{1,}/,
+            newline     => "\n\n",
+            strong		=> sub { "<B>$_[0]</B>" },
+        	italic      => sub { "<I>$_[0]</I> " },
+        	strike   	=> sub { "<C>--$_[0]--</C>" },
+        	superscript => sub { "($_[0])" },
+        	subscript   => sub { "($_[0])" },
+        	inline      => sub { "<C>$_[0]</C>" },
+        	strong_tag  => qr/\*(.+?)\*/,
+        	italic_tag  => qr/_(.+?)_/,
+        	strike_tag  => qr/\~\~(.+?)\~\~/,
+        	superscript_tag => qr/\^(.+?)\^/,
+        	subscript_tag   => qr/\,\,(.+?)\,\,/,
+        	inline_tag  => qr/\`(.+?)\`/,
+        
+            header      => [ '', '', sub {
+        		my $level = length $_[2];
+        		return "=head$level ", format_line($_[3], @_[-2, -1])
+            } ],
+        }
+    }
+);
+
+sub pod2wiki {
+    my ($self, $text) = @_;
+    
+    
+}
 
 1;
 __END__
