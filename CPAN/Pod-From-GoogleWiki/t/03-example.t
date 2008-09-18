@@ -60,5 +60,5 @@ Here's a link to L<http://www.microsoft.com> and here's one to L<Test::More>.
 POD
 
 my $pfg = Pod::From::GoogleWiki->new();
-my $ret_pod = $pfg->parse($wiki);
+my $ret_pod = $pfg->wiki2pod($wiki);
 is($ret_pod, $pod, 'yup!');

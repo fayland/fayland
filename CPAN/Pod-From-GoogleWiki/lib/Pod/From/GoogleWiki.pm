@@ -20,9 +20,8 @@ Pod::From::GoogleWiki - convert from Google Code wiki markup to POD
     use Pod::From::GoogleWiki;
 
     my $pfg = Pod::From::GoogleWiki->new();
-    ...
-
-
+    my $wiki = read_from_file('wiki/Help.wiki');
+    my $pod  = $pfg->wiki2pod($wiki);
 
 =head1 AUTHOR
 
