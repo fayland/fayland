@@ -6,6 +6,7 @@ use vars qw/$VERSION/;
 $VERSION = '0.02';
 
 use Moose;
+use Text::SimpleTable;
 
 has 'tags' => (
     is => 'rw',
@@ -68,7 +69,9 @@ sub wiki2pod {
     my $tags = $self->tags;
     
     my $output = ''; my $do_last_line = 1;
-    foreach my $line ( split(/\r?\n/, $text) ) {
+    my @lines = split(/\r?\n/, $text);
+    foreach my $line_no ( 0 .. $#lines ) {
+        my $line = $lines[$line_no];
         
         # skip some lines
         next if ($line =~ /^=pod/ or $line =~ /^=cut/);
@@ -93,6 +96,27 @@ sub wiki2pod {
             $output .= "  $line\n" and next;
         }
         
+        # 2, table
+        if ( $line =~ /^\|\|(.*?)\|\|$/) {
+            if ( $self->block_mark->{in_table} ) {
+                push @{ $self->block_mark->{trs} }, $self->format_line($line);
+            } else {
+                $self->block_mark->{in_table} = 1;
+                $self->block_mark->{trs} = [ $self->format_line($line) ];
+            }
+            if ($line_no == $#lines) { # if that's last line
+                $self->block_mark->{in_table} = 0;
+                my @trs = @{ $self->block_mark->{trs} };            
+                $output .= $self->make_table( @trs ) and next;
+            } else {
+                next;
+            }
+        } elsif ( $self->block_mark->{in_table} ) {
+            $self->block_mark->{in_table} = 0;
+            my @trs = @{ $self->block_mark->{trs} };            
+            $output .= $self->make_table( @trs ) and next;
+        }
+        
         if ($line =~ /^\s*$/) { # blank line
             $do_last_line = 1;
             $output .= "\n" and next;
@@ -111,7 +135,7 @@ sub wiki2pod {
         $output .= $self->format_line($line) . "\n";
         $do_last_line = 1;
     }
-    
+
     if ($do_last_line) {
         my $last_line = 0;
         while ($text =~ s/\n$//isg) {
@@ -146,6 +170,22 @@ sub format_line {
 	};
     
     return $line;
+}
+
+sub make_table {
+    my ($self, @trs) = @_;
+
+    @trs = map { $_ =~ s/^\|\|(.*?)\|\|$/$1/isg; $_ } @trs;
+    
+    my $first_line = shift @trs;
+    my @cols = split(/\s*\|\|\s*/, $first_line);
+    @cols = map { [ length($_), $_ ] } @cols;
+
+    my $t = Text::SimpleTable->new(@cols);
+    foreach my $tr (@trs) {
+        $t->row( split(/\s*\|\|\s*/, $tr) );
+    }
+    return $t->draw;
 }
 
 sub find_innermost_balanced_pair {

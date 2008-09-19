@@ -5,7 +5,9 @@ WriteMakefile
           'NAME' => 'Pod::From::GoogleWiki',
           'VERSION_FROM' => 'lib/Pod/From/GoogleWiki.pm',
           'PREREQ_PM' => {
-                           'Test::More' => 0
+                           'Moose' => 0,
+                           'Test::More' => 0,
+                           'Text::SimpleTable' => 0
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],

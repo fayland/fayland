@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Pod::From::GoogleWiki;
 
 my $wiki = '_italic_ *bold* `code` ^super^script ,,sub,,script ~~strikeout~~';
@@ -82,3 +82,26 @@ $pod = <<'POD';
 POD
 $ret_pod = $pfg->wiki2pod($wiki);
 is($ret_pod, $pod, 'header OK');
+
+$wiki = <<'WIKI';
+|| *Year* || *Temperature (low)* || *Temperature (high)* ||
+|| 1900 || -10 || 25 ||
+|| 1910 || -15 || 30 ||
+|| 1920 || -10 || 32 ||
+|| 1930 || _N/A_ || _N/A_ ||
+|| 1940 || -2 || 40 ||
+
+WIKI
+$pod = <<'POD';
+.----------+----------------------+------------------------.
+|  B<Year> | B<Temperature (low)> | B<Temperature (high)>  |
++----------+----------------------+------------------------+
+|  1900    | -10                  | 25                     |
+|  1910    | -15                  | 30                     |
+|  1920    | -10                  | 32                     |
+|  1930    | I<N/A>               | I<N/A>                 |
+|  1940    | -2                   | 40                     |
+'----------+----------------------+------------------------'
+POD
+$ret_pod = $pfg->wiki2pod($wiki);
+is($ret_pod, $pod, 'table OK');
