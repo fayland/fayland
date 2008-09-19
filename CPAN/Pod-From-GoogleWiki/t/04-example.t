@@ -29,8 +29,6 @@ of code
   text
 
 Here's a link to [http://www.microsoft.com] and here's one to [Test::More].
-
-=cut
 WIKI
 
 my $pod = <<'POD';

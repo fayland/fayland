@@ -1,5 +1,8 @@
 Revision history for Pod-From-GoogleWiki
 
+0.03    2008.09.19 18:43
+        skip the '#labels' in first line
+
 0.01    Date/time
         First version, released on an unsuspecting world.
 

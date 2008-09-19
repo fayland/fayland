@@ -3,7 +3,7 @@ package Pod::From::GoogleWiki;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use Moose;
 use Text::SimpleTable;
@@ -74,7 +74,7 @@ sub wiki2pod {
         my $line = $lines[$line_no];
         
         # skip some lines
-        next if ($line =~ /^=pod/ or $line =~ /^=cut/);
+        next if ($line_no == 0 and $line =~ /^\#labels/);
         
         # when ol|ul ends
         if ( ( $self->block_mark->{"is_ol"} or $self->block_mark->{"is_ul"} )

@@ -2,15 +2,15 @@
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
+          'PL_FILES' => {},
+          'INSTALLDIRS' => 'site',
           'NAME' => 'Pod::From::GoogleWiki',
+          'EXE_FILES' => [],
           'VERSION_FROM' => 'lib/Pod/From/GoogleWiki.pm',
           'PREREQ_PM' => {
-                           'Moose' => 0,
                            'Test::More' => 0,
-                           'Text::SimpleTable' => 0
-                         },
-          'INSTALLDIRS' => 'site',
-          'EXE_FILES' => [],
-          'PL_FILES' => {}
+                           'Text::SimpleTable' => 0,
+                           'Moose' => 0
+                         }
         )
 ;
