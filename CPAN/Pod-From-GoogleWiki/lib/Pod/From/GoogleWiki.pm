@@ -3,7 +3,7 @@ package Pod::From::GoogleWiki;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 use Moose;
 use Text::SimpleTable;
@@ -45,7 +45,12 @@ has 'tags' => (
                     $output .= "=end html\n";
                 } else {
                     if ($title) {
-                        $output = "L<$link|$title>";
+                        # for [http://search.cpan.org/perldoc?Pod::From::GoogleWiki Pod::From::GoogleWiki]
+                        if ($link eq "http://search.cpan.org/perldoc?$title") {
+                            $output = "L<$title>";
+                        } else {
+                            $output = "L<$link|$title>";
+                        }
                     } else {
                         $output = "L<$link>";
                     }
@@ -66,21 +71,19 @@ has 'block_mark' => (
 sub wiki2pod {
     my ($self, $text) = @_;
     
+    # rest block_mark
+    $self->block_mark( {} );
+    
     my $tags = $self->tags;
     
     my $output = ''; my $do_last_line = 1;
     my @lines = split(/\r?\n/, $text);
     foreach my $line_no ( 0 .. $#lines ) {
         my $line = $lines[$line_no];
+        my $pre_line = ($line_no > 0) ? $lines[ $line_no - 1 ] : '';
         
         # skip some lines
-        next if ($line_no == 0 and $line =~ /^\#labels/);
-        
-        # when ol|ul ends
-        if ( ( $self->block_mark->{"is_ol"} or $self->block_mark->{"is_ul"} )
-            and ($line !~ /^(\s+)(\*|\#)\s+(.*?)$/is) ) {
-            $output .= "\n=back\n";
-        }
+        next if (not $output and $line =~ /^\#/); # like #labels
 
         # 1, code
         if ( $line =~ /^\}\}\}$/ ) {
@@ -119,6 +122,7 @@ sub wiki2pod {
         
         if ($line =~ /^\s*$/) { # blank line
             $do_last_line = 1;
+            $self->block_mark->{in_list} = 0;
             $output .= "\n" and next;
         }
         
@@ -130,6 +134,17 @@ sub wiki2pod {
             $output .= "\n" unless ($output =~ /\n{2,}$/);
             $output .= "=head$h_level $text\n" and next;
         }
+        
+        # 3, list into code needs a newline in front
+        if ($line =~ /^\s+[\*|\#]/) {
+            unless ( $self->block_mark->{in_list} ) {
+                if ($output !~ /\n{2,}$/) {
+                    $output .= "\n";
+                }
+            }
+            $self->block_mark->{in_list} = 1;
+        }
+        $self->block_mark->{in_list} = 0 if ($line !~ /^\s+/);
         
         # at last
         $output .= $self->format_line($line) . "\n";
@@ -143,6 +158,11 @@ sub wiki2pod {
         }
         $output =~ s/\n$//isg;
         $output .= "\n" x $last_line;
+    }
+    
+    # if list into code, last we need a newline after
+    if ($self->block_mark->{in_list} and $output !~ /\n{2,}$/) {
+        $output .= "\n";
     }
     
     return $output;

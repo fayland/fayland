@@ -10,4 +10,5 @@ t/01-basic.t
 t/02-links.t
 t/03-list.t
 t/04-example.t
+t/05-for-foorum.t
 t/pod.t
