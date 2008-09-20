@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 use Pod::From::GoogleWiki;
 
 my $wiki = <<'WIKI';
@@ -43,3 +43,34 @@ POD
 
 $ret_pod = $pfg->wiki2pod($wiki);
 is($ret_pod, $pod, 'CPAN link yup!');
+
+$wiki = <<'WIKI';
+For now, we have several workers:
+  * Foorum::TheSchwartz::Worker::DailyChart
+  * Foorum::TheSchwartz::Worker::DailyReport
+  * Foorum::TheSchwartz::Worker::Hit
+  * Foorum::TheSchwartz::Worker::RemoveOldDataFromDB
+  * Foorum::TheSchwartz::Worker::ResizeProfilePhoto
+  * Foorum::TheSchwartz::Worker::SendScheduledEmail
+  * Foorum::TheSchwartz::Worker::SendStarredNofication
+  * etc.
+TODO
+WIKI
+
+$pod = <<'POD';
+For now, we have several workers:
+
+  * Foorum::TheSchwartz::Worker::DailyChart
+  * Foorum::TheSchwartz::Worker::DailyReport
+  * Foorum::TheSchwartz::Worker::Hit
+  * Foorum::TheSchwartz::Worker::RemoveOldDataFromDB
+  * Foorum::TheSchwartz::Worker::ResizeProfilePhoto
+  * Foorum::TheSchwartz::Worker::SendScheduledEmail
+  * Foorum::TheSchwartz::Worker::SendStarredNofication
+  * etc.
+
+TODO
+POD
+
+$ret_pod = $pfg->wiki2pod($wiki);
+is($ret_pod, $pod, '3 yup!');

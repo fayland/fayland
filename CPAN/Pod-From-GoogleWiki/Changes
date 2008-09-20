@@ -1,5 +1,8 @@
 Revision history for Pod-From-GoogleWiki
 
+0.05    2008.09.20
+        more bug fix
+
 0.04    2008.09.20
         bug fixes with t/05-for-foorum.t
 

@@ -3,7 +3,7 @@ package Pod::From::GoogleWiki;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 use Moose;
 use Text::SimpleTable;
@@ -144,7 +144,12 @@ sub wiki2pod {
             }
             $self->block_mark->{in_list} = 1;
         }
-        $self->block_mark->{in_list} = 0 if ($line !~ /^\s+/);
+        if ($line !~ /^\s+/) {
+            if ($self->block_mark->{in_list} and $output !~ /\n{2,}$/) {
+                $output .= "\n";
+            }
+            $self->block_mark->{in_list} = 0;
+        }
         
         # at last
         $output .= $self->format_line($line) . "\n";
