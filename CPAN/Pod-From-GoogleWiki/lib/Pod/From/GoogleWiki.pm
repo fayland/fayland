@@ -3,16 +3,16 @@ package Pod::From::GoogleWiki;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.05';
+$VERSION = '0.06';
 
-use Moose;
 use Text::SimpleTable;
 
-has 'tags' => (
-    is => 'rw',
-    isa => 'HashRef',
-    default => sub {
-        {
+sub new {
+	my $class = shift;
+	my $self = { @_ };
+	
+	unless ( exists $self->{tags} ) {
+	    $self->{tags} = {
             strong		=> sub { "B<$_[0]>" },
         	italic      => sub { "I<$_[0]>" },
         	strike   	=> sub { "C<--$_[0]-->" },
@@ -59,22 +59,19 @@ has 'tags' => (
             },
             
             schemas => [ qw( http https ftp mailto gopher ) ],
-        }
+        };
     }
-);
-has 'block_mark' => (
-    is => 'rw',
-    isa => 'HashRef',
-    default => sub { {} }
-);
+
+	return bless $self => $class;
+}
 
 sub wiki2pod {
     my ($self, $text) = @_;
     
     # rest block_mark
-    $self->block_mark( {} );
+    $self->{_block_mark} = {};
     
-    my $tags = $self->tags;
+    my $tags = $self->{tags};
     
     my $output = ''; my $do_last_line = 1;
     my @lines = split(/\r?\n/, $text);
@@ -87,42 +84,42 @@ sub wiki2pod {
 
         # 1, code
         if ( $line =~ /^\}\}\}$/ ) {
-            $self->block_mark->{is_code} = 0;
+            $self->{_block_mark}->{is_code} = 0;
             $do_last_line = 0;
             $output .= "\n" unless ($output =~ /\n{2,}$/);
             next;
         } elsif ( $line =~ /^\{\{\{$/) {
-            $self->block_mark->{is_code} = 1;
+            $self->{_block_mark}->{is_code} = 1;
             $output .= "\n" unless ($output =~ /\n{2,}$/);
             next;
-        } elsif ( $self->block_mark->{is_code} ) {
+        } elsif ( $self->{_block_mark}->{is_code} ) {
             $output .= "  $line\n" and next;
         }
         
         # 2, table
         if ( $line =~ /^\|\|(.*?)\|\|$/) {
-            if ( $self->block_mark->{in_table} ) {
-                push @{ $self->block_mark->{trs} }, $self->format_line($line);
+            if ( $self->{_block_mark}->{in_table} ) {
+                push @{ $self->{_block_mark}->{trs} }, $self->format_line($line);
             } else {
-                $self->block_mark->{in_table} = 1;
-                $self->block_mark->{trs} = [ $self->format_line($line) ];
+                $self->{_block_mark}->{in_table} = 1;
+                $self->{_block_mark}->{trs} = [ $self->format_line($line) ];
             }
             if ($line_no == $#lines) { # if that's last line
-                $self->block_mark->{in_table} = 0;
-                my @trs = @{ $self->block_mark->{trs} };            
+                $self->{_block_mark}->{in_table} = 0;
+                my @trs = @{ $self->{_block_mark}->{trs} };            
                 $output .= $self->make_table( @trs ) and next;
             } else {
                 next;
             }
-        } elsif ( $self->block_mark->{in_table} ) {
-            $self->block_mark->{in_table} = 0;
-            my @trs = @{ $self->block_mark->{trs} };            
+        } elsif ( $self->{_block_mark}->{in_table} ) {
+            $self->{_block_mark}->{in_table} = 0;
+            my @trs = @{ $self->{_block_mark}->{trs} };            
             $output .= $self->make_table( @trs ) and next;
         }
         
         if ($line =~ /^\s*$/) { # blank line
             $do_last_line = 1;
-            $self->block_mark->{in_list} = 0;
+            $self->{_block_mark}->{in_list} = 0;
             $output .= "\n" and next;
         }
         
@@ -137,18 +134,18 @@ sub wiki2pod {
         
         # 3, list into code needs a newline in front
         if ($line =~ /^\s+[\*|\#]/) {
-            unless ( $self->block_mark->{in_list} ) {
+            unless ( $self->{_block_mark}->{in_list} ) {
                 if ($output !~ /\n{2,}$/) {
                     $output .= "\n";
                 }
             }
-            $self->block_mark->{in_list} = 1;
+            $self->{_block_mark}->{in_list} = 1;
         }
         if ($line !~ /^\s+/) {
-            if ($self->block_mark->{in_list} and $output !~ /\n{2,}$/) {
+            if ($self->{_block_mark}->{in_list} and $output !~ /\n{2,}$/) {
                 $output .= "\n";
             }
-            $self->block_mark->{in_list} = 0;
+            $self->{_block_mark}->{in_list} = 0;
         }
         
         # at last
@@ -166,7 +163,7 @@ sub wiki2pod {
     }
     
     # if list into code, last we need a newline after
-    if ($self->block_mark->{in_list} and $output !~ /\n{2,}$/) {
+    if ($self->{_block_mark}->{in_list} and $output !~ /\n{2,}$/) {
         $output .= "\n";
     }
     
@@ -176,7 +173,7 @@ sub wiki2pod {
 sub format_line {
     my ($self, $line) = @_;
     
-    my $tags = $self->tags;
+    my $tags = $self->{tags};
     
     foreach my $type (qw/strong italic strike superscript subscript inline inline_code/) {
         my $sym     = $tags->{"${type}_tag"};

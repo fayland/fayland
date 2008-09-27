@@ -1,5 +1,8 @@
 Revision history for Pod-From-GoogleWiki
 
+0.06    2008.09.27
+        remove Moose dependence.
+
 0.05    2008.09.20
         more bug fix
 
