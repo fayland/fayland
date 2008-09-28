@@ -9,7 +9,7 @@ use Moose::Util::TypeConstraints;
 $VERSION   = '0.01';
 $AUTHORITY = 'cpan:FAYLAND';
 
-has 'errstr'   => ( is => 'rw', isa => 'Str' );
+has 'errstr'   => ( is => 'rw', isa => 'Maybe[Str]' );
 has 'supplier' => ( is => 'rw', isa => 'Str' );
 has 'custom_supplier_code' => ( is => 'rw', isa => 'CodeRef', default => sub { sub {} } );
 
@@ -40,11 +40,14 @@ sub get_contacts {
     
     my $module = 'WWW::Contact::' . $self->supplier;
     my $wc;
-    eval("use $module; $wc = new $module;");
+    eval("use $module; \$wc = new $module;");
     if ($@) {
         $self->errstr($@);
         return;
     }
+    
+    # reset
+    $self->errstr(undef);
     
     my $contacts = $wc->get_contacts( $email, $password );
 
