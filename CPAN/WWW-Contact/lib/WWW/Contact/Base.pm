@@ -40,7 +40,7 @@ has 'ua' => (
     }
 );
 
-has 'errstr' => ( is => 'rw', isa => 'Str' );
+has 'errstr' => ( is => 'rw', isa => 'Maybe[Str]' );
 
 sub debug {
     my $self = shift;
