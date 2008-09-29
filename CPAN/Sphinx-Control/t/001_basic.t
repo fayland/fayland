@@ -11,13 +11,14 @@ BEGIN {
 }
 
 my $ctl = Sphinx::Control->new(
-    config_file => $ENV{TEST_sphinx_config_file} || [qw[ t conf sphinx.conf ]],
+    config_file => $ENV{TEST_SPHINX_CONTROL_FILE} || [qw[ / etc conf sphinx.conf ]],
 );
 isa_ok($ctl, 'Sphinx::Control');
 
 SKIP: {
 
-skip "Author tests", 4 unless ( $ENV{AUTHOR_TEST} );
+skip "Please set export TEST_SPHINX_CONTROL_FILE to continue.", 4
+    unless ( $ENV{TEST_SPHINX_CONTROL_FILE} );
 
 skip "No Sphinx installed (or at least none found), why are you testing this anyway?", 4 
     unless eval { $ctl->binary_path };
