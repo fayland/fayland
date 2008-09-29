@@ -7,6 +7,7 @@ WriteMakefile
           'PREREQ_PM' => {
                            'CHI' => '0',
                            'Catalyst' => '0',
+                           'Class::Data::Inheritable' => '0',
                            'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',

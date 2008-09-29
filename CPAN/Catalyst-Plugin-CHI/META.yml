@@ -1,6 +1,6 @@
 ---
 name: Catalyst-Plugin-CHI
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: CHI wrap of Catalyst
@@ -10,11 +10,12 @@ resources:
 build_requires:
   CHI: 0
   Catalyst: 0
+  Class::Data::Inheritable: 0
   Test::More: 0
 provides:
   Catalyst::Plugin::CHI:
     file: lib/Catalyst/Plugin/CHI.pm
-    version: 0.01
+    version: 0.02
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
