@@ -1,0 +1,12 @@
+Build.PL
+Changes
+lib/Catalyst/Plugin/CHI.pm
+MANIFEST			This list of files
+README
+t/00-load.t
+t/lib/CacheTestApp.pm
+t/lib/CacheTestApp/Controller/Root.pm
+t/live_app.t
+t/pod.t
+Makefile.PL
+META.yml
