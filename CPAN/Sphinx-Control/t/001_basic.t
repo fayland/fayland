@@ -12,7 +12,6 @@ BEGIN {
 
 my $ctl = Sphinx::Control->new(
     config_file => [qw[ t conf sphinx.conf ]],
-    pid_file    => "$Bin/sphinx.control.pid", # this doesn't work on < 0.7.04
 );
 isa_ok($ctl, 'Sphinx::Control');
 
