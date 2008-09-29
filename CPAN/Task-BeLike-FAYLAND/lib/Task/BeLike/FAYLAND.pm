@@ -3,7 +3,7 @@ package Task::BeLike::FAYLAND;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 1;
 __END__
@@ -23,6 +23,7 @@ Here are the contents:
   requires('Scalar::Util',                   '1.18'    );
   requires('List::Util',                     undef     );
   requires('List::MoreUtils',                undef     );
+  requires('File::Next',                     undef     );
   requires('DateTime',                       '0.41'    );
   requires('WWW::Mechanize',                 undef     );
   requires('Email::Send',                    undef     );
@@ -40,6 +41,7 @@ Here are the contents:
   requires('Business::CN::IdentityCard');
   requires('Catalyst::Authentication::Store::FromSub::Hash');
   requires('Catalyst::Model::DBIC::Schema::QueryLog');
+  requires('Catalyst::Plugin::CHI');
   requires('Catalyst::Plugin::Config::YAML::XS');
   requires('Catalyst::Plugin::PickComponents');
   requires('Date::Holidays::CN');
