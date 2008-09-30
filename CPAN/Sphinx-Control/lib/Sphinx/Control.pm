@@ -4,7 +4,7 @@ use Moose;
 use MooseX::Types::Path::Class;
 use Path::Class;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.01';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 has 'config_file' => (
@@ -172,45 +172,8 @@ sub stop {
     $self->log("... pid_file($pid_file) not found.");
 }
 
-sub restart {
-    my $self = shift;
-    $self->stop;
-    $self->start;
-}
+no Moose; 1;
 
-sub reload {
-    my $self = shift;
-    
-    my $pid = $self->server_pid;
-    if ($pid) {
-	    # send HUP
-	    kill 1, $pid;
-    } else {
-	    $self->start;
-    }
-}
-
-sub run_indexer {
-    my ($self, @extra_args) = @_;
-    
-    my $searchd = $self->binary_path;
-    my $indexer = $searchd;
-       $indexer =~ s/searchd(\.exe|$)/indexer$1/isg;
-
-    $self->log("Using indexer $indexer");
-    confess "Cannot execute Sphinx indexer binary $indexer" unless -x $indexer;
-
-    my $conf = $self->config_file;
-    my @cli = ($indexer, '--config', $conf->stringify, @extra_args);
-    unless (system(@cli) == 0) {
-        $self->log("Could not run indexer (@extra_args) exited with status $?");
-        return;
-    }
-
-    return 1;
-}
-
-no Moose;
 
 1;
 __END__
@@ -232,10 +195,8 @@ Sphinx::Control - Simple class to manage a Sphinx searchd
         pid_file    => 'searchd.pid',    
     );
   
-    $ctl->start   if lc($command) eq 'start';
-    $ctl->stop    if lc($command) eq 'stop';
-    $ctl->restart if lc($command) eq 'restart';
-    $ctl->reload  if lc($command) eq 'reload';
+    $ctl->start if lc($command) eq 'start';
+    $ctl->stop  if lc($command) eq 'stop';
 
 =head1 DESCRIPTION
 
@@ -285,25 +246,10 @@ instance. It will also run the pre_startup and post_startup hooks.
 Stops the Sphinx searchd deamon that is currently being controlled by this 
 instance. It will also run the pre_shutdown and post_shutdown hooks.
 
-=item B<restart>
-
-Stops and thens starts the searchd daemon.
-
-=item B<reload>
-
-Sends a HUP signal to the searchd daemon if it is running, to tell it to reload
-its databases; otherwise starts searchd.
-
 =item B<is_server_running>
 
 Checks to see if the Sphinx searchd deamon that is currently being controlled 
 by this instance is running or not (based on the state of the PID file).
-
-=item B<run_indexer(@args)>
-
-Runs the indexer program; dies on error.  Arguments passed to the indexer are
-"--config CONFIG_FILE" followed by any additional args given as parameters 
-to run_indexer.
 
 =item B<log>
 
