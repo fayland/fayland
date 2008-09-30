@@ -17,7 +17,7 @@ isa_ok($ctl, 'Sphinx::Control');
 
 SKIP: {
 
-skip "Please set export TEST_SPHINX_CONTROL_FILE to continue.", 4
+skip "Please set export TEST_SPHINX_CONTROL_FILE to continue.", 8
     unless ( $ENV{TEST_SPHINX_CONTROL_FILE} );
 
 skip "No Sphinx installed (or at least none found), why are you testing this anyway?", 8 
