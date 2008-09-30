@@ -26,6 +26,7 @@ extra_tests;
   requires('Catalyst',                       '5.7014'  ); # work
   requires('DBIx::Class',                    '0.08010' ); # $$$$
   requires('Template',                       '2.20'    ); # @_@
+  requires('Template::Plugin::FillInForm',   undef     );
   requires('Perl::Critic',                   '1.080'   ); # perlcritic
   requires('Perl::Tidy',                     undef     ); # perltidy
   requires('HTML::TokeParser::Simple',       undef     );
@@ -41,7 +42,6 @@ extra_tests;
   requires('Catalyst::Plugin::PickComponents');
   requires('Date::Holidays::CN');
   requires('Email::Send::SMTP::TLS'); # send mail through gmail
-  requires('Foorum');
   requires('Lingua::Han::Cantonese');
   requires('Lingua::Han::PinYin');
   requires('Lingua::Han::Stroke');
@@ -52,7 +52,9 @@ extra_tests;
   requires('Pod::From::GoogleWiki');
   requires('Pod::Simple::Wiki::Googlecode');
   requires('POD2::CN');
+  requires('Sphinx::Control');
   requires('Template::Plugin::HtmlToText');
   requires('Text::GooglewikiFormat');
+  requires('Foorum');
 
 WriteAll;
