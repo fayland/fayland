@@ -68,7 +68,7 @@ The idea and code is mostly a copy of RJBS' L<Task::BeLike::RJBS>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 Fayland Lam, all rights reserved.
+Copyright 2008 Fayland Lam
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
