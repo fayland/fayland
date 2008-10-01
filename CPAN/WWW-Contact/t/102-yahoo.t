@@ -4,12 +4,25 @@ use strict;
 use warnings;
 use FindBin qw/$Bin/;
 use lib "$Bin/lib";
-use Test::More tests => 4;
+use Test::More;
 use WWW::Contact;
 use Data::Dumper;
+use WWW::Mechanize;
 
-### XXX? TODO
 # test connection
+BEGIN {
+    my $wm = WWW::Mechanize->new(
+        agent       => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)',
+        cookie_jar  => {},
+        stack_depth => 1,
+        timeout     => 60,
+    );
+    my $resp = $wm->get('http://www.google.com/');
+    unless ( $resp->is_success ) {
+        plan skip_all => "connection is not available";
+    }
+    plan tests => 4;
+}
 
 my $wc = new WWW::Contact;
 

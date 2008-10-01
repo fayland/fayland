@@ -48,6 +48,14 @@ sub debug {
     $self->verbose->(@_);
 }
 
+sub debug_to_file {
+    my ($self, $file) = @_;
+    
+    open(my $fh, '>', $file);
+    print $fh Dumper(\$self->ua);
+    close($fh);
+}
+
 sub get_contacts_from_outlook_csv {
     my ($self, $csv) = @_;
     
@@ -68,12 +76,26 @@ sub get_contacts_from_outlook_csv {
     return wantarray ? @contacts : \@contacts;
 }
 
-sub debug_to_file {
-    my ($self, $file) = @_;
+sub get {
+    my $self = shift;
     
-    open(my $fh, '>', $file);
-    print $fh Dumper(\$self->ua);
-    close($fh);
+    my $resp = $self->ua->get(@_);
+    unless ( $resp->is_success ) {
+        $self->errstr( $resp->as_string() );
+        return;
+    }
+    return 1;
+}
+
+sub submit_form {
+    my $self = shift;
+    
+    my $resp = $self->ua->submit_form(@_);
+    unless ( $resp->is_success ) {
+        $self->errstr( $resp->as_string() );
+        return;
+    }
+    return 1;
 }
 
 no Moose::Role;

@@ -37,12 +37,13 @@ sub get_contacts {
     }
     
     my $module = 'WWW::Contact::' . $self->supplier;
-    my $wc;
-    eval("use $module; \$wc = new $module;");
+    eval("use $module;");
     if ($@) {
         $self->errstr($@);
         return;
     }
+    
+    my $wc = new $module;
     
     # reset
     $self->errstr(undef);

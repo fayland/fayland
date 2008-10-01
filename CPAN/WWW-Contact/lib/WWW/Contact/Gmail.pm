@@ -16,8 +16,8 @@ sub get_contacts {
     $self->debug("start get_contacts from gmail");
     
     # to form
-    $ua->get('https://mail.google.com/mail/');
-    $ua->submit_form(
+    $self->get('https://mail.google.com/mail/');
+    $self->submit_form(
         form_number => 1,
         fields      => {
             Email  => $email,
@@ -32,7 +32,7 @@ sub get_contacts {
     
     $self->debug('Login OK');
     # use basic HTML
-    $ua->get('https://mail.google.com/mail/?ui=html&zy=a');
+    $self->get('https://mail.google.com/mail/?ui=html&zy=a');
     $ua->follow_link( url => '?v=cl' );
     $ua->follow_link( url => '?v=cl&pnl=a' );
     
