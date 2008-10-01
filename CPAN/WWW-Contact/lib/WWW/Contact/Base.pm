@@ -4,6 +4,7 @@ use vars qw/$VERSION $AUTHORITY/;
 use Moose::Role;
 use Moose::Util::TypeConstraints;
 use WWW::Mechanize;
+use Data::Dumper;
 
 my $sub_verbose = sub {
     my $msg = shift;
@@ -65,6 +66,14 @@ sub get_contacts_from_outlook_csv {
     }
     
     return wantarray ? @contacts : \@contacts;
+}
+
+sub debug_to_file {
+    my ($self, $file) = @_;
+    
+    open(my $fh, '>', $file);
+    print $fh Dumper(\$self->ua);
+    close($fh);
 }
 
 no Moose::Role;

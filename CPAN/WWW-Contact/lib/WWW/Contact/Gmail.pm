@@ -62,7 +62,7 @@ sub get_contacts_from_html {
             }
             $start = 0 if ($tag eq 'table');
             if ($start) {
-                if ($tag eq 'b' and $token->is_start_tag) {
+                if ( $token->is_start_tag('b') ) {
                     my $name = $p->peek(1);
                     push @names, $name;
                 }
