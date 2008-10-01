@@ -1,7 +1,5 @@
 package WWW::Contact;
 
-use warnings;
-use strict;
 use vars qw/$VERSION $AUTHORITY/;
 use Moose;
 use Moose::Util::TypeConstraints;

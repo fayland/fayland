@@ -1,7 +1,5 @@
 package WWW::Contact::Base;
 
-use warnings;
-use strict;
 use vars qw/$VERSION $AUTHORITY/;
 use Moose::Role;
 use Moose::Util::TypeConstraints;
@@ -47,6 +45,26 @@ sub debug {
     
     return unless $self->verbose;
     $self->verbose->(@_);
+}
+
+sub get_contacts_from_outlook_csv {
+    my ($self, $csv) = @_;
+    
+    my @contacts;
+    
+    # Name,E-mail Address,Notes,
+    my @lines = split(/\n/, @csv);
+    shift @lines; # skip the first line
+    foreach my $line (@lines) {
+        my @cols = split(',', $line);
+        next if ( $cols[1] !~ /\@/ ); # skip unknow lines
+        push @contacts, {
+            name  => $cols[0],
+            email => $cols[1]
+        };
+    }
+    
+    return wantarray ? @contacts : \@contacts;
 }
 
 no Moose::Role;
