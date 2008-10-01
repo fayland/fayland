@@ -53,7 +53,7 @@ sub get_contacts_from_outlook_csv {
     my @contacts;
     
     # Name,E-mail Address,Notes,
-    my @lines = split(/\n/, @csv);
+    my @lines = split(/\n/, $csv);
     shift @lines; # skip the first line
     foreach my $line (@lines) {
         my @cols = split(',', $line);
