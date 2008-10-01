@@ -3,7 +3,7 @@ package WWW::Contact::Gmail;
 use Moose;
 with 'WWW::Contact::Base';
 
-use 
+use HTML::TokeParser::Simple;
 
 sub get_contacts {
     my ($self, $email, $password) = @_;
@@ -37,36 +37,17 @@ sub get_contacts {
     $ua->follow_link( url => '?v=cl&pnl=a' );
     
     $content = $ua->content();
-    while (
-        $content =~ m/
-			,\[".*?"
-			, "([^"]+)"		# 1 id
-			,"([^"]*)"		# 2 name
-			,"([^"]*)"		# 3
-			,"([^"]+)"		# 4 email
-			,"([^"]*)"		# 5 notes
-			/xg
-    ) {
-        push @contacts, {
-            name  => $2,
-            email => $4,
-        };
-    }
-    
-    open(my $fh, '>', 'E:\a.txt');
-    print $fh $content;
-    close($fh);
+    @contacts = $self->get_contacts_from_html($content);
     
     return wantarray ? @contacts : \@contacts;
 }
 
 sub get_contacts_from_html {
-    my ($content) = @_;;
+    my ($self, $content) = @_;;
     
-    my $return_things;
     my (@names, @emails);
     
-    my $start = 0; my $mark;
+    my $start = 0;
     my $p = HTML::TokeParser::Simple->new( string => $content );
     while ( my $token = $p->get_token ) {
         if ( my $tag = $token->get_tag ) {
@@ -81,26 +62,29 @@ sub get_contacts_from_html {
             }
             $start = 0 if ($tag eq 'table');
             if ($start) {
-                if ($tag eq 'b') {
+                if ($tag eq 'b' and $token->is_start_tag) {
                     my $name = $p->peek(1);
-                    push @names, $name if ($name =~ /\S/);
+                    push @names, $name;
                 }
             }   
         }
         if ($start) {
             my $text = $token->as_is;
-            $return_things .= $text;
             if ($text =~ /(\S+\@\S+)/) {
                 push @emails, $1;
             }
         }
     }
     
-    # <input type="checkbox" name="c" value="2d30c9900d9f6538"> </td> <td width="28%"> <b>fayland</b> </td> <td width="71%"> fayland@gmail.com &nbsp; </td> <tr> <td> <input type="checkbox" name="c" value="49c06ff88f28abd8"> </td> <td> <b>fayland zorpia</b> </td> <td> fayland.lam@zorpia.com &nbsp; </td> <tr> <td colspan="5" height="75" bgcolor="#ffffff">&nbsp;
+    my @contacts;
+    foreach my $i (0 .. $#emails) {
+        push @contacts, {
+            name  => $names[$i],
+            email => $emails[$i]
+        };
+    }
     
-    
-    
-    return ($return_things, \@names, \@emails);
+    return @contacts;
 }
 
 no Moose;
