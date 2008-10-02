@@ -1,6 +1,6 @@
 ---
 name: Catalyst-Authentication-Store-FromSub-Hash
-version: 0.06
+version: 0.07
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: A storage class for Catalyst Authentication using one Catalyst Model class (hash returned)
@@ -14,8 +14,8 @@ build_requires:
 provides:
   Catalyst::Authentication::Store::FromSub::Hash:
     file: lib/Catalyst/Authentication/Store/FromSub/Hash.pm
-    version: 0.06
-generated_by: Module::Build version 0.2808
+    version: 0.07
+generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2
