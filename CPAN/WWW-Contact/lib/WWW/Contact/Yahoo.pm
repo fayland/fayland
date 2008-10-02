@@ -69,11 +69,10 @@ sub get_contacts {
         next unless ( $3 or $4 );
         my $email = $3 || $4 . '@yahoo.com';
         my $name = ( $1 or $2 ) ? "$1 $2" : $4;
-        $_ = {
+        push @contacts, {
             name       => $name,
             email      => $email,
-        };
-        push @contacts, $_;
+        };;
     }
 
     return wantarray ? @contacts : \@contacts;
