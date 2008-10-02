@@ -78,20 +78,80 @@ __END__
 
 =head1 NAME
 
-WWW::Contact - The great new WWW::Contact!
+WWW::Contact - Get contacts/addressbook from Web
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use WWW::Contact;
+    
+    my $wc       = WWW::Contact->new();
+    my @contacts = $wc->get_contacts('fayland@gmail.com', 'password');
+    my $errstr   = $wc->errstr;
+    if ($errstr) {
+        die $errstr; # like 'Wrong Password'
+    } else {
+        print Dumper(\@contacts);
+    }
 
-    my $wc = WWW::Contact->new();
-    ...
+=head1 DESCRIPTION
 
+no description yet.
 
+=head1 SUPPORTED EMAIL SUPPLIER
+
+=over 4
+
+=item Gmail
+
+=item Yahoo! Mail
+
+=back
+
+=head1 HOW TO WRITE MY OWN MODULE
+
+please read L<WWW::Contact::Base> and examples: L<WWW::Contact::Yahoo> and L<WWW::Contact::Gmail>
+
+Assuming we write a custom module as WWW::Contact::Unknown
+
+    package WWW::Contact::Unknown;
+    
+    use Moose;
+    extends 'WWW::Contact::Base';
+    
+    sub get_contacts {
+        my ($self, $email, $password) = @_;
+        
+        # reset
+        $self->errstr(undef);
+        
+        if ($email eq 'a@a.com' and $password ne 'a') {
+            $self->errstr('Wrong Password');
+            return;
+        }
+        
+        my @contacts = ( {
+            email => 'b@b.com',
+            name => 'b',
+        }, {
+            email => 'c@c.com',
+            name => 'c'
+        } );
+        return wantarray ? @contacts : \@contacts;
+    }
+    
+    1;
+
+We can use it within WWW::Contact
+
+    my $wc = new WWW::Contact;
+    $wc->supplier('Unknown'); # it will eval use WWW::Contact::Unknown when get_contacts
+    
+    my @contacts = $wc->get_contacts('a@a.com', 'b');
+    my $errstr = $wc->errstr;
+
+=head1 SEE ALSO
+
+L<WWW::Contact::Gmail>, L<WWW::Contact::Yahoo>, L<WWW::Mechanize>, L<Moose>
 
 =head1 AUTHOR
 

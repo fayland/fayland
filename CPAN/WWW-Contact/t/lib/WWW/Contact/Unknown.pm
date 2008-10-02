@@ -1,7 +1,7 @@
 package WWW::Contact::Unknown;
 
 use Moose;
-with 'WWW::Contact::Base';
+extends 'WWW::Contact::Base';
 
 sub get_contacts {
     my ($self, $email, $password) = @_;

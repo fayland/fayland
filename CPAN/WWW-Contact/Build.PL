@@ -11,6 +11,8 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
         'Moose'      => 0,
         'WWW::Mechanize' => 0,
+        'WWW::Mechanize::GZip' => 0,
+        'HTML::TokeParser::Simple' => 0,
         'Crypt::SSLeay'  => 0, # https
     },
     add_to_cleanup      => [ 'WWW-Contact-*' ],
