@@ -95,7 +95,7 @@ WWW::Contact - Get contacts/addressbook from Web
 
 =head1 DESCRIPTION
 
-no description yet.
+Get Contacts/AddressBook from public websites.
 
 =head1 SUPPORTED EMAIL SUPPLIER
 
