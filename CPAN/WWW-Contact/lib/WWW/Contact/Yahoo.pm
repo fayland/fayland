@@ -1,19 +1,10 @@
 package WWW::Contact::Yahoo;
 
 use Moose;
-use WWW::Mechanize::GZip;
 
 extends 'WWW::Contact::Base';
 
-sub BUILD {
-    my ($self) = @_;
-    
-    $self->{ua} = WWW::Mechanize::GZip->new(
-        agent       => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)',
-        cookie_jar  => {},
-        stack_depth => 1,
-    );
-}
+has '+ua_class' => ( default => 'WWW::Mechanize::GZip' );
 
 sub get_contacts {
     my ($self, $email, $password) = @_;

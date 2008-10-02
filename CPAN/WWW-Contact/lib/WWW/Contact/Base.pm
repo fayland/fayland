@@ -3,7 +3,7 @@ package WWW::Contact::Base;
 use vars qw/$VERSION $AUTHORITY/;
 use Moose;
 use Moose::Util::TypeConstraints;
-use WWW::Mechanize;
+use Carp qw/croak/;
 use Data::Dumper;
 
 my $sub_verbose = sub {
@@ -25,12 +25,16 @@ coerce 'Verbose'
     };
 
 has 'verbose' => ( is => 'rw', isa => 'Verbose', coerce => 1, default => 0 );
+has 'ua_class' => ( is => 'rw', isa => 'Str', default => 'WWW::Mechanize' );
 has 'ua' => (
     is => 'rw',
-    isa => 'WWW::Mechanize',
+    isa => 'Object',
     lazy => 1,
     default => sub {
-        WWW::Mechanize->new(
+        my $class = (shift)->ua_class;
+        eval "use $class";
+        croak $@ if ($@);
+        $class->new(
             agent       => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)',
             cookie_jar  => {},
             stack_depth => 1,
@@ -142,9 +146,14 @@ This module is mainly for you to write your own WWW::Contact::* (and used in my 
 
 =item ua
 
-an instance of WWW::Mechanize
+an instance of L<WWW::Mechanize>
 
     $self->ua->get('http://www.google.com');
+
+If u want to use WWW::Mechanize::* instead of WWW::Mechanize, try
+
+    extends 'WWW::Contact::Base';
+    has '+ua_class' => ( default => 'WWW::Mechanize::GZip' );
 
 =item verbose
 

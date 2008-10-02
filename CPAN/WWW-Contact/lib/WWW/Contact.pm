@@ -58,8 +58,12 @@ sub get_contacts {
     }
 }
 
+sub pre_supplier { inner() }
+
 sub get_supplier_by_email {
     my ($self, $email) = @_;
+    
+    $self->pre_supplier();
     
     if ($email =~ /[\@\.]yahoo\./) {
         $self->supplier('Yahoo');
