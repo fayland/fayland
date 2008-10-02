@@ -4,7 +4,7 @@ package Catalyst::Authentication::Store::FromSub::Hash;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 use Catalyst::Authentication::User::Hash;
 
