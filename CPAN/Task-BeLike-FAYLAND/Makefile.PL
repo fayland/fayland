@@ -55,6 +55,7 @@ extra_tests;
   requires('Sphinx::Control');
   requires('Template::Plugin::HtmlToText');
   requires('Text::GooglewikiFormat');
+  requires('WWW::Conatct');
   requires('Foorum');
 
 WriteAll;

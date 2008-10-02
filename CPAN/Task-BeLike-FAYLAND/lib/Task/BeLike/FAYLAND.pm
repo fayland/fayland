@@ -60,6 +60,7 @@ Here are the contents:
   requires('Sphinx::Control');
   requires('Template::Plugin::HtmlToText');
   requires('Text::GooglewikiFormat');
+  requires('WWW::Conatct');
   requires('Foorum');
 
 =head1 SEE ALSO
