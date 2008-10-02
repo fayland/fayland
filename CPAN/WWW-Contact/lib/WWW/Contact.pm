@@ -1,11 +1,10 @@
 package WWW::Contact;
 
-use vars qw/$VERSION $AUTHORITY/;
 use Moose;
 use Moose::Util::TypeConstraints;
 
-$VERSION   = '0.02';
-$AUTHORITY = 'cpan:FAYLAND';
+our $VERSION   = '0.02';
+our $AUTHORITY = 'cpan:FAYLAND';
 
 has 'errstr'   => ( is => 'rw', isa => 'Maybe[Str]' );
 has 'supplier' => ( is => 'rw', isa => 'Str' );

@@ -3,6 +3,9 @@ package WWW::Contact::Gmail;
 use Moose;
 extends 'WWW::Contact::Base';
 
+our $VERSION   = '0.02';
+our $AUTHORITY = 'cpan:FAYLAND';
+
 use HTML::TokeParser::Simple;
 
 sub get_contacts {

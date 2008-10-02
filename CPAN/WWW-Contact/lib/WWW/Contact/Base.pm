@@ -6,6 +6,9 @@ use Moose::Util::TypeConstraints;
 use Carp qw/croak/;
 use Data::Dumper;
 
+our $VERSION   = '0.02';
+our $AUTHORITY = 'cpan:FAYLAND';
+
 my $sub_verbose = sub {
     my $msg = shift;
     $msg =~ s/\s+$//;
