@@ -4,7 +4,7 @@ use vars qw/$VERSION $AUTHORITY/;
 use Moose;
 use Moose::Util::TypeConstraints;
 
-$VERSION   = '0.01';
+$VERSION   = '0.02';
 $AUTHORITY = 'cpan:FAYLAND';
 
 has 'errstr'   => ( is => 'rw', isa => 'Maybe[Str]' );

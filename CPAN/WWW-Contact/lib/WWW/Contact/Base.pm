@@ -187,7 +187,7 @@ a wrapper of $self->ua->submit_form, with $resp->is_success check
 
 =head1 SEE ALSO
 
-L<WWW::Contact>, L<WWW::Mechanize::GZip>
+L<WWW::Contact>, L<WWW::Mechanize>, L<Moose>
 
 =head1 AUTHOR
 
