@@ -1,5 +1,8 @@
 Revision history for Catalyst-Authentication-Store-FromSub-Hash
 
+0.08    10/03/2008 13:58
+        avoid test breaks
+
 0.07    10/02/2008 13:58
         add eval use DBI to t/*.t to avoid test breaks
 

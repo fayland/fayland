@@ -2,7 +2,6 @@
 
 use strict;
 use warnings;
-use DBI;
 use File::Path;
 use FindBin;
 use Test::More;
