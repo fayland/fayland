@@ -3,7 +3,7 @@ package Task::BeLike::FAYLAND;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 1;
 __END__
@@ -20,11 +20,13 @@ Here are the contents:
 
   requires('CPAN',                           '1.87'    );
   requires('CPAN::Reporter',                 undef     ); # be a CPAN tester
+  requires('local::lib',                     undef     );
   requires('Scalar::Util',                   '1.18'    );
   requires('List::Util',                     undef     );
   requires('List::MoreUtils',                undef     );
   requires('File::Next',                     undef     );
   requires('DateTime',                       '0.41'    );
+  requires('Test::Pod',                      undef     );
   requires('WWW::Mechanize',                 undef     );
   requires('Email::Send',                    undef     );
   requires('Moose',                          '0.35'    );

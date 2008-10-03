@@ -15,11 +15,13 @@ extra_tests;
 
   requires('CPAN',                           '1.87'    );
   requires('CPAN::Reporter',                 undef     ); # be a CPAN tester
+  requires('local::lib',                     undef     );
   requires('Scalar::Util',                   '1.18'    );
   requires('List::Util',                     undef     );
   requires('List::MoreUtils',                undef     );
   requires('File::Next',                     undef     );
   requires('DateTime',                       '0.41'    );
+  requires('Test::Pod',                      undef     );
   requires('WWW::Mechanize',                 undef     );
   requires('Email::Send',                    undef     );
   requires('Moose',                          '0.35'    );
