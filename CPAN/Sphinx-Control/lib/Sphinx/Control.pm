@@ -4,7 +4,7 @@ use Moose;
 use MooseX::Types::Path::Class;
 use Path::Class;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 has 'config_file' => (
@@ -172,8 +172,32 @@ sub stop {
     $self->log("... pid_file($pid_file) not found.");
 }
 
-no Moose; 1;
+sub restart {
+    my $self = shift;
+    
+    $self->log("Restarting searchd ...");
+    $self->stop;
+    
+    $self->start;
+    $self->log("searchd restarted.");
+}
 
+sub reload {
+    my $self = shift;
+    
+    $self->log("reloading searchd ...");
+    
+    if ( $self->is_server_running ) {
+    	# send HUP
+    	kill 1, $self->server_pid;
+    }
+    else {
+	    $self->start;
+    }
+    $self->log("searchd reloaded.");
+}
+
+no Moose; 1;
 
 1;
 __END__
@@ -245,6 +269,15 @@ instance. It will also run the pre_startup and post_startup hooks.
 
 Stops the Sphinx searchd deamon that is currently being controlled by this 
 instance. It will also run the pre_shutdown and post_shutdown hooks.
+
+=item B<restart>
+
+Stops and thens starts the searchd daemon.
+
+=item B<reload>
+
+Sends a HUP signal to the searchd daemon if it is running, to tell it to reload
+its databases; otherwise starts searchd.
 
 =item B<is_server_running>
 
