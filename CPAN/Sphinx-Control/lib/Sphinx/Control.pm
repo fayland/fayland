@@ -144,6 +144,10 @@ sub start {
     }
 
     $self->post_startup;
+    
+    # update server_pid
+    $self->server_pid( $self->_find_server_pid );
+    
     $self->log("searchd started.");    
 }
 
