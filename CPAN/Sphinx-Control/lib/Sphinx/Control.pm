@@ -31,7 +31,7 @@ has 'pid_file' => (
 
 has 'server_pid' => (
     init_arg => undef,
-    is       => 'ro',
+    is       => 'rw',
     isa      => 'Int',
     lazy     => 1,
     builder  => '_find_server_pid',
