@@ -17,14 +17,25 @@ foreach my $file (@files) {
     next if ($file !~ /\.jpg/is); # if not jpg file
     $file =~ m/(.*)\.(.*)/;
     my $thumbsfile = "$dir/$want_width/$1.jpg";
+    
     my $image = Image::Magick->new;
     my $x = $image->Read("$dir/$file");
     $image->Set(magick => 'JPEG');
+    
     my ($width, $height) = $image->Get('width', 'height');
     print "$file has $width x $height\n";
-    next if ($width < $want_width);
-    my $want_height = ($height * $want_width) / $width;
-    $image->Resize( width => $want_width, height => $want_height);
+    
+    my ($to_width, $to_height) = (0, 0);
+    if ( $width > $height ) {
+        next if ($width < $want_width);
+        $to_width  = $want_width;
+        $to_height = ($height * $to_width) / $width;
+    } else {
+        next if ($height < $want_width);
+        $to_height = $want_width;
+        $to_width  = ($width * $to_height) / $height;
+    }
+    $image->Resize( width => $to_width, height => $to_height);
     $image->Write("jpeg:$thumbsfile");
-    print "convert $file to $want_width x $want_height\n";
+    print "convert $file to $to_width x $to_height\n";
 }
