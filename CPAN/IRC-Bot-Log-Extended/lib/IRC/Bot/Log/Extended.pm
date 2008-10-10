@@ -1,6 +1,7 @@
 package IRC::Bot::Log::Extended;
 
 use Moose;
+use Carp 'croak';
 
 our $VERSION = '0.01';
 our $AUTHORITY = 'cpan:FAYLAND';
