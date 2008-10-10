@@ -43,7 +43,7 @@ override 'chan_log' => sub {
     } else {
         return 0;
     }
-}
+};
 
 sub touch_file {
     my ($self, $file) = @_;
