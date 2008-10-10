@@ -66,23 +66,34 @@ IRC::Bot::Log::Extended - extends IRC::Bot::Log for IRC::Bot
 
 =head1 SYNOPSIS
 
-    use IRC::Bot;
+    #!/usr/bin/perl -w
+    
+    package IRC::Bot2;
+    
+    use Moose;
+    extends 'IRC::Bot';
     use IRC::Bot::Log::Extended;
     
-    # Initialize new object
-    my $bot = IRC::Bot->new(
-        LogPath  => '/home/fayland/irclog/',
-        Debug    => 0,
-        Nick     => 'Fayland_logger',
-        Server   => 'irc.perl.org',
-        # ...
-    );
+    after 'bot_start' => sub {
+        my $self = shift;
     
-    # override the log
-    $bot::log = IRC::Bot::Log::Extended->new(
-        Path          => $bot->{'LogPath'},
-        split_channel => 1,
-        split_day     => 1,
+        no warnings;
+        $IRC::Bot::log =  IRC::Bot::Log::Extended->new(
+            Path          => $self->{'LogPath'},
+            split_channel => 1,
+            split_day     => 1,
+        );
+    };
+    
+    package main;
+    
+    # Initialize new object
+    my $bot = IRC::Bot2->new( # check IRC::Bot for more details
+        Debug    => 0,
+        Nick     => 'Fayland',
+        Server   => 'irc.perl.org',
+        Channels => [ '#moose', '#catalyst', '#dbix-class' ],
+        LogPath  => '/home/fayland/irclog/',
     );
     
     # Daemonize process
@@ -90,7 +101,50 @@ IRC::Bot::Log::Extended - extends IRC::Bot::Log for IRC::Bot
     
     # Run the bot
     $bot->run();
+    
+    1;
 
+=head1 DESCRIPTION
+
+The SYNOPSIS above does two tasks.
+
+=over 4
+
+=item 1
+
+it creates a custom IRC::Bot2 based on L<IRC::Bot>. The only differece is override $IRC::Bot::log with
+
+    $IRC::Bot::log =  IRC::Bot::Log::Extended->new(
+        Path          => $self->{'LogPath'},
+        split_channel => 1,
+        split_day     => 1,
+    );
+
+=item 2
+
+the usage of IRC::Bot2 is the same as IRC::Bot. no difference. read L<IRC::Bot> for configuration and usage.
+
+=back
+
+=head1 ATTRIBUTES
+
+L<IRC::Bot::Log> stores all channels all days into one file I<channel.log>. it is not so good to read. B<IRC::Bot::Log::Extended> splits the log into several files by channel AND|OR day.
+
+=over 4
+
+=item B<Path>
+
+the place I<moose_20081009.log> stores.
+
+=item B<split_channel>
+
+default is 1. Instead store all log into channel.log, we split them into moose.log, catalyst.log and dbix-class.log
+
+=item B<split_day>
+
+default is 1. Instead store all log into channel.log or moose.log, we split them into channel_20081009.log, channel_20081010.log (moose_20081010.log) and etc. daily.
+
+=back
 
 =head1 SEE ALSO
 
