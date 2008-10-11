@@ -33,25 +33,22 @@ override 'chan_log' => sub {
             $name .= "_$today"; 
         }
         my $file = $self->{'Path'} . $name . '.log';
-        
-        # create if not exists
-        $self->touch_file($file);
-        
+
         $self->pre_insert( \$file, \$message );
         return 0 unless ($message);
-        
+
+        # create if not exists
+        $self->touch_file($file);
+
         open( my $fh, '>>', $file ) || croak "Cannot Open $file!";
         print $fh "$message\n";
         close($fh) || croak "Cannot Close $file!";
-        
-        $self->post_insert($file);
     } else {
         return 0;
     }
 };
 
 sub pre_insert   { inner() }
-sub post_insert  { inner() }
 
 sub touch_file {
     my ($self, $file) = @_;
@@ -153,6 +150,38 @@ default is 1. Instead store all log into channel.log, we split them into moose.l
 default is 1. Instead store all log into channel.log or moose.log, we split them into channel_20081009.log, channel_20081010.log (moose_20081010.log) and etc. daily.
 
 =back
+
+=head1 AUGMENTABLE METHODS
+
+The method B<pre_insert> can be augmented in a subclass to add extra functionality 
+to your control script. here is two examples:
+
+L<http://fayland.googlecode.com/svn/trunk/CPAN/IRC-Bot-Log-Extended/examples/02b_with_filter.pl>
+
+L<http://fayland.googlecode.com/svn/trunk/CPAN/IRC-Bot-Log-Extended/examples/03advanced.pl>
+
+  augment pre_insert => sub {
+    my ($self, $file_ref, $message_ref) = @_;
+    
+    # change filename
+    $$file_ref .= '.html';
+    
+    # HTML-lize
+    $$message_ref =~ s/\</\&lt\;/isg;
+    
+    # find URIs
+    my $finder = URI::Find->new(
+        sub {
+            my ( $uri, $orig_uri ) = @_;
+            return qq|<a href="$uri">$orig_uri</a>|;
+        }
+    );
+    $finder->find( $message_ref );
+    
+    $$message_ref .= "</br>";
+  };
+
+the example above is to make a HTML IRC log by youself.
 
 =head1 SEE ALSO
 
