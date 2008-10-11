@@ -3,7 +3,7 @@ package IRC::Bot::Log::Extended;
 use Moose;
 use Carp 'croak';
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 extends 'IRC::Bot::Log';
@@ -37,13 +37,21 @@ override 'chan_log' => sub {
         # create if not exists
         $self->touch_file($file);
         
+        $self->pre_insert( \$file, \$message );
+        return 0 unless ($message);
+        
         open( my $fh, '>>', $file ) || croak "Cannot Open $file!";
         print $fh "$message\n";
         close($fh) || croak "Cannot Close $file!";
+        
+        $self->post_insert($file);
     } else {
         return 0;
     }
 };
+
+sub pre_insert   { inner() }
+sub post_insert  { inner() }
 
 sub touch_file {
     my ($self, $file) = @_;
