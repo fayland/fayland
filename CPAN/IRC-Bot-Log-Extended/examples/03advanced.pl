@@ -22,7 +22,7 @@ augment pre_insert => sub {
             return qq|<a href="$uri">$orig_uri</a>|;
         }
     );
-    $finder->find( \$message_ref );
+    $finder->find( $message_ref );
     
     $$message_ref .= "</br>\n";
 };
