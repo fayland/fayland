@@ -1,6 +1,5 @@
 package WWW::Contact::Base;
 
-use vars qw/$VERSION $AUTHORITY/;
 use Moose;
 use Moose::Util::TypeConstraints;
 use Carp qw/croak/;
