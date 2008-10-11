@@ -1,6 +1,6 @@
 ---
 name: IRC-Bot-Log-Extended
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: extends IRC::Bot::Log for IRC::Bot
@@ -14,7 +14,7 @@ build_requires:
 provides:
   IRC::Bot::Log::Extended:
     file: lib/IRC/Bot/Log/Extended.pm
-    version: 0.01
+    version: 0.02
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
