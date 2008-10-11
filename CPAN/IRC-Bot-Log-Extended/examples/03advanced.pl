@@ -14,6 +14,7 @@ augment pre_insert => sub {
     $$file_ref .= '.html';
     
     # HTML-lize
+    $$message_ref =~ s/\</\&lt\;/isg;
     
     # find URIs
     my $finder = URI::Find->new(
@@ -24,7 +25,7 @@ augment pre_insert => sub {
     );
     $finder->find( $message_ref );
     
-    $$message_ref .= "</br>\n";
+    $$message_ref .= "</br>";
 };
 
 package IRC::Bot2;
