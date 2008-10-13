@@ -52,14 +52,15 @@ sub check_cmd_run {
 
     my $p = new Proc::ProcessTable( 'cache_ttys' => 1 );
     my $all = $p->table;
+    my $how_many = 0;
     foreach my $one (@$all) {
         my $basename = basename($0);
         if ($one->cmndline =~ /$basename/) {
-            return $one->pid;
+            $how_many++;
         }
     }
     
-    return 0;
+    return ( $how_many > 1 ) ? 1 : 0;
 }
 
 if ( check_cmd_run() ) {
