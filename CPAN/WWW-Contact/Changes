@@ -1,5 +1,8 @@
 Revision history for WWW-Contact
 
+0.03
+        add @ymail.com @rocketmail.com support
+
 0.02    2008.10.11
         clean code and better doc.
 

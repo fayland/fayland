@@ -3,7 +3,7 @@ package WWW::Contact;
 use Moose;
 use Moose::Util::TypeConstraints;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 has 'errstr'   => ( is => 'rw', isa => 'Maybe[Str]' );
@@ -64,7 +64,9 @@ sub get_supplier_by_email {
     
     $self->pre_supplier();
     
-    if ($email =~ /[\@\.]yahoo\./) {
+    my ($username, $domain) = split('@', $email);
+    # @yahoo.com @yahoo.XX @ymail.com @rocketmail.com
+    if ($email =~ /[\@\.]yahoo\./ or $domain eq 'ymail.com' or $email eq 'rocketmail.com' ) {
         $self->supplier('Yahoo');
     } elsif ($email =~ /\@gmail\.com$/) {
         $self->supplier('Gmail');
