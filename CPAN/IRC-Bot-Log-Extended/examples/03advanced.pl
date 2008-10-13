@@ -46,12 +46,25 @@ after 'bot_start' => sub {
 
 package main;
 
-use Proc::PID::File;
-use File::HomeDir; 1;
-# If already running, then exit
-if ( Proc::PID::File->running( { dir => File::HomeDir->my_home } ) ) {
-    print "it's running, so dies\n";
-    exit(0);
+use Proc::ProcessTable;
+use File::Basename;
+sub check_cmd_run {
+
+    my $p = new Proc::ProcessTable( 'cache_ttys' => 1 );
+    my $all = $p->table;
+    foreach my $one (@$all) {
+        my $basename = basename($0);
+        if ($one->cmndline =~ /$basename/) {
+            return $one->pid;
+        }
+    }
+    
+    return 0;
+}
+
+if ( check_cmd_run() ) {
+    print "$0 is on, exits\n";
+    exit;
 }
 
 # Initialize new object
