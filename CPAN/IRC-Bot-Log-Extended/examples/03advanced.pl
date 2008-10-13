@@ -1,18 +1,5 @@
 #!/usr/bin/perl -w
 
-# for both Linux/Win32
-my $has_proc_pid_file
-    = eval "use Proc::PID::File; 1;";    ## no critic (ProhibitStringyEval)
-my $has_home_dir
-    = eval "use File::HomeDir; 1;";      ## no critic (ProhibitStringyEval)
-if ( $has_proc_pid_file and $has_home_dir ) {
-
-    # If already running, then exit
-    if ( Proc::PID::File->running( { dir => File::HomeDir->my_home } ) ) {
-        exit(0);
-    }
-}
-
 package IRC::Bot::Log2;
 
 use Moose;
@@ -58,6 +45,14 @@ after 'bot_start' => sub {
 };
 
 package main;
+
+use Proc::PID::File;
+use File::HomeDir; 1;
+# If already running, then exit
+if ( Proc::PID::File->running( { dir => File::HomeDir->my_home } ) ) {
+    print "it's running, so dies\n";
+    exit(0);
+}
 
 # Initialize new object
 my $bot = IRC::Bot2->new(
