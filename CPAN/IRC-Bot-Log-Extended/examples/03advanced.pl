@@ -77,7 +77,7 @@ my $bot = IRC::Bot2->new(
     Port     => '6667',
     Username => 'Fayland_Logger',
     Ircname  => 'Fayland_Logger',
-    Channels => [ '#fayland' ],
+    Channels => [ '#moose', '#catalyst', '#dbix-class' ],
     LogPath  => '/home/fayland/root/irclog/',
     NSPass   => 'nickservpass'
 );
