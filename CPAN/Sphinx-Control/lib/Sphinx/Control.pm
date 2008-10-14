@@ -335,7 +335,7 @@ its databases; otherwise starts searchd.
 Checks to see if the Sphinx searchd deamon that is currently being controlled 
 by this instance is running or not (based on the state of the PID file).
 
-=head2 indexer_args
+=item B<indexer_args>
 
     $ctl->indexer_args(\@args)
     $args = $ctl->indexer_args;
@@ -345,7 +345,7 @@ started using run_indexer.  These should be in the form of an array, each entry
 comprising one option or option argument.  Arguments should exclude '--config
 CONFIG_FILE', which is included on the command line by default.
 
-=head2 run_indexer(@args)
+=item B<run_indexer(@args)>
 
 Runs the indexer program; dies on error.  Arguments passed to the indexer are
 "--config CONFIG_FILE" followed by args set through indexer_args, followed by
