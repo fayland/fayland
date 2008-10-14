@@ -1,6 +1,6 @@
 ---
 name: Sphinx-Control
-version: 0.02
+version: 0.03
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: Simple class to manage a Sphinx searchd
@@ -8,13 +8,14 @@ license: perl
 resources:
   license: http://dev.perl.org/licenses/
 build_requires:
+  Errno: 0
   Moose: 0.32
   MooseX::Types::Path::Class: 0
   Test::More: 0
 provides:
   Sphinx::Control:
     file: lib/Sphinx/Control.pm
-    version: 0.02
+    version: 0.03
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

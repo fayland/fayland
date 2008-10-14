@@ -5,6 +5,7 @@ WriteMakefile
           'NAME' => 'Sphinx::Control',
           'VERSION_FROM' => 'lib/Sphinx/Control.pm',
           'PREREQ_PM' => {
+                           'Errno' => '0',
                            'Moose' => '0.32',
                            'MooseX::Types::Path::Class' => '0',
                            'Test::More' => '0'
