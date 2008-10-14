@@ -4,7 +4,7 @@ use Moose;
 use MooseX::Types::Path::Class;
 use Path::Class;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 has 'config_file' => (
@@ -36,6 +36,8 @@ has 'server_pid' => (
     lazy     => 1,
     builder  => '_find_server_pid',
 );
+
+has 'indexer_args' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 
 sub log { shift; warn @_, "\n" }
 
@@ -201,6 +203,50 @@ sub reload {
     $self->log("searchd reloaded.");
 }
 
+sub run_indexer {
+    my $self = shift;
+    my @extra_args = @_;
+
+    my $searchd = $self->binary_path;
+    my $indexer = $searchd;
+    $indexer =~ s/searchd$/indexer/is;
+
+    confess "Cannot execute Sphinx indexer binary $indexer" unless -x $indexer;
+
+    $self->log("starting indexer ...");
+
+    my $config = $self->config_file->stringify;
+    my $cmd = "$indexer --config $config";
+    $cmd .= ' ' . join(" ", @{$self->indexer_args}) if $self->indexer_args;
+    $cmd .= ' ' . join(" ", @extra_args) if @extra_args;
+
+    $self->log("run $cmd...");
+    if (my $status = _system_with_status($cmd)) {
+	    confess $status;
+    }
+
+    $self->log("indexer done...");
+}
+
+sub _system_with_status {
+    my ($command) = @_;
+
+    local $SIG{CHLD} = 'IGNORE';
+    my $status = system($command);
+    unless ($status == 0) {
+        if ($? == -1) {
+	        return '' if $! == ECHILD;
+            return "$command failed to execute: $!";
+        }
+        if ($? & 127) {
+            return sprintf("$command died with signal %d, %s coredump\n",
+                           ($? & 127),  ($? & 128) ? 'with' : 'without');
+        }
+        return sprintf("$command exited with value %d\n", $? >> 8);
+    }
+    return '';
+}
+
 no Moose; 1;
 
 1;
@@ -287,6 +333,24 @@ its databases; otherwise starts searchd.
 
 Checks to see if the Sphinx searchd deamon that is currently being controlled 
 by this instance is running or not (based on the state of the PID file).
+
+=head2 indexer_args
+
+    $ctl->indexer_args(\@args)
+    $args = $ctl->indexer_args;
+
+Set/get the extra command line arguments to pass to the indexer program when
+started using run_indexer.  These should be in the form of an array, each entry
+comprising one option or option argument.  Arguments should exclude '--config
+CONFIG_FILE', which is included on the command line by default.
+
+=head2 run_indexer(@args)
+
+Runs the indexer program; dies on error.  Arguments passed to the indexer are
+"--config CONFIG_FILE" followed by args set through indexer_args, followed by
+any additional args given as parameters to run_indexer.
+
+Copied from L<Sphinx::Manager>
 
 =item B<log>
 

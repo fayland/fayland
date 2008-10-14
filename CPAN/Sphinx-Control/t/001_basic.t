@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 12;
+use Test::More tests => 13;
 use FindBin qw/$Bin/;
 
 BEGIN {
@@ -17,10 +17,10 @@ isa_ok($ctl, 'Sphinx::Control');
 
 SKIP: {
 
-skip "Please set export TEST_SPHINX_CONTROL_FILE to continue.", 10
+skip "Please set export TEST_SPHINX_CONTROL_FILE to continue.", 11
     unless ( $ENV{TEST_SPHINX_CONTROL_FILE} );
 
-skip "No Sphinx installed (or at least none found), why are you testing this anyway?", 10 
+skip "No Sphinx installed (or at least none found), why are you testing this anyway?", 11 
     unless eval { $ctl->binary_path };
 
 ok(!$ctl->is_server_running, '... the server process is not yet running');
@@ -69,5 +69,8 @@ sleep(2);
 
 ok(!-e $ctl->pid_file, '... PID file has been removed by Sphinx');
 ok(!$ctl->is_server_running, '... the server process is no longer running');
+
+eval { $ctl->run_indexer('--all'); };
+is($@, undef, 'no error');
 
 }
