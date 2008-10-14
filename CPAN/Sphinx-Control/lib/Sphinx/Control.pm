@@ -3,6 +3,7 @@ package Sphinx::Control;
 use Moose;
 use MooseX::Types::Path::Class;
 use Path::Class;
+use Errno qw/ECHILD/;
 
 our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';

@@ -11,6 +11,7 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
         'Moose'      => '0.32',
         'MooseX::Types::Path::Class' => 0,
+        'Errno'      => 0,
     },
     add_to_cleanup      => [ 'Sphinx-Control-*' ],
     create_makefile_pl => 'traditional',
