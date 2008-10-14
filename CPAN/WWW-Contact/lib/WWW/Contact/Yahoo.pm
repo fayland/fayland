@@ -3,7 +3,7 @@ package WWW::Contact::Yahoo;
 use Moose;
 extends 'WWW::Contact::Base';
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 has '+ua_class' => ( default => 'WWW::Mechanize::GZip' );
@@ -38,19 +38,10 @@ sub get_contacts {
     $self->get('http://address.mail.yahoo.com/') || return;
     $ua->follow_link( url_regex => qr/import_export/i );
     
-    ##### detect the export form, the last form
-    my $form_number = 3;
-    while ( $form_number > 0 && !$self->{ua}->form_number($form_number) ) {
-        $form_number--;
-    }
-    #####
-
-    eval {
-        $self->submit_form(
-            form_number => $form_number,
-            button      => 'submit[action_export_yahoo]',
-        );
-    };
+    $ua->form_number(0); # the last form
+    $self->submit_form(
+        button      => 'submit[action_export_yahoo]',
+    );
     
     $content = $ua->content();
     my $i;
