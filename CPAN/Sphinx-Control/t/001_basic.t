@@ -70,8 +70,7 @@ sleep(2);
 ok(!-e $ctl->pid_file, '... PID file has been removed by Sphinx');
 ok(!$ctl->is_server_running, '... the server process is no longer running');
 
-$@ = 'EEEE';
 eval { $ctl->run_indexer('--all'); };
-is($@, 'EEEE', 'no error');
+is($@, '', 'no error');
 
 }
