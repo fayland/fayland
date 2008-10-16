@@ -10,6 +10,21 @@ use URI::Find;
 augment pre_insert => sub {
     my ($self, $file_ref, $message_ref) = @_;
     
+    # skip "[#catalyst 00:42] JOIN: Fayland"
+    if ( $$message_ref =~ /\s+JOIN\:\s+(\S+)$/ ) {
+        $$message_ref = '';
+    }
+    # skip [#catalyst 05:59] MODE: +o zamolxes by: Bender
+    if ( $$message_ref =~ /\s+MODE\:\s+\+[oi]/ ) {
+        $$message_ref = '';
+    }
+    # skip "[#catalyst 03:33] Action: *GumbyNET2 cpan.testers: FAIL Catalyst-View-Jemplate-0.06 i386-linux-thread-multi 2.4.21-27.0.2.elsmp perl-5.8.6 fayland@gmail.com ("Fayland Lam") #2416326"
+    if ( $$message_ref =~ /\s+cpan\.testers\:\s+FAIL/ ) {
+        $$message_ref = '';
+    }
+    
+    return unless ( length($$message_ref) );
+    
     # change filename
     $$file_ref .= '.html';
     
@@ -77,8 +92,8 @@ my $bot = IRC::Bot2->new(
     Port     => '6667',
     Username => 'Fayland_Logger',
     Ircname  => 'Fayland_Logger',
-    Channels => [ '#moose', '#catalyst', '#dbix-class' ],
-    LogPath  => '/home/fayland/root/irclog/',
+    Channels => [ '#moose', '#catalyst', '#dbix-class', '#reaction' ],
+    LogPath  => '/home/faylandfoorum/irclog.foorumbbs.com/',
     NSPass   => 'nickservpass'
 );
 
