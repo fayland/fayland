@@ -37,7 +37,7 @@ sub get_server_pid {
             }
         }
     }
-    confess "No PID found in pid_file (" . $pid_file . ")";
+    return 0;
 }
 
 sub construct_command_line {
