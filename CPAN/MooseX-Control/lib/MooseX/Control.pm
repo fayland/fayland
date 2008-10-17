@@ -5,7 +5,7 @@ use Moose::Util::TypeConstraints;
 use MooseX::Types::Path::Class;
 use Path::Class;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 has 'control_name' => (
@@ -210,9 +210,9 @@ L<http://search.cpan.org/dist/Perlbal-Control/lib/Perlbal/Control.pm>
 
 =head3 find_pid_file
 
-To find a pid file for b<control_name>
+To find a pid file for B<control_name>
 
-if the pid file is optional for b<control_name> like perlbal, we return
+if the pid file is optional for B<control_name> like perlbal, we return
 
     Path::Class::File->new('/tmp/unknown.pid')
 
@@ -232,7 +232,7 @@ system command for B<start>.
 
 =head3 get_server_pid
 
-a pid number for b<contorl_name>
+a pid number for B<contorl_name>
 
 if $self->pid_file is there, we general write like:
 
@@ -268,7 +268,7 @@ if no $pid_file, we may use L<Proc::ProcessTable>.
                 }
             }
         }
-        confess "No PID found in pid_file (" . $pid_file . ")";
+        return 0;
     }
 
 =head1 PROVIDED ATTRIBUTES AND METHODS
@@ -281,7 +281,7 @@ return a L<Path::Class::File> of execute file like /usr/bin/search or /usr/bin/p
 
 =head3 verbose
 
-control $self->debug
+controls $self->debug
 
 =head2 METHODS
 

@@ -3,7 +3,7 @@ package Perlbal::Control;
 use Moose;
 use Proc::ProcessTable;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 with 'MooseX::Control';
@@ -85,8 +85,7 @@ __END__
 
 =head1 NAME
 
-Perlbal::Control - The great new Perlbal::Control!
-
+Perlbal::Control - Simple class to manage perlbal
 
 =head1 SYNOPSIS
 
@@ -169,6 +168,10 @@ L<MooseX::Control>, L<Lighttpd::Control>, L<Nginx::Control>, L<Sphinx::Control>
 
 =head1 AUTHOR
 
+Fayland Lam, C<< <fayland at gmail.com> >>
+
+=head1 COPYRIGHT & LICENSE
+
 Copyright 2008 Fayland Lam
 
 except for those parts that are 
@@ -179,12 +182,5 @@ L<http://www.iinteractive.com>
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Fayland Lam, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
 
 =cut
