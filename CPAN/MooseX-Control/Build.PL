@@ -9,6 +9,8 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/MooseX/Control.pm',
     build_requires => {
         'Test::More' => 0,
+        'Moose'      => '0.32',
+        'MooseX::Types::Path::Class' => 0,
     },
     add_to_cleanup      => [ 'MooseX-Control-*' ],
     create_makefile_pl => 'traditional',
