@@ -7,7 +7,7 @@ WriteMakefile
           'PREREQ_PM' => {
                            'Errno' => '0',
                            'Moose' => '0.32',
-                           'MooseX::Types::Path::Class' => '0',
+                           'MooseX::Control' => '0',
                            'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',
