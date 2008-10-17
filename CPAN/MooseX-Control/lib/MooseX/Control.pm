@@ -85,11 +85,10 @@ sub debug {
     $self->verbose->(@_);
 }
 
-sub pre_startup   { inner() }
-sub post_startup  { inner() }
-
-sub pre_shutdown  { inner() }
-sub post_shutdown { inner() }
+requires 'pre_startup';
+requires 'pre_shutdown';
+requires 'post_startup';
+requires 'post_shutdown';
 
 requires 'find_pid_file';
 requires 'get_server_pid';
