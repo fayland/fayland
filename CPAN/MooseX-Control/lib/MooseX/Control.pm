@@ -100,8 +100,8 @@ sub is_server_running {
     my $pid_file = $self->pid_file;
     
     # no pid file, no server running ...
-    if ($pid_file and not -s $self->pid_file) {
-        return 0;
+    if ($pid_file) {
+        return 0 if (not -s $self->pid_file);
     }
 
     # check it ...
