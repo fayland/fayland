@@ -5,7 +5,7 @@ use Moose::Util::TypeConstraints;
 use MooseX::Types::Path::Class;
 use Path::Class;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 has 'control_name' => (
@@ -104,8 +104,11 @@ sub is_server_running {
         return 0 if (not -s $self->pid_file);
     }
 
+    my $server_pid = $self->get_server_pid;
+    return 0 if ( $server_pid == 0 );
+
     # check it ...
-    kill(0, $self->get_server_pid) ? 1 : 0;
+    kill(0, $server_pid) ? 1 : 0;
 }
 
 sub start {
