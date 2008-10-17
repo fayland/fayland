@@ -100,7 +100,7 @@ sub is_server_running {
     my $pid_file = $self->pid_file;
     
     # no pid file, no server running ...
-    if ($pid_file and $pid_file ne Path::Class::File->new()) {
+    if ($pid_file and $pid_file ne Path::Class::File->new('/tmp/unknown.pid')) {
         return 0 if (not -s $self->pid_file);
     }
 
@@ -211,7 +211,7 @@ To find a pid file for b<control_name>
 
 if the pid file is optional for b<control_name> like perlbal, we return
 
-    return Path::Class::File->new();
+    Path::Class::File->new('/tmp/unknown.pid')
 
 =head3 construct_command_line
 
