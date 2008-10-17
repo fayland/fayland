@@ -9,6 +9,8 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Perlbal/Control.pm',
     build_requires => {
         'Test::More' => 0,
+        'Moose'      => '0.32',
+        'MooseX::Control' => 0,
     },
     add_to_cleanup      => [ 'Perlbal-Control-*' ],
     create_makefile_pl => 'traditional',
