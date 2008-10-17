@@ -7,8 +7,12 @@ our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 has 'errstr'   => ( is => 'rw', isa => 'Maybe[Str]' );
-has 'supplier' => ( is => 'rw', isa => 'Str' );
-has 'custom_supplier_code' => ( is => 'rw', isa => 'CodeRef', default => sub { sub {} } );
+has 'supplier_pattern' => (
+    is => 'rw',
+    isa => 'ArrayRef',
+    auto_deref => 1,
+    default => sub { [] }
+);
 
 sub get_contacts {
     my $self = shift;
@@ -27,15 +31,13 @@ sub get_contacts {
     my ( $username, $postfix ) = ( lc($1), lc($2) );
     
     # get supplier module
-    unless ($self->supplier) {
-        $self->get_supplier_by_email($email) or $self->custom_supplier_code($email);
-        unless ($self->supplier) {
-            $self->errstr("$email is not supported yet.");
-            return;
-        }
+    my $supplier = $self->get_supplier_by_email($email);
+    unless ($supplier) {
+        $self->errstr("$email is not supported yet.");
+        return;
     }
     
-    my $module = 'WWW::Contact::' . $self->supplier;
+    my $module = 'WWW::Contact::' . $supplier;
     eval("use $module;");
     if ($@) {
         $self->errstr($@);
@@ -57,22 +59,35 @@ sub get_contacts {
     }
 }
 
-sub pre_supplier { inner() }
-
 sub get_supplier_by_email {
     my ($self, $email) = @_;
-    
-    $self->pre_supplier();
-    
+
     my ($username, $domain) = split('@', $email);
     # @yahoo.com @yahoo.XX @ymail.com @rocketmail.com
-    if ($email =~ /[\@\.]yahoo\./ or $domain eq 'ymail.com' or $email eq 'rocketmail.com' ) {
-        $self->supplier('Yahoo');
+    if ($email =~ /[\@\.]yahoo\./ or $domain eq 'ymail.com' or $domain eq 'rocketmail.com' ) {
+        return 'Yahoo';
     } elsif ($email =~ /\@gmail\.com$/) {
-        $self->supplier('Gmail');
+        return 'Gmail';
     }
     
-    return $self->supplier ? 1 : 0;
+    my @supplier_pattern = $self->supplier_pattern;
+    foreach my $supplier (@supplier_pattern) {
+        my $pattern = $supplier->{pattern};
+        my $mtype   = ref($pattern);
+        if ( $mtype eq 'Regexp' and $email =~ $pattern ) {
+            return $supplier->{supplier};
+        } elsif ( $domain eq $pattern ) {
+            return $supplier->{supplier};
+        }
+    }
+    
+    return;
+}
+
+sub register_supplier {
+    my ($self, $pattern, $supplier) = @_;
+
+    unshift @{ $self->supplier_pattern }, { pattern => $pattern, supplier => $supplier };
 }
 
 no Moose;
@@ -112,7 +127,25 @@ Get Contacts/AddressBook from public websites.
 
 =back
 
-=head1 HOW TO WRITE MY OWN MODULE
+=head1 METHODS
+
+=head2 register_supplier
+
+To use custom supplier, we must register within WWW::Contact
+
+    $wc->register_supplier( qr/\@a\.com$/, 'Unknown' );
+    $wc->register_supplier( 'a.com', 'Unknown' );
+
+The first arg is a Regexp or domain from email postfix. The second arg is the according module postfix like 'Unknown' form WWW::Contact::Unknown
+
+=head2 get_supplier_by_email
+
+get supplier by email.
+
+    my $supplier = $wc->get_supplier_by_email('a@gmail.com'); # 'Gmail'
+    my $supplier = $wc->get_supplier_by_email('a@a.com');     # 'Unknown'
+
+=head1 HOW TO WRITE YOUR OWN MODULE
 
 please read L<WWW::Contact::Base> and examples: L<WWW::Contact::Yahoo> and L<WWW::Contact::Gmail>
 
@@ -149,7 +182,9 @@ Assuming we write a custom module as WWW::Contact::Unknown
 We can use it within WWW::Contact
 
     my $wc = new WWW::Contact;
-    $wc->supplier('Unknown'); # it will eval use WWW::Contact::Unknown when get_contacts
+    $wc->register_supplier( qr/\@a\.com$/, 'Unknown' );
+    # or
+    # $wc->register_supplier( 'a.com', 'Unknown' );
     
     my @contacts = $wc->get_contacts('a@a.com', 'b');
     my $errstr = $wc->errstr;

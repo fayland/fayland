@@ -8,14 +8,16 @@ use Test::More tests => 8;
 use WWW::Contact;
 
 my $wc = new WWW::Contact;
-$wc->supplier('Unknown');
+
+$wc->register_supplier( qr/\@a\.com$/, 'Unknown' );
+$wc->register_supplier( 'b.com', 'Unknown' );
 
 my @contacts = $wc->get_contacts('a@a.com', 'b');
 my $errstr = $wc->errstr;
 is($errstr, 'error!', 'get error with password b');
 is(scalar @contacts, 0, 'empty contact list');
 
-@contacts = $wc->get_contacts('a@a.com', 'c');
+@contacts = $wc->get_contacts('a@b.com', 'c');
 $errstr = $wc->errstr;
 is($errstr, undef, 'no error with password c');
 is(scalar @contacts, 2, 'get 2 contact list');
