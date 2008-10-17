@@ -13,7 +13,7 @@ BEGIN {
 my $ctl = Perlbal::Control->new(
     config_file => $ENV{TEST_PERLBAL_CONTROL_FILE} || [qw[ / etc conf perlbal.conf ]],
 );
-isa_ok($ctl, 'Perlbal::Perlbal');
+isa_ok($ctl, 'Perlbal::Control');
 
 SKIP: {
 

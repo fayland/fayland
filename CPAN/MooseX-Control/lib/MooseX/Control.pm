@@ -172,25 +172,150 @@ MooseX::Control - Simple class to manage a execute deamon
     use Moose;
     with 'MooseX::Control';
     
+    has '+control_name' => ( default => 'xxxx' );
     
+    sub pre_startup   { inner() }
+    sub post_startup  { inner() }
+    sub pre_shutdown  { inner() }
+    sub post_shutdown { inner() }
+    
+    sub get_server_pid { }
+    sub construct_command_line { }
+    sub find_pid_file { }
 
 =head1 DESCRIPTION
 
 It is a Moose Role to ease writing XXX::Control like L<Sphinx::Control>, L<Perlbal::Control>
 
+Please view source code for more details.
+
+L<http://search.cpan.org/dist/Sphinx-Control/lib/Sphinx/Control.pm>
+
+L<http://search.cpan.org/dist/Perlbal-Control/lib/Perlbal/Control.pm>
+
+=head1 REQUIRED ATTRIBUTES AND METHODS
+
+=head2 ATTRIUTES
+
+=head3 B<control_name>
+
+    has '+control_name' => ( default => 'perlbal' );
+    # or
+    has '+control_name' => ( default => 'searchd' );
+
+=head2 METHODS
+
+=head3 find_pid_file
+
+To find a pid file for b<control_name>
+
+if the pid file is optional for b<control_name> like perlbal, we return
+
+    return Path::Class::File->new();
+
+=head3 construct_command_line
+
+system command for B<start>.
+
+    sub construct_command_line {
+        my $self = shift;
+        
+        my $conf = $self->config_file;
+        (-f $conf)
+            || confess "Could not locate configuration file ($conf)";
+        
+        ($self->binary_path, '--daemon', '--config', $conf->stringify);
+    }
+
+=head3 get_server_pid
+
+a pid number for b<contorl_name>
+
+if $self->pid_file is there, we general write like:
+
+    sub get_server_pid {
+        my $self = shift;
+        
+        my $pid  = $self->pid_file->slurp(chomp => 1);
+        ($pid)
+            || confess "No PID found in pid_file (" . $self->pid_file . ")";
+        $pid;
+    }
+
+if no $pid_file, we may use L<Proc::ProcessTable>.
+
+   sub get_server_pid {
+        my $self = shift;
+    
+        my $pid_file     = $self->pid_file;
+    
+        if ( $pid_file ) {
+            my $pid  = $pid_file->slurp(chomp => 1);
+            ($pid)
+                || confess "No PID found in pid_file (" . $pid_file . ")";
+            return $pid;
+        } else {
+            my $config_file  = $self->config_file->stringify;
+            my $control_name = $self->control_name;
+            my $p = new Proc::ProcessTable( 'cache_ttys' => 1 );
+            my $all = $p->table;
+            foreach my $one (@$all) {
+                if ($one->cmndline =~ /$control_name/ and $one->cmndline =~ /$config_file/) {
+                    return $one->pid;
+                }
+            }
+        }
+        confess "No PID found in pid_file (" . $pid_file . ")";
+    }
+
+=head1 PROVIDED ATTRIBUTES AND METHODS
+
+=head2 ATTRIBUTES
+
+=head3 binary_path
+
+return a L<Path::Class::File> of execute file like /usr/bin/search or /usr/bin/perlbal
+
+=head3 verbose
+
+control $self->debug
+
+=head2 METHODS
+
+=head3 is_server_running
+
+Checks to see if the B<control_name> deamon that is currently being controlled 
+by this instance is running or not (based on the state of the PID).
+
+=head3 start
+
+Starts the B<control_name> deamon that is currently being controlled by this 
+instance. It will also run the pre_startup and post_startup hooks.
+
+=head3 stop
+
+Stops the B<control_name> deamon that is currently being controlled by this 
+instance. It will also run the pre_shutdown and post_shutdown hooks.
+
+=head1 SEE ALSO
+
+L<Moose>, L<MooseX::Types::Path::Class>, L<Sphinx::Control>, L<Perlbal::Control>
+
 =head1 AUTHOR
 
 Fayland Lam, C<< <fayland at gmail.com> >>
 
-=head1 ACKNOWLEDGEMENTS
-
-Thanks to the L<Moose> Team.
-
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 Fayland Lam, all rights reserved.
+Copyright 2008 Fayland Lam
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+except for those parts that are 
+
+Copyright 2008 Infinity Interactive, Inc.
+
+L<http://www.iinteractive.com>
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut

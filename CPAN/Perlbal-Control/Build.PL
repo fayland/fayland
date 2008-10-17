@@ -11,6 +11,7 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
         'Moose'      => '0.32',
         'MooseX::Control' => 0,
+        'Proc::ProcessTable' => 0,
     },
     add_to_cleanup      => [ 'Perlbal-Control-*' ],
     create_makefile_pl => 'traditional',

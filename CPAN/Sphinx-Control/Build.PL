@@ -10,7 +10,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'Moose'      => '0.32',
-        'MooseX::Types::Path::Class' => 0,
+        'MooseX::Control' => 0,
         'Errno'      => 0,
     },
     add_to_cleanup      => [ 'Sphinx-Control-*' ],

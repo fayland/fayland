@@ -1,49 +1,16 @@
 package Sphinx::Control;
 
 use Moose;
-use MooseX::Types::Path::Class;
 use Path::Class;
 use Errno qw/ECHILD/;
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
-has 'config_file' => (
-    is       => 'rw',
-    isa      => 'Path::Class::File',
-    coerce   => 1,
-);
+with 'MooseX::Control';
 
-has 'binary_path' => (
-    is      => 'rw',
-    isa     => 'Path::Class::File',
-    coerce  => 1,
-    lazy    => 1,
-    builder => '_find_binary_path'
-);
-
-has 'pid_file' => (
-    is      => 'rw',
-    isa     => 'Path::Class::File',
-    coerce  => 1,
-    lazy    => 1,
-    builder => '_find_pid_file',
-);
-
-has 'server_pid' => (
-    init_arg => undef,
-    is       => 'rw',
-    isa      => 'Int',
-    lazy     => 1,
-    builder  => '_find_server_pid',
-);
-
+has '+control_name' => ( default => 'searchd' );
 has 'indexer_args' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
-
-sub log { shift; warn @_, "\n" }
-
-## ---------------------------------
-## events
 
 sub pre_startup   { inner() }
 sub post_startup  { inner() }
@@ -51,17 +18,27 @@ sub post_startup  { inner() }
 sub pre_shutdown  { inner() }
 sub post_shutdown { inner() }
 
-## ---------------------------------
-
-sub _find_server_pid {
+sub get_server_pid {
     my $self = shift;
+    
     my $pid  = $self->pid_file->slurp(chomp => 1);
     ($pid)
         || confess "No PID found in pid_file (" . $self->pid_file . ")";
     $pid;
 }
 
-sub _find_pid_file {
+sub construct_command_line {
+    my $self = shift;
+    my @opts = @_;
+    my $conf = $self->config_file;
+    
+    (-f $conf)
+        || confess "Could not locate configuration file ($conf)";
+    
+    ($self->binary_path, @opts, '--config', $conf->stringify);
+}
+
+sub find_pid_file {
     my $self = shift;
     
     my $config_file = $self->config_file;
@@ -83,116 +60,22 @@ sub _find_pid_file {
     }
     
     confess "Could not locate the pid-file information, please supply it manually";
-}
-
-sub _find_binary_path {
-    my $self = shift;
-
-    my $searchd = do {
-        my $bin = `which searchd`;
-        chomp($bin);
-        Path::Class::File->new($bin)
-    };
-
-    return $searchd if -x $searchd;
-
-    for my $prefix (qw(/usr /usr/local /opt/local /sw)) {
-        for my $bindir (qw(bin sbin)) {
-            my $searchd = Path::Class::File->new($prefix, $bindir, 'searchd');
-            return $searchd if -x $searchd;
-        }
-    }
-
-    confess "can't find searchd anywhere tried => (" . ($searchd || 'nothing') . ")";
-}
-
-sub _construct_command_line {
-    my $self = shift;
-    my @opts = @_;
-    my $conf = $self->config_file;
-    
-    (-f $conf)
-        || confess "Could not locate configuration file ($conf)";
-    
-    ($self->binary_path, @opts, '--config', $conf->stringify);
-}
-
-## ---------------------------------
-
-sub is_server_running {
-    my $self = shift;
-    # no pid file, no server running ...
-    return 0 unless -s $self->pid_file;
-    # has pid file, then check it ...
-    kill(0, $self->server_pid) ? 1 : 0;
-}
-
-sub start {
-    my $self = shift;
-
-    $self->log("Starting searchd ...");
-    $self->pre_startup;
-
-    # NOTE:
-    # do this after startup so that it
-    # would be possible to write the 
-    # config file in the pre_startup
-    # hook if we wanted to.
-    # - SL
-    my @cli = $self->_construct_command_line;
-
-    unless (system(@cli) == 0) {
-        $self->log("Could not start searchd (@cli) exited with status $?");
-        return;
-    }
-
-    $self->post_startup;
-    
-    # update server_pid
-    $self->server_pid( $self->_find_server_pid );
-    
-    $self->log("searchd started.");    
-}
-
-sub stop {
-    my $self    = shift;
-    my $pid_file = $self->pid_file;
-
-    if (-f $pid_file) {
-        
-        if (!$self->is_server_running) {
-            $self->log("Found pid_file($pid_file), but process does not seem to be running.");
-            return;
-        }
-        
-        $self->log("Stoping searchd ...");
-        $self->pre_shutdown;
-        
-        kill 2, $self->server_pid;
-        
-        $self->post_shutdown;
-        $self->log("searchd stopped.");    
-        
-        return;
-    }
-
-    $self->log("... pid_file($pid_file) not found.");
-}
+};
 
 sub restart {
     my $self = shift;
     
-    $self->log("Restarting searchd ...");
+    $self->debug("Restarting searchd ...");
     $self->stop;
     
     $self->start;
-    $self->log("searchd restarted.");
+    $self->debug("searchd restarted.");
 }
 
 sub reload {
     my $self = shift;
     
-    $self->log("reloading searchd ...");
+    $self->debug("reloading searchd ...");
     
     if ( $self->is_server_running ) {
     	# send HUP
@@ -201,7 +84,7 @@ sub reload {
     else {
 	    $self->start;
     }
-    $self->log("searchd reloaded.");
+    $self->debug("searchd reloaded.");
 }
 
 sub run_indexer {
@@ -214,19 +97,19 @@ sub run_indexer {
 
     confess "Cannot execute Sphinx indexer binary $indexer" unless -x $indexer;
 
-    $self->log("starting indexer ...");
+    $self->debug("starting indexer ...");
 
     my $config = $self->config_file->stringify;
     my $cmd = "$indexer --config $config";
     $cmd .= ' ' . join(" ", @{$self->indexer_args}) if $self->indexer_args;
     $cmd .= ' ' . join(" ", @extra_args) if @extra_args;
 
-    $self->log("run $cmd...");
+    $self->debug("run $cmd...");
     if (my $status = _system_with_status($cmd)) {
 	    confess $status;
     }
 
-    $self->log("indexer done...");
+    $self->debug("indexer done...");
 }
 
 sub _system_with_status {
@@ -301,10 +184,6 @@ This is a L<Path::Class::File> instance pointing to the searchd
 pid file. This can be autodiscovered from the config file or you 
 can specify it via the constructor.
 
-=item I<server_pid>
-
-This is the PID of the live server.
-
 =back
 
 =head1 METHODS 
@@ -330,6 +209,10 @@ Stops and thens starts the searchd daemon.
 Sends a HUP signal to the searchd daemon if it is running, to tell it to reload
 its databases; otherwise starts searchd.
 
+=item B<get_server_pid>
+
+This is the PID of the live server.
+
 =item B<is_server_running>
 
 Checks to see if the Sphinx searchd deamon that is currently being controlled 
@@ -353,16 +236,15 @@ any additional args given as parameters to run_indexer.
 
 Copied from L<Sphinx::Manager>
 
-=item B<log>
+=item B<debug>
 
-Simple logger that you can use, it just sends the output to STDERR via
-the C<warn> function.
+depends on $ctl->verbose.
 
 =back
 
 =head1 SEE ALSO
 
-L<Sphinx::Manager>, L<Lighttpd::Control>, L<Nginx::Control>
+L<MooseX::Control>, L<Sphinx::Manager>, L<Lighttpd::Control>, L<Nginx::Control>, L<Perlbal::Control>
 
 =head1 AUTHOR
 

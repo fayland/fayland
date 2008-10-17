@@ -18,17 +18,17 @@ sub post_shutdown { inner() }
 
 sub get_server_pid {
     my $self = shift;
-    
-    my $control_name = $self->control_name;
+
     my $pid_file     = $self->pid_file;
-    my $config_file  = $self->config_file->stringify;
-    
+
     if ( $pid_file ) {
         my $pid  = $pid_file->slurp(chomp => 1);
         ($pid)
             || confess "No PID found in pid_file (" . $pid_file . ")";
         return $pid;
     } else {
+        my $config_file  = $self->config_file->stringify;
+        my $control_name = $self->control_name;
         my $p = new Proc::ProcessTable( 'cache_ttys' => 1 );
         my $all = $p->table;
         foreach my $one (@$all) {
@@ -37,7 +37,7 @@ sub get_server_pid {
             }
         }
     }
-    return 0;
+    confess "No PID found in pid_file (" . $pid_file . ")";
 }
 
 sub construct_command_line {
@@ -74,7 +74,7 @@ sub find_pid_file {
     }
     
     # if not find, just return nothing
-    return;
+    return Path::Class::File->new();
 };
 
 no Moose;
@@ -97,7 +97,7 @@ Perlbal::Control - The great new Perlbal::Control!
         config_file => [qw[ conf perlbal.conf ]],
         # PID file can also be discovered automatically 
         # from the conf, or if you prefer you can specify
-        pid_file    => 'searchd.pid',    
+        pid_file    => 'perlbal.pid',    
     );
   
     $ctl->start if lc($command) eq 'start';
@@ -111,13 +111,73 @@ an early release with only the bare bones functionality needed, future
 releases will surely include more functionality. Suggestions and crazy ideas
 welcomed, especially in the form of patches with tests.
 
+=head1 ATTRIBUTES
+
+=over 4
+
+=item I<config_file>
+
+This is a L<Path::Class::File> instance for the configuration file.
+
+=item I<binary_path>
+
+This is a L<Path::Class::File> instance pointing to the perlbal 
+binary. This can be autodiscovered or you can specify it via the 
+constructor.
+
+=item I<pid_file>
+
+This is a L<Path::Class::File> instance pointing to the perlbal 
+pid file. This can be autodiscovered from the config file or you 
+can specify it via the constructor. it is optional.
+
+=back
+
+=head1 METHODS 
+
+=over 4
+
+=item B<start>
+
+Starts the perlbal deamon that is currently being controlled by this 
+instance. It will also run the pre_startup and post_startup hooks.
+
+=item B<stop>
+
+Stops the perlbal deamon that is currently being controlled by this 
+instance. It will also run the pre_shutdown and post_shutdown hooks.
+
+=item B<get_server_pid>
+
+This is the PID of the live server.
+
+=item B<is_server_running>
+
+Checks to see if the perlbal deamon that is currently being controlled 
+by this instance is running or not (based on the state of the PID file).
+
+=item B<debug>
+
+depends on $ctl->verbose.
+
+=back
+
+=head1 SEE ALSO
+
+L<MooseX::Control>, L<Lighttpd::Control>, L<Nginx::Control>, L<Sphinx::Control>
+
 =head1 AUTHOR
 
-Fayland Lam, C<< <fayland at gmail.com> >>
+Copyright 2008 Fayland Lam
 
-=head1 ACKNOWLEDGEMENTS
+except for those parts that are 
 
-The L<Moose> Team.
+Copyright 2008 Infinity Interactive, Inc.
+
+L<http://www.iinteractive.com>
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =head1 COPYRIGHT & LICENSE
 
