@@ -52,11 +52,12 @@ sub _find_binary_path {
 
 has 'pid_file' => (
     is      => 'rw',
-    isa     => 'Path::Class::File',
+    isa     => 'Maybe[Path::Class::File]',
     coerce  => 1,
     lazy    => 1,
     builder => 'find_pid_file',
 );
+requires 'find_pid_file';
 
 my $sub_verbose = sub {
     my $msg = shift;
@@ -90,7 +91,6 @@ requires 'pre_shutdown';
 requires 'post_startup';
 requires 'post_shutdown';
 
-requires 'find_pid_file';
 requires 'get_server_pid';
 requires 'construct_command_line';
 
