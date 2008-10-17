@@ -55,10 +55,8 @@ has 'pid_file' => (
     isa     => 'Path::Class::File',
     coerce  => 1,
     lazy    => 1,
-    builder => '_find_pid_file',
+    builder => 'find_pid_file',
 );
-
-sub _find_pid_file { inner() }
 
 my $sub_verbose = sub {
     my $msg = shift;
@@ -93,6 +91,7 @@ sub post_startup  { inner() }
 sub pre_shutdown  { inner() }
 sub post_shutdown { inner() }
 
+requires 'find_pid_file';
 requires 'get_server_pid';
 requires 'construct_command_line';
 
