@@ -52,7 +52,7 @@ sub _find_binary_path {
 
 has 'pid_file' => (
     is      => 'rw',
-    isa     => 'Any',
+    isa     => 'Path::Class::File',
     coerce  => 1,
     lazy    => 1,
     builder => 'find_pid_file',
