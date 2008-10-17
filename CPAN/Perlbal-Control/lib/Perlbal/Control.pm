@@ -21,10 +21,11 @@ sub get_server_pid {
 
     my $pid_file     = $self->pid_file;
 
-    if ( $pid_file ) {
+    if ($pid_file and $pid_file ne Path::Class::File->new('/tmp/unknown.pid')) {
         my $pid  = $pid_file->slurp(chomp => 1);
         ($pid)
             || confess "No PID found in pid_file (" . $pid_file . ")";
+        
         return $pid;
     } else {
         my $config_file  = $self->config_file->stringify;
@@ -74,7 +75,7 @@ sub find_pid_file {
     }
     
     # if not find, just return nothing
-    return Path::Class::File->new();
+    return Path::Class::File->new('/tmp/unknown.pid');
 };
 
 no Moose;
