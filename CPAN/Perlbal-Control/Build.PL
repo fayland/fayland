@@ -10,7 +10,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'Moose'      => '0.32',
-        'MooseX::Control' => 0,
+        'MooseX::Control' => '0.02',
         'Proc::ProcessTable' => 0,
     },
     add_to_cleanup      => [ 'Perlbal-Control-*' ],
