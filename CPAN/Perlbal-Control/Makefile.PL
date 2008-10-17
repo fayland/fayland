@@ -6,7 +6,7 @@ WriteMakefile
           'VERSION_FROM' => 'lib/Perlbal/Control.pm',
           'PREREQ_PM' => {
                            'Moose' => '0.32',
-                           'MooseX::Control' => '0',
+                           'MooseX::Control' => '0.02',
                            'Proc::ProcessTable' => '0',
                            'Test::More' => '0'
                          },
