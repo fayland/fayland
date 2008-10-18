@@ -25,6 +25,7 @@ extra_tests;
   requires('WWW::Mechanize',                 undef     );
   requires('Email::Send',                    undef     );
   requires('Moose',                          '0.35'    );
+  requires('PPI',                            undef     );
   requires('Catalyst',                       '5.7014'  ); # work
   requires('DBIx::Class',                    '0.08010' ); # $$$$
   requires('Template',                       '2.20'    ); # @_@
