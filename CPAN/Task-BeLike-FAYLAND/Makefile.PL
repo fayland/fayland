@@ -11,6 +11,7 @@ use inc::Module::Install;
 
 name        ('Task-BeLike-FAYLAND');
 all_from    ('lib/Task/BeLike/FAYLAND.pm');
+license     ('perl');
 extra_tests;
 
   requires('CPAN',                           '1.87'    );
