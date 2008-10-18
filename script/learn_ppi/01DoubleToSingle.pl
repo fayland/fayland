@@ -28,10 +28,12 @@ foreach my $ele ( @{ $doc->find('PPI::Token') } ) {
             next;
         }
     } elsif ( $ele->isa('PPI::Token::Quote::Interpolate') ) {
+        # PPI::Token::Quote::Interpolate no ->interpolations
         my $str = $ele->string;
-        my $separator = $ele->{separator};
-        $to .= "q$separator" . $str . $separator;
-        next;
+        if ( $str =~ /^\w+$/ ) {
+            $to .= "'$str'";
+            next;
+        }
     }
     $to .= $ele->content;
 }
