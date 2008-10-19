@@ -86,7 +86,7 @@ instead of ->all or ->slurp
 
 =head1 SEE ALSO
 
-L<Moose>, L<MooseX::Types>, L<IO::All>
+L<Moose>, L<MooseX::Types>, L<MooseX::Types::IO>, L<IO::All>
 
 =head1 AUTHOR
 

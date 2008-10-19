@@ -93,7 +93,7 @@ L<IO::Handle> object.
 
 =head1 SEE ALSO
 
-L<Moose>, L<MooseX::Types>, L<IO::Hanlde>, L<IO::File>, L<IO::String>
+L<Moose>, L<MooseX::Types>, L<MooseX::Types::IO::All>, L<IO::Hanlde>, L<IO::File>, L<IO::String>
 
 =head1 AUTHOR
 
