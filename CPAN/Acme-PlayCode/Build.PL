@@ -10,7 +10,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'Moose'      => 0,
-        'MooseX::Object::Pluggable ' => 0,
+        'MooseX::Object::Pluggable' => 0,
         'PPI'        => 0,
     },
     add_to_cleanup      => [ 'Acme-PlayCode-*' ],
