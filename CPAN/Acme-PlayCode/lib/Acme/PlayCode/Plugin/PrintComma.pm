@@ -2,7 +2,7 @@ package Acme::PlayCode::Plugin::PrintComma;
 
 use Moose::Role;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use vars qw/$printcomma_start/;
@@ -23,6 +23,9 @@ around 'do_with_token' => sub {
         $printcomma_start = 0;
     } elsif ( $printcomma_start and $token->isa('PPI::Token::Operator')
         and $token->content eq '.' ) {
+        if ( $tokens[$token_flag - 1]->isa('PPI::Token::Whitespace') ) {
+            pop @{ $self->output };
+        }
         return ',';
     }
     
@@ -58,7 +61,7 @@ Acme::PlayCode::Plugin::PrintComma - Play code with printing comma
 
 becomes
 
-    print "a " , "print 'a' . 'b'" , "c\n";
+    print "a ", "print 'a' . 'b'", "c\n";
 
 =head1 SEE ALSO
 

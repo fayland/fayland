@@ -2,7 +2,7 @@ package Acme::PlayCode::Plugin::DoubleToSingle;
 
 use Moose::Role;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 around 'do_with_token' => sub {
@@ -14,7 +14,15 @@ around 'do_with_token' => sub {
     my $token  = $tokens[$token_flag];
     
     if ( $token->isa('PPI::Token::Quote::Double') ) {
-        unless ( $token->interpolations ) {
+        # XXX?
+        # why treat 
+        # bless( {
+        #   'separator' => '"',
+        #   'content' => '"c\\n"'
+        # }, 'PPI::Token::Quote::Double' );
+        # "c\\n" as not interpolations
+        # bugs?
+        if ( not $token->interpolations and not $token->content =~ /\\n/ ) {
             my $str = $token->string;
             if ( $str !~ /\'/) {
                 return "'$str'";

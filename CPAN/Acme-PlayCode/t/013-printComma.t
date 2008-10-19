@@ -10,7 +10,7 @@ print "a " . "print 'a' . 'b'" . "c\n";
 FROM
 
 my $to = <<'TO';
-print "a " , "print 'a' . 'b'" , "c\n";
+print "a ", "print 'a' . 'b'", "c\n";
 TO
 
 my $app = Acme::PlayCode->new();

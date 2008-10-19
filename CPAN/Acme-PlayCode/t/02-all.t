@@ -11,7 +11,7 @@ my $b = "'b'";
 my $c = 'c';
 my $d = qq~'d'~;
 if ( $a eq "a" ) {
-    print "1";
+    print "a " . "print 'a' . 'b'" . "c\n";
 } elsif ( $b eq 'b') {
     print "2";
 } elsif ( $c ne qq~c~) {
@@ -29,7 +29,7 @@ my $b = q~'b'~;
 my $c = 'c';
 my $d = qq~'d'~;
 if ( 'a' eq $a ) {
-    print '1';
+    print 'a ', q~print 'a' . 'b'~, "c\n";
 } elsif ( 'b' eq $b ) {
     print '2';
 } elsif ( $c ne 'c') {
@@ -44,6 +44,7 @@ TO
 my $app = Acme::PlayCode->new();
 $app->load_plugin('DoubleToSingle');
 $app->load_plugin('ExchangeCondition');
+$app->load_plugin('PrintComma');
 my $ret = $app->play($from);
 
 is($ret, $to, '1 ok');

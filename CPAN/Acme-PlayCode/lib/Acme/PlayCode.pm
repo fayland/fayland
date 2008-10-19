@@ -4,7 +4,7 @@ use Moose;
 use PPI;
 use Path::Class ();
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 with 'MooseX::Object::Pluggable';
