@@ -34,94 +34,74 @@ __END__
 
 =head1 NAME
 
-MooseX::Types::IO - The great new MooseX::Types::IO!
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
-
+MooseX::Types::IO - L<IO> related constraints and coercions for Moose
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
+    package Foo;
+    
+    use Moose;
     use MooseX::Types::IO;
+    
+    has io => (
+        isa => "IO",
+        is  => "rw",
+        coerce => 1,
+    );
+    
+    # later
+    my $str = "test for IO::String\n line 2";
+    my $foo = Foo->new( io => \$str );
+    my $io  = $foo->io; # IO::String
+    # or
+    my $filename = "file.txt";
+    my $foo = Foo->new( io => $filename );
+    my $io  = $foo->io; # IO::File
+    # or
+    my $foo = Foo->new( io => [ $fh, '<' ] );
+    my $io  = $foo->io; # IO::Handle
 
-    my $foo = MooseX::Types::IO->new();
-    ...
+=head1 DESCRIPTION
 
-=head1 EXPORT
+This module packages one L<Moose::Util::TypeConstraints> with coercions,
+designed to work with the L<IO> suite of objects.
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+=head1 CONSTRAINTS
 
-=head1 FUNCTIONS
+=over 4
 
-=head2 function1
+=item L<Str>
 
-=cut
+    my $fh = new IO::File;
+    $fh->open($_);
 
-sub function1 {
-}
+L<IO::File> object.
 
-=head2 function2
+=item L<ScalarRef>
 
-=cut
+    IO::String->new($$_);
 
-sub function2 {
-}
+L<IO::String> object. 
+
+=item L<ArrayRef[FileHandle|Str]>
+
+    IO::Handle->new_from_fd( @$_ );
+
+L<IO::Handle> object. 
+
+=back
+
+=head1 SEE ALSO
+
+L<Moose>, L<MooseX::Types>, L<IO::Hanlde>, L<IO::File>, L<IO::String>
 
 =head1 AUTHOR
 
 Fayland Lam, C<< <fayland at gmail.com> >>
 
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-moosex-types-io at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=MooseX-Types-IO>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc MooseX::Types::IO
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=MooseX-Types-IO>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/MooseX-Types-IO>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/MooseX-Types-IO>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/MooseX-Types-IO>
-
-=back
-
-
 =head1 ACKNOWLEDGEMENTS
 
+The L<Moose> Team
 
 =head1 COPYRIGHT & LICENSE
 
@@ -130,7 +110,4 @@ Copyright 2008 Fayland Lam, all rights reserved.
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-
 =cut
-
-1; # End of MooseX::Types::IO

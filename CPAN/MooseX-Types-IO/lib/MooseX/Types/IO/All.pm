@@ -22,10 +22,9 @@ coerce 'IO::All',
         },
     from ScalarRef,
         via {
-            my $str = $$_;
-            my $ios = io('$');
-            $ios->print($str);
-            return $ios;
+            my $s = io('$');
+            $s->print($$_);
+            return $s;
         };
 
 1;
@@ -33,85 +32,69 @@ __END__
 
 =head1 NAME
 
-MooseX::Types::IO::All - The great new MooseX::Types::IO::All!
+MooseX::Types::IO::All - L<IO::All> related constraints and coercions for Moose
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+    package Foo;
+    
+    use Moose;
+    use MooseX::Types::IO::All;
+    
+    has io => (
+        isa => "IO::All",
+        is  => "rw",
+        coerce => 1,
+    );
+    
+    # later
+    my $str = "test for IO::String\n line 2";
+    my $foo = Foo->new( io => \$str );
+    my $io  = $foo->io; # IO::All::String
+    # or
+    my $filename = "file.txt";
+    my $foo = Foo->new( io => $filename );
+    my $io  = $foo->io; # IO::All
 
-Perhaps a little code snippet.
+=head1 DESCRIPTION
 
-    use MooseX::Types::IO;
+This module packages one L<Moose::Util::TypeConstraints> with coercions,
+designed to work with the L<IO::All> suite of objects.
 
-    my $foo = MooseX::Types::IO->new();
-    ...
+=head1 CONSTRAINTS
 
-=head1 EXPORT
+=over 4
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+=item L<Str>
 
-=head1 FUNCTIONS
+    io $_;
 
-=head2 function1
+L<IO::All> object. 
 
-=cut
+=item L<ScalarRef>
 
-sub function1 {
-}
+    my $s = io('$');
+    $s->print($$_);
 
-=head2 function2
+L<IO::All::String> object. so generally u need
 
-=cut
+    ${ $s->string_ref } # the content
 
-sub function2 {
-}
+instead of ->all or ->slurp
+
+=back
+
+=head1 SEE ALSO
+
+L<Moose>, L<MooseX::Types>, L<IO::All>
 
 =head1 AUTHOR
 
 Fayland Lam, C<< <fayland at gmail.com> >>
 
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-moosex-types-io at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=MooseX-Types-IO>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc MooseX::Types::IO
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=MooseX-Types-IO>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/MooseX-Types-IO>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/MooseX-Types-IO>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/MooseX-Types-IO>
-
-=back
-
-
 =head1 ACKNOWLEDGEMENTS
 
+The L<Moose> Team
 
 =head1 COPYRIGHT & LICENSE
 
@@ -120,7 +103,4 @@ Copyright 2008 Fayland Lam, all rights reserved.
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-
 =cut
-
-1; # End of MooseX::Types::IO
