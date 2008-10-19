@@ -1,6 +1,6 @@
 ---
 name: MooseX-Types-IO
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: L<IO> related constraints and coercions for Moose
@@ -17,10 +17,10 @@ build_requires:
 provides:
   MooseX::Types::IO:
     file: lib/MooseX/Types/IO.pm
-    version: 0.01
+    version: 0.02
   MooseX::Types::IO::All:
     file: lib/MooseX/Types/IO/All.pm
-    version: 0.01
+    version: 0.02
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
