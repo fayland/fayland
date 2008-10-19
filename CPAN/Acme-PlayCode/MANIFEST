@@ -1,0 +1,14 @@
+Build.PL
+Changes
+lib/Acme/PlayCode.pm
+lib/Acme/PlayCode/Plugin/DoubleToSingle.pm
+lib/Acme/PlayCode/Plugin/ExchangeCondition.pm
+MANIFEST			This list of files
+README
+t/00-load.t
+t/011-doubleTosingle.t
+t/012-exchangeCondition.t
+t/02-all.t
+t/pod.t
+Makefile.PL
+META.yml
