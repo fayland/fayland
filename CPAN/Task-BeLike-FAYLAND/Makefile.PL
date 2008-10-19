@@ -38,6 +38,7 @@ extra_tests;
   
   # all my modules
   requires('Acme::CPANAuthors::Chinese');
+  requires('Acme::PlayCode');
   requires('Business::CN::IdentityCard');
   requires('Catalyst::Authentication::Store::FromSub::Hash');
   requires('Catalyst::Model::DBIC::Schema::QueryLog');

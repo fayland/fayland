@@ -3,7 +3,7 @@ package Task::BeLike::FAYLAND;
 use warnings;
 use strict;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 1;
 __END__
@@ -42,6 +42,7 @@ Here are the contents:
   
   # all my modules
   requires('Acme::CPANAuthors::Chinese');
+  requires('Acme::PlayCode');
   requires('Business::CN::IdentityCard');
   requires('Catalyst::Authentication::Store::FromSub::Hash');
   requires('Catalyst::Model::DBIC::Schema::QueryLog');
