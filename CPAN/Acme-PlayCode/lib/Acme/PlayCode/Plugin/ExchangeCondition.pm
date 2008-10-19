@@ -75,10 +75,13 @@ around 'do_with_token' => sub {
                 if ( $exchange_able ) {
                     # remove previous full tokens
                     my $previous_num = scalar @previous_full_tokens;
+                    my $next_num     = scalar @next_full_tokens;
                     my @output = @{ $self->output };
                     @output = splice( @output, 0, scalar @output - $previous_num );
                     # exchange starts
-                    map { push @output, $_->content } @next_full_tokens;
+                    foreach my $i ( $orginal_flag + 1 .. $orginal_flag + $next_num ) {
+                        push @output, $orig->($self, $i);
+                    }
                     # in case @next_full_tokens is closed with "a" instead of space
                     unless ($next_full_tokens[-1]->isa('PPI::Token::Whitespace')) {
                         push @output, ' ';

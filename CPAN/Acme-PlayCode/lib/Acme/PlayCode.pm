@@ -36,7 +36,7 @@ sub run {
     
     my $doc    = PPI::Document->new( $self->io );
     $self->tokens( $doc->find('PPI::Token') );
-    
+
     $self->do_with_tokens();
     
     my @output = @{ $self->output };
