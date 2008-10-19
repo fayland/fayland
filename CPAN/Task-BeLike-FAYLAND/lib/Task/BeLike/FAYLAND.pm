@@ -51,6 +51,7 @@ Here are the contents:
   requires('Catalyst::Plugin::PickComponents');
   requires('Date::Holidays::CN');
   requires('Email::Send::SMTP::TLS'); # send mail through gmail
+  requires('IRC::Bot::Log::Extended');
   requires('Lingua::Han::Cantonese');
   requires('Lingua::Han::PinYin');
   requires('Lingua::Han::Stroke');
