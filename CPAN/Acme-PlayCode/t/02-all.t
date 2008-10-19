@@ -9,6 +9,7 @@ my $from = <<'FROM';
 my $a = "a";
 my $b = "'b'";
 my $c = 'c';
+my $d = qq~'d'~;
 if ( $a eq "a" ) {
     print "1";
 } elsif ( $b eq 'b') {
@@ -26,6 +27,7 @@ my $to = <<'TO';
 my $a = 'a';
 my $b = q~'b'~;
 my $c = 'c';
+my $d = qq~'d'~;
 if ( 'a' eq $a ) {
     print '1';
 } elsif ( 'b' eq $b ) {
