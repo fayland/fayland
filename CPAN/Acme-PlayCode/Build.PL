@@ -1,0 +1,21 @@
+use strict;
+use warnings;
+use Module::Build;
+
+my $builder = Module::Build->new(
+    module_name         => 'Acme::PlayCode',
+    license             => 'perl',
+    dist_author         => 'Fayland Lam <fayland@gmail.com>',
+    dist_version_from   => 'lib/Acme/PlayCode.pm',
+    build_requires => {
+        'Test::More' => 0,
+        'Moose'      => 0,
+        'MooseX::Types::IO' => 0,
+        'MooseX::Object::Pluggable ' => 0,
+        'PPI'        => 0,
+    },
+    add_to_cleanup      => [ 'Acme-PlayCode-*' ],
+    create_makefile_pl => 'traditional',
+);
+
+$builder->create_build_script();
