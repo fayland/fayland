@@ -10,7 +10,6 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'Moose'      => 0,
-        'MooseX::Types::IO' => 0,
         'MooseX::Object::Pluggable ' => 0,
         'PPI'        => 0,
     },
