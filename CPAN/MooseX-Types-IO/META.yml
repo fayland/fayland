@@ -1,0 +1,27 @@
+---
+name: MooseX-Types-IO
+version: 0.01
+author:
+  - 'Fayland Lam <fayland@gmail.com>'
+abstract: L<IO> related constraints and coercions for Moose
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+build_requires:
+  IO: 0
+  IO::All: 0
+  IO::String: 0
+  MooseX::Types: 0
+  Test::Exception: 0.27
+  Test::More: 0
+provides:
+  MooseX::Types::IO:
+    file: lib/MooseX/Types/IO.pm
+    version: 0.01
+  MooseX::Types::IO::All:
+    file: lib/MooseX/Types/IO/All.pm
+    version: 0.01
+generated_by: Module::Build version 0.3
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2

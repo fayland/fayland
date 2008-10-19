@@ -1,0 +1,12 @@
+Build.PL
+Changes
+lib/MooseX/Types/IO.pm
+lib/MooseX/Types/IO/All.pm
+MANIFEST			This list of files
+README
+t/00-load.t
+t/01-io.t
+t/02-io-all.t
+t/pod.t
+Makefile.PL
+META.yml
