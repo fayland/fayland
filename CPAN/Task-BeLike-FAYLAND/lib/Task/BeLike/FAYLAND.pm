@@ -60,7 +60,9 @@ Here are the contents:
   requires('Pod::From::GoogleWiki');
   requires('Pod::Simple::Wiki::Googlecode');
   requires('POD2::CN');
+  requires('MooseX::Control');
   requires('Sphinx::Control');
+  requires('Perlbal::Control');
   requires('Template::Plugin::HtmlToText');
   requires('Text::GooglewikiFormat');
   requires('WWW::Conatct');
