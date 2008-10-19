@@ -65,13 +65,13 @@ designed to work with the L<IO::All> suite of objects.
 
 =over 4
 
-=item L<Str>
+=item B<Str>
 
     io $_;
 
 L<IO::All> object. 
 
-=item L<ScalarRef>
+=item B<ScalarRef>
 
     my $s = io('$');
     $s->print($$_);

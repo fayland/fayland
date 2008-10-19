@@ -70,20 +70,20 @@ designed to work with the L<IO> suite of objects.
 
 =over 4
 
-=item L<Str>
+=item B<Str>
 
     my $fh = new IO::File;
     $fh->open($_);
 
 L<IO::File> object.
 
-=item L<ScalarRef>
+=item B<ScalarRef>
 
     IO::String->new($$_);
 
 L<IO::String> object. 
 
-=item L<ArrayRef[FileHandle|Str]>
+=item B<ArrayRef[FileHandle|Str]>
 
     IO::Handle->new_from_fd( @$_ );
 

@@ -1,5 +1,8 @@
 Revision history for MooseX-Types-IO
 
+0.02
+        pod fix
+
 0.01    2008.10.19
         First version, released on an unsuspecting world.
 
