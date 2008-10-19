@@ -57,6 +57,7 @@ Here are the contents:
   requires('Locale::Country::Multilingual');
   requires('Mail::Mailer::smtp_auth');
   requires('MooseX::TheSchwartz');
+  requires('MooseX::Types::IO');
   requires('Pod::From::GoogleWiki');
   requires('Pod::Simple::Wiki::Googlecode');
   requires('POD2::CN');
