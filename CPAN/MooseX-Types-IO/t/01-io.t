@@ -1,9 +1,13 @@
 #!perl -T
 
-use Test::More tests => 9;
+use Test::More tests => 11;
+use Test::Exception;
 
 use MooseX::Types::IO;
 use FindBin qw/$Bin/;
+
+use Moose::Util::TypeConstraints;
+isa_ok( find_type_constraint('IO'), "Moose::Meta::TypeConstraint" );
 
 {
     {
@@ -46,6 +50,8 @@ FC
     isa_ok( $coerced3, "IO::Handle", "coerced IO::Handle" );
     ok( $coerced3->can('print'), "can print" );
     is(do { local $/; <$coerced3> }, $str2, 'get string');
+    
+    throws_ok { Foo->new( io => [\$str2] ) } qr/IO/, "constraint";
 }
 
 

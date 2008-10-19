@@ -9,6 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/MooseX/Types/IO.pm',
     build_requires => {
         'Test::More' => 0,
+        'Test::Exception' => '0.27',
         'MooseX::Types' => 0,
         'IO' => 0,
         'IO::String' => 0,

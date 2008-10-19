@@ -1,9 +1,13 @@
 #!perl -T
 
-use Test::More tests => 6;
+use Test::More tests => 8;
+use Test::Exception;
 
 use MooseX::Types::IO::All;
 use FindBin qw/$Bin/;
+
+use Moose::Util::TypeConstraints;
+isa_ok( find_type_constraint('IO::All'), "Moose::Meta::TypeConstraint" );
 
 {
     {
@@ -41,6 +45,7 @@ FC
     ok( $coerced2->can('print'), "can print" );
     is( $coerced2->all, $str2, 'get string');
 
+    throws_ok { Foo->new( io => [\$str2] ) } qr/IO\:\:All/, "constraint";
 }
 
 
