@@ -2,7 +2,7 @@ package Acme::PlayCode::Plugin::ExchangeCondition;
 
 use Moose::Role;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 around 'do_with_token' => sub {
@@ -153,7 +153,7 @@ becomes
 
 =head1 SEE ALSO
 
-L<Moose>, L<PPI>, L<MooseX::Object::Pluggable>
+L<Acme::PlayCode>, L<Moose>, L<PPI>, L<MooseX::Object::Pluggable>
 
 =head1 AUTHOR
 

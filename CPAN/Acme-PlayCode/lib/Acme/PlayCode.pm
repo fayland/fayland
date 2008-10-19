@@ -3,7 +3,7 @@ package Acme::PlayCode;
 use Moose;
 use PPI;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 with 'MooseX::Object::Pluggable';
@@ -96,6 +96,20 @@ nevertheless backwards compatibility is not yet guaranteed.
 It aims to change the code to be better (to be worse if you want).
 
 More description and API detais will come later.
+
+=head1 PLUGINS
+
+=over 4
+
+=item B<Acme::PlayCode::Plugin::DoubleToSingle>
+
+Play code with Single and Double
+
+=item B<Acme::PlayCode::Plugin::ExchangeCondition>
+
+Play code with exchanging condition
+
+=back
 
 =head1 SEE ALSO
 
