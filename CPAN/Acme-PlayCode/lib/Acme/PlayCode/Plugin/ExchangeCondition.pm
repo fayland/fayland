@@ -113,17 +113,47 @@ __END__
 
 =head1 NAME
 
-Acme::PlayCode::Plugin::DoubleToSingle - The great new Acme::PlayCode::Plugin::DoubleToSingle!
+Acme::PlayCode::Plugin::ExchangeCondition - Play code with exchanging condition
 
 =head1 SYNOPSIS
 
     use Acme::PlayCode;
 
-    my $app = Acme::PlayCode->new();
+    my $app = Acme::PlayCode->new( io => $filename );
+    # or
+    my $app = Acme::PlayCode->new( io => \$code );
     
-    $app->load_plugin('DoubleToSingle');
+    $app->load_plugin('ExchangeCondition');
     
-    $app->run;
+    my $code_played = $app->run;
+
+=head1 DESCRIPTION
+
+    if ( $a eq "a" ) {
+        print "1";
+    } elsif ( $b eq 'b') {
+        print "2";
+    } elsif ( $c ne qq~c~) {
+        print "3";
+    } elsif ( $c eq q~d~) {
+        print '4';
+    }
+
+becomes
+
+    if ( "a" eq $a ) {
+        print "1";
+    } elsif ( 'b' eq $b ) {
+        print "2";
+    } elsif ( $c ne qq~c~) {
+        print "3";
+    } elsif ( q~d~ eq $c ) {
+        print '4';
+    }
+
+=head1 SEE ALSO
+
+L<Moose>, L<PPI>, L<MooseX::Object::Pluggable>
 
 =head1 AUTHOR
 

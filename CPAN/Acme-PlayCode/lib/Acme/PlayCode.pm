@@ -71,17 +71,35 @@ __END__
 
 =head1 NAME
 
-Acme::PlayCode - The great new Acme::PlayCode!
+Acme::PlayCode - Play code to win
 
 =head1 SYNOPSIS
 
     use Acme::PlayCode;
 
-    my $app = Acme::PlayCode->new();
+    my $app = Acme::PlayCode->new( io => $filename );
+    # or
+    my $app = Acme::PlayCode->new( io => \$code );
     
     $app->load_plugin('DoubleToSingle');
+    $app->load_plugin('ExchangeCondition');
     
-    $app->run;
+    my $code_played = $app->run;
+
+=head1 ALPHA WARNING
+
+L<Acme::PlayCode> is still in its infancy. No fundamental changes are expected, but
+nevertheless backwards compatibility is not yet guaranteed.
+
+=head1 DESCRIPTION
+
+It aims to change the code to be better (to be worse if you want).
+
+More description and API detais will come later.
+
+=head1 SEE ALSO
+
+L<Moose>, L<PPI>, L<MooseX::Object::Pluggable>
 
 =head1 AUTHOR
 

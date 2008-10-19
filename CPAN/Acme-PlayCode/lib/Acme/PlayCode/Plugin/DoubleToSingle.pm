@@ -44,17 +44,47 @@ __END__
 
 =head1 NAME
 
-Acme::PlayCode::Plugin::DoubleToSingle - The great new Acme::PlayCode::Plugin::DoubleToSingle!
+Acme::PlayCode::Plugin::DoubleToSingle - Play code with Single and Double
 
 =head1 SYNOPSIS
 
     use Acme::PlayCode;
 
-    my $app = Acme::PlayCode->new();
+    my $app = Acme::PlayCode->new( io => $filename );
+    # or
+    my $app = Acme::PlayCode->new( io => \$code );
     
     $app->load_plugin('DoubleToSingle');
     
-    $app->run;
+    my $code_played = $app->run;
+
+=head1 DESCRIPTION
+
+    my $a = "a";
+    my $b = "'b'";
+    my $c = qq~c~;
+    my $d = qq~'d'~;
+    my $e = q{e};
+    my $f = 'f';
+    if ( $a eq "a" ) {
+        print "ok";
+    }
+
+becomes
+
+    my $a = 'a';
+    my $b = q~'b'~;
+    my $c = 'c';
+    my $d = qq~'d'~;
+    my $e = q{e};
+    my $f = 'f';
+    if ( $a eq 'a' ) {
+        print 'ok';
+    }
+
+=head1 SEE ALSO
+
+L<Moose>, L<PPI>, L<MooseX::Object::Pluggable>
 
 =head1 AUTHOR
 
