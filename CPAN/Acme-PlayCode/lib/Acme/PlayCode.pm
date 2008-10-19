@@ -13,14 +13,13 @@ has 'io' => (
     isa => 'Str|ScalarRef',
 );
 
-has 'ppi' => (
-    is  => 'ro',
-    isa => 'PPI::Document',
-    lazy => 1,
-    default => sub {
-        PPI::Document->new( (shift)->io );
-    }
+has 'tokens' => (
+    is  => 'rw',
+    isa => 'ArrayRef',
+    auto_deref => 1,
+    default    => sub { [] },
 );
+has 'token_flag' => ( is => 'rw', isa => 'Num', default => 0 );
 
 has 'output' => (
     is => 'rw',
@@ -31,18 +30,39 @@ has 'output' => (
 sub run {
     my ( $self ) = @_;
     
-    foreach my $token ( @{ $self->ppi->find('PPI::Token') } ) {
-        push @{ $self->output }, $self->do_with_token($token);
-    }
+    # clear to multi-run
+    $self->output( [] );
+    $self->token_flag( 0 );
+    
+    my $doc    = PPI::Document->new( $self->io );
+    $self->tokens( $doc->find('PPI::Token') );
+    
+    $self->do_with_tokens();
     
     my @output = @{ $self->output };
     return join('', @output);
 }
 
-sub do_with_token {
-    my ( $self, $token ) = @_;
+sub do_with_tokens {
+    my ( $self ) = @_;
     
-    $token->content;
+    my @tokens = $self->tokens;
+    while ( $self->token_flag < scalar @tokens) {
+        my $orginal_flag = $self->token_flag;
+        my $content = $self->do_with_token( $self->token_flag );
+        push @{ $self->output }, $content if ( defined $content );
+        # if we don't move token_flag, ++
+        if ( $self->token_flag == $orginal_flag ) {
+            $self->token_flag( $self->token_flag + 1 );
+        }
+    }
+}
+
+sub do_with_token {
+    my ( $self, $token_flag ) = @_;
+
+    my @tokens = $self->tokens;
+    return $tokens[$token_flag]->content;
 }
 
 no Moose;
