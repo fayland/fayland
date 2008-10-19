@@ -29,8 +29,8 @@ if ( $a eq 'a' ) {
 }
 TO
 
-my $app = Acme::PlayCode->new( io => \$from );
+my $app = Acme::PlayCode->new();
 $app->load_plugin('DoubleToSingle');
-my $ret = $app->run;
+my $ret = $app->play($from);
 
 is($ret, $to, '1 ok');

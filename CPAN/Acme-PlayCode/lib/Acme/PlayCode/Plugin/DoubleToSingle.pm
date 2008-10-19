@@ -49,14 +49,16 @@ Acme::PlayCode::Plugin::DoubleToSingle - Play code with Single and Double
 =head1 SYNOPSIS
 
     use Acme::PlayCode;
-
-    my $app = Acme::PlayCode->new( io => $filename );
-    # or
-    my $app = Acme::PlayCode->new( io => \$code );
+    
+    my $app = Acme::PlayCode;
     
     $app->load_plugin('DoubleToSingle');
-    
-    my $code_played = $app->run;
+        
+    my $played_code = $app->play( $code );
+    # or
+    my $played_code = $app->play( $filename );
+    # or
+    $app->play( $filename, { rewrite_file => 1 } ); # override $filename with played code
 
 =head1 DESCRIPTION
 

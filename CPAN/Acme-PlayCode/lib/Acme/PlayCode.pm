@@ -2,16 +2,12 @@ package Acme::PlayCode;
 
 use Moose;
 use PPI;
+use Path::Class ();
 
 our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 with 'MooseX::Object::Pluggable';
-
-has 'io' => (
-    is  => 'rw',
-    isa => 'Str|ScalarRef',
-);
 
 has 'tokens' => (
     is  => 'rw',
@@ -27,20 +23,33 @@ has 'output' => (
     default => sub { [] }
 );
 
-sub run {
-    my ( $self ) = @_;
+sub play {
+    my ( $self, $code, $opts ) = @_;
+    
+    my $file;
+    if ( $code !~ /\s/ and -e $code ) {
+        $file = Path::Class::File->new($code);
+        $code = $file->slurp();
+    }
     
     # clear to multi-run
     $self->output( [] );
     $self->token_flag( 0 );
     
-    my $doc    = PPI::Document->new( $self->io );
+    my $doc    = PPI::Document->new( \$code );
     $self->tokens( $doc->find('PPI::Token') );
 
     $self->do_with_tokens();
     
     my @output = @{ $self->output };
-    return join('', @output);
+    my $output = join('', @output);
+    if ( $opts->{rewrite_file} and $file ) {
+        my $fh = $file->openw();
+        print $fh $output;
+        $fh->close();
+        
+    }
+    return $output;
 }
 
 sub do_with_tokens {
@@ -76,15 +85,17 @@ Acme::PlayCode - Play code to win
 =head1 SYNOPSIS
 
     use Acme::PlayCode;
-
-    my $app = Acme::PlayCode->new( io => $filename );
-    # or
-    my $app = Acme::PlayCode->new( io => \$code );
+    
+    my $app = Acme::PlayCode;
     
     $app->load_plugin('DoubleToSingle');
     $app->load_plugin('ExchangeCondition');
     
-    my $code_played = $app->run;
+    my $played_code = $app->play( $code );
+    # or
+    my $played_code = $app->play( $filename );
+    # or
+    $app->play( $filename, { rewrite_file => 1 } ); # override $filename with played code
 
 =head1 ALPHA WARNING
 
@@ -101,13 +112,17 @@ More description and API detais will come later.
 
 =over 4
 
-=item B<Acme::PlayCode::Plugin::DoubleToSingle>
+=item L<Acme::PlayCode::Plugin::DoubleToSingle>
 
 Play code with Single and Double
 
-=item B<Acme::PlayCode::Plugin::ExchangeCondition>
+=item L<Acme::PlayCode::Plugin::ExchangeCondition>
 
 Play code with exchanging condition
+
+=item L<Acme::PlayCode::Plugin::PrintComma>
+
+Play code with printing comma
 
 =back
 
