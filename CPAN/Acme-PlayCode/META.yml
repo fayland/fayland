@@ -1,6 +1,6 @@
 ---
 name: Acme-PlayCode
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: Play code to win
@@ -11,17 +11,21 @@ build_requires:
   Moose: 0
   MooseX::Object::Pluggable: 0
   PPI: 0
+  Path::Class: 0
   Test::More: 0
 provides:
   Acme::PlayCode:
     file: lib/Acme/PlayCode.pm
-    version: 0.01
+    version: 0.02
   Acme::PlayCode::Plugin::DoubleToSingle:
     file: lib/Acme/PlayCode/Plugin/DoubleToSingle.pm
-    version: 0.01
+    version: 0.02
   Acme::PlayCode::Plugin::ExchangeCondition:
     file: lib/Acme/PlayCode/Plugin/ExchangeCondition.pm
-    version: 0.01
+    version: 0.02
+  Acme::PlayCode::Plugin::PrintComma:
+    file: lib/Acme/PlayCode/Plugin/PrintComma.pm
+    version: 0.02
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

@@ -8,6 +8,7 @@ WriteMakefile
                            'Moose' => '0',
                            'MooseX::Object::Pluggable' => '0',
                            'PPI' => '0',
+                           'Path::Class' => '0',
                            'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',
