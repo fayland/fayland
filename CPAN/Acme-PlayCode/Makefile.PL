@@ -5,10 +5,10 @@ WriteMakefile
           'NAME' => 'Acme::PlayCode',
           'VERSION_FROM' => 'lib/Acme/PlayCode.pm',
           'PREREQ_PM' => {
-                           'Moose' => '0',
-                           'MooseX::Object::Pluggable' => '0',
-                           'PPI' => '0',
-                           'Path::Class' => '0',
+                           'Moose' => '0.57',
+                           'MooseX::Object::Pluggable' => '0.0008',
+                           'PPI' => '1.201',
+                           'Path::Class' => '0.16',
                            'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',
