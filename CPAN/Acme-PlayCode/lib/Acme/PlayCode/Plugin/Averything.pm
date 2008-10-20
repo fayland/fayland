@@ -16,6 +16,7 @@ around 'play' => sub {
 
     $avreything_loaded = 0 unless (defined $avreything_loaded);
     unless ( $avreything_loaded ) {
+        my @all_plugins;
         my ( undef, $path ) = File::Spec->splitpath(__FILE__);
         $path = abs_path($path);
         my $dir = Path::Class::Dir->new($path);
@@ -27,8 +28,10 @@ around 'play' => sub {
             $basename =~ s/\.pm$//isg;
             $basename =~ s/[\\\/]/\:\:/isg;
             next if ( $basename eq 'Averything');
-            $self->load_plugin($basename);
+            push @all_plugins, $basename;
         }
+        @all_plugins = sort @all_plugins;
+        $self->load_plugins(@all_plugins);
     }
 
     $orig->($self, @_);
