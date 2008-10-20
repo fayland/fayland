@@ -42,9 +42,7 @@ if ( 'a' eq $a ) {
 TO
 
 my $app = Acme::PlayCode->new();
-$app->load_plugin('DoubleToSingle');
-$app->load_plugin('ExchangeCondition');
-$app->load_plugin('PrintComma');
+$app->load_plugin('Averything');
 my $ret = $app->play($from);
 
 is($ret, $to, '1 ok');

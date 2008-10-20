@@ -112,6 +112,10 @@ More description and API detais will come later.
 
 =over 4
 
+=item L<Acme::PlayCode::Plugin::Averything>
+
+load all plugins we found.
+
 =item L<Acme::PlayCode::Plugin::DoubleToSingle>
 
 Play code with Single and Double

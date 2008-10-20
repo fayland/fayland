@@ -1,5 +1,8 @@
 Revision history for Acme-PlayCode
 
+0.03    2008.10.20
+        add Acme::PlayCode::Plugin::Averything
+
 0.02    2008.10.19
         API changed
         add Acme::PlayCode::Plugin::PrintComma
