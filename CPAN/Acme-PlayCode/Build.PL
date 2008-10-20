@@ -12,7 +12,7 @@ my $builder = Module::Build->new(
         'Path::Class' => '0.16',
         'Moose'       => '0.57',
         'MooseX::Object::Pluggable' => '0.0008',
-        'PPI'         => '1.203',
+        'PPI'         => '1.201',
     },
     add_to_cleanup      => [ 'Acme-PlayCode-*' ],
     create_makefile_pl => 'traditional',
