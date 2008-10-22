@@ -4,7 +4,7 @@ package Catalyst::Authentication::Store::FromSub::Hash;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.08';
+$VERSION = '0.09';
 
 use Catalyst::Authentication::User::Hash;
 
@@ -15,24 +15,21 @@ sub new {
 }
 
 sub from_session {
-	my ( $self, $c, $id ) = @_;
+    my ( $self, $c, $id ) = @_;
 
     # XXX? Don't use data in session because data maybe changed in model_class sub auth.
-	# return $id if ref $id;
-	
-	if (ref $id) {
-    	if ($id->{user_id}) {
-    	    return $self->find_user( { user_id  => $id->{user_id}  }, $c );
-    	} elsif ($id->{username}) {
-    	    return $self->find_user( { username => $id->{username} }, $c );
-    	} elsif ($id->{id}) {
-    	    return $self->find_user( { id => $id->{id} }, $c );
-    	} else {
-    	    return $id;
-    	}
+    # return $id if ref $id;
+    
+    my $id_field = $self->{config}->{id_field} || 'user_id';
+    if (ref $id) {
+        if ( exists $id->{$id_field} ) {
+            return $self->find_user( { $id_field => $id->{$id_field}  }, $c );
+        } else {
+            return $id;
+        }
     }
 
-	$self->find_user( { id => $id }, $c );
+    $self->find_user( { $id_field => $id }, $c );
 }
 
 sub find_user {
@@ -44,12 +41,13 @@ sub find_user {
     my $user = $model->auth($c, $userinfo);
     return unless $user;
 
-    my $id = $userinfo->{'id'} || $userinfo->{'user_id'} || $userinfo->{'username'};
-    if ( ref($user) eq "HASH") {
+    if ( ref($user) eq 'HASH') {
+        my $id_field = $self->{config}->{id_field} || 'user_id';
+        my $id = $user->{ $id_field };
         $user->{id} ||= $id;
         return bless $user, "Catalyst::Authentication::User::Hash";
     } else {
-        Catalyst::Exception->throw( "The user '$id' must be a hash reference");
+        Catalyst::Exception->throw( "The user return by 'sub auth' must be a hash reference");
     }
     return $user;
 }
@@ -82,7 +80,7 @@ sub setup {
         )
     );
 
-	$c->NEXT::setup(@_);
+    $c->NEXT::setup(@_);
 }
 
 1;
@@ -109,9 +107,10 @@ Catalyst::Authentication::Store::FromSub::Hash - A storage class for Catalyst Au
                                 store => {
                                     class => 'FromSub::Hash',
                                     model_class => 'UserAuth',
-            	                }
+                                    id_field => 'user_id',
+                                }
                             }
-                    	}
+                        }
                     };
 
     # Log a user in:
@@ -132,9 +131,9 @@ Catalyst::Authentication::Store::FromSub::Hash - A storage class for Catalyst Au
         my ($self, $c, $userinfo) = @_;
         
         my $where;
-        if (exists $userinfo->{user_id}) {
+        if (exists $userinfo->{user_id}) { # restore from session (id_field => 'user_id')
             $where = { user_id => $userinfo->{user_id} };
-        } elsif (exists $userinfo->{username}) {
+        } elsif (exists $userinfo->{username}) { # from authenticate
             $where = { username => $userinfo->{username} };
         } else { return; }
     
@@ -162,7 +161,7 @@ In sub auth of the Catalyst model, we can use cache there. it would avoid the hi
 =head1 CONFIGURATION
 
 The FromSub::Hash authentication store is activated by setting the store
-config's B<class> element to 'FromSub::Hash'.  See the 
+config B<class> element to 'FromSub::Hash'.  See the 
 L<Catalyst::Plugin::Authentication> documentation for more details on 
 configuring the store.
 
@@ -179,10 +178,11 @@ The FromSub::Hash storage module has several configuration options
                                 },
                                 store => {
                                     class => 'FromSub::Hash',
-            	                    model_class => 'UserAuth',
-            	                }
-                	        }
-                    	}
+                                    model_class => 'UserAuth',
+                                    id_field => 'user_id',
+                                }
+                            }
+                        }
                     };
 
     authentication:
@@ -210,6 +210,22 @@ contains the class name of the store to be used.
 
 Contains the class name (as passed to $c->model()) of Catalyst.  This config item is B<REQUIRED>.
 
+=item id_field
+
+For restore from session, we pass { $id_field => $c->session->{__user}->{$id_field} } to sub auth, so be sure you deal with this $userinfo in sub auth like
+
+    sub auth { # sub name needs to be 'auth'
+        my ($self, $c, $userinfo) = @_;
+        
+        my $where;
+        if (exists $userinfo->{user_id}) { # restore from session (id_field => 'user_id')
+            $where = { user_id => $userinfo->{user_id} };
+        } elsif (exists $userinfo->{username}) { # from authenticate
+            $where = { username => $userinfo->{username} };
+        } else { return; }
+
+It is a primary key in the hash return by sub auth. Default is 'user_id'
+
 =back
 
 =head1 USAGE 
@@ -217,10 +233,6 @@ Contains the class name (as passed to $c->model()) of Catalyst.  This config ite
 The L<Catalyst::Authentication::Store::FromSub::Hash> storage module
 is not called directly from application code.  You interface with it 
 through the $c->authenticate() call.
-
-=head1 LIMITATIONS
-
-BE CAREFUL! the sub auth return $user must contain a hash key in one of ('user_id', 'username', 'id'); to get refresh $user from sub per request. or else, $c->session->{__user} would be used.
 
 =head1 EXAMPLES
 
