@@ -3,6 +3,7 @@ package Catalyst::Plugin::HTTP::Session;
 use Moose;
 use Class::MOP ();
 use HTTP::Session;
+use Object::Signature   ();
 use CGI;
 
 our $VERSION   = '0.01';
@@ -12,6 +13,8 @@ with 'MooseX::Emulate::Class::Accessor::Fast';
 
 __PACKAGE__->mk_accessors(qw/
         _session
+        _session_obj
+        _session_data_sig
         _tried_loading_session_data
     /
 );
@@ -43,17 +46,41 @@ sub _load_session {
         ),
         request => new CGI( $c->req->params ),
     );
-    $c->_session( $session );
-    
-    return $session;
+    $c->_session_obj( $session );
+    my $session_data = $session->as_hashref || {};
+    $c->_session_data_sig( Object::Signature::signature($session_data) );
+    $c->_session( $session_data );
+
+    return $session_data;
+}
+
+sub finalize_headers {
+    my $c = shift;
+
+    # fix cookie before we send headers
+    $c->_session_obj->response_filter( $c->res );
+
+    return $c->NEXT::finalize_headers(@_);
 }
 
 sub finalize {
     my $c = shift;
     my $ret = $c->NEXT::finalize(@_);
+    
+    # save session
+    my $session = $c->_session;
+    if ( Object::Signature::signature($session) ne
+            $c->_session_data_sig )
+        {
+        my $session_obj = $c->_session_obj;
+        $session_obj->_data( $session );
+        $session_obj->is_changed(1);
+    }
 
+    # clear data for every request
     $c->_session(undef);
     $c->_tried_loading_session_data(undef);
+    $c->_session_obj(undef);
     
     return $ret;
 }

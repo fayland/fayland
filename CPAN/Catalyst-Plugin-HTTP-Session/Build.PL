@@ -11,6 +11,8 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
         'HTTP::Session' => 0,
         'Catalyst'   => 0,
+        'MooseX::Emulate::Class::Accessor::Fast' => 0,
+        'CGI'        => 0,
     },
     add_to_cleanup      => [ 'Catalyst-Plugin-HTTP-Session-*' ],
     create_makefile_pl => 'traditional',

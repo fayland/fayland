@@ -1,6 +1,7 @@
 #!perl -T
 
 use Test::More;
+use DBI;
 use HTTP::Session;
 use HTTP::Session::State::Test;
 use HTTP::Session::Store::DBI;
