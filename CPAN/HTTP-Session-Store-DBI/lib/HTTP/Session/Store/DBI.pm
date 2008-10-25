@@ -51,6 +51,12 @@ has 'expires_col' => (
     required => 1,
     default  => 'expires',
 );
+has 'clean_thres' => (
+    is  => 'ro',
+    isa => 'Int',
+    required => 1,
+    default  => '0.001'
+);
 
 sub select {
     my ( $self, $session_id ) = @_;
@@ -112,6 +118,11 @@ sub delete {
     my $sql =qq~DELETE FROM $sid_table WHERE $sid_col = ?~;
     my $sth = $dbh->prepare($sql);
     $sth->execute( $session_id );
+    
+    if ( rand() < $self->clean_thres ) {
+        my $time_now = time();
+        $dbh->do(qq~DELETE FROM $sid_table WHERE expires < $time_now~);
+    }
 }
 
 
@@ -125,14 +136,97 @@ __END__
 
 =head1 NAME
 
-HTTP::Session::Store::DBI - The great new HTTP::Session::Store::DBI!
+HTTP::Session::Store::DBI - store session data in DBI for L<HTTP::Session>
 
 =head1 SYNOPSIS
 
-    use HTTP::Session::Store::DBI;
+    use HTTP::Session;
+    
+    my $session = HTTP::Session->new(
+        store   => HTTP::Session::Store::DBI->new( {
+            dbh => ["dbi:SQLite:dbname=xxx", '', '', {RaiseError => 1}]
+        } ),
+        state => ...,
+        request => ...,
+    );
 
-    my $foo = HTTP::Session::Store::DBI->new();
-    ...
+=head1 DESCRIPTION
+
+store session data in DBI. read L<HTTP::Session> for usage.
+
+=head1 CONFIGURATION
+
+=over 4
+
+=item dbh
+
+ArrayRef which passes to DBI->connect(@$_)
+
+or Instance of DBI->connect
+
+=item expires
+
+session expire time(in seconds)
+
+=item sid_table
+
+the table name where session stores. default is 'session'
+
+=item sid_col
+
+the session_id column name. default is 'sid'
+
+=item data_col
+
+the data column name. default is 'data'
+
+=item expires_col
+
+the expires column name. default is 'expires'
+
+=item clean_thres
+
+default is '0.001'. because L<DBI> do NOT delete expired data itself, we have code in sub delete
+
+    if ( rand() < $self->clean_thres ) {
+        my $time_now = time();
+        $dbh->do(qq~DELETE FROM $sid_table WHERE expires < $time_now~);
+    } 
+
+set it to 0 if we do NOT want it.
+
+=back
+
+=head1 TABLE SQL
+
+SQLite:
+
+    CREATE TABLE session (
+        sid          VARCHAR(32) PRIMARY KEY,
+        data         TEXT,
+        expires      INTEGER UNSIGNED NOT NULL,
+        UNIQUE(sid)
+    );
+
+=head1 METHODS
+
+=over 4
+
+=item select
+
+=item update
+
+=item delete
+
+=item insert
+
+for internal use only
+
+=back
+
+=head1 SEE ALSO
+
+L<HTTP::Session>, L<DBI>
 
 =head1 AUTHOR
 

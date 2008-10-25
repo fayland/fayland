@@ -12,6 +12,8 @@ my $builder = Module::Build->new(
         'HTTP::Session' => 0,
         'Moose'      => 0,
         'DBI'        => 0,
+        'MIME::Base64' => 0,
+        'Storable'   => 0,
     },
     add_to_cleanup      => [ 'HTTP-Session-Store-DBI-*' ],
     create_makefile_pl => 'traditional',

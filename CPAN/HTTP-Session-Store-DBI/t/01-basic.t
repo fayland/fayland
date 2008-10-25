@@ -2,7 +2,7 @@
 
 use Test::More;
 use HTTP::Session;
-use HTTP::Session::State::Null;
+use HTTP::Session::State::Test;
 use HTTP::Session::Store::DBI;
 
 BEGIN {
@@ -10,8 +10,10 @@ BEGIN {
     plan skip_all => 'this test requires DBD::SQLite' if $@;
     eval 'require File::Temp';
     plan skip_all => 'this test requires File::Temp' if $@;
+    eval 'require CGI';
+    plan skip_all => 'this test requires CGI' if $@;
 
-    plan tests => 5;
+    plan tests => 6;
 };
 
 my $tmp = File::Temp->new;
@@ -44,3 +46,16 @@ is $store->select($key)->{foo}, 'replaced';
 $store->delete($key);
 is $store->select($key), undef;
 ok $store;
+
+my $session = HTTP::Session->new(
+    store   => HTTP::Session::Store::DBI->new( {
+        dbh => $dbh
+    } ),
+    state   => HTTP::Session::State::Test->new( {
+        session_id => $key
+    } ),
+    request => new CGI(),
+);
+
+$session->set($key, { foo => 'baz' } );
+is $session->get($key)->{foo}, 'baz';
