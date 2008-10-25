@@ -78,13 +78,42 @@ sub finalize {
     }
 
     # clear data for every request
-    $c->_session(undef);
-    $c->_tried_loading_session_data(undef);
-    $c->_session_obj(undef);
+    $c->_clear_session_instance_data;
     
     return $ret;
 }
 
+
+sub delete_session {
+    my ( $c, $msg ) = @_;
+
+    $c->log->debug("Deleting session" . ( defined($msg) ? "($msg)" : '(no reason given)') ) if $c->debug;
+
+    # delete the session data
+    $c->_session_obj->expire;
+
+    # reset the values in the context object
+    # see the BEGIN block
+    $c->_clear_session_instance_data;
+}
+
+sub sessionid {
+    my $c = shift;
+    
+    unless ( $c->_session_obj ) {
+        $c->_load_session;
+    }
+    
+    return $c->_session_obj->session_id;
+}
+
+sub _clear_session_instance_data {
+    my ( $c ) = @_;
+    
+    $c->_session(undef);
+    $c->_tried_loading_session_data(undef);
+    $c->_session_obj(undef);
+}
 
 no Moose;
 
