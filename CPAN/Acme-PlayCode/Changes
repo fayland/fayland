@@ -1,5 +1,8 @@
 Revision history for Acme-PlayCode
 
+0.05    2008.10.25
+        fix Acme::PlayCode::Plugin::Averything
+
 0.04    2008.10.25
         pod fix
 
