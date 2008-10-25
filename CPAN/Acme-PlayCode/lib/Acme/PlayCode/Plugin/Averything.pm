@@ -5,7 +5,7 @@ use Path::Class ();
 use File::Spec ();
 use Cwd qw/abs_path/;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use vars qw/$avreything_loaded/;
@@ -50,7 +50,7 @@ Acme::PlayCode::Plugin::Averything - A is Ace, All, Averything
 
     use Acme::PlayCode;
     
-    my $app = Acme::PlayCode;
+    my $app = new Acme::PlayCode;
     
     # load all plugins we find at the dir of this module sits.
     $app->load_plugin('Averything');

@@ -2,7 +2,7 @@ package Acme::PlayCode::Plugin::DoubleToSingle;
 
 use Moose::Role;
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 around 'do_with_token' => sub {
@@ -58,7 +58,7 @@ Acme::PlayCode::Plugin::DoubleToSingle - Play code with Single and Double
 
     use Acme::PlayCode;
     
-    my $app = Acme::PlayCode;
+    my $app = new Acme::PlayCode;
     
     $app->load_plugin('DoubleToSingle');
         

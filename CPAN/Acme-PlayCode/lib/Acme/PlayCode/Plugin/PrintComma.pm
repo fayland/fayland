@@ -2,7 +2,7 @@ package Acme::PlayCode::Plugin::PrintComma;
 
 use Moose::Role;
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use vars qw/$printcomma_start/;
@@ -45,7 +45,7 @@ Acme::PlayCode::Plugin::PrintComma - Play code with printing comma
 
     use Acme::PlayCode;
     
-    my $app = Acme::PlayCode;
+    my $app = new Acme::PlayCode;
     
     $app->load_plugin('PrintComma');
         

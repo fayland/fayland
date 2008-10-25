@@ -2,7 +2,7 @@ package Acme::PlayCode::Plugin::ExchangeCondition;
 
 use Moose::Role;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 around 'do_with_token' => sub {
@@ -119,7 +119,7 @@ Acme::PlayCode::Plugin::ExchangeCondition - Play code with exchanging condition
 
     use Acme::PlayCode;
     
-    my $app = Acme::PlayCode;
+    my $app = new Acme::PlayCode;
     
     $app->load_plugin('ExchangeCondition');
     

@@ -4,7 +4,7 @@ use Moose;
 use PPI;
 use Path::Class ();
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 with 'MooseX::Object::Pluggable';
@@ -86,7 +86,7 @@ Acme::PlayCode - Play code to win
 
     use Acme::PlayCode;
     
-    my $app = Acme::PlayCode;
+    my $app = new Acme::PlayCode;
     
     $app->load_plugin('DoubleToSingle');
     $app->load_plugin('ExchangeCondition');

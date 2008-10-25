@@ -47,6 +47,7 @@ extra_tests;
   requires('Catalyst::Plugin::PickComponents');
   requires('Date::Holidays::CN');
   requires('Email::Send::SMTP::TLS'); # send mail through gmail
+  requires('HTTP::Session::Store::DBI');
   requires('IRC::Bot::Log::Extended');
   requires('Lingua::Han::Cantonese');
   requires('Lingua::Han::PinYin');
