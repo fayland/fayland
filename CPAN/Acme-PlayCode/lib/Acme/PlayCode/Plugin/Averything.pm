@@ -3,7 +3,7 @@ package Acme::PlayCode::Plugin::Averything;
 use Moose::Role;
 use Path::Class ();
 
-our $VERSION   = '0.04';
+our $VERSION   = '0.05';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use vars qw/$avreything_loaded/;
@@ -30,6 +30,7 @@ around 'play' => sub {
         }
         @all_plugins = sort @all_plugins;
         $self->load_plugins(@all_plugins);
+        $avreything_loaded = 1;
     }
 
     $orig->($self, @_);
