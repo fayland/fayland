@@ -53,7 +53,7 @@ has 'expires_col' => (
 );
 has 'clean_thres' => (
     is  => 'ro',
-    isa => 'Int',
+    isa => 'Num',
     required => 1,
     default  => '0.001'
 );
