@@ -3,7 +3,7 @@ package WWW::Contact;
 use Moose;
 use Moose::Util::TypeConstraints;
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 has 'errstr'   => ( is => 'rw', isa => 'Maybe[Str]' );
@@ -68,6 +68,8 @@ sub get_supplier_by_email {
         return 'Yahoo';
     } elsif ($email =~ /\@gmail\.com$/) {
         return 'Gmail';
+    } elsif ( $domain eq 'rediffmail.com' ) {
+        return 'Rediffmail';
     }
     
     my @supplier_pattern = $self->supplier_pattern;
