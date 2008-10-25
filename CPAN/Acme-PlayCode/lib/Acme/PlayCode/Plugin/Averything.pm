@@ -2,8 +2,6 @@ package Acme::PlayCode::Plugin::Averything;
 
 use Moose::Role;
 use Path::Class ();
-use File::Spec ();
-use Cwd qw/abs_path/;
 
 our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
@@ -17,8 +15,8 @@ around 'play' => sub {
     $avreything_loaded = 0 unless (defined $avreything_loaded);
     unless ( $avreything_loaded ) {
         my @all_plugins;
-        my ( undef, $path ) = File::Spec->splitpath(__FILE__);
-        $path = abs_path($path);
+        my $path = __FILE__;
+        $path =~ s/Averything\.pm//isg;
         my $dir = Path::Class::Dir->new($path);
         my $handle = $dir->open;
         while (my $file = $dir->next) {
