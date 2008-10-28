@@ -2,7 +2,7 @@ package Acme::PlayCode::Plugin::PrintComma;
 
 use Moose::Role;
 
-our $VERSION   = '0.04';
+our $VERSION   = '0.07';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use vars qw/$printcomma_start/;
@@ -17,7 +17,7 @@ around 'do_with_token' => sub {
     
     $printcomma_start = 0 unless ( defined $printcomma_start );
 
-    if ( $token->isa('PPI::Token::Word') ) {
+    if ( $token->isa('PPI::Token::Word') and $token->content eq 'print' ) {
         $printcomma_start = 1;
     } elsif ( $token->isa('PPI::Token::Structure') ) {
         $printcomma_start = 0;
