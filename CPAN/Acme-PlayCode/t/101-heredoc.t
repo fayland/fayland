@@ -13,6 +13,9 @@ my $b = <<HH;
 sadsd
 sadsad
 HH
+test(<<'TT');
+TTTTxxxxxxx
+TT
 FROM
 
 my $to = <<'TO';
@@ -23,6 +26,9 @@ my $b = <<HH;
 sadsd
 sadsad
 HH
+test(<<'TT');
+TTTTxxxxxxx
+TT
 TO
 
 my $app = Acme::PlayCode->new();

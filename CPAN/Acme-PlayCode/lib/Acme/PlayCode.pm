@@ -4,7 +4,7 @@ use Moose;
 use PPI;
 use Path::Class ();
 
-our $VERSION   = '0.07';
+our $VERSION   = '0.08';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 with 'MooseX::Object::Pluggable';
@@ -75,8 +75,20 @@ sub do_with_token {
     my $token = $tokens[$token_flag];
     if ( $token->isa('PPI::Token::HereDoc') ) {
         my @output = @{ $self->output };
-        $self->token_flag( $token_flag + 2 ); # skip next itself and ';'
-        push @output, $token->content, ";\n", join('', $token->heredoc), $token->terminator;
+        
+        my @next_tokens;
+        my $old_flag = $token_flag;
+        while ( $old_flag++ ) {
+            push @next_tokens, $tokens[$old_flag];
+            last if ( $tokens[$old_flag]->content eq ';' );
+        }
+        push @output, $token->content,
+            join('', map { $_->content } @next_tokens ), "\n",
+            join('', $token->heredoc),
+            $token->terminator;
+        
+        # skip next itself and next ';'
+        $self->token_flag( $token_flag + 1 + scalar @next_tokens );
         $self->output( \@output );
         return;
     } else {
