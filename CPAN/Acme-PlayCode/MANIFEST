@@ -14,4 +14,5 @@ t/011-doubleTosingle.t
 t/012-exchangeCondition.t
 t/013-printComma.t
 t/099-Averything.t
+t/101-heredoc.t
 t/pod.t
