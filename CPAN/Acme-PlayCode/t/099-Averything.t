@@ -30,11 +30,11 @@ my $c = 'c';
 my $d = qq~'d'~;
 if ( 'a' eq $a ) {
     print 'a ', q~print 'a' . 'b'~, "c\n";
-} elsif ( 'b' eq $b ) {
+} elsif ( 'b' eq $b) {
     print '2';
 } elsif ( $c ne 'c') {
     print '3';
-} elsif ( q~d~ eq $c ) {
+} elsif ( q~d~ eq $c) {
     print '4';
 } else {
     print '5';

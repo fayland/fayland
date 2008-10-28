@@ -11,8 +11,8 @@ my $from = <<'FROM';
 FROM
 
 my $to = <<'TO';
-                    if ('topic'
-                    eq $object_type and $reply_to == $comments[0]->{comment_id} ); 
+                    if ('topic' eq $object_type
+                    and $reply_to == $comments[0]->{comment_id} ); 
 TO
 
 my $app = Acme::PlayCode->new();

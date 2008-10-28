@@ -4,7 +4,7 @@ use Moose;
 use PPI;
 use Path::Class ();
 
-our $VERSION   = '0.08';
+our $VERSION   = '0.09';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 with 'MooseX::Object::Pluggable';
@@ -42,6 +42,8 @@ sub play {
     $self->do_with_tokens();
     
     my @output = @{ $self->output };
+    # check Acme::PlayCode::Plugin::PrintComma
+    @output = grep { $_ ne 'Acme::PlayCode::!@#$%^&*()_+' } @output;
     my $output = join('', @output);
     if ( $opts->{rewrite_file} and $file ) {
         my $fh = $file->openw();
@@ -58,7 +60,7 @@ sub do_with_tokens {
     my @tokens = $self->tokens;
     while ( $self->token_flag < scalar @tokens) {
         my $orginal_flag = $self->token_flag;
-        my $content = $self->do_with_token( $self->token_flag );
+        my $content = $self->do_with_token_flag( $self->token_flag );
         push @{ $self->output }, $content if ( defined $content );
         # if we don't move token_flag, ++
         if ( $self->token_flag == $orginal_flag ) {
@@ -67,12 +69,20 @@ sub do_with_tokens {
     }
 }
 
-sub do_with_token {
+sub do_with_token_flag {
     my ( $self, $token_flag ) = @_;
-
-    my @tokens = $self->tokens;
     
+    my @tokens = $self->tokens;
     my $token = $tokens[$token_flag];
+    
+    return $self->do_with_token( $token );
+}
+
+sub do_with_token {
+    my ( $self, $token ) = @_;
+
+    my $token_flag = $self->token_flag;
+    my @tokens = $self->tokens;
     if ( $token->isa('PPI::Token::HereDoc') ) {
         my @output = @{ $self->output };
         

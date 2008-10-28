@@ -2,17 +2,14 @@ package Acme::PlayCode::Plugin::DoubleToSingle;
 
 use Moose::Role;
 
-our $VERSION   = '0.06';
+our $VERSION   = '0.09';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 around 'do_with_token' => sub {
     my $orig = shift;
     my $self = shift;
-    my ( $token_flag ) = @_;
-    
-    my @tokens = $self->tokens;
-    my $token  = $tokens[$token_flag];
-    
+    my ( $token ) = @_;
+
     if ( $token->isa('PPI::Token::Quote::Double') ) {
         # XXX?
         # why treat 

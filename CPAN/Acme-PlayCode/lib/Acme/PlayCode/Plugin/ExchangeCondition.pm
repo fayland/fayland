@@ -1,11 +1,12 @@
 package Acme::PlayCode::Plugin::ExchangeCondition;
 
 use Moose::Role;
+use List::MoreUtils qw/firstidx/;
 
-our $VERSION   = '0.04';
+our $VERSION   = '0.09';
 our $AUTHORITY = 'cpan:FAYLAND';
 
-around 'do_with_token' => sub {
+around 'do_with_token_flag' => sub {
     my $orig = shift;
     my $self = shift;
     my ( $token_flag ) = @_;
@@ -41,7 +42,7 @@ around 'do_with_token' => sub {
             my (@previous_tokens, @previous_full_tokens);
             while ($token_flag--) {
                 if ($tokens[$token_flag]->isa('PPI::Token::Whitespace') ) {
-                    push @previous_full_tokens, $tokens[$token_flag];
+                    unshift @previous_full_tokens, $tokens[$token_flag];
                     next;
                 }
                 last if ($tokens[$token_flag]->isa('PPI::Token::Structure'));
@@ -52,13 +53,12 @@ around 'do_with_token' => sub {
                     }
                 }
                 last unless ( $tokens[$token_flag] );
-                push @previous_tokens, $tokens[$token_flag];
-                push @previous_full_tokens, $tokens[$token_flag];
+                unshift @previous_tokens, $tokens[$token_flag];
+                unshift @previous_full_tokens, $tokens[$token_flag];
             }
             $token_flag = $orginal_flag; # roll back
-            
+
             # the most simple situation ( $a eq 'a' )
-            use Data::Dumper;
             if (scalar @next_tokens == 1 and scalar @previous_tokens == 1) {
                 # exchange-able flag
                 my $exchange_able = 0;
@@ -77,24 +77,24 @@ around 'do_with_token' => sub {
                     my $previous_num = scalar @previous_full_tokens;
                     my $next_num     = scalar @next_full_tokens;
                     my @output = @{ $self->output };
-                    @output = splice( @output, 0, scalar @output - $previous_num );
+                    @output = splice( @output, 0, $token_flag - $previous_num );
+                    
                     # exchange starts
-                    foreach my $i ( $orginal_flag + 1 .. $orginal_flag + $next_num ) {
-                        push @output, $orig->($self, $i);
+                    my @tokens_to_exchange = ( @previous_full_tokens, $token, @next_full_tokens );
+                    
+                    # find the place of previous_tokens and next_tokens
+                    my $prev_place = firstidx { $_ eq $previous_tokens[0] } @tokens_to_exchange;
+                    my $next_place = firstidx { $_ eq $next_tokens[0] } @tokens_to_exchange;
+                    
+                    $tokens_to_exchange[ $prev_place ] = $next_tokens[0];
+                    $tokens_to_exchange[ $next_place ] = $previous_tokens[0];
+
+                    foreach my $_token ( @tokens_to_exchange ) {
+                        push @output, $self->do_with_token($_token);
                     }
-                    # in case @next_full_tokens is closed with "a" instead of space
-                    unless ($next_full_tokens[-1]->isa('PPI::Token::Whitespace')) {
-                        push @output, ' ';
-                    }
-                    # space should be around $op
-                    push @output, $op;
-                    # in case @previous_full_tokens is started with $a instead of space
-                    unless ($previous_full_tokens[0]->isa('PPI::Token::Whitespace')) {
-                        push @output, ' ';
-                    }
-                    map { push @output, $_->content } @previous_full_tokens;
+
                     # move 'token flag' i forward
-                    $token_flag += scalar @next_full_tokens + 1;
+                    $token_flag += $next_num + 1;
                     $self->token_flag( $token_flag );
                     $self->output( \@output );
                     return;

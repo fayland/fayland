@@ -9,6 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Acme/PlayCode.pm',
     build_requires => {
         'Test::More'  => 0,
+        'List::MoreUtils' => 0,
         'Path::Class' => '0.16',
         'Moose'       => '0.57',
         'MooseX::Object::Pluggable' => '0.0008',

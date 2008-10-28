@@ -1,5 +1,8 @@
 Revision history for Acme-PlayCode
 
+0.09    2008.10.28
+        fix t/201-exchange_space_bug.t
+
 0.08    2008.10.28
         fix HereDoc thing
 

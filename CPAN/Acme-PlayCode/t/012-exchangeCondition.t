@@ -42,11 +42,11 @@ my $c = 'c';
 my $d = qq~d~;
 if ( "a" eq $a ) {
     print "1";
-} elsif ( 'b' eq $b ) {
+} elsif ( 'b' eq $b) {
     print "2";
 } elsif ( $c ne qq~c~) {
     print "3";
-} elsif ( q~d~ eq $c ) {
+} elsif ( q~d~ eq $c) {
     print '4';
 } else {
     print '5';

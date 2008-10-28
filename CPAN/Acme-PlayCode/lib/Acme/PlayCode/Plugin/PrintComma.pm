@@ -2,7 +2,7 @@ package Acme::PlayCode::Plugin::PrintComma;
 
 use Moose::Role;
 
-our $VERSION   = '0.07';
+our $VERSION   = '0.09';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use vars qw/$printcomma_start/;
@@ -10,11 +10,11 @@ use vars qw/$printcomma_start/;
 around 'do_with_token' => sub {
     my $orig = shift;
     my $self = shift;
-    my ( $token_flag ) = @_;
-    
+    my ( $token ) = @_;
+
+    my $token_flag = $self->token_flag;
     my @tokens = $self->tokens;
-    my $token  = $tokens[$token_flag];
-    
+
     $printcomma_start = 0 unless ( defined $printcomma_start );
 
     if ( $token->isa('PPI::Token::Word') and $token->content eq 'print' ) {
@@ -24,7 +24,7 @@ around 'do_with_token' => sub {
     } elsif ( $printcomma_start and $token->isa('PPI::Token::Operator')
         and $token->content eq '.' ) {
         if ( $tokens[$token_flag - 1]->isa('PPI::Token::Whitespace') ) {
-            pop @{ $self->output };
+            $self->output->[-1] = 'Acme::PlayCode::!@#$%^&*()_+';
         }
         return ',';
     }
