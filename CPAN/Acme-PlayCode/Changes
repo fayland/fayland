@@ -1,5 +1,8 @@
 Revision history for Acme-PlayCode
 
+0.06    2008.10.28
+        fix DoubleToSingle with "skip all '\' because I don't know which is fine"
+
 0.05    2008.10.25
         fix Acme::PlayCode::Plugin::Averything
 

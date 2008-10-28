@@ -2,7 +2,7 @@ package Acme::PlayCode::Plugin::DoubleToSingle;
 
 use Moose::Role;
 
-our $VERSION   = '0.04';
+our $VERSION   = '0.06';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 around 'do_with_token' => sub {
@@ -21,8 +21,14 @@ around 'do_with_token' => sub {
         #   'content' => '"c\\n"'
         # }, 'PPI::Token::Quote::Double' );
         # "c\\n" as not interpolations
-        # bugs?
-        if ( not $token->interpolations and not $token->content =~ /\\n/ ) {
+        # bug?
+        #
+        # why "\012" is not interpolations??
+        # another bug?
+        
+        # skip all '\' because I don't know which is fine
+        if ( not $token->interpolations and
+             not $token->content =~ /\\/ ) {
             my $str = $token->string;
             if ( $str !~ /\'/) {
                 return "'$str'";
