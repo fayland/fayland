@@ -57,8 +57,7 @@ sub play {
 sub do_with_tokens {
     my ( $self ) = @_;
     
-    my @tokens = $self->tokens;
-    while ( $self->token_flag < scalar @tokens) {
+    while ( $self->token_flag < scalar @{$self->tokens}) {
         my $orginal_flag = $self->token_flag;
         my $content = $self->do_with_token_flag( $self->token_flag );
         push @{ $self->output }, $content if ( defined $content );
