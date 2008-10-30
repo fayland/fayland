@@ -21,9 +21,9 @@ sub default :Path {
 
     $c->log->debug(Dumper(\$c->session));    
     $c->response->content_type("text/html");
-#    if ( $c->user_exists ) {
-#        $c->res->body(Dumper(\$c->user->obj));
-#    } else {
+    if ( $c->user_exists ) {
+        $c->res->body(Dumper(\$c->user->obj));
+    } else {
         $c->res->body(<<HTML);
 <form method='post'>
 Please type your OpenID: <input type='text' name='openid_identifier' />
@@ -31,7 +31,7 @@ Please type your OpenID: <input type='text' name='openid_identifier' />
 </form>
 HTML
 
-#    }
+    }
 }
 sub end : Private {
     my ( $self, $c ) = @_;
