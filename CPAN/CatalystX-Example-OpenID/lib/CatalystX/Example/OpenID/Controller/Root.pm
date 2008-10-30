@@ -14,15 +14,11 @@ __PACKAGE__->config->{namespace} = '';
 sub default :Path {
     my ( $self, $c ) = @_;
     
-    my $claimed_uri = $c->req->params->{openid_identifier};
-    if ( $claimed_uri ) {
-        $c->authenticate({openid_identifier => $claimed_uri});
-    }
+    my $user = $c->authenticate();
 
-    $c->log->debug(Dumper(\$c->session));    
     $c->response->content_type("text/html");
-    if ( $c->user_exists ) {
-        $c->res->body(Dumper(\$c->user->obj));
+    if ( $user ) {
+        $c->res->body(Dumper(\$user));
     } else {
         $c->res->body(<<HTML);
 <form method='post'>
@@ -33,12 +29,6 @@ HTML
 
     }
 }
-sub end : Private {
-    my ( $self, $c ) = @_;
-    
-    return 1;
-}
-
 
 1;
 __END__
