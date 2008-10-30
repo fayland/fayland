@@ -4,7 +4,7 @@ use Moose;
 use PPI;
 use Path::Class ();
 
-our $VERSION   = '0.09';
+our $VERSION   = '0.10';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 with 'MooseX::Object::Pluggable';
@@ -107,6 +107,8 @@ sub do_with_token {
 }
 
 no Moose;
+__PACKAGE__->meta->make_immutable;
+
 1;
 __END__
 
