@@ -1,6 +1,6 @@
 ---
 name: Acme-PlayCode
-version: 0.08
+version: 0.10
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: Play code to win
@@ -8,6 +8,7 @@ license: perl
 resources:
   license: http://dev.perl.org/licenses/
 build_requires:
+  List::MoreUtils: 0
   Moose: 0.57
   MooseX::Object::Pluggable: 0.0008
   PPI: 1.201
@@ -16,19 +17,22 @@ build_requires:
 provides:
   Acme::PlayCode:
     file: lib/Acme/PlayCode.pm
-    version: 0.08
+    version: 0.10
   Acme::PlayCode::Plugin::Averything:
     file: lib/Acme/PlayCode/Plugin/Averything.pm
-    version: 0.05
+    version: 0.10
   Acme::PlayCode::Plugin::DoubleToSingle:
     file: lib/Acme/PlayCode/Plugin/DoubleToSingle.pm
-    version: 0.06
+    version: 0.10
   Acme::PlayCode::Plugin::ExchangeCondition:
     file: lib/Acme/PlayCode/Plugin/ExchangeCondition.pm
-    version: 0.04
+    version: 0.10
+  Acme::PlayCode::Plugin::NumberPlus:
+    file: lib/Acme/PlayCode/Plugin/NumberPlus.pm
+    version: 0.10
   Acme::PlayCode::Plugin::PrintComma:
     file: lib/Acme/PlayCode/Plugin/PrintComma.pm
-    version: 0.07
+    version: 0.10
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
