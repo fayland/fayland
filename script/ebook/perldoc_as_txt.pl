@@ -6,6 +6,11 @@ use File::Next;
 
 my @modules = @ARGV;
 
+unless ( scalar @modules ) {
+	print "perl $0 Moose\nor \nperl $0 MooseX::\n";
+	exit;
+}
+
 my $save_text; my @ex_modules;
 foreach my $module (@modules) {
     my $file = find_module_place($module);
@@ -18,7 +23,7 @@ foreach my $module (@modules) {
     
     # get all the sub-modules
     my @sub_modules_files = get_sub_modules($file);
-    unshift @sub_modules_files, $file;
+    unshift @sub_modules_files, $file unless ( -d $file );
     
     # merge all files' source into a txt file
     foreach my $pm (@sub_modules_files) {
@@ -32,7 +37,7 @@ foreach my $module (@modules) {
 
 if ($save_text) {
     my $file = join('-', @ex_modules);
-    $file =~ s/\:\:/\_/isg;
+    $file =~ s/\:\:/\_/isg; $file =~ s/\_$//isg;
     $file .= '.txt';
     open(my $fh, '>', $file);
     print $fh $save_text;
@@ -43,8 +48,14 @@ if ($save_text) {
 sub find_module_place {
     my ($module) = @_;
     
+	my $is_dir = 0;
+	if ( $module =~ s/\:\:$// ) { # end with ::
+		$is_dir = 1;
+	}
+
     $module =~ s/\:\:/\//isg;
-    $module .= '.pm';
+    $module .= '.pm' unless ( $is_dir );
+	
     foreach my $dir (@INC) {
         return "$dir/$module" if (-e "$dir/$module");
     }
