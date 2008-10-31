@@ -2,7 +2,7 @@ package Acme::PlayCode::Plugin::DoubleToSingle;
 
 use Moose::Role;
 
-our $VERSION   = '0.09';
+our $VERSION   = '0.10';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 around 'do_with_token' => sub {

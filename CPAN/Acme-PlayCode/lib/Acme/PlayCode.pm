@@ -161,6 +161,10 @@ Play code with exchanging condition
 
 Play code with printing comma
 
+=item L<Acme::PlayCode::Plugin::NumberPlus>
+
+Play code with plus number
+
 =back
 
 =head1 SEE ALSO

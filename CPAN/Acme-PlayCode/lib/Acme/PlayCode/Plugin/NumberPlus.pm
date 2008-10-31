@@ -4,7 +4,7 @@ use Moose::Role;
 use List::MoreUtils qw/insert_after/;
 use PPI::Token::Comment;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.10';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 around 'do_with_token_flag' => sub {
@@ -77,7 +77,7 @@ around 'do_with_token_flag' => sub {
                 my $prev_num = scalar @prev_full_tokens;
                 my $next_num = scalar @next_full_tokens;
                 my @output = @{ $self->output };
-                @output = splice( @output, 0, $token_flag - $prev_num );
+                @output = splice( @output, 0, scalar @output - $prev_num );
                                 
                 my $str = join('', @prev_full_tokens, $token, @next_full_tokens);
                 $str = eval($str);
@@ -98,15 +98,16 @@ around 'do_with_token_flag' => sub {
                         push @tokens, new PPI::Token::Comment($comment);
                         last;
                     }
+                    push @output, $orig->($self, $token_flag);
+                    $token_flag++;
                     if ( $_token->isa('PPI::Token::Structure') and
                          $_token->content ne ')' ) {
                         insert_after { $_ eq $_token } new PPI::Token::Comment($comment) => @tokens;
                         last;
                     }
-                    $token_flag++;
                 }
 
-                $self->token_flag( $to_be_set );
+                $self->token_flag( $token_flag );
                 $self->output( \@output );
                 $self->tokens( \@tokens );
                 return;

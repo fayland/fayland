@@ -1,5 +1,8 @@
 Revision history for Acme-PlayCode
 
+0.10    2008.10.31
+        add Acme::PlayCode::Plugin::NumberPlus
+
 0.09    2008.10.28
         fix t/201-exchange_space_bug.t
 

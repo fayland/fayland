@@ -3,7 +3,7 @@ package Acme::PlayCode::Plugin::ExchangeCondition;
 use Moose::Role;
 use List::MoreUtils qw/firstidx/;
 
-our $VERSION   = '0.09';
+our $VERSION   = '0.10';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 around 'do_with_token_flag' => sub {
@@ -77,7 +77,7 @@ around 'do_with_token_flag' => sub {
                     my $previous_num = scalar @previous_full_tokens;
                     my $next_num     = scalar @next_full_tokens;
                     my @output = @{ $self->output };
-                    @output = splice( @output, 0, $token_flag - $previous_num );
+                    @output = splice( @output, 0, scalar @output - $previous_num );
                     
                     # exchange starts
                     my @tokens_to_exchange = ( @previous_full_tokens, $token, @next_full_tokens );

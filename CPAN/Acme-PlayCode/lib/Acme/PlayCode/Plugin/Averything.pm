@@ -3,7 +3,7 @@ package Acme::PlayCode::Plugin::Averything;
 use Moose::Role;
 use Path::Class ();
 
-our $VERSION   = '0.05';
+our $VERSION   = '0.10';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use vars qw/$avreything_loaded/;
