@@ -11,7 +11,7 @@ augment pre_insert => sub {
     my ($self, $file_ref, $message_ref) = @_;
     
     # skip "[#catalyst 00:42] JOIN: Fayland"
-    if ( $$message_ref =~ /\s+JOIN\:\s+(\S+)$/ ) {
+    if ( $$message_ref =~ /\s+(JOIN|PART)\:\s+(\S+)$/ ) {
         $$message_ref = '';
     }
     # skip [#catalyst 05:59] MODE: +o zamolxes by: Bender
@@ -92,7 +92,7 @@ my $bot = IRC::Bot2->new(
     Port     => '6667',
     Username => 'Fayland_Logger',
     Ircname  => 'Fayland_Logger',
-    Channels => [ '#moose', '#catalyst', '#dbix-class', '#reaction' ],
+    Channels => [ '#moose', '#catalyst', '#dbix-class', '#reaction', '#padre' ],
     LogPath  => '/home/faylandfoorum/irclog.foorumbbs.com/',
     NSPass   => 'nickservpass'
 );
