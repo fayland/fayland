@@ -3,7 +3,7 @@ package Padre::Plugin::AcmePlayCode;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Acme::PlayCode;
 
@@ -96,7 +96,7 @@ This is a simple plugin to run L<Acme::PlayCode> on your source code.
 
 If there is any selection, just run with the text you selected.
 
-If not, run with the selected whole document.
+If not, run with the whole text from selected document.
 
 =head1 AUTHOR
 
