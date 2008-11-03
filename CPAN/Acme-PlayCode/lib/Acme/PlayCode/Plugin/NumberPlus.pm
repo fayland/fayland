@@ -4,7 +4,7 @@ use Moose::Role;
 use List::MoreUtils qw/insert_after/;
 use PPI::Token::Comment;
 
-our $VERSION   = '0.10';
+our $VERSION   = '0.11';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 around 'do_with_token_flag' => sub {
@@ -66,12 +66,16 @@ around 'do_with_token_flag' => sub {
 
             # only do-able for number, space, operator
             my $do_able = 1;
-            foreach ( @prev_full_tokens, @next_full_tokens ) {
-                unless ( $_->isa('PPI::Token::Whitespace') or $_->isa('PPI::Token::Number') or
-                    ( $_->isa('PPI::Token::Operator') and $_->content =~ /^[\+\-\*\/]$/ ) ) {
-                        $do_able = 0;
-                }
-            }
+            $do_able = 0 unless (scalar @prev_full_tokens and scalar @next_full_tokens);
+            if ( $do_able ) {
+				foreach ( @prev_full_tokens, @next_full_tokens ) {
+					unless ( $_->isa('PPI::Token::Whitespace') or $_->isa('PPI::Token::Number') or
+						( $_->isa('PPI::Token::Operator') and $_->content =~ /^[\+\-\*\/]$/ ) ) {
+							$do_able = 0;
+							last;
+					}
+				}
+			}
             if ( $do_able ) {
                 # remove prev full tokens
                 my $prev_num = scalar @prev_full_tokens;

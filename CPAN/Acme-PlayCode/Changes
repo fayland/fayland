@@ -1,5 +1,8 @@
 Revision history for Acme-PlayCode
 
+0.11	2008.11.3
+		fix a bug in Acme::PlayCode::Plugin::NumberPlus
+
 0.10    2008.10.31
         add Acme::PlayCode::Plugin::NumberPlus
 
