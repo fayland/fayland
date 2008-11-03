@@ -5,6 +5,8 @@ use strict;
 
 our $VERSION = '0.01';
 
+use Wx ':everything';
+
 my @menu = (
     ['Word stats', \&count_word_stats ],
 );
@@ -26,7 +28,22 @@ sub count_word_stats {
         $code = $doc->text_get;
     }
     
-    
+    my ( $lines, $chars_with_space, $chars_without_space, $words );
+	$lines++ while ( $code =~ /[\r\n]/g );
+	$words++ while ( $code =~ /\b\w+\b/g );
+	$chars_with_space++ while ( $code =~ /./g );
+	$chars_without_space++ while ( $code =~ /\S/g );
+	
+	my $title = 'Stats For ';
+	$title .= ( $src ) ? 'Selected' : 'Doc';
+	my $message = <<MESSAGE;
+Words: $words
+Lines: $lines
+Chars with spaces: $chars_with_space
+Chars without spaces: $chars_without_space
+MESSAGE
+	
+	Wx::MessageBox( $message, $title, Wx::wxOK | Wx::wxCENTRE, $self );
 }
 
 1;
@@ -43,11 +60,13 @@ Padre::Plugin::WordStats - Word stats for L<Padre>
 
 =head1 DESCRIPTION
 
-Count how many chars, lines, chars without spaces within your L<Padre>
+Count how many lines, words, chars with space, chars without spaces within your L<Padre>
 
 If there is any selection, just run with the text you selected.
 
 If not, run with the selected whole document.
+
+It's a simple version, if you need more, please bug me on irc.perl.org #padre
 
 =head1 AUTHOR
 
