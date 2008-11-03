@@ -3,7 +3,7 @@ package Padre::Plugin::TabAndSpace;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Wx ':everything';
 use Padre::Wx::History::TextDialog;

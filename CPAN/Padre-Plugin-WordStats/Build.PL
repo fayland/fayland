@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Padre/Plugin/WordStats.pm',
     build_requires => {
         'Test::More' => 0,
-        'Padre'		 => 0,
+        'Padre'		 => '0.15',
     },
     add_to_cleanup      => [ 'Padre-Plugin-WordStats-*' ],
     create_makefile_pl => 'traditional',
