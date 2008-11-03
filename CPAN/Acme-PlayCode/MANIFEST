@@ -18,4 +18,5 @@ t/014-numberPlus.t
 t/099-Averything.t
 t/101-heredoc.t
 t/201-exchange_space_bug.t
+t/202-number_plus_bug.t
 t/pod.t

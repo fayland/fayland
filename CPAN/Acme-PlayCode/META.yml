@@ -1,6 +1,6 @@
 ---
 name: Acme-PlayCode
-version: 0.10
+version: 0.11
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: Play code to win
@@ -17,7 +17,7 @@ build_requires:
 provides:
   Acme::PlayCode:
     file: lib/Acme/PlayCode.pm
-    version: 0.10
+    version: 0.11
   Acme::PlayCode::Plugin::Averything:
     file: lib/Acme/PlayCode/Plugin/Averything.pm
     version: 0.10
@@ -29,7 +29,7 @@ provides:
     version: 0.10
   Acme::PlayCode::Plugin::NumberPlus:
     file: lib/Acme/PlayCode/Plugin/NumberPlus.pm
-    version: 0.10
+    version: 0.11
   Acme::PlayCode::Plugin::PrintComma:
     file: lib/Acme/PlayCode/Plugin/PrintComma.pm
     version: 0.10

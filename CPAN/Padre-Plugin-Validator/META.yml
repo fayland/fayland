@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-Validator
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: 'validate HTML/CSS in L<Padre>'
@@ -16,7 +16,7 @@ build_requires:
 provides:
   Padre::Plugin::Validator:
     file: lib/Padre/Plugin/Validator.pm
-    version: 0.01
+    version: 0.02
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
