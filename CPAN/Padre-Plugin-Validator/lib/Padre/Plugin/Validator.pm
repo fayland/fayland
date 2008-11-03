@@ -125,7 +125,7 @@ Padre::Plugin::Validator - validate HTML/CSS in L<Padre>
 
 validate HTML/CSS with L<WebService::Validator::HTML::W3C> / L<WebService::Validator::CSS::W3C>
 
-It's within L<Padre>.
+It's within L<Padre>. error will be shown in output window.
 
 =head1 SEE ALSO
 
