@@ -3,7 +3,7 @@ package Padre::Plugin::Validator;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use WebService::Validator::HTML::W3C;
 use WebService::Validator::CSS::W3C;
@@ -71,25 +71,21 @@ sub validate_css {
 			my @errors = $val->errors;
 			foreach my $err (@errors) {
 
-=pod
-
-		{
-            'skippedstring' => '
-                                ;}
-                            ',
-            'context' => ' width ',
-            'errortype' => 'parse-error',
-            'message' => '
-        
-                                Parse error - Unrecognized 
-                            ',
-            'errorsubtype' => '
-                                skippedString
-                            ',
-            'line' => '20'
-          };
-
-=cut
+#		{
+#            'skippedstring' => '
+#                                ;}
+#                            ',
+#            'context' => ' width ',
+#            'errortype' => 'parse-error',
+#            'message' => '
+#        
+#                                Parse error - Unrecognized 
+#                            ',
+#            'errorsubtype' => '
+#                                skippedString
+#                            ',
+#            'line' => '20'
+#          };
 
 				my $message = $err->{message};
 				$message =~ s/(^\s+|\s+$)//isg;
