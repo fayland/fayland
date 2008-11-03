@@ -3,7 +3,7 @@ package Padre::Plugin::TabAndSpace;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Wx ':everything';
 use Padre::Wx::History::TextDialog;
@@ -11,6 +11,7 @@ use Padre::Wx::History::TextDialog;
 my @menu = (
     ['Tab to Space', \&tab_to_space ],
     ['Space to Tab', \&space_to_tab ],
+    ['Delete Ending Space', \&delete_ending_space ],
 );
 
 sub menu {
@@ -74,6 +75,29 @@ sub _convert_tab_with_space {
     }
 }
 
+sub delete_ending_space {
+	my ( $self ) = @_;
+	
+	my $code;
+    my $src = $self->selected_text;
+    my $doc = $self->selected_document;
+    if ( $src ) {
+        $code = $src;
+    } else {
+        $code = $doc->text_get;
+    }
+    
+    # remove ending space
+    $code =~ s/([^\n\S]+)$//mg;
+    
+    if ( $src ) {
+        my $editor = $self->selected_editor;
+        $editor->ReplaceSelection( $code );
+    } else {
+        $doc->text_set( $code );
+    }
+}
+
 1;
 __END__
 
@@ -87,10 +111,13 @@ Padre::Plugin::TabAndSpace - convert between space and tab within L<Padre>
     Plugins -> TabAndSpace -> 
                               Tab to Space
                               Space to Tab
+                              Delete Ending Space
 
 =head1 DESCRIPTION
 
 This is a simple plugin to "convert tabs to spaces" or "convert spaces to tabs".
+
+and "delete ending space".
 
 If there is any selection, just run with the text you selected.
 
