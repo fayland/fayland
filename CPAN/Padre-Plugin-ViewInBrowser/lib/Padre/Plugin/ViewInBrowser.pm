@@ -5,6 +5,7 @@ use strict;
 
 our $VERSION = '0.01';
 
+use Path::Class::File ();
 use Wx ':everything';
 
 my @menu = (
@@ -19,8 +20,8 @@ sub menu {
 sub view_in_browser {
 	my ( $self ) = @_;
 	
+	my $filename = $self->selected_filename;
 	if ( $^O eq 'MSWin32' ) {
-		my $filename = $self->selected_filename;
 		unless ( $filename ) {
 			Wx::MessageBox( 'What to open? God KNOWS!',
 			'Error', Wx::wxOK | Wx::wxCENTRE, $self );
@@ -28,9 +29,27 @@ sub view_in_browser {
 		my $cmd = qq{rundll32 url.dll,FileProtocolHandler "$filename"};
 		system($cmd);
 	} else {
-		Wx::MessageBox( 'Only Win32 is supported for now, patches are welcome',
-			'Error', Wx::wxOK | Wx::wxCENTRE, $self );
+		my $firefox_exe = _find_firefox();
+		unless ( $firefox_exe ) {
+			Wx::MessageBox( 'Do not know where is the browser! hmm, send me a patch to fayland at gmail dot com',
+				'Error', Wx::wxOK | Wx::wxCENTRE, $self );
+			return;
+		}
+		my $cmd = "$firefox_exe $filename";
+		system($cmd);
 	}
+}
+
+sub _find_firefox {
+
+	my $name = 'firefox';
+	
+	for my $prefix (qw(/usr /usr/local /opt/local /sw)) {
+        for my $bindir (qw(bin sbin)) {
+            my $exe = Path::Class::File->new($prefix, $bindir, $name);
+            return $exe if -x $exe;
+        }
+    }
 }
 
 1;
@@ -47,7 +66,25 @@ Padre::Plugin::ViewInBrowser - view selected doc in browser for L<Padre>
 
 =head1 DESCRIPTION
 
-view selected doc in browser (IE/FF)
+view selected doc in browser (IE/FF) or other external script.
+
+=head2 Win32
+
+on Win32, we use
+
+  rundll32 url.dll,FileProtocolHandler "$filename"
+
+it works perfect. it will open HTML in Firefox or IE, while open .pl file with L<Padre> or UE32.
+
+=head2 Others
+
+on Other OSes, we try to find 'firefox' then call
+
+  $firefox_exe $filename
+
+I'm not sure if it works or not, it's NOT tested.
+
+patches are welcome! :)
 
 =head1 AUTHOR
 

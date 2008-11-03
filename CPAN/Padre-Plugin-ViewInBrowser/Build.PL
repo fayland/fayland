@@ -10,6 +10,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'Padre'		 => '0.15',
+        'Path::Class::File' => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-ViewInBrowser-*' ],
     create_makefile_pl => 'traditional',
