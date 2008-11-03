@@ -5,7 +5,7 @@ WriteMakefile
           'NAME' => 'Padre::Plugin::TabAndSpace',
           'VERSION_FROM' => 'lib/Padre/Plugin/TabAndSpace.pm',
           'PREREQ_PM' => {
-                           'Padre' => '0',
+                           'Padre' => '0.15',
                            'Test::More' => '0',
                            'Wx' => '0'
                          },
