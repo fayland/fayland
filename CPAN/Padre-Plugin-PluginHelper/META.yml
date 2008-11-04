@@ -1,0 +1,20 @@
+---
+name: Padre-Plugin-PluginHelper
+version: 0.01
+author:
+  - 'Fayland Lam <fayland@gmail.com>'
+abstract: make building Padre plugin easy
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+build_requires:
+  Padre: 0.15
+  Test::More: 0
+provides:
+  Padre::Plugin::PluginHelper:
+    file: lib/Padre/Plugin/PluginHelper.pm
+    version: 0.01
+generated_by: Module::Build version 0.3
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
