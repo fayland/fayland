@@ -9,6 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Padre/Plugin/PluginHelper.pm',
     build_requires => {
         'Test::More' => 0,
+        'Padre'		 => '0.15',
     },
     add_to_cleanup      => [ 'Padre-Plugin-PluginHelper-*' ],
     create_makefile_pl => 'traditional',
