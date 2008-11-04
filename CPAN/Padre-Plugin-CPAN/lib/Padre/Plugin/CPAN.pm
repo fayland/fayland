@@ -5,8 +5,12 @@ use strict;
 
 our $VERSION = '0.01';
 
+use Wx ':everything';
+use Padre::Wx::History::TextDialog;
+
 my @menu = (
-    ['Edit Config', \&edit_config],
+    ['Edit Config',    \&edit_config],
+    ['Install Module', \&install_module],
 );
 
 sub menu {
@@ -23,7 +27,19 @@ sub edit_config {
 sub install_module {
 	my ( $self ) = @_;
 	
-	
+	my $dialog = Padre::Wx::History::TextDialog->new(
+        $self, 'Module name(s):', 'Install Module', 'OK',
+    );
+    if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+        return;
+    }
+    my $module_name = $dialog->GetValue;
+    $dialog->Destroy;
+    unless ( defined $module_name ) {
+        return;
+    }
+    
+    my @modules = split(/\s+/, $module_name);
 }
 
 1;
