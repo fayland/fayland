@@ -3,7 +3,7 @@ package Padre::Plugin::TabAndSpace;
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Wx ':everything';
 use Padre::Wx::History::TextDialog;
@@ -38,7 +38,7 @@ sub _convert_tab_with_space {
     }
     
     my $dialog = Padre::Wx::History::TextDialog->new(
-        $self, 'How many spaces for each tab:', $title, 'OK',
+        $self, 'How many spaces for each tab:', $title, $type,
     );
     if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
         return;
