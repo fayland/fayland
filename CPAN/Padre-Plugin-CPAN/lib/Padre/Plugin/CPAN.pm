@@ -3,7 +3,7 @@ package Padre::Plugin::CPAN;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Wx ':everything';
 use CPAN;
@@ -100,7 +100,7 @@ sub install_module {
 	# TODO: get preferred Perl from configuration
 	my $perl = Padre->perl_interpreter;
     
-    $self->show_output;
+    $self->show_output(1);
 	$self->{output}->clear;
 	my $cmd = qq{"$perl" "-MCPAN" "-e" "install $module_name"};
 	Wx::Perl::ProcessStream->OpenProcess( $cmd, 'CPAN_mod', $self );

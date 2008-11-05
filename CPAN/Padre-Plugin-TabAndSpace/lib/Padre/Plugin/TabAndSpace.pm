@@ -3,7 +3,7 @@ package Padre::Plugin::TabAndSpace;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use Wx ':everything';
 use Padre::Wx::History::TextDialog;
@@ -11,7 +11,8 @@ use Padre::Wx::History::TextDialog;
 my @menu = (
     ['Tab to Space', \&tab_to_space ],
     ['Space to Tab', \&space_to_tab ],
-    ['Delete Ending Space', \&delete_ending_space ],
+    ['Delete Ending Space',  \&delete_ending_space ],
+    ['Delete Leading Space', \&delete_leading_space ],
 );
 
 sub menu {
@@ -76,9 +77,9 @@ sub _convert_tab_with_space {
 }
 
 sub delete_ending_space {
-	my ( $self ) = @_;
-	
-	my $code;
+    my ( $self ) = @_;
+    
+    my $code;
     my $src = $self->selected_text;
     my $doc = $self->selected_document;
     if ( $src ) {
@@ -98,6 +99,39 @@ sub delete_ending_space {
     }
 }
 
+sub delete_leading_space {
+    my ( $self ) = @_;
+
+    my $src = $self->selected_text;
+    unless ( $src ) {
+        $self->message('No selection');
+    }
+    
+    my $dialog = Padre::Wx::History::TextDialog->new(
+        $self, 'How many leading spaces to delete(1 tab == 4 spaces):',
+        'Delete Leading Space', 'fay_delete_leading_space',
+    );
+    if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+        return;
+    }
+    my $space_num = $dialog->GetValue;
+    $dialog->Destroy;
+    unless ( defined $space_num and $space_num =~ /^\d+$/ ) {
+        return;
+    }
+
+    my $code = $src;
+    my $spaces = ' ' x $space_num;
+    my $tab_num = int($space_num/4);
+    my $space_num_left = $space_num - 4 * $tab_num;
+    my $tabs   = "\t" x $tab_num;
+    $tabs .= '' x $space_num_left if ( $space_num_left );
+    $code =~ s/^($spaces|$tabs)//mg;
+    
+    my $editor = $self->selected_editor;
+    $editor->ReplaceSelection( $code );
+}
+
 1;
 __END__
 
@@ -112,16 +146,29 @@ Padre::Plugin::TabAndSpace - convert between space and tab within L<Padre>
                               Tab to Space
                               Space to Tab
                               Delete Ending Space
+                              Delete Leading Space
 
 =head1 DESCRIPTION
-
-This is a simple plugin to "convert tabs to spaces" or "convert spaces to tabs".
-
-and "delete ending space".
 
 If there is any selection, just run with the text you selected.
 
 If not, run with the selected whole document.
+
+=head2 Tab to Space
+
+convert 1 tab to $num spaces
+
+=head2 Space to Tab
+
+convert $num spaces to 1 tab
+
+=head2 Delete Ending Space
+
+delete ending space
+
+=head2 Delete Leading Space
+
+delete leading space with $num spaces. "selected" ONLY.
 
 =head1 AUTHOR
 
