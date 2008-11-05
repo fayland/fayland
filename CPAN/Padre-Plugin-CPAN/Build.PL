@@ -10,6 +10,8 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'Padre'		 => '0.15',
+        'CPAN'		 => 0,
+        'File::Spec' => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-CPAN-*' ],
     create_makefile_pl => 'traditional',

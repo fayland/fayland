@@ -6,6 +6,8 @@ use strict;
 our $VERSION = '0.01';
 
 use Wx ':everything';
+use CPAN;
+use File::Spec ();
 use Padre::Wx::History::TextDialog;
 
 my @menu = (
@@ -22,13 +24,32 @@ sub edit_config {
 	my ( $self ) = @_;
 	
 	# get the place of the CPAN::Config;
+	my $default_dir = $INC{'CPAN.pm'};
+	$default_dir =~ s/\.pm$//is; # remove .pm
+	my $filename = 'Config.pm';
+	
+	# copy from MainWindow.pm sub on_open
+	
+	my $file = File::Spec->catfile($default_dir, $filename);
+	Padre::DB->add_recent_files($file);
+
+	# If and only if there is only one current file,
+	# and it is unused, close it.
+	if ( $self->{notebook}->GetPageCount == 1 ) {
+		if ( Padre::Documents->current->is_unused ) {
+			$self->on_close($self);
+		}
+	}
+
+	$self->setup_editor($file);
+	$self->refresh_all;
 }
 
 sub install_module {
 	my ( $self ) = @_;
 	
 	my $dialog = Padre::Wx::History::TextDialog->new(
-        $self, 'Module name(s):', 'Install Module', 'OK',
+        $self, "Module name(s):\neg: CPAN Padre", 'Install Module', 'CPAN_INSTALL_MODULE',
     );
     if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
         return;
@@ -39,7 +60,50 @@ sub install_module {
         return;
     }
     
-    my @modules = split(/\s+/, $module_name);
+    # YYY? do some validate here?
+    
+    
+    # Copied from Padre/Wx/MainWindow.pm sub run_command
+    
+    # If this is the first time a command has been run,
+	# set up the ProcessStream bindings.
+	unless ( $Wx::Perl::ProcessStream::VERSION ) {
+		require Wx::Perl::ProcessStream;
+		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDOUT(
+			$self,
+			sub {
+				$_[1]->Skip(1);
+				$_[0]->{output}->AppendText( $_[1]->GetLine . "\n" );
+				return;
+			},
+		);
+		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDERR(
+			$self,
+			sub {
+				$_[1]->Skip(1);
+				$_[0]->{output}->AppendText( $_[1]->GetLine . "\n" );
+				return;
+			},
+		);
+		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_EXIT(
+			$self,
+			sub {
+				$_[1]->Skip(1);
+				$_[1]->GetProcess->Destroy;
+
+				$self->{menu}->enable_run;
+			},
+		);
+	}
+    
+    # Run with the same Perl that launched Padre
+	# TODO: get preferred Perl from configuration
+	my $perl = Padre->perl_interpreter;
+    
+    $self->show_output;
+	$self->{output}->clear;
+	my $cmd = qq{"$perl" "-MCPAN" "-e" "install $module_name"};
+	Wx::Perl::ProcessStream->OpenProcess( $cmd, 'CPAN_mod', $self );
 }
 
 1;
@@ -57,6 +121,16 @@ Padre::Plugin::CPAN - CPAN in Padre
 =head1 DESCRIPTION
 
 CPAN in Padre
+
+=head2 Edit Config
+
+Edit CPAN/Config.pm
+
+=head2 Install Module
+
+run cpan $mod inside Padre. behave likes:
+
+	perl -MCPAN -e "install $mod"
 
 =head1 AUTHOR
 
