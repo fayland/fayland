@@ -3,12 +3,11 @@ package Padre::Plugin::PluginHelper;
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use File::Basename ();
 use File::Spec ();
 use Wx::Menu ();
-use Padre::Wx::History::TextDialog;
 
 my @menu = (
     ['Reload All Plugins', \&reload_plugins ],
@@ -30,6 +29,7 @@ sub reload_plugins {
 sub reload_a_plugin {
     my ( $self ) = @_;
     
+    require Padre::Wx::History::TextDialog;
     my $dialog = Padre::Wx::History::TextDialog->new(
         $self, 'Plugin name:', 'Reload A Plugin', 'Reload_plugin_name',
     );
