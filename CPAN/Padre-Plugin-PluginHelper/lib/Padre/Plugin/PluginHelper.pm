@@ -3,15 +3,17 @@ package Padre::Plugin::PluginHelper;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
+use File::Basename ();
+use File::Spec ();
 use Wx::Menu ();
 use Padre::Wx::History::TextDialog;
 
 my @menu = (
     ['Reload All Plugins', \&reload_plugins ],
     ['Reload A Plugin',    \&reload_a_plugin],
-
+	['Test A Plugin From Local Dir', \&test_a_plugin],
 );
 
 sub menu {
@@ -81,6 +83,48 @@ sub _reload_x_plugins {
     $self->{menu}->refresh;
 }
 
+sub test_a_plugin {
+	my ( $self ) = @_;
+	
+	my $manager = Padre->ide->plugin_manager;
+	my $plugin_config = $manager->plugin_config('PluginHelper');
+	my $last_filename = $plugin_config->{last_filename};
+	$last_filename  ||= $self->selected_filename;
+	my $default_dir;
+	if ($last_filename) {
+		$default_dir = File::Basename::dirname($last_filename);
+	}
+	my $dialog = Wx::FileDialog->new(
+		$self,
+		'Open file',
+		$default_dir,
+		"",
+		"*.*",
+		Wx::wxFD_OPEN,
+	);
+	unless ( Padre::Util::WIN32 ) {
+		$dialog->SetWildcard("*");
+	}
+	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+		return;
+	}
+	my $filename = $dialog->GetFilename;
+	$default_dir = $dialog->GetDirectory;
+	
+	my $file = File::Spec->catfile($default_dir, $filename);
+	
+	# save into plugin for next time
+	$plugin_config->{last_filename} = $file;
+	
+	$filename    =~ s/\.pm$//; # remove last .pm
+	$default_dir =~ s/Padre[\\\/]Plugin([\\\/]|$)//;
+	
+	unshift @INC, $default_dir;
+	
+	# reload all means rebuild the 'Plugins' menu
+	_reload_x_plugins( $self, 'all' );
+}
+
 1;
 __END__
 
@@ -106,6 +150,12 @@ all the modules will be reloaded.
 =head2 Reload A Plugin
 
 instead reload all, just reload the one you are changing.
+
+=head2 Test A Plugin From Local Dir
+
+When you develop a new plugin, try this.
+
+it B<unshift> the plugin lib dir to @INC then tries to reload all plugins (rebuild the menu)
 
 =head1 AUTHOR
 
