@@ -13,6 +13,7 @@ use Padre::Wx::History::TextDialog;
 my @menu = (
     ['Edit Config',    \&edit_config],
     ['Install Module', \&install_module],
+    ['Upgrade All Padre Plugins', \&upgrade_all_plugins ],
 );
 
 sub menu {
@@ -62,8 +63,27 @@ sub install_module {
     
     # YYY? do some validate here?
     
-    
-    # Copied from Padre/Wx/MainWindow.pm sub run_command
+    _run_cpan_command( $self, $module_name);
+}
+
+sub upgrade_all_plugins {
+	my ( $self ) = @_;
+	
+	my @modules;
+	my %plugins = %{ Padre->ide->plugin_manager->plugins };
+    foreach my $name ( keys %plugins ) {
+		next if ( $name eq 'Parrot' ); # it's in Padre core
+		push @modules, "'Padre::Plugin::$name'";
+    }
+
+	my $modules = join(', ', @modules);
+    _run_cpan_command( $self, $modules );
+}
+
+sub _run_cpan_command {
+	my ( $self, $modules ) = @_;
+
+	# Copied from Padre/Wx/MainWindow.pm sub run_command
     
     # If this is the first time a command has been run,
 	# set up the ProcessStream bindings.
@@ -102,7 +122,8 @@ sub install_module {
     
     $self->show_output(1);
 	$self->{output}->clear;
-	my $cmd = qq{"$perl" "-MCPAN" "-e" "install $module_name"};
+	my $cmd = qq{"$perl" "-MCPAN" "-e" "install $modules"};
+	warn "run $cmd\n";
 	Wx::Perl::ProcessStream->OpenProcess( $cmd, 'CPAN_mod', $self );
 }
 
@@ -131,6 +152,10 @@ Edit CPAN/Config.pm
 run cpan $mod inside Padre. behave likes:
 
 	perl -MCPAN -e "install $mod"
+
+=head2 Upgrade All Padre Plugins
+
+upgrade all plugin in one hit
 
 =head1 AUTHOR
 
