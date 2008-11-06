@@ -119,7 +119,7 @@ sub test_a_plugin {
 	$filename    =~ s/\.pm$//; # remove last .pm
 	$default_dir =~ s/Padre[\\\/]Plugin([\\\/]|$)//;
 	
-	unshift @INC, $default_dir;
+	unshift @INC, $default_dir unless ($INC[0] eq $default_dir);
 	
 	# reload all means rebuild the 'Plugins' menu
 	_reload_x_plugins( $self, 'all' );
