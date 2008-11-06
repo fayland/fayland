@@ -3,12 +3,11 @@ package Padre::Plugin::CPAN;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Wx ':everything';
 use CPAN;
 use File::Spec ();
-use Padre::Wx::History::TextDialog;
 
 my @menu = (
     ['Edit Config',    \&edit_config],
@@ -49,6 +48,7 @@ sub edit_config {
 sub install_module {
 	my ( $self ) = @_;
 	
+	require Padre::Wx::History::TextDialog;
 	my $dialog = Padre::Wx::History::TextDialog->new(
         $self, "Module name(s):\neg: CPAN Padre", 'Install Module', 'CPAN_INSTALL_MODULE',
     );

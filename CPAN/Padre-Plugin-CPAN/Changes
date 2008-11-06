@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-CPAN
 
+0.03	2008.11.6
+		from use to require Padre::Wx::History::TextDialog;
+
 0.02	2008.11.6
 		add "Upgrade All Padre Plugins"
 
