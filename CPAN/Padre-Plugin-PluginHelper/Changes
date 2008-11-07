@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-PluginHelper
 
+0.05	2008.11.7
+		fix Wx::wxID_CANCEL not imported bug
+
 0.04	2008.11.6
 		move use to require Padre::Wx::History::TextDialog;
 

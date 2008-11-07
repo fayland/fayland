@@ -3,10 +3,11 @@ package Padre::Plugin::PluginHelper;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use File::Basename ();
 use File::Spec ();
+use Wx ':everything';
 use Wx::Menu ();
 
 my @menu = (
