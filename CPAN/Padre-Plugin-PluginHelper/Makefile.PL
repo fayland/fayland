@@ -5,6 +5,7 @@ WriteMakefile
           'NAME' => 'Padre::Plugin::PluginHelper',
           'VERSION_FROM' => 'lib/Padre/Plugin/PluginHelper.pm',
           'PREREQ_PM' => {
+                           'Module::Refresh' => '0',
                            'Padre' => '0.15',
                            'Test::More' => '0'
                          },
