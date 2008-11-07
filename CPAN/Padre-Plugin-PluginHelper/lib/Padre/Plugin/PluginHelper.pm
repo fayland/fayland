@@ -3,12 +3,13 @@ package Padre::Plugin::PluginHelper;
 use warnings;
 use strict;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use File::Basename ();
 use File::Spec ();
 use Wx ':everything';
 use Wx::Menu ();
+use Padre::Util ();
 
 my @menu = (
     ['Reload All Plugins', \&reload_plugins ],
