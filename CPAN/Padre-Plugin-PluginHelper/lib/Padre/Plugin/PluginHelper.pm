@@ -3,7 +3,7 @@ package Padre::Plugin::PluginHelper;
 use warnings;
 use strict;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use File::Basename ();
 use File::Spec ();
@@ -43,13 +43,13 @@ sub reload_a_plugin {
     unless ( defined $plugin_name ) {
         return;
     }
-    unless ( $plugin_name =~ /^\w+/ ) {
-        $self->error("Unknow Plugin");
+    unless ( $plugin_name =~ /^[\w\:]+/ ) {
+        $self->error('Unknow Plugin');
     }
     
     my %plugins = %{ Padre->ide->plugin_manager->plugins };
     unless ( exists $plugins{$plugin_name} ) {
-        $self->error("Unknow Plugin");
+        $self->error('Unknow Plugin');
     }
     
     _reload_x_plugins( $self, $plugin_name );
@@ -63,7 +63,9 @@ sub _reload_x_plugins {
     foreach my $name ( sort keys %plugins ) {
         # reload the module
         if ( $range eq 'all' or $range eq $name ) {
-            delete $INC{"Padre/Plugin/${name}.pm"};
+			my $file_in_INC = "Padre/Plugin/${name}.pm";
+			$file_in_INC =~ s/\:\:/\//;
+            delete $INC{$file_in_INC};
             eval "use Padre::Plugin::$name;"; ## no critic
             if ( $@ ) {
                 warn "Error when calling plugin 'Padre::Plugin::$name' $@";
