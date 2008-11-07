@@ -3,18 +3,19 @@ package Padre::Plugin::PluginHelper;
 use warnings;
 use strict;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use File::Basename ();
 use File::Spec ();
 use Wx ':everything';
 use Wx::Menu ();
 use Padre::Util ();
+use Module::Refresh;
 
 my @menu = (
     ['Reload All Plugins', \&reload_plugins ],
     ['Reload A Plugin',    \&reload_a_plugin],
-	['Test A Plugin From Local Dir', \&test_a_plugin],
+    ['Test A Plugin From Local Dir', \&test_a_plugin],    
 );
 
 sub menu {
@@ -58,29 +59,43 @@ sub reload_a_plugin {
 sub _reload_x_plugins {
     my ( $self, $range ) = @_;
     
+    my $refresher = new Module::Refresh;
+
     my %plugins = %{ Padre->ide->plugin_manager->plugins };
-    $self->{menu}->{plugin} = Wx::Menu->new;
     foreach my $name ( sort keys %plugins ) {
+        # avoid warnings like "Padre::Plugin::PluginHelper::_reload_x_plugins: Can't undef active subroutine at
+        # C:/strawberry/perl/site/lib/Module/Refresh.pm line 181."
+        if ( $range eq 'all' or $range eq 'PluginHelper' ) {
+            my $file_in_INC = "Padre/Plugin/PluginHelper.pm";
+            delete $INC{$file_in_INC};
+            local $@;
+            eval { require $file_in_INC; 1 } or warn $@;
+            next;
+        }
+    
         # reload the module
         if ( $range eq 'all' or $range eq $name ) {
-			my $file_in_INC = "Padre/Plugin/${name}.pm";
-			$file_in_INC =~ s/\:\:/\//;
-            delete $INC{$file_in_INC};
-            eval "use Padre::Plugin::$name;"; ## no critic
-            if ( $@ ) {
-                warn "Error when calling plugin 'Padre::Plugin::$name' $@";
-                next;
-            }
+            my $file_in_INC = "Padre/Plugin/${name}.pm";
+            $file_in_INC =~ s/\:\:/\//;
+            $refresher->refresh_module($file_in_INC);
         }
-                
-        # create menu
+    }
+    
+    # re-create menu, # coped from Padre::Wx::Menu
+    $self->{menu}->{plugin} = Wx::Menu->new;
+    foreach my $name ( sort keys %plugins ) {
         my @menu    = eval { $plugins{$name}->menu };
         if ( $@ ) {
             warn "Error when calling menu for plugin '$name' $@";
             next;
         }
         my $menu_items = $self->{menu}->add_plugin_menu_items(\@menu);
-        $self->{menu}->{plugin}->Append( -1, $name, $menu_items );
+        my $menu_name  = eval { $plugins{$name}->menu_name };
+        if (not $menu_name) {
+            $menu_name = $name;
+            $menu_name =~ s/::/ /;
+        }
+        $self->{menu}->{plugin}->Append( -1, $menu_name, $menu_items );
     }
     $self->{menu}->{wx}->Replace(5, $self->{menu}->{plugin},   "Pl&ugins");
     
@@ -88,45 +103,45 @@ sub _reload_x_plugins {
 }
 
 sub test_a_plugin {
-	my ( $self ) = @_;
-	
-	my $manager = Padre->ide->plugin_manager;
-	my $plugin_config = $manager->plugin_config('PluginHelper');
-	my $last_filename = $plugin_config->{last_filename};
-	$last_filename  ||= $self->selected_filename;
-	my $default_dir;
-	if ($last_filename) {
-		$default_dir = File::Basename::dirname($last_filename);
-	}
-	my $dialog = Wx::FileDialog->new(
-		$self,
-		'Open file',
-		$default_dir,
-		"",
-		"*.*",
-		Wx::wxFD_OPEN,
-	);
-	unless ( Padre::Util::WIN32 ) {
-		$dialog->SetWildcard("*");
-	}
-	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
-		return;
-	}
-	my $filename = $dialog->GetFilename;
-	$default_dir = $dialog->GetDirectory;
-	
-	my $file = File::Spec->catfile($default_dir, $filename);
-	
-	# save into plugin for next time
-	$plugin_config->{last_filename} = $file;
-	
-	$filename    =~ s/\.pm$//; # remove last .pm
-	$default_dir =~ s/Padre[\\\/]Plugin([\\\/]|$)//;
-	
-	unshift @INC, $default_dir unless ($INC[0] eq $default_dir);
-	
-	# reload all means rebuild the 'Plugins' menu
-	_reload_x_plugins( $self, 'all' );
+    my ( $self ) = @_;
+    
+    my $manager = Padre->ide->plugin_manager;
+    my $plugin_config = $manager->plugin_config('PluginHelper');
+    my $last_filename = $plugin_config->{last_filename};
+    $last_filename  ||= $self->selected_filename;
+    my $default_dir;
+    if ($last_filename) {
+        $default_dir = File::Basename::dirname($last_filename);
+    }
+    my $dialog = Wx::FileDialog->new(
+        $self,
+        'Open file',
+        $default_dir,
+        "",
+        "*.*",
+        Wx::wxFD_OPEN,
+    );
+    unless ( Padre::Util::WIN32 ) {
+        $dialog->SetWildcard("*");
+    }
+    if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+        return;
+    }
+    my $filename = $dialog->GetFilename;
+    $default_dir = $dialog->GetDirectory;
+    
+    my $file = File::Spec->catfile($default_dir, $filename);
+    
+    # save into plugin for next time
+    $plugin_config->{last_filename} = $file;
+    
+    $filename    =~ s/\.pm$//; # remove last .pm
+    $default_dir =~ s/Padre[\\\/]Plugin([\\\/]|$)//;
+    
+    unshift @INC, $default_dir unless ($INC[0] eq $default_dir);
+    
+    # reload all means rebuild the 'Plugins' menu
+    _reload_x_plugins( $self, 'all' );
 }
 
 1;
