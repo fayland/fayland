@@ -3,7 +3,7 @@ package Padre::Plugin::PluginHelper;
 use warnings;
 use strict;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use File::Basename ();
 use File::Spec ();
@@ -65,12 +65,8 @@ sub _reload_x_plugins {
     foreach my $name ( sort keys %plugins ) {
         # avoid warnings like "Padre::Plugin::PluginHelper::_reload_x_plugins: Can't undef active subroutine at
         # C:/strawberry/perl/site/lib/Module/Refresh.pm line 181."
-        if ( $range eq 'all' or $range eq 'PluginHelper' ) {
-            my $file_in_INC = "Padre/Plugin/PluginHelper.pm";
-            delete $INC{$file_in_INC};
-            local $@;
-            eval { require $file_in_INC; 1 } or warn $@;
-            next;
+        if ( $name eq 'PluginHelper' ) {
+			next; # no warnings; # no reload this PluginHelper
         }
     
         # reload the module
@@ -136,9 +132,13 @@ sub test_a_plugin {
     $plugin_config->{last_filename} = $file;
     
     $filename    =~ s/\.pm$//; # remove last .pm
+    $filename    =~ s/[\\\/]/\:\:/;
     $default_dir =~ s/Padre[\\\/]Plugin([\\\/]|$)//;
     
     unshift @INC, $default_dir unless ($INC[0] eq $default_dir);
+    my $plugins = Padre->ide->plugin_manager->plugins;
+    $plugins->{$filename} = "Padre::Plugin::$filename";
+    eval { require $file; 1 } or warn $@; # load for Module::Refresh
     
     # reload all means rebuild the 'Plugins' menu
     _reload_x_plugins( $self, 'all' );

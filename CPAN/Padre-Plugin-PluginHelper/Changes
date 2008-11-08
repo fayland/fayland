@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-PluginHelper
 
+0.09	2008.11.8
+		bug fix for 'Test A Plugin From Local Dir'
+
 0.08	2008.11.8
 		use Module::Refresh to reload plugins
 
