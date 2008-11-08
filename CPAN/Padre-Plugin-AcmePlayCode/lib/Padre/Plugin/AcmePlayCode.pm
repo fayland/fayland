@@ -3,7 +3,7 @@ package Padre::Plugin::AcmePlayCode;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Acme::PlayCode;
 
@@ -36,7 +36,7 @@ sub _play {
 		$code = $doc->text_get;
 	}
 	
-	return unless ( defined $doc and length($doc) );
+	return unless ( defined $code and length($code) );
 	
 	my $played = $playapp->play($code);
 	
