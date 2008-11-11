@@ -15,6 +15,8 @@ require Exporter;
 use Scalar::Util qw(reftype);
 use XML::Writer;
 
+our $DEBUG = 1;
+
 sub ref_to_xml {
 	my ( $ref, $xml ) = @_;
 	
@@ -36,31 +38,43 @@ sub _port_ref_to_xml_writer {
 			if ( defined $data->{ $keys[0] } ) {
 				if ( scalar keys %$attr ) {
 					$$writer->startTag( $keys[0], %$attr );
+					warn "HASH with attrs and val\n" if $DEBUG;
 					_port_ref_to_xml_writer( $writer, $data->{ $keys[0] } );
 					$$writer->endTag( $keys[0] );
 				} else {
+					warn "HASH with no attrs and val\n" if $DEBUG;
 					_port_ref_to_xml_writer( $writer, $keys[0], $data->{ $keys[0] } );
 				}
 			} else {
+				warn "HASH with attrs and no val\n" if $DEBUG;
 				$$writer->emptyTag( $keys[0], %$attr );
 			}
 
 		} else {
 			foreach my $key ( keys %$data ) {
 				$$writer->startTag( $key, %$attr );
+				warn "HASH with attrs and many keys\n" if $DEBUG;
 				_port_ref_to_xml_writer( $writer, $data->{$key} );
 				$$writer->endTag( $key );
 			}
 		}
 	} elsif ( reftype $data and reftype $data eq 'ARRAY' ) {
 		foreach my $val ( @$data ) {
+			warn "ARRAY\n" if $DEBUG;
 			_port_ref_to_xml_writer( $writer, $val );
 		}
 	} else {
-		if ( $val ) {
-			$$writer->dataElement( $data, $val );
+		if ( defined $val and reftype $val and ( reftype $val eq 'HASH' or reftype $val eq 'ARRAY' ) ) {
+			$$writer->startTag( $data );
+			warn "VAL reftype\n" if $DEBUG;
+			_port_ref_to_xml_writer( $writer, $val );
+			$$writer->endTag( $data );
 		} else {
-			$$writer->characters( $data );
+			if ( $val ) {
+				$$writer->dataElement( $data, $val );
+			} else {
+				$$writer->characters( $data );
+			}
 		}
 	}
 }
@@ -81,6 +95,19 @@ XML::HARef - XML and H(ash)A(rray)Ref
 =head1 DESCRIPTION
 
 Don't hate me!
+
+I'm going to add "xml_to_ref" soon. so when you have a XML, we want a hashref/arrayref to create this XML.
+you can just use "xml_to_ref" get the structure of REF, then create it, call xml_to_ref to get the final XML.
+
+=head2 ref_to_xml
+
+from ref to XML by L<XML::Writer>
+
+It's doing something like L<XML::Quick> but it's not the same.
+
+=head2 xml_to_ref
+
+TODO
 
 =head1 SEE ALSO
 

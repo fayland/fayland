@@ -20,6 +20,20 @@ my @tests = ( {
 }, {
 	data => {
 		a => 'b',
+		c => 'd'
+	},
+	xml  => '<c>d</c><a>b</a>'
+}, {
+	data => {
+		a => 'b',
+		_attrs => {
+			c => 'd'
+		}
+	},
+	xml  => '<a c="d">b</a>'
+}, {
+	data => {
+		a => 'b',
 		_attrs => {
 			c => 'd'
 		},
