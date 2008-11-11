@@ -15,7 +15,7 @@ require Exporter;
 use Scalar::Util qw(reftype);
 use XML::Writer;
 
-our $DEBUG = 1;
+our $DEBUG = 0;
 
 sub ref_to_xml {
 	my ( $ref, $xml ) = @_;
