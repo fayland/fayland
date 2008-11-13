@@ -3,6 +3,8 @@ package Padre::Plugin::HTML::Export;
 use warnings;
 use strict;
 
+our $VERSION = '0.01';
+
 use File::Basename ();
 
 use Wx ':everything';
