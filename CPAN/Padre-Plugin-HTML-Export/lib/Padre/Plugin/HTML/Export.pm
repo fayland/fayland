@@ -5,6 +5,11 @@ use strict;
 
 use File::Basename ();
 
+use Wx ':everything';
+use Wx::Locale qw(:default);
+
+use Syntax::Highlight::Engine::Kate;
+
 our %KATE_ALL = (
 	'text/x-adasrc'       => 'Ada',
 	'text/asm'            => 'Asm6502',
@@ -46,6 +51,7 @@ sub export_html {
 
 	my $doc     = $self->selected_document or return;
 	my $current = $doc->filename;
+	my $default_dir;
 	if ( defined $current ) {
 		$default_dir = File::Basename::dirname($current);
 	}
@@ -85,7 +91,6 @@ sub export_html {
 	}
 	
 	# highlight
-	require 'Syntax::Highlight::Engine::Kate::All';
 	my $mimetype = $doc->mimetype;
 	unless ( exists $KATE_ALL{$mimetype} ) {
 		$self->error("$mimetype is not supported");
@@ -126,8 +131,9 @@ sub export_html {
 		},
 	);
 
+	my $title = 'Highlight ' . $doc->filename . ' By Padre::Plugin::HTML::Export';
 	my $code = $doc->text_get;
-	my $output = "<html>\n<head>\n</head>\n<body>\n";
+	my $output = "<html>\n<head>\n<title>$title</title>\n</head>\n<body>\n";
 	$output .= $hl->highlightText($code);
 	$output .= "</body>\n</html>\n";
 	
