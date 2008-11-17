@@ -49,6 +49,8 @@ sub startup {
 			POST_CHOMP => 1,
 			PRE_CHOMP  => 1,
 			STASH      => Template::Stash::XS->new,
+			INCLUDE_PATH => [ $self->home->rel_dir('templates') ],
+			
         }
 	);
 	$self->renderer->add_handler( html => $tt );

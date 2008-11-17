@@ -13,7 +13,7 @@ sub welcome {
     my $config = $c->config;
     my $dbh = $c->dbh;
     
-    $c->render(template => $c->app->home->rel_file('index/welcome.html') );
+    $c->render(template => 'index/welcome.html' );
 }
 
 1;
