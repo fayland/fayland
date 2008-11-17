@@ -3,7 +3,14 @@ package DayDayUp;
 use strict;
 use warnings;
 
+our $VERSION = '0.01';
+
 use base 'Mojolicious';
+
+use MojoX::Renderer::TT;
+use Template::Stash::XS;
+
+use Data::Dumper;
 
 # This method will run for each request
 sub dispatch {
@@ -35,6 +42,17 @@ sub startup {
     # Default route
     $r->route('/:controller/:action/:id')
       ->to(controller => 'example', action => 'welcome', id => 1);
+
+	my $tt = MojoX::Renderer::TT->build(
+		mojo => $self,
+		template_options => {
+			POST_CHOMP => 1,
+			PRE_CHOMP  => 1,
+			STASH      => Template::Stash::XS->new,
+        }
+	);
+	$self->renderer->add_handler( html => $tt );
+
 }
 
 1;
