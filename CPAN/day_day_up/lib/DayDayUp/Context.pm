@@ -8,7 +8,8 @@ use YAML qw/LoadFile/;
 use DBI;
 
 has 'config' => (
-	is => 'ro',
+	is   => 'ro',
+	isa  => 'HashRef',
 	lazy => 1,
 	default => sub {
 		my $self = shift;

@@ -10,6 +10,7 @@ requires 'Mojo'     => '0.8009';
 requires 'Moose'    => '0.57';
 requires 'Template' => '2.20';
 requires 'MojoX::Renderer::TT' => 0;
+requires 'DBI'		=> 0,
 requires 'DBD::SQLite' => 0;
 requires 'YAML'	   => 0;
 
