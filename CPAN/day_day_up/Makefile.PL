@@ -11,8 +11,6 @@ requires 'Moose'    => '0.57';
 requires 'Template' => '2.20';
 requires 'MojoX::Renderer::TT' => 0;
 requires 'DBD::SQLite' => 0;
-requires 'KiokuDB' => '0.07';
-requires 'KiokuDB::Backend::BDB' => '0.03';
 requires 'YAML'	   => 0;
 
 tests ( join ' ', ( glob('t/*.t'), glob('t/*/*.t') ) );
