@@ -50,7 +50,7 @@ sub startup {
 			PRE_CHOMP  => 1,
 			STASH      => Template::Stash::XS->new,
 			INCLUDE_PATH => [ $self->home->rel_dir('templates') ],
-			
+			WRAPPER    => 'wrapper.html',
         }
 	);
 	$self->renderer->add_handler( html => $tt );
