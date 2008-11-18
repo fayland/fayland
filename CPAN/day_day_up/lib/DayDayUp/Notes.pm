@@ -91,11 +91,17 @@ sub _get_notes {
 sub edit {
     my ( $self, $c ) = @_;
     
-    $c->res->body('in edit' . Dumper(\@_));
+    my $captures = $c->match->captures;
+    my $id = $captures->{id};
+    
+    $c->res->body("edit $id");
 }
 
 sub delete {
     my ( $self, $c ) = @_;
+    
+    my $captures = $c->match->captures;
+    my $id = $captures->{id};
     
     $c->res->body('in delete');
 }
