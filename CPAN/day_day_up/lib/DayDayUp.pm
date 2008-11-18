@@ -41,22 +41,22 @@ sub startup {
 
     # route
     $r->route('/notes/:id/:action', id => qr/\d+/)
-	  ->to(controller => 'notes', action => 'index');
+      ->to(controller => 'notes', action => 'index');
     # Default route
     $r->route('/:controller/:action')
       ->to(controller => 'index', action => 'index');
 
-	my $tt = MojoX::Renderer::TT->build(
-		mojo => $self,
-		template_options => {
-			POST_CHOMP => 1,
-			PRE_CHOMP  => 1,
-			STASH      => Template::Stash::XS->new,
-			INCLUDE_PATH => [ $self->home->rel_dir('templates') ],
-			WRAPPER    => 'wrapper.html',
+    my $tt = MojoX::Renderer::TT->build(
+        mojo => $self,
+        template_options => {
+            POST_CHOMP => 1,
+            PRE_CHOMP  => 1,
+            STASH      => Template::Stash::XS->new,
+            INCLUDE_PATH => [ $self->home->rel_dir('templates') ],
+            WRAPPER    => 'wrapper.html',
         }
-	);
-	$self->renderer->add_handler( html => $tt );
+    );
+    $self->renderer->add_handler( html => $tt );
 
 }
 
