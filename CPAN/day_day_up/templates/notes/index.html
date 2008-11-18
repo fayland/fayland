@@ -1,1 +1,12 @@
-Add a Note
+<p> <a href="/notes/add">Add a Note</a> </p>
+
+[% IF notes.size %]
+Open Notes:
+
+<table border='1'>
+[% FOREACH note IN notes %]
+<tr><td>[% note.level %]</td><td>[% note.note %]</td></tr>
+[% END %]
+</table>
+
+[% END %]

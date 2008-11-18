@@ -9,10 +9,11 @@ version_from    ('lib/DayDayUp.pm');
 requires 'Mojo'     => '0.8009';
 requires 'Moose'    => '0.57';
 requires 'Template' => '2.20';
-requires 'MojoX::Renderer::TT' => 0;
-requires 'DBI'		=> 0,
-requires 'DBD::SQLite' => 0;
-requires 'YAML'	   => 0;
+requires 'Template::Plugin::FillInForm';
+requires 'MojoX::Renderer::TT';
+requires 'DBI',
+requires 'DBD::SQLite';
+requires 'YAML';
 
 tests ( join ' ', ( glob('t/*.t'), glob('t/*/*.t') ) );
 
