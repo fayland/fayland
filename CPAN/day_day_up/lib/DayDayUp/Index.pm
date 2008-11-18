@@ -5,15 +5,10 @@ use warnings;
 
 use base 'Mojolicious::Controller';
 
-use Data::Dumper;
-
-sub welcome {
+sub index {
     my ($self, $c) = @_;
-    
-    my $config = $c->config;
-    my $dbh = $c->dbh;
-    
-    $c->render(template => 'index/welcome.html' );
+
+    $c->render(template => 'index/index.html' );
 }
 
 1;

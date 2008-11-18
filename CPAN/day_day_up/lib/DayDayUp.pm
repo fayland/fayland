@@ -40,8 +40,8 @@ sub startup {
     my $r = $self->routes;
 
     # Default route
-    $r->route('/:controller/:action/:id')
-      ->to(controller => 'index', action => 'welcome', id => 1);
+    $r->route('/:controller/:action')
+      ->to(controller => 'index', action => 'index');
 
 	my $tt = MojoX::Renderer::TT->build(
 		mojo => $self,
