@@ -39,6 +39,9 @@ sub startup {
     # Routes
     my $r = $self->routes;
 
+    # route
+    $r->route('/notes/:id/:action', id => qr/\d+/)
+	  ->to(controller => 'notes', action => 'index');
     # Default route
     $r->route('/:controller/:action')
       ->to(controller => 'index', action => 'index');

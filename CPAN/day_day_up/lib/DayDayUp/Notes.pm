@@ -5,6 +5,8 @@ use warnings;
 
 use base 'Mojolicious::Controller';
 
+use Data::Dumper;
+
 use vars qw/%levels %status/;
 %levels = (
 	99 => 'A-1',
@@ -36,8 +38,10 @@ sub index {
 sub add {
 	my ( $self, $c ) = @_;
 	
-	my $stash;
-	$stash->{template} = 'notes/add.html';
+	my $stash = {
+		template => 'notes/add.html',
+		levels   => \%levels,
+	};
 	unless ( $c->req->method eq 'POST' ) {
 		return $c->render( $stash );
 	}
@@ -47,10 +51,10 @@ sub add {
     my $params = $c->req->params->to_hash;
     
     my $notes = $params->{notes};
-    my $level = 65; # hardcoded now
-    my $sql = q~INSERT INTO notes ( note, level, status ) VALUES ( ?, ?, ? )~;
+    my $level = $params->{level};
+    my $sql = q~INSERT INTO notes ( note, level, status, time ) VALUES ( ?, ?, ?, ? )~;
     my $sth = $dbh->prepare($sql);
-    $sth->execute( $notes, $level, 2);
+    $sth->execute( $notes, $level, 2, time() );
     
     $notes = $self->_get_notes( $c );
     $c->render(template => 'notes/index.html', notes => $notes);
@@ -59,14 +63,41 @@ sub add {
 sub _get_notes {
 	my ( $self, $c ) = @_;
 	
+	my $notes;
+	
 	my $dbh = $c->dbh;
-	my $sql = q~SELECT * FROM notes WHERE status = 2~; # open
+	
+	# open
+	my $sql = q~SELECT * FROM notes WHERE status = 2~; 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute;
+	$notes->{open} = $sth->fetchall_arrayref({});
 	
+	# suspended
+	$sql = q~SELECT * FROM notes WHERE status = 1~; 
+	$sth = $dbh->prepare($sql);
+	$sth->execute;
+	$notes->{suspended} = $sth->fetchall_arrayref({});
 	
+	# closed
+	$sql = q~SELECT * FROM notes WHERE status = 0 ORDER BY date DESC LIMIT 10~; 
+	$sth = $dbh->prepare($sql);
+	$sth->execute;
+	$notes->{closed} = $sth->fetchall_arrayref({});
 	
-	return $sth->fetchall_arrayref({});
+	return $notes;
+}
+
+sub edit {
+	my ( $self, $c ) = @_;
+	
+	$c->res->body('in edit' . Dumper(\@_));
+}
+
+sub delete {
+	my ( $self, $c ) = @_;
+	
+	$c->res->body('in delete');
 }
 
 1;

@@ -1,12 +1,46 @@
 <p> <a href="/notes/add">Add a Note</a> </p>
 
-[% IF notes.size %]
-Open Notes:
+<h3>Open Notes</h3>
+[% IF notes.open.size %]
 
 <table border='1'>
-[% FOREACH note IN notes %]
+[% FOREACH note IN notes.open %]
 <tr><td>[% note.level %]</td><td>[% note.note %]</td></tr>
 [% END %]
 </table>
+
+[% ELSE %]
+
+<p>nothing is found here</p>
+
+[% END %]
+
+<h3>Suspended Notes</h3>
+[% IF notes.suspended.size %]
+
+<table border='1'>
+[% FOREACH note IN notes.suspended %]
+<tr><td>[% note.level %]</td><td>[% note.note %]</td></tr>
+[% END %]
+</table>
+
+[% ELSE %]
+
+<p>nothing is found here</p>
+
+[% END %]
+
+<h3>Closed Notes</h3>
+[% IF notes.closed.size %]
+
+<table border='1'>
+[% FOREACH note IN notes.closed %]
+<tr><td>[% note.level %]</td><td>[% note.note %]</td></tr>
+[% END %]
+</table>
+
+[% ELSE %]
+
+<p>nothing is found here</p>
 
 [% END %]
