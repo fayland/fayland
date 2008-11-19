@@ -56,8 +56,7 @@ sub add {
     my $sth = $dbh->prepare($sql);
     $sth->execute( $notes, $level, 2, time() );
     
-    $notes = $self->_get_notes( $c );
-    $c->render(template => 'notes/index.html', notes => $notes, levels => \%levels);
+    $c->render(template => 'redirect.html', url => '/notes/');
 }
 
 sub _get_notes {
@@ -123,8 +122,7 @@ sub edit {
     $sth = $dbh->prepare($sql);
     $sth->execute( $notes, $level, $id );
     
-    $notes = $self->_get_notes( $c );
-    $c->render(template => 'notes/index.html', notes => $notes, levels => \%levels);
+    $c->render(template => 'redirect.html', url => '/notes/');
 }
 
 sub delete {
@@ -138,8 +136,7 @@ sub delete {
     my $sth = $dbh->prepare($sql);
     $sth->execute( $id );
     
-    my $notes = $self->_get_notes( $c );
-    $c->render(template => 'notes/index.html', notes => $notes, levels => \%levels);
+    $c->render(template => 'redirect.html', url => '/notes/');
 }
 
 sub update {
@@ -164,8 +161,7 @@ sub update {
     my $sth = $dbh->prepare($sql);
     $sth->execute( $st_val, $id );
     
-    my $notes = $self->_get_notes( $c );
-    $c->render(template => 'notes/index.html', notes => $notes, levels => \%levels);
+    $c->render(template => 'redirect.html', url => '/notes/');
 }
 
 1;
