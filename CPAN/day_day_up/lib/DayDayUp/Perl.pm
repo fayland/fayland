@@ -5,6 +5,7 @@ use warnings;
 
 use base 'Mojolicious::Controller';
 
+use File::Slurp        ();
 use Data::Dumper;
 
 sub index {
@@ -19,10 +20,12 @@ sub find_pod {
 	my $params = $c->req->params->to_hash;
 	my $module = $params->{module};
 	
-	# find the HTML place of a module
 	my $stash = { template => 'perl/index.html', from => 'find_pod' };
-	my $pod = `perldoc $module`;
-	$stash->{content} = $pod;
+	if ( $module ) {
+		# find the HTML place of a module
+		my $pod = `perldoc $module`;
+		$stash->{content} = $pod;
+	}
 	
 	$c->render( $stash );
 }
@@ -32,19 +35,20 @@ sub view_source {
 	
 	my $params = $c->req->params->to_hash;
 	my $module = $params->{module};
-	
-	# find the HTML place of a module
+
 	my $stash = { template => 'perl/index.html', from => 'view_source' };
-	my $file = `perldoc -l $module`;
-	my $code = "Can't find perldoc -l $module";
-	if ( $file ) {
-		chomp( $file );
-		open(my $fh, '<', $file);
-		local $/;
-		$code = <$fh>;
-		close($fh);
+	if ( $module ) {
+		# find the HTML place of a module
+		my $file = `perldoc -l $module`;
+		#$c->app->log->debug("perldoc -l $module return $file");
+		my $code = "Can't find perldoc -l $module";
+		if ( $file ) {
+			chomp( $file );
+			$code = eval { File::Slurp::read_file($file, binmode => ':raw') };
+			$code = $@ if $@;
+		}
+		$stash->{content} = $code;
 	}
-	$stash->{content} = $code;
 	
 	$c->render( $stash );
 }

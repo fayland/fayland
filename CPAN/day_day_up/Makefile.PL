@@ -14,6 +14,7 @@ requires 'MojoX::Renderer::TT';
 requires 'DBI';
 requires 'DBD::SQLite';
 requires 'YAML';
+requires 'File::Slurp';
 
 tests ( join ' ', ( glob('t/*.t'), glob('t/*/*.t') ) );
 
