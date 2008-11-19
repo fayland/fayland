@@ -60,3 +60,33 @@ has 'dbh' => (
 );
 
 1;
+__END__
+
+=head1 NAME
+
+DayDayUp::Context - extends Mojolicious::Context
+
+=head1 Extra Methods
+
+=head2 config
+
+	$c->config
+
+it's a HashRef from YAML::LoadFile daydayup.yml and daydayup_local.yml if -e
+
+=head2 dbh
+
+L<DBI> with L<DBD::SQLite> with daydayup.db
+
+=head1 AUTHOR
+
+Fayland Lam < fayland at gmail dot com >
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2008 Fayland Lam, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
