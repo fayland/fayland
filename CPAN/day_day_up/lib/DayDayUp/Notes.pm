@@ -164,4 +164,22 @@ sub update {
     $c->render(template => 'redirect.html', url => '/notes/');
 }
 
+sub closed {
+	my ( $self, $c ) = @_;
+	
+	my $dbh = $c->dbh;
+	
+	my $sql = q~SELECT * FROM notes WHERE status = 0 ORDER BY time DESC~; 
+    my $sth = $dbh->prepare($sql);
+    $sth->execute;
+    my $closed = $sth->fetchall_arrayref({});
+    
+    $c->render(
+		template => 'notes/index.html',
+		notes => { closed => $closed },
+		is_in_closed_page => 1,
+		levels => \%levels
+	);
+}
+
 1;

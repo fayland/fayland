@@ -1,5 +1,7 @@
 <p> <a href="/notes/add">Add a Note</a> </p>
 
+[% UNLESS is_in_closed_page %]
+
 <h3>Open Notes</h3>
 [% IF notes.open.size %]
 
@@ -38,6 +40,8 @@
 
 [% END %]
 
+[% END; # for UNLESS is_in_closed_page %]
+
 <h3>Closed Notes</h3>
 [% IF notes.closed.size %]
 
@@ -50,6 +54,10 @@
 </tr>
 [% END %]
 </table>
+
+[% IF notes.closed.size == 5 %]
+<p><a href="/notes/closed">View All Closed</a></p>
+[% END %]
 
 [% ELSE %]
 
