@@ -32,7 +32,7 @@ sub index {
     my $dbh = $c->dbh;
     
     my $notes = $self->_get_notes( $c );
-    $c->render(template => 'notes/index.html', notes => $notes);
+    $c->render(template => 'notes/index.html', notes => $notes, levels => \%levels);
 }
 
 sub add {
@@ -57,7 +57,7 @@ sub add {
     $sth->execute( $notes, $level, 2, time() );
     
     $notes = $self->_get_notes( $c );
-    $c->render(template => 'notes/index.html', notes => $notes);
+    $c->render(template => 'notes/index.html', notes => $notes, levels => \%levels);
 }
 
 sub _get_notes {
@@ -80,7 +80,7 @@ sub _get_notes {
     $notes->{suspended} = $sth->fetchall_arrayref({});
     
     # closed
-    $sql = q~SELECT * FROM notes WHERE status = 0 ORDER BY date DESC LIMIT 10~; 
+    $sql = q~SELECT * FROM notes WHERE status = 0 ORDER BY time DESC LIMIT 10~; 
     $sth = $dbh->prepare($sql);
     $sth->execute;
     $notes->{closed} = $sth->fetchall_arrayref({});
@@ -94,7 +94,37 @@ sub edit {
     my $captures = $c->match->captures;
     my $id = $captures->{id};
     
-    $c->res->body("edit $id");
+    my $dbh = $c->dbh;
+    
+    # get the note
+    my $sql = q~SELECT * FROM notes WHERE note_id = ?~;
+    my $sth = $dbh->prepare($sql);
+    $sth->execute( $id );
+    my $note = $sth->fetchrow_hashref;
+    
+    my $stash = {
+        template => 'notes/add.html',
+        levels   => \%levels,
+    };
+    unless ( $c->req->method eq 'POST' ) {
+    	# pre-fulfill
+    	$stash->{fif} = {
+    		level => $note->{level},
+    		notes => $note->{note},
+    	};
+        return $c->render( $stash );
+    }
+    
+    my $params = $c->req->params->to_hash;
+    
+    my $notes = $params->{notes};
+    my $level = $params->{level};
+    $sql = q~UPDATE notes SET note = ?, level = ? WHERE note_id = ?~;
+    $sth = $dbh->prepare($sql);
+    $sth->execute( $notes, $level, $id );
+    
+    $notes = $self->_get_notes( $c );
+    $c->render(template => 'notes/index.html', notes => $notes, levels => \%levels);
 }
 
 sub delete {
@@ -103,7 +133,13 @@ sub delete {
     my $captures = $c->match->captures;
     my $id = $captures->{id};
     
-    $c->res->body('in delete');
+    my $dbh = $c->dbh;
+    my $sql = q~DELETE FROM notes WHERE note_id = ?~;
+    my $sth = $dbh->prepare($sql);
+    $sth->execute( $id );
+    
+    my $notes = $self->_get_notes( $c );
+    $c->render(template => 'notes/index.html', notes => $notes, levels => \%levels);
 }
 
 1;

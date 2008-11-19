@@ -5,7 +5,11 @@
 
 <table border='1'>
 [% FOREACH note IN notes.open %]
-<tr><td>[% note.level %]</td><td>[% note.note %]</td></tr>
+<tr>
+	<td>[% levels.${note.level} %]</td>
+	<td>[% note.note | html_line_break %]</td>
+	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a></td>
+</tr>
 [% END %]
 </table>
 
@@ -20,7 +24,11 @@
 
 <table border='1'>
 [% FOREACH note IN notes.suspended %]
-<tr><td>[% note.level %]</td><td>[% note.note %]</td></tr>
+<tr>
+	<td>[% levels.${note.level} %]</td>
+	<td>[% note.note | html_line_break %]</td>
+	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a></td>
+</tr>
 [% END %]
 </table>
 
@@ -35,7 +43,10 @@
 
 <table border='1'>
 [% FOREACH note IN notes.closed %]
-<tr><td>[% note.level %]</td><td>[% note.note %]</td></tr>
+<tr>
+	<td>[% levels.${note.level} %]</td>
+	<td>[% note.note | html_line_break %]</td>
+</tr>
 [% END %]
 </table>
 

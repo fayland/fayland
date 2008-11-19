@@ -2,6 +2,8 @@ package DayDayUp::Context;
 
 use Moose;
 
+our $VERSION = '0.01';
+
 extends 'Mojolicious::Context';
 
 use YAML qw/LoadFile/;
