@@ -79,6 +79,10 @@ but I don't mind if you use it in your localhost.
 
 create a daydayup_local.yml at the same dir as daydayup.yml
 
+=head1 SEE ALSO
+
+L<Mojo>, L<Mojolicious>
+
 =head1 AUTHOR
 
 Fayland Lam < fayland at gmail dot com >
