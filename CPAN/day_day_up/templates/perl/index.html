@@ -1,0 +1,21 @@
+
+<h3>Quick Find Pod</h3>
+
+<form action='/perl/find_pod' method='GET'>
+<p>Module Name: <input type='text' name='module' size='32' />
+<input type='submit' /></p>
+</form>
+
+<h3>View Perl Source Code</h3>
+
+<form action='/perl/view_source' method='GET'>
+<p>Module Name: <input type='text' name='module' size='32' />
+<input type='submit' /></p>
+</form>
+
+[% IF content %]
+<h3>[% from %]</h3>
+<pre>
+[% content %]
+</pre>
+[% END; %]
