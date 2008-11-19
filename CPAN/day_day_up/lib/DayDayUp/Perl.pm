@@ -5,6 +5,8 @@ use warnings;
 
 use base 'Mojolicious::Controller';
 
+our $VERSION = '0.02';
+
 use File::Slurp        ();
 use Data::Dumper;
 
@@ -41,7 +43,7 @@ sub view_source {
 		# find the HTML place of a module
 		my $file = `perldoc -l $module`;
 		#$c->app->log->debug("perldoc -l $module return $file");
-		my $code = "Can't find perldoc -l $module";
+		my $code = "Can't find $module";
 		if ( $file ) {
 			chomp( $file );
 			$code = eval { File::Slurp::read_file($file, binmode => ':raw') };

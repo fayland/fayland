@@ -3,6 +3,8 @@ package DayDayUp::Index;
 use strict;
 use warnings;
 
+our $VERSION = '0.02';
+
 use base 'Mojolicious::Controller';
 
 sub index {

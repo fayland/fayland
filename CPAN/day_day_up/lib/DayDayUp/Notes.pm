@@ -3,6 +3,8 @@ package DayDayUp::Notes;
 use strict;
 use warnings;
 
+our $VERSION = '0.02';
+
 use base 'Mojolicious::Controller';
 
 use Data::Dumper;
