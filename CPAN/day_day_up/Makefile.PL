@@ -11,7 +11,7 @@ requires 'Moose'    => '0.57';
 requires 'Template' => '2.20';
 requires 'Template::Plugin::FillInForm';
 requires 'MojoX::Renderer::TT';
-requires 'DBI',
+requires 'DBI';
 requires 'DBD::SQLite';
 requires 'YAML';
 
