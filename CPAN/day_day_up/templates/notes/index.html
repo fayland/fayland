@@ -8,7 +8,7 @@
 <tr>
 	<td>[% levels.${note.level} %]</td>
 	<td>[% note.note | html_line_break %]</td>
-	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a></td>
+	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a> | <a href="/notes/[% note.note_id %]/update?status=closed">Close</a> | <a href="/notes/[% note.note_id %]/update?status=suspended">Suspended</a></td>
 </tr>
 [% END %]
 </table>
@@ -27,7 +27,7 @@
 <tr>
 	<td>[% levels.${note.level} %]</td>
 	<td>[% note.note | html_line_break %]</td>
-	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a></td>
+	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a> | <a href="/notes/[% note.note_id %]/update?status=closed">Close</a> | <a href="/notes/[% note.note_id %]/update?status=open">Open</a></td>
 </tr>
 [% END %]
 </table>
@@ -46,6 +46,7 @@
 <tr>
 	<td>[% levels.${note.level} %]</td>
 	<td>[% note.note | html_line_break %]</td>
+	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a> | <a href="/notes/[% note.note_id %]/update?status=open">re-Open</a></td>
 </tr>
 [% END %]
 </table>

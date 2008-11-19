@@ -142,4 +142,30 @@ sub delete {
     $c->render(template => 'notes/index.html', notes => $notes, levels => \%levels);
 }
 
+sub update {
+	my ( $self, $c ) = @_;
+	
+	my $captures = $c->match->captures;
+    my $id = $captures->{id};
+    
+    my $dbh = $c->dbh;
+    my $params = $c->req->params->to_hash;
+    
+    my $status = $params->{status};
+    my $st_val = 2;
+    foreach my $key ( keys %status ) {
+    	if ( $status{ $key } eq $status ) {
+    		$st_val = $key;
+    		last;
+    	}
+    }
+    
+    my $sql = q~UPDATE notes SET status = ? WHERE note_id = ?~;
+    my $sth = $dbh->prepare($sql);
+    $sth->execute( $st_val, $id );
+    
+    my $notes = $self->_get_notes( $c );
+    $c->render(template => 'notes/index.html', notes => $notes, levels => \%levels);
+}
+
 1;
