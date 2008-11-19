@@ -19,4 +19,4 @@ $client->process_local('DayDayUp', $tx);
 # Test response
 is($tx->res->code, 200);
 is($tx->res->headers->content_type, 'text/html');
-like($tx->res->content->file->slurp, qr/Mojolicious Web Framework/i);
+like($tx->res->content->file->slurp, qr/DayDayUp/i);
