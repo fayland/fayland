@@ -1,9 +1,9 @@
-package MooseX::TheSchwartz::Job;
+package TheSchwartz::Moosified::Job;
 
 use Moose;
 use Storable ();
-use MooseX::TheSchwartz::Utils qw/sql_for_unixtime/;
-use MooseX::TheSchwartz::JobHandle;
+use TheSchwartz::Moosified::Utils qw/sql_for_unixtime/;
+use TheSchwartz::Moosified::JobHandle;
 
 has 'jobid'         => ( is => 'rw', isa => 'Int' );
 has 'funcid'        => ( is => 'rw', isa => 'Int' );
@@ -30,7 +30,7 @@ has 'funcname' => (
         return $funcname;
     }
 );
-has 'handle' => ( is => 'rw', isa => 'MooseX::TheSchwartz::JobHandle' );
+has 'handle' => ( is => 'rw', isa => 'TheSchwartz::Moosified::JobHandle' );
 
 has 'did_something' => ( is => 'rw', isa => 'Bool', default => 0 );
 
@@ -75,7 +75,7 @@ sub add_failure {
     $sth->execute(time(), $job->jobid, $msg || '', $job->funcid);
 
     # and let's lazily clean some errors while we're here.
-    my $maxage = $MooseX::TheSchwartz::T_ERRORS_MAX_AGE || (86400*7);
+    my $maxage = $TheSchwartz::Moosified::T_ERRORS_MAX_AGE || (86400*7);
     my $dtime  = time() - $maxage;
     $dbh->do(qq~DELETE FROM error WHERE error_time < $dtime~);
 
@@ -122,7 +122,7 @@ sub set_exit_status {
     # rather than doing this query all the time, we do it 1/nth of the
     # time, and deleting up to n*10 queries while we're at it.
     # default n is 10% of the time, doing 100 deletes.
-    my $clean_thres = $MooseX::TheSchwartz::T_EXITSTATUS_CLEAN_THRES || 0.10;
+    my $clean_thres = $TheSchwartz::Moosified::T_EXITSTATUS_CLEAN_THRES || 0.10;
     if (rand() < $clean_thres) {
         my $unixtime = sql_for_unixtime();
         $dbh->do(qq~DELETE FROM exitstatus WHERE delete_after < $unixtime~);

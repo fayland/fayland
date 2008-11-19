@@ -1,6 +1,6 @@
-package MooseX::TheSchwartz::JobHandle;
+package TheSchwartz::Moosified::JobHandle;
 
-use MooseX::TheSchwartz::Job;
+use TheSchwartz::Moosified::Job;
 use Moose;
 
 has 'jobid'  => ( is => 'rw', isa => 'Int' );
@@ -16,7 +16,7 @@ sub job {
     $sth->execute($handle->jobid);
     my $row = $sth->fetchrow_hashref;
     if ($row) {
-        my $job = MooseX::TheSchwartz::Job->new( $row );
+        my $job = TheSchwartz::Moosified::Job->new( $row );
         $job->handle($handle);
         return $job;
     }

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use t::Utils;
-use MooseX::TheSchwartz;
+use TheSchwartz::Moosified;
 
 BEGIN {
 
@@ -17,7 +17,7 @@ plan tests => 1;
 
 run_test {
     my $dbh = shift;
-    my $sch = MooseX::TheSchwartz->new();
+    my $sch = TheSchwartz::Moosified->new();
     $sch->databases([$dbh]);
 
     
@@ -28,7 +28,7 @@ ok('a');
 
 package Worker::Dummy;
 
-use base 'MooseX::TheSchwartz::Worker';
+use base 'TheSchwartz::Moosified::Worker';
 sub work {
     my ($class, $job) = @_;
     

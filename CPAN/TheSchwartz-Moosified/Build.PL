@@ -3,17 +3,17 @@ use warnings;
 use Module::Build;
 
 my $builder = Module::Build->new(
-    module_name         => 'MooseX::TheSchwartz',
+    module_name         => 'TheSchwartz::Moosified',
     license             => 'perl',
     dist_author         => 'Fayland Lam <fayland@gmail.com>',
-    dist_version_from   => 'lib/MooseX/TheSchwartz.pm',
+    dist_version_from   => 'lib/TheSchwartz/Moosified.pm',
     build_requires => {
         'Test::More' => 0,
         'Moose' => '0.57',
         'DBI' => 0,
         'Scalar::Util' => 0,
     },
-    add_to_cleanup      => [ 'MooseX-TheSchwartz-*' ],
+    add_to_cleanup      => [ 'TheSchwartz-Moosified-*' ],
     create_makefile_pl => 'traditional',
 );
 

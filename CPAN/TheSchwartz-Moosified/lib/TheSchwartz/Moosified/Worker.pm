@@ -1,4 +1,4 @@
-package MooseX::TheSchwartz::Worker;
+package TheSchwartz::Moosified::Worker;
 
 use strict;
 
@@ -46,13 +46,13 @@ __END__
 
 =head1 NAME
 
-MooseX::TheSchwartz::Worker - superclass for defining task behavior
+TheSchwartz::Moosified::Worker - superclass for defining task behavior
 
 =head1 SYNOPSIS
 
     package MyWorker;
     
-    use base 'MooseX::TheSchwartz::Worker';
+    use base 'TheSchwartz::Moosified::Worker';
 
     sub work {
         my $class = shift;
@@ -65,7 +65,7 @@ MooseX::TheSchwartz::Worker - superclass for defining task behavior
 
 =head1 DESCRIPTION
 
-MooseX::TheSchwartz::Worker is just a copy of L<TheSchwartz::Worker> to avoid an install of L<TheSchwartz>
+TheSchwartz::Moosified::Worker is just a copy of L<TheSchwartz::Worker> to avoid an install of L<TheSchwartz>
 
 =head1 AUTHOR
 

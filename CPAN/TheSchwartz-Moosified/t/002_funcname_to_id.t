@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use t::Utils;
-use MooseX::TheSchwartz;
+use TheSchwartz::Moosified;
 
 plan tests => 6;
 
@@ -10,9 +10,9 @@ run_test {
     run_test {
         my $dbh2 = shift;
 
-        my $sch = MooseX::TheSchwartz->new();
+        my $sch = TheSchwartz::Moosified->new();
         $sch->databases([$dbh1, $dbh2]);
-        isa_ok $sch, 'MooseX::TheSchwartz';
+        isa_ok $sch, 'TheSchwartz::Moosified';
         is $sch->funcname_to_id($dbh1, 'foo'), 1;
         is $sch->funcname_to_id($dbh1, 'bar'), 2;
         is $sch->funcname_to_id($dbh1, 'foo'), 1;

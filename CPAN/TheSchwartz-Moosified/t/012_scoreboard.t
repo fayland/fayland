@@ -3,14 +3,14 @@
 use strict;
 use warnings;
 use t::Utils;
-use MooseX::TheSchwartz;
+use TheSchwartz::Moosified;
 use File::Spec qw();
 
 plan tests => 9;
 
 run_test {
     my $dbh = shift;
-    my $client = MooseX::TheSchwartz->new( scoreboard => 1 );
+    my $client = TheSchwartz::Moosified->new( scoreboard => 1 );
     $client->databases([$dbh]);
 
     my $sb_file = $client->scoreboard;
@@ -48,7 +48,7 @@ run_test {
 
 ############################################################################
 package Worker::Addition;
-use base 'MooseX::TheSchwartz::Worker';
+use base 'TheSchwartz::Moosified::Worker';
 
 sub work {
     my ($class, $job) = @_;

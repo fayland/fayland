@@ -1,18 +1,18 @@
 use strict;
 use warnings;
 use t::Utils;
-use MooseX::TheSchwartz;
+use TheSchwartz::Moosified;
 
 plan tests => 10;
 
 run_test {
     my $dbh = shift;
-    my $sch = MooseX::TheSchwartz->new();
+    my $sch = TheSchwartz::Moosified->new();
     $sch->databases([$dbh]);
 
     $sch->insert('fetch', 'http://wassr.jp/');
     $sch->insert(
-        MooseX::TheSchwartz::Job->new(
+        TheSchwartz::Moosified::Job->new(
             funcname => 'fetch',
             arg      => 'http://pathtraq.com/',
             priority => 3,

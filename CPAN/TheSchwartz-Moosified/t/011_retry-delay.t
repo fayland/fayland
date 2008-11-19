@@ -3,13 +3,13 @@
 use strict;
 use warnings;
 use t::Utils;
-use MooseX::TheSchwartz;
+use TheSchwartz::Moosified;
 
 plan tests => 8;
 
 run_test {
     my $dbh = shift;
-    my $client = MooseX::TheSchwartz->new();
+    my $client = TheSchwartz::Moosified->new();
     $client->databases([$dbh]);
 
     $client->can_do("Worker::Fail");
@@ -18,7 +18,7 @@ run_test {
     # insert a job which will fail, fail, then succeed.
     {
         my $handle = $client->insert("Worker::CompleteEventually");
-        isa_ok $handle, 'MooseX::TheSchwartz::JobHandle', "inserted job";
+        isa_ok $handle, 'TheSchwartz::Moosified::JobHandle', "inserted job";
 
         $client->can_do("Worker::CompleteEventually");
         $client->work_until_done;
@@ -46,7 +46,7 @@ run_test {
 
 ############################################################################
 package Worker::CompleteEventually;
-use base 'MooseX::TheSchwartz::Worker';
+use base 'TheSchwartz::Moosified::Worker';
 
 sub work {
     my ($class, $job) = @_;

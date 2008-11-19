@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use Test::More;
-use MooseX::TheSchwartz;
+use TheSchwartz::Moosified;
 
 BEGIN {
 
@@ -11,7 +11,7 @@ BEGIN {
     plan tests => 3;
 };
 
-my $client = new MooseX::TheSchwartz;
+my $client = new TheSchwartz::Moosified;
 stderr_is(sub { $client->debug('A') }, '', 'no output');
 $client->verbose(1);
 stderr_is(sub { $client->debug('A') }, "A\n", 'A after verbose 1');

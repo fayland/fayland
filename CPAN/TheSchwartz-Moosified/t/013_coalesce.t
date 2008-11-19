@@ -3,20 +3,20 @@
 use strict;
 use warnings;
 use t::Utils;
-use MooseX::TheSchwartz;
+use TheSchwartz::Moosified;
 
 plan tests => 14;
 
 run_test {
     my $dbh = shift;
-    my $client = MooseX::TheSchwartz->new();
+    my $client = TheSchwartz::Moosified->new();
     $client->databases([$dbh]);
 
     my @keys = qw(foo bar baz);
     my $n = 0;
     for (1..10) {
         my $key = $keys[$n++ % 3];
-        my $job = MooseX::TheSchwartz::Job->new(
+        my $job = TheSchwartz::Moosified::Job->new(
                                         funcname => 'Worker::CoalesceTest',
                                         arg      => { key => $key, num => $_ },
                                         coalesce => $key
@@ -40,7 +40,7 @@ run_test {
 
 ############################################################################
 package Worker::CoalesceTest;
-use base 'MooseX::TheSchwartz::Worker';
+use base 'TheSchwartz::Moosified::Worker';
 
 my $client;
 sub set_client { $client = $_[1]; }

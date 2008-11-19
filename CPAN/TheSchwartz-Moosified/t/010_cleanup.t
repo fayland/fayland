@@ -3,17 +3,17 @@
 use strict;
 use warnings;
 use t::Utils;
-use MooseX::TheSchwartz;
+use TheSchwartz::Moosified;
 
 plan tests => 10;
 
 # for testing:
-$MooseX::TheSchwartz::T_EXITSTATUS_CLEAN_THRES = 1; # delete 100% of the time, not 10% of the time
-$MooseX::TheSchwartz::T_ERRORS_MAX_AGE = 2;         # keep errors for 3 seconds, not 1 week
+$TheSchwartz::Moosified::T_EXITSTATUS_CLEAN_THRES = 1; # delete 100% of the time, not 10% of the time
+$TheSchwartz::Moosified::T_ERRORS_MAX_AGE = 2;         # keep errors for 3 seconds, not 1 week
 
 run_test {
     my $dbh = shift;
-    my $client = MooseX::TheSchwartz->new();
+    my $client = TheSchwartz::Moosified->new();
     $client->databases([$dbh]);
 
     $client->can_do("Worker::Fail");
@@ -22,7 +22,7 @@ run_test {
     # insert a job which will fail, then succeed.
     {
         my $handle = $client->insert("Worker::Fail");
-        isa_ok $handle, 'MooseX::TheSchwartz::JobHandle', "inserted job";
+        isa_ok $handle, 'TheSchwartz::Moosified::JobHandle', "inserted job";
 
         $client->work_until_done;
         is($handle->failures, 1, "job has failed once");
@@ -59,7 +59,7 @@ run_test {
 ############################################################################
 ############################################################################
 package Worker::Fail;
-use base 'MooseX::TheSchwartz::Worker';
+use base 'TheSchwartz::Moosified::Worker';
 
 sub work {
     my ($class, $job) = @_;
@@ -76,7 +76,7 @@ sub retry_delay { 1 }
 # ---------------
 
 package Worker::Complete;
-use base 'MooseX::TheSchwartz::Worker';
+use base 'TheSchwartz::Moosified::Worker';
 sub work {
     my ($class, $job) = @_;
     $job->completed;

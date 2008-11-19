@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 use t::Utils;
-use MooseX::TheSchwartz;
+use TheSchwartz::Moosified;
 plan tests => 20;
 
 run_test {
     my $dbh = shift;
-    my $sch = MooseX::TheSchwartz->new();
+    my $sch = TheSchwartz::Moosified->new();
     $sch->databases([$dbh]);
 
     $sch->insert('fetch', 'http://wassr.jp/');
     $sch->insert(
-        MooseX::TheSchwartz::Job->new(
+        TheSchwartz::Moosified::Job->new(
             funcname => 'fetch',
             arg      => 'http://pathtraq.com/',
             priority => 3,
@@ -35,11 +35,11 @@ run_test {
     is $row->priority, 3;
     
     # test priority
-    my $sch2 = MooseX::TheSchwartz->new( databases => [ $dbh ], prioritize => 1 );
+    my $sch2 = TheSchwartz::Moosified->new( databases => [ $dbh ], prioritize => 1 );
     
     $sch2->insert('fetch2', 'http://fayland.org/');
     $sch2->insert(
-        MooseX::TheSchwartz::Job->new(
+        TheSchwartz::Moosified::Job->new(
             funcname => 'fetch2',
             arg      => 'http://foorumbbs.com/',
             priority => 3,

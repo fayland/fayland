@@ -1,4 +1,4 @@
-package MooseX::TheSchwartz;
+package TheSchwartz::Moosified;
 
 use Moose;
 use Moose::Util::TypeConstraints;
@@ -7,11 +7,11 @@ use Scalar::Util qw( refaddr );
 use List::Util qw( shuffle );
 use File::Spec ();
 use Storable ();
-use MooseX::TheSchwartz::Utils qw/insert_id sql_for_unixtime/;
-use MooseX::TheSchwartz::Job;
-use MooseX::TheSchwartz::JobHandle;
+use TheSchwartz::Moosified::Utils qw/insert_id sql_for_unixtime/;
+use TheSchwartz::Moosified::Job;
+use TheSchwartz::Moosified::JobHandle;
 
-our $VERSION = '0.04';
+our $VERSION = '0.01';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 ## Number of jobs to fetch at a time in find_job_for_workers.
@@ -93,11 +93,11 @@ sub insert {
     my $self = shift;
 
     my $job;
-    if ( ref $_[0] eq 'MooseX::TheSchwartz::Job' ) {
+    if ( ref $_[0] eq 'TheSchwartz::Moosified::Job' ) {
         $job = $_[0];
     }
     else {
-        $job = MooseX::TheSchwartz::Job->new(funcname => $_[0], arg => $_[1]);
+        $job = TheSchwartz::Moosified::Job->new(funcname => $_[0], arg => $_[1]);
     }
     $job->arg( Storable::nfreeze( $job->arg ) ) if ref $job->arg;
 
@@ -123,7 +123,7 @@ sub insert {
         if ($job->jobid) {
             ## We inserted the job successfully!
             ## Attach a handle to the job, and return the handle.
-            my $handle = MooseX::TheSchwartz::JobHandle->new({
+            my $handle = TheSchwartz::Moosified::JobHandle->new({
                     dbh    => $dbh,
                     client => $self,
                     jobid  => $job->jobid
@@ -167,7 +167,7 @@ sub find_job_for_workers {
             my $sth = $dbh->prepare_cached($sql);
             $sth->execute();
             while ( my $ref = $sth->fetchrow_hashref ) {
-                my $job = MooseX::TheSchwartz::Job->new( $ref );
+                my $job = TheSchwartz::Moosified::Job->new( $ref );
                 push @jobs, $job;
             }
         };
@@ -220,7 +220,7 @@ sub _grab_a_job {
         $job->grabbed_until( $new_grabbed_until );
 
         ## Now prepare the job, and return it.
-        my $handle = MooseX::TheSchwartz::JobHandle->new({
+        my $handle = TheSchwartz::Moosified::JobHandle->new({
             dbh    => $dbh,
             client => $client,
             jobid  => $job->jobid,
@@ -284,9 +284,9 @@ sub list_jobs {
             my $sth = $dbh->prepare_cached($sql);
             $sth->execute(@value);
             while ( my $ref = $sth->fetchrow_hashref ) {
-                my $job = MooseX::TheSchwartz::Job->new( $ref );
+                my $job = TheSchwartz::Moosified::Job->new( $ref );
                 if ($arg->{want_handle}) {
-                    my $handle = MooseX::TheSchwartz::JobHandle->new({
+                    my $handle = TheSchwartz::Moosified::JobHandle->new({
                         dbh    => $dbh,
                         client => $self,
                         jobid  => $job->jobid
@@ -336,7 +336,7 @@ sub _find_job_with_coalescing {
             my $sth = $dbh->prepare_cached($sql);
             $sth->execute( $funcid, $coval );
             while ( my $ref = $sth->fetchrow_hashref ) {
-                my $job = MooseX::TheSchwartz::Job->new( $ref );
+                my $job = TheSchwartz::Moosified::Job->new( $ref );
                 push @jobs, $job;
             }
         };
@@ -565,7 +565,7 @@ sub clean_scoreboard {
 sub DEMOLISH {
     foreach my $arg (@_) {
         # Call 'clean_scoreboard' on TheSchwartz objects
-        if (ref($arg) and $arg->isa('MooseX::TheSchwartz')) {
+        if (ref($arg) and $arg->isa('TheSchwartz::Moosified')) {
             $arg->clean_scoreboard;
         }
     }
@@ -573,46 +573,46 @@ sub DEMOLISH {
 
 no Moose;
 no Moose::Util::TypeConstraints;
-1; # End of MooseX::TheSchwartz
+1; # End of TheSchwartz::Moosified
 __END__
 
 =head1 NAME
 
-MooseX::TheSchwartz - TheSchwartz based on Moose!
+TheSchwartz::Moosified - TheSchwartz based on Moose!
 
 =head1 SYNOPSIS
 
-    use MooseX::TheSchwartz;
+    use TheSchwartz::Moosified;
 
-    my $client = MooseX::TheSchwartz->new();
+    my $client = TheSchwartz::Moosified->new();
     $client->databases([$dbh]);
     
     # rest are the same as TheSchwartz
     
-    # in some place we insert job into MooseX::TheSchwartz
+    # in some place we insert job into TheSchwartz::Moosified
     # in another place we run this job
     
     # 1, insert job in cgi/Catalyst
-    use MooseX::TheSchwartz;
-    my $client = MooseX::TheSchwartz->new();
+    use TheSchwartz::Moosified;
+    my $client = TheSchwartz::Moosified->new();
     $client->databases([$dbh]);
     $client->insert('My::Worker::A', { args1 => 1, args2 => 2 } );
     
     # 2, defined the heavy things in My::Worker::A
     package My::Worker::A;
-    use base 'MooseX::TheSchwartz::Worker';
+    use base 'TheSchwartz::Moosified::Worker';
     sub work {
         my ($class, $job) = @_;
     
-        # $job is an instance of MooseX::TheSchwartz::Job
+        # $job is an instance of TheSchwartz::Moosified::Job
         my $args = $job->args;
         # do heavy things like resize photos, add 1 to 2 etc.
         $job->completed;
     }
     
     # 3, run the worker in a non-stop script
-    use MooseX::TheSchwartz;
-    my $client = MooseX::TheSchwartz->new();
+    use TheSchwartz::Moosified;
+    my $client = TheSchwartz::Moosified->new();
     $client->databases([$dbh]);
     $client->can_do('My::Worker::A');
     $client->work();
@@ -633,20 +633,20 @@ An arrayref of dbh.
 
     my $dbh1 = DBI->conncet(@dbi_info);
     my $dbh2 = $schema->storage->dbh;
-    my $client = MooseX::TheSchwartz->new( databases => [ $dbh1, $dbh2 ] );
+    my $client = TheSchwartz::Moosified->new( databases => [ $dbh1, $dbh2 ] );
     
     # or
-    my $client = MooseX::TheSchwartz->new();
+    my $client = TheSchwartz::Moosified->new();
     $client->databases( [ $dbh1, $dbh2 ] );
 
 =item * C<verbose>
 
 control the debug.
 
-    my $client = MooseX::TheSchwartz->new( verbose => 1 );
+    my $client = TheSchwartz::Moosified->new( verbose => 1 );
     
     # or
-    my $client = MooseX::TheSchwartz->new();
+    my $client = TheSchwartz::Moosified->new();
     $client->verbose( 1 );
     $client->verbose( sub {
         my $msg = shift;
@@ -657,10 +657,10 @@ control the debug.
 
 save job info to file. by default, the file will be saved at $tmpdir/theschwartz/scoreboard.$$
 
-    my $client = MooseX::TheSchwartz->new( scoreboard => 1 );
+    my $client = TheSchwartz::Moosified->new( scoreboard => 1 );
     
     # or
-    my $client = MooseX::TheSchwartz->new();
+    my $client = TheSchwartz::Moosified->new();
     # be sure the file is there
     $client->scoreboard( "/home/fayland/theschwartz/scoreboard.log" );
 

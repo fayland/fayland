@@ -1,4 +1,4 @@
-package MooseX::TheSchwartz::Utils;
+package TheSchwartz::Moosified::Utils;
 
 use base 'Exporter';
 use Carp;
