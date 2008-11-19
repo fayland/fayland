@@ -1,0 +1,30 @@
+---
+name: TheSchwartz-Moosified
+version: 0.01
+author:
+  - 'Fayland Lam <fayland@gmail.com>'
+abstract: TheSchwartz based on Moose!
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+build_requires:
+  DBI: 0
+  Moose: 0.57
+  Scalar::Util: 0
+  Test::More: 0
+provides:
+  TheSchwartz::Moosified:
+    file: lib/TheSchwartz/Moosified.pm
+    version: 0.01
+  TheSchwartz::Moosified::Job:
+    file: lib/TheSchwartz/Moosified/Job.pm
+  TheSchwartz::Moosified::JobHandle:
+    file: lib/TheSchwartz/Moosified/JobHandle.pm
+  TheSchwartz::Moosified::Utils:
+    file: lib/TheSchwartz/Moosified/Utils.pm
+  TheSchwartz::Moosified::Worker:
+    file: lib/TheSchwartz/Moosified/Worker.pm
+generated_by: Module::Build version 0.3
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
