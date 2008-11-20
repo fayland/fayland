@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-ViewInBrowser
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: 'view selected doc in browser for L<Padre>'
@@ -14,7 +14,7 @@ build_requires:
 provides:
   Padre::Plugin::ViewInBrowser:
     file: lib/Padre/Plugin/ViewInBrowser.pm
-    version: 0.01
+    version: 0.02
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
