@@ -3,9 +3,8 @@ package Padre::Plugin::Encrypt;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-use Crypt::CBC;
 use Padre::Wx::Dialog ();
 
 my @menu = (
@@ -96,6 +95,7 @@ sub ok_clicked {
 	my $doc = $main_window->selected_document;
 	my $code = $doc->text_get;
 	
+	require Crypt::CBC;
 	my $cipher = Crypt::CBC->new(
 		-key    => $private_key,
 		-cipher => 'Blowfish'
