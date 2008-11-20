@@ -3,9 +3,8 @@ package Padre::Plugin::ViewInBrowser;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-use Path::Class::File ();
 use Wx ':everything';
 
 my @menu = (
@@ -46,6 +45,7 @@ sub _find_firefox {
 	
 	for my $prefix (qw(/usr /usr/local /opt/local /sw)) {
         for my $bindir (qw(bin sbin)) {
+        	require Path::Class::File;
             my $exe = Path::Class::File->new($prefix, $bindir, $name);
             return $exe if -x $exe;
         }
