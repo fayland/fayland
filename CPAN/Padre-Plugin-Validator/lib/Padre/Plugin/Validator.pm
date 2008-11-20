@@ -3,10 +3,8 @@ package Padre::Plugin::Validator;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
-use WebService::Validator::HTML::W3C;
-use WebService::Validator::CSS::W3C;
 use Wx ':everything';
 
 my @menu = (
@@ -29,6 +27,7 @@ sub validate_html {
 		Wx::MessageBox( 'No Code', 'Error', Wx::wxOK | Wx::wxCENTRE, $self );
 	}
 	
+	require WebService::Validator::HTML::W3C;
 	my $v = WebService::Validator::HTML::W3C->new(
 		detailed => 1
 	);
@@ -59,6 +58,7 @@ sub validate_css {
 		Wx::MessageBox( 'No Code', 'Error', Wx::wxOK | Wx::wxCENTRE, $self );
 	}
 	
+	require WebService::Validator::CSS::W3C;
 	my $val = WebService::Validator::CSS::W3C->new();
 	my $ok  = $val->validate(string => $code);
 
