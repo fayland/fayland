@@ -5,7 +5,7 @@ use warnings;
 
 use base 'Mojolicious::Controller';
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use File::Slurp        ();
 use Data::Dumper;
