@@ -3,14 +3,13 @@ package Padre::Plugin::CPAN;
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Wx ':everything';
-use CPAN;
 use File::Spec ();
 
 my @menu = (
-    ['Edit Config',    \&edit_config],
+    ['Edit Config 2',    \&edit_config],
     ['Install Module', \&install_module],
     ['Upgrade All Padre Plugins', \&upgrade_all_plugins ],
 );
@@ -24,6 +23,7 @@ sub edit_config {
 	my ( $self ) = @_;
 	
 	# get the place of the CPAN::Config;
+	require CPAN;
 	my $default_dir = $INC{'CPAN.pm'};
 	$default_dir =~ s/\.pm$//is; # remove .pm
 	my $filename = 'Config.pm';
