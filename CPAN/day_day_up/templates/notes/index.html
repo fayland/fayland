@@ -50,11 +50,13 @@
 [% IF notes.closed.size %]
 
 <table border='1'>
+<tr><th>Level</th><th>Note</th><th>Created Time</th><th>Closed Time</th><th>-</th></tr>
 [% FOREACH note IN notes.closed %]
 <tr>
 	<td>[% levels.${note.level} %]</td>
 	<td>[% note.note | html_line_break %]</td>
 	<td>[% date.format( note.time, format => '%Y-%m-%d %H:%M:%S' ) %]</td>
+	<td>[% date.format( note.closed_time, format => '%Y-%m-%d %H:%M:%S' ) %]</td>
 	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a> | <a href="/notes/[% note.note_id %]/update?status=open">re-Open</a></td>
 </tr>
 [% END %]

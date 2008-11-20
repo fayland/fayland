@@ -159,9 +159,15 @@ sub update {
     	}
     }
     
-    my $sql = q~UPDATE notes SET status = ? WHERE note_id = ?~;
-    my $sth = $dbh->prepare($sql);
-    $sth->execute( $st_val, $id );
+    if ( $status eq 'closed' ) {
+    	my $sql = q~UPDATE notes SET status = ?, closed_time = ? WHERE note_id = ?~;
+		my $sth = $dbh->prepare($sql);
+		$sth->execute( $st_val, time(), $id );
+    } else {
+		my $sql = q~UPDATE notes SET status = ? WHERE note_id = ?~;
+		my $sth = $dbh->prepare($sql);
+		$sth->execute( $st_val, $id );
+    }
     
     $c->render(template => 'redirect.html', url => '/notes/');
 }
