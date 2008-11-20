@@ -1,4 +1,5 @@
 \blog
+\btmp
 
 # Avoid version control files.
 \bRCS\b
