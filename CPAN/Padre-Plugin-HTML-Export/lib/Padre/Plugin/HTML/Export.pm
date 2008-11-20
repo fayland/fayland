@@ -3,14 +3,12 @@ package Padre::Plugin::HTML::Export;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use File::Basename ();
 
 use Wx ':everything';
 use Wx::Locale qw(:default);
-
-use Syntax::Highlight::Engine::Kate;
 
 our %KATE_ALL = (
 	'text/x-adasrc'       => 'Ada',
@@ -99,7 +97,9 @@ sub export_html {
 		return;
 	}
 	my $language = $KATE_ALL{$mimetype};
-	my $hl = new Syntax::Highlight::Engine::Kate(
+	
+	require Syntax::Highlight::Engine::Kate;
+	my $hl = Syntax::Highlight::Engine::Kate->new(
 		language => $language,
 		substitutions => {
 		   "<" => "&lt;",
