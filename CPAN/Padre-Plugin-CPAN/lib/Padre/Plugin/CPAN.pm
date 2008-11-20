@@ -3,13 +3,13 @@ package Padre::Plugin::CPAN;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use Wx ':everything';
 use File::Spec ();
 
 my @menu = (
-    ['Edit Config 2',    \&edit_config],
+    ['Edit Config',    \&edit_config],
     ['Install Module', \&install_module],
     ['Upgrade All Padre Plugins', \&upgrade_all_plugins ],
 );
