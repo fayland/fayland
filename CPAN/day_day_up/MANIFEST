@@ -14,6 +14,7 @@ inc/Module/Install/Metadata.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/DayDayUp.pm
+lib/DayDayUp/Contacts.pm
 lib/DayDayUp/Context.pm
 lib/DayDayUp/Index.pm
 lib/DayDayUp/Notes.pm
@@ -27,11 +28,10 @@ README
 t/basic.t
 t/daydayup.db
 t/pod.t
+templates/contacts/index.html
 templates/index/index.html
 templates/notes/add.html
 templates/notes/index.html
 templates/perl/index.html
 templates/redirect.html
 templates/wrapper.html
-tmp/ctpl/home/fayland/svn/fayland/CPAN/day_day_up/templates/index/index.html.ttc
-tmp/ctpl/home/fayland/svn/fayland/CPAN/day_day_up/templates/wrapper.html.ttc
