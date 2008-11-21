@@ -5,11 +5,16 @@ use strict;
 
 our $VERSION = '0.01';
 
+use LWP::UserAgent;
+use HTTP::Request;
+
 #########################
 # from lgconstants.py
 #########################
 our $URL_LOGIN = 'https://www.google.com/accounts/ServiceLoginBoxAuth';
 our $URL_GMAIL = 'https://mail.google.com/mail/';
+our $GMAIL_URL_LOGIN = "https://www.google.com/accounts/ServiceLoginBoxAuth";
+our $GMAIL_URL_GMAIL = "https://mail.google.com/mail/?ui=1&";
 
 # Constants with names not from the Gmail Javascript:
 our $U_SAVEDRAFT_VIEW = 'sd';
@@ -221,6 +226,127 @@ our $BACKSPACE_ACTION = 2;
 our @STANDARD_FOLDERS = ( $U_INBOX_SEARCH, $U_STARRED_SEARCH,
 						  $U_ALL_SEARCH,  $U_DRAFTS_SEARCH,
 						  $U_SENT_SEARCH, $U_SPAM_SEARCH );
+
+# Perl contants
+our $USER_AGENT = "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.8) Gecko/20050511 Firefox/1.0.4";
+
+sub new {
+	my ( $class, $user, $pass, $domain ) = @_;
+
+	my $self = bless { _user => $user, _pass => $pass, _domain => $domain }, $class;
+	
+	if ( $self->{domain} ) {
+		$URL_LOGIN = "https://www.google.com/a/" + self.domain + "/LoginAction2";
+        $URL_GMAIL = "http://mail.google.com/a/" + self.domain + "/?ui=1&";
+	} else {
+		$URL_LOGIN = $GMAIL_URL_LOGIN;
+        $URL_GMAIL = $GMAIL_URL_GMAIL;
+	}
+	
+	$self->{_ua} = LWP::UserAgent->new( agent => $USER_AGENT, keep_alive => 1 );
+	$self->{_cookies} = { };
+	
+	return $self;
+}
+
+sub login {
+	my ( $self ) = @_;
+	
+	my $user = $self->{_user};
+	my $pass = $self->{_pass};
+	my $domain = $self->{_domain};
+	
+	my $data;
+	if ( $domain ) {
+		$data = {
+			'continue' => $URL_GMAIL,
+            'at'       => 'null',
+            'service'  => 'mail',
+            'Email'    => $user,
+            'Passwd'   => $pass,
+		};
+	} else {
+		$data = {
+			'continue' => $URL_GMAIL,
+            'Email'    => $user,
+            'Passwd'   => $pass,
+		};
+	}
+	
+	my $req = HTTP::Request->new( POST => $URL_LOGIN );
+	$req->header( 'Host' => 'www.google.com' );
+    $req->header( 'Cookie' => $self->{_cookie} );
+    my ( $cookie );
+
+    $req->content( $data );
+
+    my $res = $self->{_ua}->request( $req );
+
+    if ( !$res->is_success() ) {
+        $self->_error( "Error: Could not login with those credentials - the request was not a success\n" );
+        $self->_error( "  Additionally, HTTP error: " . $res->status_line . "\n" );
+        return;
+    }
+
+	my $content = $self->{_ua}->content();
+	unless ( $domain ) {
+		if ( $content =~ /CheckCookie\?continue=([^"\']+)/ ) {
+			$req = HTTP::Request->new( GET => $1 );
+			$req->header( 'Host' => 'www.google.com' );
+			$req->header( 'Cookie' => $self->{_cookie} );
+			$res = $self->{_ua}->request( $req );
+			$content = $self->{_ua}->content();
+		} else {
+			$self->_error( "Login failed. (Wrong username/password?" );
+		}
+	}
+	
+	return $content;
+}
+
+sub getMessagesByFolder {
+	my ( $self, $folderName ) = @_;
+	
+	$self->_parseThreadSearch( $folderName );	
+}
+
+sub _parseThreadSearch {
+	my ( $self, $searchType ) = @_;
+	
+	my $start = 0;
+    my $tot = 0;
+    my @threadsInfo;
+    
+	my $items = $self->_parseSearchResult( $searchType, $start );
+}
+
+sub _parseSearchResult {
+	my ( $self, $searchType, $start ) = @_;
+	
+	my $data = {
+		$U_SEARCH => $searchType,
+        $U_START  => $start,
+        $U_VIEW   => $U_THREADLIST_VIEW,
+	};
+	$self->_parsePage($self->_buildURL($data));
+}
+
+sub _parsePage {
+	my ( $self, $pageContent ) = @_;
+	
+	my @lines = split("\n", $pageContent);
+	
+	# data = '\n'.join([x for x in lines if x and x[0] in ['D', ')', ',', ']']])
+	# next TODO
+}
+
+sub _error {
+	my ( $self, $msg ) = @_;
+	
+	$self->{_error} = 1;
+	$self->{_err_str} .= $msg;
+    return $self->{_err_str};
+}
 
 1;
 __END__

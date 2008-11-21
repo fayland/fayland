@@ -10,6 +10,8 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'Crypt::SSLeay' => 0,
+        'HTTP::Request' => 0,
+        'LWP::UserAgent' => 0,
     },
     add_to_cleanup      => [ 'Google-Gmail-*' ],
     create_makefile_pl => 'traditional',
