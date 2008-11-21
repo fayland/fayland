@@ -66,6 +66,32 @@ sub import {
 	$c->render( $stash );
 }
 
+sub add {
+    my ( $self, $c ) = @_;
+    
+    my $stash = {
+        template => 'contacts/add.html',
+    };
+    unless ( $c->req->method eq 'POST' ) {
+        return $c->render( $stash );
+    }
+    
+    my $config = $c->config;
+    my $dbh = $c->dbh;
+    my $params = $c->req->params->to_hash;
+    
+    my $name  = $params->{name};
+    my $email = $params->{email};
+    my $phone = $params->{phone};
+    my $groups = $params->{groups};
+    my $notes = $params->{notes};
+    my $sql = q~INSERT INTO contacts ( name, email, phone, groups, notes ) VALUES ( ?, ?, ?, ?, ? )~;
+    my $sth = $dbh->prepare($sql);
+    $sth->execute( $name, $email, $phone, $groups, $notes );
+    
+    $c->render(template => 'redirect.html', url => '/contacts/');
+}
+
 sub edit {
     my ( $self, $c ) = @_;
     
