@@ -47,7 +47,7 @@ sub view_source {
 		if ( $file ) {
 			chomp( $file );
 			$code = eval { File::Slurp::read_file($file, binmode => ':raw') };
-			$code = "# $file\n$code";
+			$code = "# $file\n\n$code";
 			$code = $@ if $@;
 		}
 		$stash->{content} = $code;
