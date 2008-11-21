@@ -10,7 +10,7 @@
 	<td>[% contact.name %]</td>
 	<td>[% contact.email %]</td>
 	<td>[% contact.phone %]</td>
-	<td>[% contact.group %]</td>
+	<td>[% contact.groups %]</td>
 	<td>[% contact.notes %]</td>
 	<td><a href="/contacts/[% contact.contact_id %]/edit">Edit</a> | <a href="/contacts/[% contact.contact_id %]/delete">Delete</a></td>
 </tr>
@@ -22,9 +22,9 @@
 <h3>Import From Mail</h3>
 
 <form action="/contacts/import" method="POST">
-<p>Email: <input type="text" name="email" /><br />
-Password: <input type="password" name="pass" /><br />
-<input type="submit" /></p>
+<p>Email: <input type="text" name="email" /></p>
+<p>Password: <input type="password" name="pass" /></p>
+<p><input type="submit" /></p>
 
 [% IF err %]
 <div style="color:red">[% err %]</div>

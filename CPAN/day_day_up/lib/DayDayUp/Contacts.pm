@@ -66,6 +66,64 @@ sub import {
 	$c->render( $stash );
 }
 
+sub edit {
+    my ( $self, $c ) = @_;
+    
+    my $captures = $c->match->captures;
+    my $id = $captures->{id};
+    
+    my $dbh = $c->dbh;
+    
+    # get the contact
+    my $sql = q~SELECT * FROM contacts WHERE contact_id = ?~;
+    my $sth = $dbh->prepare($sql);
+    $sth->execute( $id );
+    my $contact = $sth->fetchrow_hashref;
+    
+    my $stash = {
+        template => 'contacts/add.html',
+    };
+    unless ( $c->req->method eq 'POST' ) {
+    	# pre-fulfill
+    	$stash->{fif} = {
+    		name  => $contact->{name},
+    		email => $contact->{email},
+    		phone => $contact->{phone},
+    		groups => $contact->{groups},
+    		notes => $contact->{notes},
+    	};
+        return $c->render( $stash );
+    }
+    
+    my $params = $c->req->params->to_hash;
+    
+    my $name  = $params->{name};
+    my $email = $params->{email};
+    my $phone = $params->{phone};
+    my $groups = $params->{groups};
+    my $notes = $params->{notes};
+    $sql = q~UPDATE contacts SET name = ?, email = ?, phone = ?, groups = ?, notes = ? WHERE contact_id = ?~;
+    $sth = $dbh->prepare($sql);
+    $sth->execute( $name, $email, $phone, $groups, $notes, $id );
+    
+    $c->render(template => 'redirect.html', url => '/contacts/');
+}
+
+sub delete {
+    my ( $self, $c ) = @_;
+    
+    my $captures = $c->match->captures;
+    my $id = $captures->{id};
+    
+    my $dbh = $c->dbh;
+    my $sql = q~DELETE FROM contacts WHERE contact_id = ?~;
+    my $sth = $dbh->prepare($sql);
+    $sth->execute( $id );
+    
+    $c->render(template => 'redirect.html', url => '/contacts/');
+}
+
+
 1;
 __END__
 
@@ -77,13 +135,15 @@ DayDayUp::Contacts - Mojolicious::Controller, /contact/
 
 	/contacts/
 	/contacts/import
+	/contacts/$id/edit
+	/contacts/$id/delete
 
 =head1 TABLE
 
 	CREATE TABLE "contacts" (
 		"contact_id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,
 		"name" VARCHAR, "email" VARCHAR,
-		"phone" VARCHAR, "group" VARCHAR,
+		"phone" VARCHAR, "groups" VARCHAR,
 		"notes" TEXT)
 
 =head1 AUTHOR
