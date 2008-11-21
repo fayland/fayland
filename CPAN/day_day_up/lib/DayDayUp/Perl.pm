@@ -5,7 +5,7 @@ use warnings;
 
 use base 'Mojolicious::Controller';
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use File::Slurp        ();
 use Data::Dumper;
@@ -47,6 +47,7 @@ sub view_source {
 		if ( $file ) {
 			chomp( $file );
 			$code = eval { File::Slurp::read_file($file, binmode => ':raw') };
+			$code = "# $file\n$code";
 			$code = $@ if $@;
 		}
 		$stash->{content} = $code;
