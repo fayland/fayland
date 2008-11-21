@@ -2,9 +2,13 @@ package DayDayUp::Context;
 
 use Moose;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 extends 'Mojolicious::Context';
+
+# shortcuts
+sub log { shift->app->log }
+sub home { shift->app->home }
 
 use YAML qw/LoadFile/;
 use DBI;
@@ -15,7 +19,7 @@ has 'config' => (
     lazy => 1,
     default => sub {
         my $self = shift;
-        my $home = $self->app->home;
+        my $home = $self->home;
         my $app  = $home->app_class;
         my $file = $home->rel_file( lc($app) . '.yml' );
         unless ( -e $file ) {
@@ -40,7 +44,7 @@ has 'dbh' => (
     lazy => 1,
     default => sub {
         my $self = shift;
-        my $home = $self->app->home;
+        my $home = $self->home;
         my $app  = $home->app_class;
         my $db_file = $home->rel_file( lc($app) . '.db' );
         

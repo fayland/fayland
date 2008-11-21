@@ -15,6 +15,7 @@ requires 'DBI';
 requires 'DBD::SQLite';
 requires 'YAML';
 requires 'File::Slurp';
+requires 'LWP::Simple';
 requires 'WWW::Contact';
 
 tests ( join ' ', ( glob('t/*.t'), glob('t/*/*.t') ) );
