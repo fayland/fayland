@@ -11,10 +11,12 @@ use File::Slurp ();
 use Data::Dumper;
 use LWP::Simple qw/head/;
 
+use constant IS_WIN32 => !! ( $^O eq 'MSWin32' );
+
 sub index {
     my ($self, $c) = @_;
     
-    $c->render(template => 'perl/index.html', IS_WIN32 => !! ( $^O eq 'MSWin32' ));
+    $c->render(template => 'perl/index.html', IS_WIN32 => IS_WIN32);
 }
 
 sub find_pod {
@@ -23,7 +25,7 @@ sub find_pod {
 	my $params = $c->req->params->to_hash;
 	my $module = $params->{module};
 	
-	my $stash = { template => 'perl/index.html', from => 'find_pod', IS_WIN32 => !! ( $^O eq 'MSWin32' ) };
+	my $stash = { template => 'perl/index.html', from => 'find_pod', IS_WIN32 => IS_WIN32 };
 	if ( $module ) {
 		# find the HTML place of a module
 		my $pod = `perldoc $module`;
@@ -39,7 +41,7 @@ sub view_source {
 	my $params = $c->req->params->to_hash;
 	my $module = $params->{module};
 
-	my $stash = { template => 'perl/index.html', from => 'view_source', IS_WIN32 => !! ( $^O eq 'MSWin32' ) };
+	my $stash = { template => 'perl/index.html', from => 'view_source', IS_WIN32 => IS_WIN32 };
 	if ( $module ) {
 		# find the HTML place of a module
 		my $file = `perldoc -l $module`;
@@ -77,7 +79,7 @@ sub find_ppd {
 	my $stash = {
 		template => 'perl/index.html',
 		from => 'find_ppd',
-		IS_WIN32 => !! ( $^O eq 'MSWin32' )
+		IS_WIN32 => IS_WIN32
 	};
 	
 	my $params  = $c->req->params->to_hash;
