@@ -3,7 +3,7 @@ package DayDayUp::Notes;
 use strict;
 use warnings;
 
-our $VERSION = '0.03';
+our $VERSION = '0.05';
 
 use base 'Mojolicious::Controller';
 
@@ -81,7 +81,7 @@ sub _get_notes {
     $notes->{suspended} = $sth->fetchall_arrayref({});
     
     # closed
-    $sql = q~SELECT * FROM notes WHERE status = 0 ORDER BY time DESC LIMIT 10~; 
+    $sql = q~SELECT * FROM notes WHERE status = 0 ORDER BY time DESC LIMIT 5~; 
     $sth = $dbh->prepare($sql);
     $sth->execute;
     $notes->{closed} = $sth->fetchall_arrayref({});
