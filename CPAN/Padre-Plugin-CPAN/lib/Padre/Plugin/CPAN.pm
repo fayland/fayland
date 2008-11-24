@@ -5,18 +5,20 @@ use strict;
 
 our $VERSION = '0.05';
 
+use base 'Padre::Plugin';
 use Wx ':everything';
 use File::Spec ();
 
-my @menu = (
-    ['Edit Config',    \&edit_config],
-    ['Install Module', \&install_module],
-    ['Upgrade All Padre Plugins', \&upgrade_all_plugins ],
-);
+sub padre_interfaces {
+	'Padre::Plugin' => '0.18',
+}
 
-sub menu {
-    my ($self) = @_;
-    return @menu;
+sub menu_plugins_simple {
+	'CPAN' => [
+		'Edit Config',    \&edit_config,
+		'Install Module', \&install_module,
+		'Upgrade All Padre Plugins', \&upgrade_all_plugins,
+	];
 }
 
 sub edit_config {
