@@ -3,10 +3,11 @@ package Padre::Plugin::HTML::Export;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use File::Basename ();
 
+use base 'Padre::Plugin';
 use Wx ':everything';
 use Wx::Locale qw(:default);
 
@@ -36,14 +37,15 @@ our %KATE_ALL = (
 	'text/xml'            => 'XML',
 );
 
-my @menu = (
-    ['Export HTML', \&export_html],
-    ['Configure Color', \&configure_color],
-);
+sub padre_interfaces {
+	'Padre::Plugin' => '0.18',
+}
 
-sub menu {
-    my ($self) = @_;
-    return @menu;
+sub menu_plugins_simple {
+	'Export Colorful HTML' => [
+		'Export HTML', \&export_html,
+		'Configure Color', \&configure_color,
+	];
 }
 
 sub export_html {

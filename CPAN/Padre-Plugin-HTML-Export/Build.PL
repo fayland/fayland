@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Padre/Plugin/HTML/Export.pm',
     build_requires => {
         'Test::More' => 0,
-        'Padre'	     => 0,
+        'Padre'	     => '0.18',
         'Syntax::Highlight::Engine::Kate' => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-HTML-Export-*' ],
