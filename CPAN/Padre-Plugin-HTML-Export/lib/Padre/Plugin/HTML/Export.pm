@@ -3,7 +3,7 @@ package Padre::Plugin::HTML::Export;
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use File::Basename ();
 
@@ -144,8 +144,16 @@ sub export_html {
 	open(my $fh, '>', $save_to_file);
 	print $fh $output;
 	close($fh);
-	
-	$self->message( "Saved to $save_to_file" );
+
+	my $ret = Wx::MessageBox(
+		"Saved to $save_to_file. Do you want to open it now?",
+		gettext("Done"),
+		Wx::wxYES_NO|Wx::wxCENTRE,
+		$self,
+	);
+	if ( $ret == Wx::wxYES ) {
+		Wx::LaunchDefaultBrowser($save_to_file);
+	}
 }
 
 sub configure_color {
