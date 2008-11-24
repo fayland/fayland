@@ -3,17 +3,19 @@ package Padre::Plugin::ViewInBrowser;
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
+use base 'Padre::Plugin';
 use Wx ':everything';
 
-my @menu = (
-    ['View in Browser', \&view_in_browser ],
-);
+sub padre_interfaces {
+	'Padre::Plugin' => '0.18',
+}
 
-sub menu {
-    my ($self) = @_;
-    return @menu;
+sub menu_plugins_simple {
+	'ViewInBrowser' => [
+		'View in Browser', \&view_in_browser,
+	];
 }
 
 sub view_in_browser {

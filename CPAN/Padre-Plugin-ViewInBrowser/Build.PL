@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Padre/Plugin/ViewInBrowser.pm',
     build_requires => {
         'Test::More' => 0,
-        'Padre'		 => '0.15',
+        'Padre'		 => '0.18',
         'Path::Class::File' => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-ViewInBrowser-*' ],
