@@ -3,19 +3,22 @@ package Padre::Plugin::AcmePlayCode;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
-my @menu = (
-    ['Averything',        \&averythig],
-    ['DoubleToSingle',    \&doubletoSingle],
-    ['ExchangeCondition', \&exchangecondition],
-    ['NumberPlus',        \&numberplus],
-    ['PrintComma',        \&printcomma],
-);
+use base 'Padre::Plugin';
 
-sub menu {
-    my ($self) = @_;
-    return @menu;
+sub padre_interfaces {
+	'Padre::Plugin' => '0.18',
+}
+
+sub menu_plugins_simple {
+	'Acme::PlayCode' => [
+		'Averything',        \&averythig,
+		'DoubleToSingle',    \&doubletoSingle,
+		'ExchangeCondition', \&exchangecondition,
+		'NumberPlus',        \&numberplus,
+		'PrintComma',        \&printcomma,
+	];
 }
 
 sub _play {
