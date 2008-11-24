@@ -3,18 +3,20 @@ package Padre::Plugin::Encrypt;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Padre::Wx::Dialog ();
+use base 'Padre::Plugin';
 
-my @menu = (
-    ['Encrypt', \&encrypt],
-    ['Decrypt', \&decrypt],
-);
+sub padre_interfaces {
+	'Padre::Plugin' => '0.18',
+}
 
-sub menu {
-    my ($self) = @_;
-    return @menu;
+sub menu_plugins_simple {
+	'Encrypt <-> Decrpyt' => [
+		'Encrypt', \&encrypt,
+		'Decrypt', \&decrypt,
+	];
 }
 
 sub encrypt {
