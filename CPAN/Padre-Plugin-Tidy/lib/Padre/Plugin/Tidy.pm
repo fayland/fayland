@@ -3,16 +3,19 @@ package Padre::Plugin::Tidy;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-my @menu = (
-    ['Tidy HTML', \&tidy_html],
-    ['Tidy XML',  \&tidy_xml],
-);
+use base 'Padre::Plugin';
 
-sub menu {
-    my ($self) = @_;
-    return @menu;
+sub padre_interfaces {
+	'Padre::Plugin' => '0.18',
+}
+
+sub menu_plugins_simple {
+	'Tidy HTML/XML' => [
+		'Tidy HTML', \&tidy_html,
+		'Tidy XML',  \&tidy_xml,
+	];
 }
 
 sub tidy_html {

@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Tidy
 
+0.02	2008.11.24
+		for 'Padre::Plugin' => '0.18'
+
 0.01    Date/time
         First version, released on an unsuspecting world.
 
