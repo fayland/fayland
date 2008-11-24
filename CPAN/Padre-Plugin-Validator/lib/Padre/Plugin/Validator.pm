@@ -3,18 +3,20 @@ package Padre::Plugin::Validator;
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
+use base 'Padre::Plugin';
 use Wx ':everything';
 
-my @menu = (
-    ['Validate HTML', \&validate_html ],
-    ['Validate CSS',  \&validate_css ],
-);
+sub padre_interfaces {
+	'Padre::Plugin' => '0.18',
+}
 
-sub menu {
-    my ($self) = @_;
-    return @menu;
+sub menu_plugins_simple {
+	'Validate HTML/CSS' => [
+		'Validate HTML', \&validate_html,
+		'Validate CSS',  \&validate_css,
+	];
 }
 
 sub validate_html {
