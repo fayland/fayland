@@ -5,7 +5,7 @@ WriteMakefile
           'NAME' => 'Padre::Plugin::HTML::Export',
           'VERSION_FROM' => 'lib/Padre/Plugin/HTML/Export.pm',
           'PREREQ_PM' => {
-                           'Padre' => '0',
+                           'Padre' => '0.18',
                            'Syntax::Highlight::Engine::Kate' => '0',
                            'Test::More' => '0'
                          },

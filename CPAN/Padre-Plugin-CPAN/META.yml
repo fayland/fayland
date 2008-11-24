@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-CPAN
-version: 0.04
+version: 0.05
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: CPAN in Padre
@@ -10,12 +10,12 @@ resources:
 build_requires:
   CPAN: 0
   File::Spec: 0
-  Padre: 0.15
+  Padre: 0.18
   Test::More: 0
 provides:
   Padre::Plugin::CPAN:
     file: lib/Padre/Plugin/CPAN.pm
-    version: 0.04
+    version: 0.05
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

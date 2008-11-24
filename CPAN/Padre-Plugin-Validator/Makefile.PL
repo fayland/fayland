@@ -5,7 +5,7 @@ WriteMakefile
           'NAME' => 'Padre::Plugin::Validator',
           'VERSION_FROM' => 'lib/Padre/Plugin/Validator.pm',
           'PREREQ_PM' => {
-                           'Padre' => '0.15',
+                           'Padre' => '0.18',
                            'Test::More' => '0',
                            'WebService::Validator::CSS::W3C' => '0',
                            'WebService::Validator::HTML::W3C' => '0',
