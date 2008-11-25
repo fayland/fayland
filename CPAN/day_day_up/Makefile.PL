@@ -17,6 +17,7 @@ requires 'YAML';
 requires 'File::Slurp';
 requires 'LWP::Simple';
 requires 'WWW::Contact';
+requires 'Scope::Guard';
 
 tests ( join ' ', ( glob('t/*.t'), glob('t/*/*.t') ) );
 

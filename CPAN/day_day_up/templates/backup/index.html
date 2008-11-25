@@ -1,0 +1,19 @@
+<h2>Backup</h2>
+
+[% IF err %]
+<h3><span style="color:red">[% err %]</span></h3>
+[% END %]
+
+<h3>using Net::FTP</h3>
+<form action="/backup/ftp" method="POST">
+<p>Host: <input type="text" name="host" /></p>
+<p>User: <input type="text" name="user" /></p>
+<p>Pass: <input type="password" name="pass" /></p>
+<p>Local Path: <input type="text" name="local" /></p>
+<p>Remote Path: <input type="text" name="remote" value="/" /></p>
+<p><input type="submit" name="get_file" value="Get File" /> <input type="submit" name="put_file" value="Put File" /></p>
+</form>
+
+<h4>Notes</h4>
+
+<p>Basically I use it to rsync my $db_file from one computer to another</p>

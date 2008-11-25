@@ -1,5 +1,8 @@
 Revision history for DayDayUp
 
+0.05
+		add DayDayUp::Backup
+
 0.04    2008.11.21
 		add DayDayUp::Contacts
 
