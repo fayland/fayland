@@ -35,7 +35,7 @@ sub ftp {
 		sub { $c->render( template => 'backup/index.html', err => $err ) }
 	);
 
-    unless ( -e $local ) {
+    if ( $put_file and not -e $local ) {
     	return $err = "Local $local is not there";
     }
 
@@ -50,6 +50,12 @@ sub ftp {
     
     $ftp->login($user, $pass)
       or do { return $err = "Cannot login " . $ftp->message; };
+
+	if ( -e $local and -T $local ) {
+		$ftp->binmode;
+	} else {
+		$ftp->ascii;
+	}
 
 	if ( $get_file ) {
 		$ftp->get($remote, $local)
