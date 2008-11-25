@@ -24,6 +24,7 @@ sub ftp {
     my $host = $params->{host};
     my $user = $params->{user};
     my $pass = $params->{pass};
+    my $mode = $params->{mode};
     my $local  = $params->{local};
     my $remote = $params->{remote};
     my $get_file = $params->{get_file};
@@ -51,10 +52,17 @@ sub ftp {
     $ftp->login($user, $pass)
       or do { return $err = "Cannot login " . $ftp->message; };
 
-	if ( -e $local and -T $local ) {
-		$ftp->binmode;
-	} else {
+	
+	if ( $mode eq 'binary' ) {
+		$ftp->binary;
+	} elsif ( $mode eq 'ascii') {
 		$ftp->ascii;
+	} else {
+		if ( -e $local and -T $local ) {
+			$ftp->binary;
+		} else {
+			$ftp->ascii;
+		}
 	}
 
 	if ( $get_file ) {
