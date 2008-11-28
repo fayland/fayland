@@ -1,4 +1,4 @@
-Padre-Plugin-HTML-Export
+Padre-Plugin-HTMLExport
 
 The README is used to introduce the module and provide instructions on
 how to install the module, any machine dependencies it may have (for
@@ -26,21 +26,21 @@ SUPPORT AND DOCUMENTATION
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc Padre::Plugin::HTML::Export
+    perldoc Padre::Plugin::HTMLExport
 
 You can also look for information at:
 
     RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-HTML-Export
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-HTMLExport
 
     AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Padre-Plugin-HTML-Export
+        http://annocpan.org/dist/Padre-Plugin-HTMLExport
 
     CPAN Ratings
-        http://cpanratings.perl.org/d/Padre-Plugin-HTML-Export
+        http://cpanratings.perl.org/d/Padre-Plugin-HTMLExport
 
     Search CPAN
-        http://search.cpan.org/dist/Padre-Plugin-HTML-Export/
+        http://search.cpan.org/dist/Padre-Plugin-HTMLExport/
 
 
 COPYRIGHT AND LICENCE

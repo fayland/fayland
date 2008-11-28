@@ -1,9 +1,9 @@
-package Padre::Plugin::HTML::Export;
+package Padre::Plugin::HTMLExport;
 
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.01';
 
 use File::Basename ();
 
@@ -167,12 +167,12 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::HTML::Export - export highlighted HTML in Padre
+Padre::Plugin::HTMLExport - export highlighted HTML in Padre
 
 =head1 SYNOPSIS
 
 	$>padre
-	Plugins -> Encrypt -> 
+	Plugins -> Export Colorful HTML -> 
 						  Export HTML
 						  Configure Color
 
