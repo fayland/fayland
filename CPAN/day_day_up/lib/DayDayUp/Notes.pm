@@ -81,7 +81,7 @@ sub _get_notes {
     $notes->{suspended} = $sth->fetchall_arrayref({});
     
     # closed
-    $sql = q~SELECT * FROM notes WHERE status = 0 ORDER BY time DESC LIMIT 5~; 
+    $sql = q~SELECT * FROM notes WHERE status = 0 ORDER BY closed_time DESC LIMIT 5~; 
     $sth = $dbh->prepare($sql);
     $sth->execute;
     $notes->{closed} = $sth->fetchall_arrayref({});
