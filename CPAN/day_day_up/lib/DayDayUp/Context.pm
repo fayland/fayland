@@ -63,6 +63,8 @@ has 'dbh' => (
     }
 );
 
+# it's dummy to save daydayup.yml config into daydayup_local.yml
+# but it's what for now.
 sub save_config {
 	my ( $self, $config ) = @_;
 	
