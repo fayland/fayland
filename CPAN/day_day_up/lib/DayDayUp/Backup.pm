@@ -12,12 +12,17 @@ use Scope::Guard;
 sub index {
     my ($self, $c) = @_;
 
-    $c->render( template => 'backup/index.html' );
+	my $config = $c->config;
+	# for FillInForm
+	my $fif = $config->{backup};
+
+    $c->render( template => 'backup/index.html', fif => $fif );
 }
 
 sub ftp {
 	my ($self, $c) = @_;
 	
+	my $config = $c->config;
 	my $dbh = $c->dbh;
     my $params = $c->req->params->to_hash;
     
@@ -72,6 +77,16 @@ sub ftp {
 	if ( $put_file ) {
 		$ftp->put($local, $remote)
 			or do { return $err = "put failed " . $ftp->message; };
+	}
+	
+	if ( $params->{save} ) {
+		$config->{backup} = {
+			host => $host,
+			user => $user,
+			local => $local,
+			remote => $remote,
+		};
+		$c->save_config( $config );
 	}
 	
 	$ftp->quit;

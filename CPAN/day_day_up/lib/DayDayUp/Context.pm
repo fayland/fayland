@@ -10,7 +10,7 @@ extends 'Mojolicious::Context';
 sub log { shift->app->log }
 sub home { shift->app->home }
 
-use YAML qw/LoadFile/;
+use YAML qw/LoadFile DumpFile/;
 use DBI;
 
 has 'config' => (
@@ -63,6 +63,18 @@ has 'dbh' => (
     }
 );
 
+sub save_config {
+	my ( $self, $config ) = @_;
+	
+	my $home = $self->home;
+	my $app  = $home->app_class;
+	my $file_local = $home->rel_file( lc($app) . '_local.yml' );
+	
+	$config ||= $self->config;
+	
+	YAML::DumpFile($file_local, $config);
+}
+
 1;
 __END__
 
@@ -81,6 +93,12 @@ it's a HashRef from YAML::LoadFile daydayup.yml and daydayup_local.yml if -e
 =head2 dbh
 
 L<DBI> with L<DBD::SQLite> with daydayup.db
+
+=head2 save_config
+
+Save the changed config into daydayup_local.yml
+
+	$c->save_config( $config );
 
 =head1 AUTHOR
 

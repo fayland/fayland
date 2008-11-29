@@ -1,3 +1,5 @@
+[% USE FillInForm %]
+
 <h2>Backup</h2>
 
 [% IF err %]
@@ -5,6 +7,11 @@
 [% END %]
 
 <h3>using Net::FTP</h3>
+[% UNLESS fif.keys %]
+[% fif = c.req.params.as_hash %]
+[% END %]
+
+[% FILTER fillinform fdat => fif %]
 <form action="/backup/ftp" method="POST">
 <p>Host: <input type="text" name="host" /></p>
 <p>User: <input type="text" name="user" /></p>
@@ -12,8 +19,10 @@
 <p>Local Path: <input type="text" name="local" /></p>
 <p>Remote Path: <input type="text" name="remote" value="/" /></p>
 <p><input type='radio' name='mode' value='guess' checked='yes' /> Guess <input type='radio' name='mode' value='binary' /> Binary <input type='radio' name='mode' value='ascii' /> Ascii </p>
+<p><input type='checkbox' name='save' value='1' /> Save it for next using (We don't save password)</p>
 <p><input type="submit" name="get_file" value="Get File" /> <input type="submit" name="put_file" value="Put File" /></p>
 </form>
+[% END %]
 
 <h4>Notes</h4>
 
