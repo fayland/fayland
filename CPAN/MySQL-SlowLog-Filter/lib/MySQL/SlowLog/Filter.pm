@@ -247,13 +247,51 @@ Perhaps a little code snippet.
     	'exclude-host' => \@exclude_hosts,
     	'include-user' => \@include_users,
     	'exclude-user' => \@exclude_users,
+    	min_query_time => 30,
     } );
 
 =head1 DESCRIPTION
 
 The code is heavily borrowed from L<http://code.google.com/p/mysql-log-filter/>
 
+It is B<not> complete, use it at your own risk.
+
 =head1 METHODS
+
+=head2 run( $file_name, $params )
+
+run $params on $file_name
+
+=head3 PARAMS
+
+=over 4
+
+=item date
+
+	date => '13.11.2006-01.12.2008'
+	date => '>13.11.2006'
+
+check parse_date_range below
+
+=item include-host
+
+=item exclude-host
+
+=item include-user
+
+=item exclude-user
+
+=item min_query_time
+
+	# Query_time: 221  Lock_time: 0  Rows_sent: 241  Rows_examined: 4385615
+
+compare with "Query_time"
+
+=item min_rows_examined
+
+compare with "Rows_examined"
+
+=back
 
 =head2 parse_date_range
 
@@ -276,6 +314,24 @@ Return a unix timestamp from the given date.
 =head2 get_log_timestamp
 
 Return a unix timestamp from the given date. (070119 12:29:58)
+
+=head1 TODO
+
+=over 4
+
+=item * incremental
+
+=item * no-duplicates
+
+=item * sorting
+
+=item * a bin/mysql_filter_slow_log.pl
+
+=back
+
+=head1 SEE ALSO
+
+L<http://mysql-log-filter.googlecode.com/svn/trunk/mysql_filter_slow_log.py>
 
 =head1 COPYRIGHT & LICENSE
 
