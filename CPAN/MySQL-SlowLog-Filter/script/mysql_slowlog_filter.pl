@@ -22,7 +22,8 @@ GetOptions(
 
 pod2usage(1) if $params{help};
 
-my $file = pop @AGRV;
+my $file = pop @ARGV;
+defined $file or pod2usage(1);
 -e $file or die "$file is not found\n";
 
 
