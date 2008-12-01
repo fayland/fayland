@@ -66,7 +66,7 @@ No time limited by default
 
   # Query_time: 221  Lock_time: 0  Rows_sent: 241  Rows_examined: 4385615
 
-=iteam B<-R>, B<--min_rows_examined>
+=item B<-R>, B<--min_rows_examined>
 
 disabled by default. compared with "Rows_examined"
 
