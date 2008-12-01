@@ -6,13 +6,15 @@ author   'Fayland Lam <fayland@gmail.com>';
 license  'perl';
 
 requires 'Time::Local';
+requires 'Getopt::Long';
+requires 'Pod::Usage';
 requires 'DBI';
 requires 'DBD::SQLite';
 requires 'File::Slurp';
 
 build_requires 'Test::More';
 
+install_script glob('script/*.pl');
 auto_install;
-
 WriteAll;
 

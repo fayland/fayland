@@ -3,7 +3,8 @@ package MySQL::SlowLog::Filter;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
+our $AUTHORITY = 'cpan:FAYLAND';
 
 use base 'Exporter';
 use vars qw/@EXPORT_OK/;
@@ -231,7 +232,7 @@ __END__
 
 =head1 NAME
 
-MySQL::SlowLog::Filter - The great new MySQL::SlowLog::Filter!
+MySQL::SlowLog::Filter - MySQL Slow Query Log Filter
 
 =head1 SYNOPSIS
 
