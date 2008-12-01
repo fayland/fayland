@@ -15,7 +15,7 @@ use DBI;
 use File::Slurp;
 use Data::Dumper;
 
-our @default_sorting = [
+our @default_sorting = (
 	4,  'sum-query-time',
 	2,  'avg-query-time',
 	3,  'max-query-time',
@@ -29,7 +29,7 @@ our @default_sorting = [
     10, 'sum-rows-sent',
     8,  'avg-rows-sent',
     9,  'max-rows-sent'
- ];
+ );
 
 sub run {
 	my $file = shift;
