@@ -217,11 +217,10 @@ sub get_log_timestamp {
 	
 	# 070119 12:29:58
 	my ( $year, $month, $day, $hour, $min, $secs ) = (
-		$date =~ /(\d\d)(\d\d)(\d\d)\s+(\d\d)\:(\d\d)\:(\d\d)/ );
+		$date =~ /(\d\d)(\d\d)(\d\d)\s+(\d{1,2})\:(\d{1,2})\:(\d{1,2})/ );
 
 	$year  += 100;
 	$month -= 1;
-	print STDERR "date is $date, $secs, $min, $hour, $day, $month, $year\n";
 	return timelocal($secs, $min, $hour, $day, $month, $year);
 }
 
