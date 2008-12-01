@@ -125,7 +125,7 @@ sub run {
 			elsif ( $in_query and $line =~ /^\# Q/ ) {
 				my $text = substr( $line, 12, length($line) - 12 );
 				my @numbers = split(':', $text);
-				@query_time = map { int($_) } @numbers;
+				@query_time = map { s/\D//g } @numbers;
 				$in_query = ( $query_time[0] >= $min_query_time or ($min_rows_examined
                        and $query_time[3] >= $min_rows_examined) ) ? 1 : 0;
 
