@@ -221,6 +221,7 @@ sub get_log_timestamp {
 
 	$year  += 100;
 	$month -= 1;
+	print STDERR "date is $date, $secs, $min, $hour, $day, $month, $year\n";
 	return timelocal($secs, $min, $hour, $day, $month, $year);
 }
 
@@ -238,8 +239,14 @@ Quick summary of what the module does.
 Perhaps a little code snippet.
 
     use MySQL::SlowLog::Filter qw/run parse_date_range parse_time/;
-
-    
+	
+    run('slow.log', {
+    	date => '13.11.2006-01.12.2008', # see parse_date_range below
+    	'include-host' => \@include_hosts,
+    	'exclude-host' => \@exclude_hosts,
+    	'include-user' => \@include_users,
+    	'exclude-user' => \@exclude_users,
+    } );
 
 =head1 DESCRIPTION
 
@@ -258,6 +265,8 @@ The code is heavily borrowed from L<http://code.google.com/p/mysql-log-filter/>
     <13/11/2006           ( 0, 1163347200 )
     -13.11.2006           ( 0, 1163347200 )
     13.11.2006-1.12.2008  ( 1163347200, 1228060800 )
+    13.11.2006-01.12.2008 ( 1163347200, 1228060800 )
+    13/11/2006-01-12-2008 ( 1163347200, 1228060800 )
 
 =head2 parse_time
 
