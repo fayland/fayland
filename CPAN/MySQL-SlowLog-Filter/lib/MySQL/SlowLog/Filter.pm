@@ -322,8 +322,6 @@ Return a unix timestamp from the given date. (070119 12:29:58)
 
 =item * sorting
 
-=item * a bin/mysql_filter_slow_log.pl
-
 =back
 
 =head1 SEE ALSO

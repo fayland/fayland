@@ -16,7 +16,12 @@ GetOptions(
 	\%params,
 	"help|?",
 	"date=s",
-	"min_query_time=i",
+	"T|min_query_time=i",
+	"R|min_rows_examined=i",
+	"ih|include-host=s",
+	"eh|exclude-host=s",
+	"iu|include-user=s",
+	"eu|exclude-user=s",
 	
 ) or pod2usage(2);
 
@@ -28,7 +33,6 @@ defined $file or pod2usage(1);
 
 
 
-1;
 __END__
 
 =head1 NAME
@@ -43,7 +47,36 @@ mysql_showlog_filter - filter your mysql slow.log
 
 =over 4
 
-=item B<?>, B<--help>
+=item B<-?>, B<--help>
+
+=item B<--date=I<DATE_RANGE>>
+
+    >13-11-2006
+    <13/11/2006
+    -13.11.2006
+    13.11.2006-1.12.2008
+    13.11.2006-01.12.2008
+    13/11/2006-01-12-2008
+
+No time limited by default
+
+=item B<-T>, B<--min_query_time>
+
+1 sec by default. compared with "Query_time"
+
+  # Query_time: 221  Lock_time: 0  Rows_sent: 241  Rows_examined: 4385615
+
+=iteam B<-R>, B<--min_rows_examined>
+
+disabled by default. compared with "Rows_examined"
+
+=item B<-ih>, B<--include-host=I<HOSTS>>
+
+=item B<-eh>, B<--exclude-host=I<HOSTS>>
+
+=item B<-iu>, B<--include-user=I<USERS>>
+
+=item B<-eu>, B<--exclude-user=I<USERS>>
 
 =back
 
