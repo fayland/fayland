@@ -64,16 +64,16 @@ sub run {
     foreach my $line ( @lines ) {
     	next unless $line;
 
-		if ( $query ) {
-            if ( $in_query ) {
-                process_query( \%queries, $query, $no_duplicates, $user, $host,
-                               $timestamp, \@query_time);
+    	if ( $line =~ /^\# / ) {
+    		if ( $query ) {
+				if ( $in_query ) {
+					process_query( \%queries, $query, $no_duplicates, $user, $host,
+								   $timestamp, \@query_time);
+				}
 				$query = '';
 				$in_query = 0;
-            }
-		}
-    	
-    	if ( $line =~ /^\# / ) {
+			}
+    		
 			if ( $line =~ /^\# T/ ) {  # # Time: 070119 12:29:58
 				( $timestamp ) = ( $line =~ /(\d+(.*?))$/ );
 				my $t = get_log_timestamp($timestamp);
@@ -81,6 +81,7 @@ sub run {
 					$timestamp = 0;
 				}
 			} elsif ( $timestamp and $line =~ /^\# U/ ) {  # # User@Host: root[root] @ localhost []
+				chomp($line);
 				my $text = substr( $line, 13, length($line) - 13 );
 				( $user, $host ) = split(' @ ', $text, 2);
 				
@@ -123,15 +124,16 @@ sub run {
 			} 
 			# # Query_time: 0  Lock_time: 0  Rows_sent: 0  Rows_examined: 156
 			elsif ( $in_query and $line =~ /^\# Q/ ) {
-				my $text = substr( $line, 12, length($line) - 12 );
+				my $text = substr( $line, 13, length($line) - 13 );
 				my @numbers = split(':', $text);
-				@query_time = map { s/\D//g } @numbers;
-				$in_query = ( $query_time[0] >= $min_query_time or ($min_rows_examined
-                       and $query_time[3] >= $min_rows_examined) ) ? 1 : 0;
-
-			} elsif ( $in_query ) {
-				 $query .= $line;
-			}
+				@query_time = ();
+				foreach (@numbers) {
+					push @query_time, $1 if (/(\d+)/);
+				}
+				$in_query = ( $query_time[0] >= $min_query_time or ($min_rows_examined and $query_time[3] >= $min_rows_examined) ) ? 1 : 0;
+			} 
+		} elsif ( $in_query ) {
+			$query .= $line;
 		}
     }
     
@@ -151,7 +153,7 @@ sub process_query {
     } else {
     	my $ls = ( $^O eq 'MSWin32' ) ? "\r\n" : 
 				 ( $^O eq 'darwin'  ) ? "\r" : "\n";
-        print sprintf("# Time: %s%s# User\@Host: %s%s# Query_time: %d  Lock_time: %d  Rows_sent: %d  Rows_examined: %d%s%s%s", $timestamp, $ls, $user_host, $ls, $query_time->[0], $query_time->[1], $query_time->[2], $query_time->[3], $ls, $query, $ls);
+        print sprintf("# Time: %s%s# User\@Host: %s%s# Query_time: %d  Lock_time: %d  Rows_sent: %d  Rows_examined: %d%s%s", $timestamp, $ls, $user_host, $ls, $query_time->[0], $query_time->[1], $query_time->[2], $query_time->[3], $ls, $query);
 	}
 }
 
