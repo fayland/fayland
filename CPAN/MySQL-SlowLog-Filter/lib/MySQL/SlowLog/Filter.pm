@@ -235,10 +235,6 @@ MySQL::SlowLog::Filter - The great new MySQL::SlowLog::Filter!
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use MySQL::SlowLog::Filter qw/run parse_date_range parse_time/;
 	
     run('slow.log', {
