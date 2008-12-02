@@ -3,7 +3,7 @@ package Padre::Plugin::CPAN;
 use warnings;
 use strict;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
@@ -124,9 +124,17 @@ sub _run_cpan_command {
     
     $self->show_output(1);
 	$self->{output}->clear;
+	
+	# save original $ENV{AUTOMATED_TESTING}
+	my $org_AUTOMATED_TESTING = $ENV{AUTOMATED_TESTING};
+	$ENV{AUTOMATED_TESTING} = 1;
+	
 	my $cmd = qq{"$perl" "-MCPAN" "-e" "install $modules"};
 	warn "run $cmd\n";
 	Wx::Perl::ProcessStream->OpenProcess( $cmd, 'CPAN_mod', $self );
+	
+	# restore
+	$ENV{AUTOMATED_TESTING} = $org_AUTOMATED_TESTING;
 }
 
 1;

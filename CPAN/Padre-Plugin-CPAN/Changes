@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-CPAN
 
+0.06	2008.12.02
+		ENV AUTOMATED_TESTING
+
 0.05	2008.11.24
 		for 'Padre::Plugin' => '0.18'
 
