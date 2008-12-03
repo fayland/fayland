@@ -3,7 +3,7 @@ package MySQL::SlowLog::Filter;
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use base 'Exporter';
@@ -50,7 +50,7 @@ sub run {
     my $no_output     = $params->{no_output} || 0;
     my $incremental   = $params->{incremental} || 0;
     
-    my $min_query_time    = $params->{min_query_time} || $params->{T} || 1;
+    my $min_query_time    = $params->{min_query_time} || $params->{T} || -1;
     my $min_rows_examined = $params->{min_rows_examined} || $params->{R} || 0;
     
     my @lines = read_file( $file );
@@ -282,11 +282,11 @@ check parse_date_range below
 
 	# Query_time: 221  Lock_time: 0  Rows_sent: 241  Rows_examined: 4385615
 
-compare with "Query_time"
+compare with "Query_time". default is -1. means all.
 
 =item min_rows_examined
 
-compare with "Rows_examined"
+compare with "Rows_examined". default is 0. means all.
 
 =back
 
