@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use MySQL::SlowLog::Filter qw/run/;
@@ -31,7 +31,7 @@ my $file = pop @ARGV;
 defined $file or pod2usage(1);
 -e $file or die "$file is not found\n";
 
-
+run($file, \%params);
 
 __END__
 
