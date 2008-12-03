@@ -12,9 +12,9 @@ use vars qw/@EXPORT_OK/;
 
 use Carp qw/croak/;
 use Time::Local;
-use DBI;
+#use DBI;
 use File::Slurp;
-use Data::Dumper;
+#use Data::Dumper;
 
 our @default_sorting = (
 	4,  'sum-query-time',
