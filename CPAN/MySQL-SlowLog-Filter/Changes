@@ -1,6 +1,9 @@
 Revision history for MySQL-SlowLog-Filter
 
-0.04	2008.12.04
+0.05	2008.12.03
+		min_rows_examined default to -1
+
+0.04	2008.12.03
 		min_query_time default to -1
 
 0.03	2008.12.03

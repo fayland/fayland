@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-our $VERSION = '0.03';
+our $VERSION = '0.05';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use MySQL::SlowLog::Filter qw/run/;
@@ -62,13 +62,13 @@ No time limited by default
 
 =item B<-T>, B<--min_query_time>
 
-1 sec by default. compared with "Query_time"
+-1 by default. compared with "Query_time"
 
   # Query_time: 221  Lock_time: 0  Rows_sent: 241  Rows_examined: 4385615
 
 =item B<-R>, B<--min_rows_examined>
 
-disabled by default. compared with "Rows_examined"
+-1 by default. compared with "Rows_examined"
 
 =item B<-ih>, B<--include-host=I<HOSTS>>
 
