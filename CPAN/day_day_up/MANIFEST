@@ -1,3 +1,4 @@
+.shipit
 bin/day_day_up
 Changes
 daydayup.db
@@ -14,6 +15,7 @@ inc/Module/Install/Metadata.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/DayDayUp.pm
+lib/DayDayUp/Backup.pm
 lib/DayDayUp/Contacts.pm
 lib/DayDayUp/Context.pm
 lib/DayDayUp/Index.pm
@@ -25,9 +27,11 @@ META.yml
 public/404.html
 public/css/style.css
 README
-t/basic.t
+t/001basic.t
+t/102perl.t
 t/daydayup.db
 t/pod.t
+templates/backup/index.html
 templates/contacts/index.html
 templates/index/index.html
 templates/notes/add.html
