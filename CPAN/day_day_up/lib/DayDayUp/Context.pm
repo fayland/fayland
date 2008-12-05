@@ -90,7 +90,7 @@ has 'tt' => (
 sub view {
 	my $self = shift;
 	
-	my $args  = scalar @_ > 1 ? { @_ } : scalar @_ == 1 ? $_ : {};
+	my $args  = scalar @_ > 1 ? { @_ } : scalar @_ == 1 ? $_[0] : {};
 	my $stash = $self->stash || {};
 	$stash = { %$stash, %$args, c => $self };
 	my $template = $stash->{template} or Carp::croak "no template specified";
@@ -100,6 +100,8 @@ sub view {
 		$template, $stash, \$output
 	) or Carp::carp $self->tt->error . "\n";
 	
+	$self->res->code(200);
+	$self->res->headers->content_type('text/html');
 	$self->res->body($output);
 }
 
