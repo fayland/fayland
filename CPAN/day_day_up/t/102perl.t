@@ -28,4 +28,4 @@ $tx = Mojo::Transaction->new_post('/perl/find_pod?module=CPAN');
 $client->process_local('DayDayUp', $tx);
 
 # test response
-like($tx->res->content->file->slurp, qr/cpan module_name/i);
+like($tx->res->content->file->slurp, qr/Perl itself/i);
