@@ -7,9 +7,6 @@ our $VERSION = '0.05';
 
 use base 'Mojolicious';
 
-use MojoX::Renderer::TT;
-use Template::Stash::XS;
-
 # This method will run for each request
 sub dispatch {
     my ($self, $c) = @_;
@@ -45,19 +42,6 @@ sub startup {
     # Default route
     $r->route('/:controller/:action')
       ->to(controller => 'index', action => 'index');
-
-    my $tt = MojoX::Renderer::TT->build(
-        mojo => $self,
-        template_options => {
-            POST_CHOMP => 1,
-            PRE_CHOMP  => 1,
-            STASH      => Template::Stash::XS->new,
-            INCLUDE_PATH => [ $self->home->rel_dir('templates') ],
-            WRAPPER    => 'wrapper.html',
-        }
-    );
-    $self->renderer->add_handler( html => $tt );
-
 }
 
 1;

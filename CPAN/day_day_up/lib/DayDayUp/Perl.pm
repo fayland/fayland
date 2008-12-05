@@ -16,7 +16,7 @@ use constant IS_WIN32 => !! ( $^O eq 'MSWin32' );
 sub index {
     my ($self, $c) = @_;
     
-    $c->render(template => 'perl/index.html', IS_WIN32 => IS_WIN32);
+    $c->view(template => 'perl/index.html', IS_WIN32 => IS_WIN32);
 }
 
 sub find_pod {
@@ -32,7 +32,7 @@ sub find_pod {
 		$stash->{content} = $pod;
 	}
 	
-	$c->render( $stash );
+	$c->view( $stash );
 }
 
 sub view_source {
@@ -56,7 +56,7 @@ sub view_source {
 		$stash->{content} = $code;
 	}
 	
-	$c->render( $stash );
+	$c->view( $stash );
 }
 
 our $repos = {
@@ -102,7 +102,7 @@ sub find_ppd {
 	}
 	$content = "Can't find anything with repos: \n    " . join("\n    ", @{ $repos->{$pversion} } ) . "\nPerl Version: $pversion\n" unless $content;
 	$stash->{content} = $content;
-	$c->render( $stash );
+	$c->view( $stash );
 }
 
 1;

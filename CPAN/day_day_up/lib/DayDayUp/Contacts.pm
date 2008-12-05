@@ -5,7 +5,7 @@ use warnings;
 
 use base 'Mojolicious::Controller';
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use Data::Dumper;
 use WWW::Contact;
@@ -14,7 +14,7 @@ sub index {
     my ($self, $c) = @_;
     
     my $contacts = $self->_get( $c );
-    $c->render(template => 'contacts/index.html', contacts => $contacts );
+    $c->view(template => 'contacts/index.html', contacts => $contacts );
 }
 
 sub _get {
@@ -37,7 +37,7 @@ sub import {
 	
 	my $stash = { template => 'contacts/index.html' };
 	unless ( $email and $pass ) {
-		return $c->render( $stash );
+		return $c->view( $stash );
 	}
 	
 	my $wc = WWW::Contact->new();
@@ -63,7 +63,7 @@ sub import {
 		}
 		$stash = { template => 'redirect.html', url => '/contacts/' };
 	}
-	$c->render( $stash );
+	$c->view( $stash );
 }
 
 sub add {
@@ -73,7 +73,7 @@ sub add {
         template => 'contacts/add.html',
     };
     unless ( $c->req->method eq 'POST' ) {
-        return $c->render( $stash );
+        return $c->view( $stash );
     }
     
     my $config = $c->config;
@@ -89,7 +89,7 @@ sub add {
     my $sth = $dbh->prepare($sql);
     $sth->execute( $name, $email, $phone, $groups, $notes );
     
-    $c->render(template => 'redirect.html', url => '/contacts/');
+    $c->view(template => 'redirect.html', url => '/contacts/');
 }
 
 sub edit {
@@ -118,7 +118,7 @@ sub edit {
     		groups => $contact->{groups},
     		notes => $contact->{notes},
     	};
-        return $c->render( $stash );
+        return $c->view( $stash );
     }
     
     my $params = $c->req->params->to_hash;
@@ -132,7 +132,7 @@ sub edit {
     $sth = $dbh->prepare($sql);
     $sth->execute( $name, $email, $phone, $groups, $notes, $id );
     
-    $c->render(template => 'redirect.html', url => '/contacts/');
+    $c->view(template => 'redirect.html', url => '/contacts/');
 }
 
 sub delete {
@@ -146,7 +146,7 @@ sub delete {
     my $sth = $dbh->prepare($sql);
     $sth->execute( $id );
     
-    $c->render(template => 'redirect.html', url => '/contacts/');
+    $c->view(template => 'redirect.html', url => '/contacts/');
 }
 
 

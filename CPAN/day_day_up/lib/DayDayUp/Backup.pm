@@ -16,7 +16,7 @@ sub index {
 	# for FillInForm
 	my $fif = $config->{backup};
 
-    $c->render( template => 'backup/index.html', fif => $fif );
+    $c->view( template => 'backup/index.html', fif => $fif );
 }
 
 sub ftp {
@@ -38,7 +38,7 @@ sub ftp {
     my $err;
     
     my $sg = Scope::Guard->new(
-		sub { $c->render( template => 'backup/index.html', err => $err ) }
+		sub { $c->view( template => 'backup/index.html', err => $err ) }
 	);
 
     if ( $put_file and not -e $local ) {
