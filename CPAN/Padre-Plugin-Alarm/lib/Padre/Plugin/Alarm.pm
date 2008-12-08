@@ -3,7 +3,7 @@ package Padre::Plugin::Alarm;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use base 'Padre::Plugin';
 use Wx         ':everything';
@@ -133,7 +133,7 @@ sub clear_alarm {
 	my $config = $plugin_manager->plugin_config('Alarm');
 	$config->{alarms} = [];
 	
-	$main->stop_alarm();
+	stop_alarm($main);
 	$main->message('All Alarms are cleared', 'Clear Alarm');
 }
 
