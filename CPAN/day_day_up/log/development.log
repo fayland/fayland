@@ -1,0 +1,6 @@
+[Fri Dec  5 17:52:15 2008][debug][MojoX::Dispatcher::Routes:73] Dispatching "index" in "index(DayDayUp::Index)"
+[Fri Dec  5 17:52:16 2008][debug][MojoX::Dispatcher::Routes:73] Dispatching "index" in "perl(DayDayUp::Perl)"
+[Fri Dec  5 17:52:16 2008][debug][MojoX::Dispatcher::Routes:73] Dispatching "find_pod" in "perl(DayDayUp::Perl)"
+[Fri Dec  5 17:54:25 2008][debug][MojoX::Dispatcher::Routes:73] Dispatching "index" in "index(DayDayUp::Index)"
+[Fri Dec  5 17:54:25 2008][debug][MojoX::Dispatcher::Routes:73] Dispatching "index" in "perl(DayDayUp::Perl)"
+[Fri Dec  5 17:54:26 2008][debug][MojoX::Dispatcher::Routes:73] Dispatching "find_pod" in "perl(DayDayUp::Perl)"
