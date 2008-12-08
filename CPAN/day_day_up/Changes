@@ -1,5 +1,8 @@
 Revision history for DayDayUp
 
+0.06	2008.12.08
+		fix log/development.log
+
 0.05    2008.12.06
 		add DayDayUp::Backup
 
