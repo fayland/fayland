@@ -3,12 +3,12 @@ package Padre::Plugin::Tidy;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use base 'Padre::Plugin';
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.18',
+	'Padre::Plugin' => '0.21'
 }
 
 sub menu_plugins_simple {
@@ -42,8 +42,8 @@ sub tidy_html {
     
     $text = 'OK' unless ( length($text) );
 	$self->show_output;
-	$self->{output}->clear;
-	$self->{output}->AppendText($text);
+	$self->{gui}->{output_panel}->clear;
+	$self->{gui}->{output_panel}->AppendText($text);
 }
 
 sub tidy_xml {

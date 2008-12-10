@@ -3,13 +3,13 @@ package Padre::Plugin::Validator;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.18',
+	'Padre::Plugin' => '0.21',
 }
 
 sub menu_plugins_simple {
@@ -105,8 +105,8 @@ sub _output {
 	my ( $self, $text ) = @_;
 	
 	$self->show_output;
-	$self->{output}->clear;
-	$self->{output}->AppendText($text);
+	$self->{gui}->{output_panel}->clear;
+	$self->{gui}->{output_panel}->AppendText($text);
 }
 
 1;

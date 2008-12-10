@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Padre/Plugin/Tidy.pm',
     build_requires => {
         'Test::More' => 0,
-        'Padre'		 => '0.18',
+        'Padre'		 => '0.21',
         'XML::Tidy'  => 0,
         'HTML::Tidy' => 0,
     },

@@ -3,14 +3,14 @@ package Padre::Plugin::CPAN;
 use warnings;
 use strict;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
 use File::Spec ();
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.18',
+	'Padre::Plugin' => '0.21',
 }
 
 sub menu_plugins_simple {
@@ -95,7 +95,7 @@ sub _run_cpan_command {
 			$self,
 			sub {
 				$_[1]->Skip(1);
-				$_[0]->{output}->AppendText( $_[1]->GetLine . "\n" );
+				$_[0]->{gui}->{output_panel}->AppendText( $_[1]->GetLine . "\n" );
 				return;
 			},
 		);
@@ -103,7 +103,7 @@ sub _run_cpan_command {
 			$self,
 			sub {
 				$_[1]->Skip(1);
-				$_[0]->{output}->AppendText( $_[1]->GetLine . "\n" );
+				$_[0]->{gui}->{output_panel}->AppendText( $_[1]->GetLine . "\n" );
 				return;
 			},
 		);
@@ -123,7 +123,7 @@ sub _run_cpan_command {
 	my $perl = Padre->perl_interpreter;
     
     $self->show_output(1);
-	$self->{output}->clear;
+	$self->{gui}->{output_panel}->clear;;
 	
 	# save original $ENV{AUTOMATED_TESTING}
 	my $org_AUTOMATED_TESTING = $ENV{AUTOMATED_TESTING};

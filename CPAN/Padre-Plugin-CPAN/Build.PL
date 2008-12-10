@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Padre/Plugin/CPAN.pm',
     build_requires => {
         'Test::More' => 0,
-        'Padre'		 => '0.18',
+        'Padre'		 => '0.21',
         'CPAN'		 => 0,
         'File::Spec' => 0,
     },

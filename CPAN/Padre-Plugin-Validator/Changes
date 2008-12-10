@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Validator
 
+0.05	2008.12.11
+		->{gui}->{output_panel}->clear;
+
 0.04	2008.11.24
 		for 'Padre::Plugin' => '0.18'
 
