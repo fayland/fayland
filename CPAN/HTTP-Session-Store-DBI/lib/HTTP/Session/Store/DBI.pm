@@ -6,10 +6,8 @@ use DBI;
 use MIME::Base64;
 use Storable qw/nfreeze thaw/;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:FAYLAND';
-
-with 'HTTP::Session::Role::Store';
 
 subtype 'DBH'
      => as 'Object';
