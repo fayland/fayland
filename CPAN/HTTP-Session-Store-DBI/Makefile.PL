@@ -6,7 +6,7 @@ WriteMakefile
           'VERSION_FROM' => 'lib/HTTP/Session/Store/DBI.pm',
           'PREREQ_PM' => {
                            'DBI' => '0',
-                           'HTTP::Session' => '0',
+                           'HTTP::Session' => '0.26',
                            'MIME::Base64' => '0',
                            'Moose' => '0',
                            'Storable' => '0',

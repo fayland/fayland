@@ -1,6 +1,6 @@
 ---
 name: HTTP-Session-Store-DBI
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: 'store session data in DBI for L<HTTP::Session>'
@@ -9,7 +9,7 @@ resources:
   license: http://dev.perl.org/licenses/
 build_requires:
   DBI: 0
-  HTTP::Session: 0
+  HTTP::Session: 0.26
   MIME::Base64: 0
   Moose: 0
   Storable: 0
@@ -17,7 +17,7 @@ build_requires:
 provides:
   HTTP::Session::Store::DBI:
     file: lib/HTTP/Session/Store/DBI.pm
-    version: 0.01
+    version: 0.02
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
