@@ -10,6 +10,8 @@ requires 'Mojo'     => '0.9';
 requires 'Moose'    => '0.57';
 requires 'Template' => '2.20';
 requires 'Template::Plugin::FillInForm';
+requires 'MojoX::Renderer::TT';
+requires 'MojoX::Fixup::XHTML';
 requires 'DBI';
 requires 'DBD::SQLite';
 requires 'YAML';

@@ -3,14 +3,14 @@ package DayDayUp::Index;
 use strict;
 use warnings;
 
-our $VERSION = '0.05';
+our $VERSION = '0.07';
 
 use base 'Mojolicious::Controller';
 
 sub index {
     my ($self, $c) = @_;
 
-    $c->view(template => 'index/index.html' );
+    $c->render(template => 'index/index.html' );
 }
 
 1;

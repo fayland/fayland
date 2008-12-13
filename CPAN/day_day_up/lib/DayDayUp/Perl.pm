@@ -5,7 +5,7 @@ use warnings;
 
 use base 'Mojolicious::Controller';
 
-our $VERSION = '0.05';
+our $VERSION = '0.07';
 
 use File::Slurp ();
 use Data::Dumper;
@@ -16,7 +16,7 @@ use constant IS_WIN32 => !! ( $^O eq 'MSWin32' );
 sub index {
     my ($self, $c) = @_;
     
-    $c->view(template => 'perl/index.html', IS_WIN32 => IS_WIN32);
+    $c->render(template => 'perl/index.html', IS_WIN32 => IS_WIN32);
 }
 
 sub find_pod {
@@ -32,16 +32,16 @@ sub find_pod {
 		$stash->{content} = $pod;
 	}
 	
-	$c->view( $stash );
+	$c->render( $stash );
 }
 
-sub view_source {
+sub render_source {
 	my ($self, $c) = @_;
 	
 	my $params = $c->req->params->to_hash;
 	my $module = $params->{module};
 
-	my $stash = { template => 'perl/index.html', from => 'view_source', IS_WIN32 => IS_WIN32 };
+	my $stash = { template => 'perl/index.html', from => 'render_source', IS_WIN32 => IS_WIN32 };
 	if ( $module ) {
 		# find the HTML place of a module
 		my $file = `perldoc -l $module`;
@@ -56,7 +56,7 @@ sub view_source {
 		$stash->{content} = $code;
 	}
 	
-	$c->view( $stash );
+	$c->render( $stash );
 }
 
 our $repos = {
@@ -102,7 +102,7 @@ sub find_ppd {
 	}
 	$content = "Can't find anything with repos: \n    " . join("\n    ", @{ $repos->{$pversion} } ) . "\nPerl Version: $pversion\n" unless $content;
 	$stash->{content} = $content;
-	$c->view( $stash );
+	$c->render( $stash );
 }
 
 1;
@@ -116,7 +116,7 @@ DayDayUp::Perl - Mojolicious::Controller, /perl/
 
 	/perl/
 	/perl/find_pod
-	/perl/view_source
+	/perl/render_source
 
 =head1 AUTHOR
 

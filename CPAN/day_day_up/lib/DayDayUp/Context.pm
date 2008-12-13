@@ -2,7 +2,7 @@ package DayDayUp::Context;
 
 use Moose;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 extends 'Mojolicious::Context';
 
@@ -14,8 +14,6 @@ use YAML qw/LoadFile DumpFile/;
 use DBI;
 use Carp ();
 use Data::Dumper;
-use Template ();
-use Template::Stash::XS ();
 
 has 'config' => (
     is   => 'ro',
@@ -67,44 +65,6 @@ has 'dbh' => (
     }
 );
 
-has 'tt' => (
-	is => 'ro',
-	lazy => 1,
-	default => sub {
-		my $self = shift;
-		
-		#my $config = $self->config->{'View::TT'};
-		my $config = {
-			POST_CHOMP => 1,
-            PRE_CHOMP  => 1,
-            STASH      => Template::Stash::XS->new,
-            INCLUDE_PATH => [ $self->home->rel_dir('templates') ],
-            WRAPPER    => 'wrapper.html',
-        };
-		
-		return Template->new($config)
-			or Carp::croak "Could not initialize Template object: $Template::ERROR";
-	},
-);
-
-sub view {
-	my $self = shift;
-	
-	my $args  = scalar @_ > 1 ? { @_ } : scalar @_ == 1 ? $_[0] : {};
-	my $stash = $self->stash || {};
-	$stash = { %$stash, %$args, c => $self };
-	my $template = $stash->{template} or Carp::croak "no template specified";
-	
-	my $output;
-	$self->tt->process(
-		$template, $stash, \$output
-	) or Carp::carp $self->tt->error . "\n";
-	
-	$self->res->code(200);
-	$self->res->headers->content_type('text/html');
-	$self->res->body($output);
-}
-
 # it's dummy to save daydayup.yml config into daydayup_local.yml
 # but it's what for now.
 sub save_config {
@@ -137,16 +97,6 @@ it's a HashRef from YAML::LoadFile daydayup.yml and daydayup_local.yml if -e
 =head2 dbh
 
 L<DBI> with L<DBD::SQLite> with daydayup.db
-
-=head2 tt
-
-L<Template> instance
-
-=head2 view
-
-use $self->tt->process to $c->res->body
-
-	$c->view( template => 'index.html' );
 
 =head2 save_config
 

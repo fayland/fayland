@@ -3,9 +3,13 @@ package DayDayUp;
 use strict;
 use warnings;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use base 'Mojolicious';
+
+use MojoX::Renderer::TT;
+use MojoX::Fixup::XHTML;
+use Template::Stash::XS ();
 
 # This method will run for each request
 sub dispatch {
@@ -15,7 +19,12 @@ sub dispatch {
     my $done = $self->static->dispatch($c);
 
     # Use routes if we don't have a response code yet
-    $done = $self->routes->dispatch($c) unless $done;
+    unless ( $done ) {
+    	$done = $self->routes->dispatch($c);
+    	if ( $done ) {
+    		MojoX::Fixup::XHTML->fix_xhtml( $c );
+    	}
+    }
 
     # Nothing found, serve static file "public/404.html"
     unless ($done) {
@@ -42,6 +51,20 @@ sub startup {
     # Default route
     $r->route('/:controller/:action')
       ->to(controller => 'index', action => 'index');
+
+	my $tt = MojoX::Renderer::TT->build(
+            mojo => $self,
+            template_options =>
+             { POST_CHOMP => 1,
+				PRE_CHOMP  => 1,
+				STASH      => Template::Stash::XS->new,
+				INCLUDE_PATH => [ $self->home->rel_dir('templates') ],
+				WRAPPER    => 'wrapper.html',
+             }
+       );
+
+	$self->renderer->add_handler( html => $tt );
+
 }
 
 1;
