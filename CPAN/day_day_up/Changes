@@ -1,5 +1,8 @@
 Revision history for DayDayUp
 
+0.07
+		use MojoX::Fixup::XHTML
+
 0.06	2008.12.08
 		fix log/development.log
 

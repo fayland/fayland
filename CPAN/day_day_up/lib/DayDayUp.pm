@@ -20,10 +20,10 @@ sub dispatch {
 
     # Use routes if we don't have a response code yet
     unless ( $done ) {
-    	$done = $self->routes->dispatch($c);
-    	if ( $done ) {
-    		MojoX::Fixup::XHTML->fix_xhtml( $c );
-    	}
+        $done = $self->routes->dispatch($c);
+        if ( $done ) {
+            MojoX::Fixup::XHTML->fix_xhtml( $c );
+        }
     }
 
     # Nothing found, serve static file "public/404.html"
@@ -52,18 +52,17 @@ sub startup {
     $r->route('/:controller/:action')
       ->to(controller => 'index', action => 'index');
 
-	my $tt = MojoX::Renderer::TT->build(
-            mojo => $self,
-            template_options =>
-             { POST_CHOMP => 1,
-				PRE_CHOMP  => 1,
-				STASH      => Template::Stash::XS->new,
-				INCLUDE_PATH => [ $self->home->rel_dir('templates') ],
-				WRAPPER    => 'wrapper.html',
-             }
-       );
-
-	$self->renderer->add_handler( html => $tt );
+    my $tt = MojoX::Renderer::TT->build(
+        mojo => $self,
+        template_options => {
+            POST_CHOMP => 1,
+            PRE_CHOMP  => 1,
+            STASH      => Template::Stash::XS->new,
+            INCLUDE_PATH => [ $self->home->rel_dir('templates') ],
+            WRAPPER    => 'wrapper.html',
+        }
+    );
+    $self->renderer->add_handler( html => $tt );
 
 }
 
@@ -82,7 +81,7 @@ but I don't mind if you use it in your localhost.
 
 =head1 RUN
 
-	perl bin/day_day_up daemon
+    perl bin/day_day_up daemon
 
 =head1 CONFIGURATION
 
