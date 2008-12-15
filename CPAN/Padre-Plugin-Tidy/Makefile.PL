@@ -6,7 +6,7 @@ WriteMakefile
           'VERSION_FROM' => 'lib/Padre/Plugin/Tidy.pm',
           'PREREQ_PM' => {
                            'HTML::Tidy' => '0',
-                           'Padre' => '0.18',
+                           'Padre' => '0.21',
                            'Test::More' => '0',
                            'XML::Tidy' => '0'
                          },

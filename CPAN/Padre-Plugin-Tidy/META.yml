@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-Tidy
-version: 0.02
+version: 0.03
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: tidy html/xml in Padre
@@ -9,13 +9,13 @@ resources:
   license: http://dev.perl.org/licenses/
 build_requires:
   HTML::Tidy: 0
-  Padre: 0.18
+  Padre: 0.21
   Test::More: 0
   XML::Tidy: 0
 provides:
   Padre::Plugin::Tidy:
     file: lib/Padre/Plugin/Tidy.pm
-    version: 0.02
+    version: 0.03
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

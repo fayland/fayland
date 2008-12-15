@@ -7,7 +7,7 @@ WriteMakefile
           'PREREQ_PM' => {
                            'CPAN' => '0',
                            'File::Spec' => '0',
-                           'Padre' => '0.18',
+                           'Padre' => '0.21',
                            'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',
