@@ -5,7 +5,7 @@ use warnings;
 
 use base 'Mojolicious::Controller';
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use File::Slurp ();
 use Data::Dumper;
@@ -35,13 +35,13 @@ sub find_pod {
 	$c->render( $stash );
 }
 
-sub render_source {
+sub view_source {
 	my ($self, $c) = @_;
 	
 	my $params = $c->req->params->to_hash;
 	my $module = $params->{module};
 
-	my $stash = { template => 'perl/index.html', from => 'render_source', IS_WIN32 => IS_WIN32 };
+	my $stash = { template => 'perl/index.html', from => 'view_source', IS_WIN32 => IS_WIN32 };
 	if ( $module ) {
 		# find the HTML place of a module
 		my $file = `perldoc -l $module`;
@@ -116,7 +116,7 @@ DayDayUp::Perl - Mojolicious::Controller, /perl/
 
 	/perl/
 	/perl/find_pod
-	/perl/render_source
+	/perl/view_source
 
 =head1 AUTHOR
 

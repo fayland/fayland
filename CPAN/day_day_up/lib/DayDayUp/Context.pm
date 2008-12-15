@@ -2,7 +2,7 @@ package DayDayUp::Context;
 
 use Moose;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 extends 'Mojolicious::Context';
 
