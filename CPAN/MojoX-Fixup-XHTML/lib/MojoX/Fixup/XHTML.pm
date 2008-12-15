@@ -5,7 +5,7 @@ use strict;
 
 use base 'Mojo::Base';
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use HTTP::Headers;
 use HTTP::Negotiate qw(choose);
@@ -19,6 +19,13 @@ sub fix_xhtml {
     my ( $self, $c ) = @_;
 
     if ( $c->req->headers->header('Accept') && $c->res->headers->content_type =~ m|text/html|) {
+    	my $accept = $c->req->headers->header('Accept');
+		if ($accept =~ m|text/html|) {
+			$accept =~ s!\*/\*\s*([,]+|$)!*/*;q=0.5$1!;
+		} else {
+			$accept =~ s!\*/\*\s*([,]+|$)!text/html,*/*;q=0.5$1!;
+		}
+		$c->req->headers->header('Accept', $accept);
         my $var = choose($variants, HTTP::Headers->new(%{$c->req->headers->{_headers}}));
         if ($var eq 'xhtml') {
             my $content_type = $c->res->headers->content_type;
