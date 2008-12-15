@@ -5,7 +5,7 @@ use strict;
 
 use base 'Mojo::Base';
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use HTTP::Headers;
 use HTTP::Negotiate qw(choose);

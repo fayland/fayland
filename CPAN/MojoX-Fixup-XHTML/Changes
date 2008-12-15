@@ -1,5 +1,8 @@
 Revision history for MojoX-Fixup-XHTML
 
+0.03	2008.12.15
+		add tests
+
 0.02	2008.12.15
 		up the code according the new Catalyst::View::TT::XHTML
 
