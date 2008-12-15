@@ -1,9 +1,11 @@
 Build.PL
 Changes
 lib/MojoX/Fixup/XHTML.pm
+Makefile.PL
 MANIFEST			This list of files
+META.yml
 README
 t/00-load.t
+t/lib/TestApp.pm
+t/live-test.t
 t/pod.t
-Makefile.PL
-META.yml
