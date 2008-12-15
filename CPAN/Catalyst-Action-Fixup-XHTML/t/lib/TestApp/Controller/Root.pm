@@ -13,10 +13,12 @@ sub nothtml :Local {
   $c->res->content_type('application/json');
 }
 
+sub render : ActionClass('RenderView') { }
+
 sub end : ActionClass('Fixup::XHTML') {
 	my ( $self, $c ) = @_;
 	
-	$c->forward('TestApp::View::TT');
+	$c->forward('render');
 }
 
 1;

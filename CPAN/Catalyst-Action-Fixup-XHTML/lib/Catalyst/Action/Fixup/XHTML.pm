@@ -14,7 +14,6 @@ our $variants = [
     [qw| html  0.900 text/html             |],
 ];
 
-
 sub execute {
     my $self = shift;
     my ($controller, $c ) = @_;
@@ -57,6 +56,17 @@ Catalyst::Action::Fixup::XHTML - Catalyst action which serves application/xhtml+
 Most of the code are copied from L<Catalyst::View::TT::XHTML>, please refer the doc there.
 
 It's an action because I think it can be used in other views like Mason.
+
+=head1 RenderView
+
+Since Catalyst doesn't support two ActionClass attributes now, you need do follows to make them together.
+
+    sub render : ActionClass('RenderView') { }
+    sub end : ActionClass('Fixup::XHTML') {
+        my ( $self, $c ) = @_;
+        
+        $c->forward('render');
+    }
 
 =head1 AUTHOR
 
