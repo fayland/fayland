@@ -3,7 +3,7 @@ package Catalyst::Action::Fixup::XHTML;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use base 'Catalyst::Action';
 
@@ -19,7 +19,8 @@ sub execute {
     my ($controller, $c ) = @_;
     $self->NEXT::execute( @_ );
 
-    if ($c->request->header('Accept') && $c->response->headers->{'content-type'} =~ m|text/html|) {
+    if ($c->request->header('Accept') && $c->response->headers->{'content-type'} &&
+        $c->response->headers->{'content-type'} =~ m|text/html|) {
         _pragmatic_accept($c);
         my $var = choose($variants, $c->request->headers);
         if ($var eq 'xhtml') {
