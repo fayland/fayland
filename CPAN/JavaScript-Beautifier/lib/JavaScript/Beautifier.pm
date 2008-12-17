@@ -6,14 +6,16 @@ use strict;
 our $VERSION = '0.01';
 our $AUTHORITY = 'cpan:FAYLAND';
 
-use Mouse;
-
-has 'indent_size'  => ( is => 'ro', isa => 'Int', default => 4 );
-has 'indent_character' => ( is => 'ro', isa => 'Str', default => ' ' );
-has 'indent_level' => ( is => 'ro', isa => 'Int', default => 0 );
+use base 'Exporter';
+use vars qw/@EXPORT_OK/;
+@EXPORT_OK = qw/js_beautify/;
 
 sub js_beautify {
-	my ( $self, $js_source_code ) = @_;
+	my ( $self, $js_source_code, $opts ) = @_;
+	
+	my $indent_size = $opts->{indent_size};
+	my $indent_character = $opts->{indent_character};
+	my $indent_level = $opts->{indent_level};
 	
 	my ( @input, @output, $token_text, $last_type, $last_text, $last_word, $current_mode,
 	     @modes, $indent_string, @whitespace, @wordchar, @punct, $parser_pos,
@@ -38,7 +40,7 @@ sub js_beautify {
 		if ( $output[ scalar @output - 1 ] ne "\n" || ! $ingore_repeated ) {
 			push @output, "\n";
 		}
-		foreach my $i ( 0 .. $self->indent_level ) {
+		foreach my $i ( 0 .. $indent_level ) {
 			push @output, $indent_string;
 		}
 	}
@@ -54,11 +56,11 @@ sub js_beautify {
 		push @output, $token_text;
 	}
 	sub indent {
-		$self->indent_level++;
+		$indent_level++;
 	}
 	sub unindent {
-		if ( $self->indent_level ) {
-			$self->indent_level--;
+		if ( $indent_level ) {
+			$indent_level--;
 		}
 	}
 	sub remove_indent {
@@ -212,8 +214,8 @@ sub js_beautify {
 	
 	# -------------------------------------
 	$indent_string = '';
-	while ( $self->indent_size-- ) {
-		$indent_string .= $self->indent_character;
+	while ( $indent_size-- ) {
+		$indent_string .= $indent_character;
 	}
 	@input = split('', $js_source_text);
 	
@@ -529,77 +531,24 @@ JavaScript::Beautifier - The great new JavaScript::Beautifier!
 
 =head1 SYNOPSIS
 
-    use JavaScript::Beautifier;
+    use JavaScript::Beautifier qw/js_beautify/;
 
-    my $foo = JavaScript::Beautifier->new();
-    ...
+    
 
 =head1 EXPORT
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+This module is mostly a Perl-write of L<http://github.com/einars/js-beautify/tree/master/beautify.js>
+
+L<http://elfz.laacz.lv/beautify/>
 
 =head1 FUNCTIONS
 
-=head2 function1
+=head2 js_beautify
 
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
 
 =head1 AUTHOR
 
 Fayland Lam, C<< <fayland at gmail.com> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-javascript-beautifier at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=JavaScript-Beautifier>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc JavaScript::Beautifier
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=JavaScript-Beautifier>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/JavaScript-Beautifier>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/JavaScript-Beautifier>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/JavaScript-Beautifier/>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
 
 =head1 COPYRIGHT & LICENSE
 
@@ -608,7 +557,4 @@ Copyright 2008 Fayland Lam, all rights reserved.
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-
 =cut
-
-1; # End of JavaScript::Beautifier

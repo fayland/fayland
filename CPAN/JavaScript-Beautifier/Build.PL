@@ -9,7 +9,6 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/JavaScript/Beautifier.pm',
     build_requires => {
         'Test::More' => 0,
-        'Mouse'      => 0,
     },
     add_to_cleanup      => [ 'JavaScript-Beautifier-*' ],
     create_makefile_pl => 'traditional',
