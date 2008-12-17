@@ -3,13 +3,13 @@ package DayDayUp;
 use strict;
 use warnings;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use base 'Mojolicious';
 
+use Template::Stash::XS ();
 use MojoX::Renderer::TT;
 use MojoX::Fixup::XHTML;
-use Template::Stash::XS ();
 
 # This method will run for each request
 sub dispatch {

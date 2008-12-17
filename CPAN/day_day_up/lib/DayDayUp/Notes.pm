@@ -3,7 +3,7 @@ package DayDayUp::Notes;
 use strict;
 use warnings;
 
-our $VERSION = '0.07';
+our $VERSION = '0.09';
 
 use base 'Mojolicious::Controller';
 
@@ -25,6 +25,7 @@ use vars qw/%levels %status/;
     0  => 'closed',
     1  => 'suspended',
     2  => 'open',
+    3  => 'rejected',
 );
 
 sub index {
@@ -85,6 +86,12 @@ sub _get_notes {
     $sth = $dbh->prepare($sql);
     $sth->execute;
     $notes->{closed} = $sth->fetchall_arrayref({});
+    
+    # rejected
+    $sql = q~SELECT * FROM notes WHERE status = 3 ORDER BY closed_time DESC LIMIT 5~; 
+    $sth = $dbh->prepare($sql);
+    $sth->execute;
+    $notes->{rejected} = $sth->fetchall_arrayref({});
     
     return $notes;
 }
@@ -159,7 +166,7 @@ sub update {
     	}
     }
     
-    if ( $status eq 'closed' ) {
+    if ( $status eq 'closed' or $status eq 'rejected' ) {
     	my $sql = q~UPDATE notes SET status = ?, closed_time = ? WHERE note_id = ?~;
 		my $sth = $dbh->prepare($sql);
 		$sth->execute( $st_val, time(), $id );
@@ -172,20 +179,31 @@ sub update {
     $c->render(template => 'redirect.html', url => '/notes/');
 }
 
-sub closed {
+sub view_all {
 	my ( $self, $c ) = @_;
 	
 	my $dbh = $c->dbh;
 	
-	my $sql = q~SELECT * FROM notes WHERE status = 0 ORDER BY time DESC~; 
+	my $params = $c->req->params->to_hash;
+	my $status = $params->{status};
+    my $st_val = 0;
+    foreach my $key ( keys %status ) {
+    	if ( $status{ $key } eq $status ) {
+    		$st_val = $key;
+    		last;
+    	}
+    }
+	
+	my $sql = q~SELECT * FROM notes WHERE status = ? ORDER BY time DESC~; 
     my $sth = $dbh->prepare($sql);
-    $sth->execute;
-    my $closed = $sth->fetchall_arrayref({});
+    $sth->execute($st_val);
+    my $notes = $sth->fetchall_arrayref({});
     
     $c->render(
 		template => 'notes/index.html',
-		notes => { closed => $closed },
-		is_in_closed_page => 1,
+		notes => { $status => $notes },
+		is_in_view_all_page => 1,
+		status => $status,
 		levels => \%levels
 	);
 }
@@ -204,7 +222,7 @@ DayDayUp::Notes - Mojolicious::Controller, /notes/
 	/notes/$id/edit
 	/notes/$id/delete
 	/notes/$id/update
-	/notes/closed
+	/notes/view_all
 
 =head1 AUTHOR
 

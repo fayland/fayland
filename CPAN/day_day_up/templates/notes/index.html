@@ -2,7 +2,7 @@
 
 <p> <a href="/notes/add">Add a Note</a> </p>
 
-[% UNLESS is_in_closed_page %]
+[% UNLESS is_in_view_all_page %]
 
 <h3>Open Notes</h3>
 [% IF notes.open.size %]
@@ -11,9 +11,9 @@
 [% FOREACH note IN notes.open %]
 <tr>
 	<td>[% levels.${note.level} %]</td>
-	<td>[% note.note | html_line_break %]</td>
+	<td>[% note.note | html | html_line_break %]</td>
 	<td>[% date.format( note.time, format => '%Y-%m-%d %H:%M:%S' ) %]</td>
-	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a> | <a href="/notes/[% note.note_id %]/update?status=closed">Close</a> | <a href="/notes/[% note.note_id %]/update?status=suspended">Suspended</a></td>
+	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a> | <a href="/notes/[% note.note_id %]/update?status=closed">Close</a> | <a href="/notes/[% note.note_id %]/update?status=suspended">Suspend</a> | <a href="/notes/[% note.note_id %]/update?status=rejected">Reject</a></td>
 </tr>
 [% END %]
 </table>
@@ -31,9 +31,9 @@
 [% FOREACH note IN notes.suspended %]
 <tr>
 	<td>[% levels.${note.level} %]</td>
-	<td>[% note.note | html_line_break %]</td>
+	<td>[% note.note | html | html_line_break %]</td>
 	<td>[% date.format( note.time, format => '%Y-%m-%d %H:%M:%S' ) %]</td>
-	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a> | <a href="/notes/[% note.note_id %]/update?status=closed">Close</a> | <a href="/notes/[% note.note_id %]/update?status=open">Open</a></td>
+	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a> | <a href="/notes/[% note.note_id %]/update?status=closed">Close</a> | <a href="/notes/[% note.note_id %]/update?status=open">Open</a> | <a href="/notes/[% note.note_id %]/update?status=rejected">Reject</a></td>
 </tr>
 [% END %]
 </table>
@@ -44,8 +44,9 @@
 
 [% END %]
 
-[% END; # for UNLESS is_in_closed_page %]
+[% END; # for UNLESS is_in_view_all_page %]
 
+[% IF NOT is_in_view_all_page OR (is_in_view_all_page AND status == 'closed') %]
 <h3>Closed Notes</h3>
 [% IF notes.closed.size %]
 
@@ -54,7 +55,7 @@
 [% FOREACH note IN notes.closed %]
 <tr>
 	<td>[% levels.${note.level} %]</td>
-	<td>[% note.note | html_line_break %]</td>
+	<td>[% note.note | html | html_line_break %]</td>
 	<td>[% date.format( note.time, format => '%Y-%m-%d %H:%M:%S' ) %]</td>
 	<td>[% date.format( note.closed_time, format => '%Y-%m-%d %H:%M:%S' ) %]</td>
 	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a> | <a href="/notes/[% note.note_id %]/update?status=open">re-Open</a></td>
@@ -63,7 +64,7 @@
 </table>
 
 [% IF notes.closed.size == 5 %]
-<p><a href="/notes/closed">View All Closed</a></p>
+<p><a href="/notes/view_all?status=closed">View All Closed</a></p>
 [% END %]
 
 [% ELSE %]
@@ -71,3 +72,32 @@
 <p>nothing is found here</p>
 
 [% END %]
+[% END; # END for IF NOT is_in_view_all_page OR ... %]
+
+[% IF NOT is_in_view_all_page OR (is_in_view_all_page AND status == 'rejected') %]
+<h3>Rejected Notes</h3>
+[% IF notes.rejected.size %]
+
+<table border='1'>
+<tr><th>Level</th><th>Note</th><th>Created Time</th><th>Closed Time</th><th>-</th></tr>
+[% FOREACH note IN notes.rejected %]
+<tr>
+	<td>[% levels.${note.level} %]</td>
+	<td>[% note.note | html | html_line_break %]</td>
+	<td>[% date.format( note.time, format => '%Y-%m-%d %H:%M:%S' ) %]</td>
+	<td>[% date.format( note.closed_time, format => '%Y-%m-%d %H:%M:%S' ) %]</td>
+	<td><a href="/notes/[% note.note_id %]/edit">Edit</a> | <a href="/notes/[% note.note_id %]/delete">Delete</a> | <a href="/notes/[% note.note_id %]/update?status=open">re-Open</a> | <a href="/notes/[% note.note_id %]/update?status=closed">Close</a></td>
+</tr>
+[% END %]
+</table>
+
+[% IF notes.rejected.size == 5 %]
+<p><a href="/notes/view_all?status=rejected">View All Rejected</a></p>
+[% END %]
+
+[% ELSE %]
+
+<p>nothing is found here</p>
+
+[% END %]
+[% END; # END for IF NOT is_in_view_all_page OR ... %]
