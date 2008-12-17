@@ -1,6 +1,6 @@
 ---
 name: MojoX-Fixup-XHTML
-version: 0.03
+version: 0.04
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: 'serves application/xhtml+xml content for L<Mojo>'
@@ -15,7 +15,7 @@ build_requires:
 provides:
   MojoX::Fixup::XHTML:
     file: lib/MojoX/Fixup/XHTML.pm
-    version: 0.03
+    version: 0.04
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

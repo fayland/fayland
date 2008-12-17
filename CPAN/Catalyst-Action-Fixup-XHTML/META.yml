@@ -1,6 +1,6 @@
 ---
 name: Catalyst-Action-Fixup-XHTML
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: Catalyst action which serves application/xhtml+xml content if the browser accepts it.
@@ -14,7 +14,7 @@ build_requires:
 provides:
   Catalyst::Action::Fixup::XHTML:
     file: lib/Catalyst/Action/Fixup/XHTML.pm
-    version: 0.01
+    version: 0.02
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
