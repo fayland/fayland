@@ -337,18 +337,18 @@ sub js_beautify {
 			} elsif ( $last_type eq 'TK_END_EXPR' ) {
 				print_space();
 				$prefix = 'NEWLINE';
-			}
-            	
+			} elsif ( $last_type eq 'TK_END_BLOCK' && grep { lc($token_text) eq $_ } ('else', 'catch', 'finally') ) {
+				print_newline();
+			} elsif ( grep { $token_text eq $_ } @line_starters || $prefix eq 'NEWLINE' ) {
+				if ( $last_text eq 'else' ) {
+					# no need to force newline on else break
+                    print_space();
+                } elsif ( ( $last_type eq 'TK_START_EXPR' || $last_text eq '=' ) && $token_text eq 'function' ) {
+                	# no need to force newline on 'function': (function
+                    # DONOTHING
+            	}
 }
-#            if (last_type !== 'TK_END_BLOCK' && in_array(token_text.toLowerCase(), ['else', 'catch', 'finally'])) {
-#                print_newline();
-#            } else if (in_array(token_text, line_starters) || prefix === 'NEWLINE') {
-#                if (last_text === 'else') {
-#                    // no need to force newline on else break
-#                    print_space();
-#                } else if ((last_type === 'TK_START_EXPR' || last_text === '=') && token_text === 'function') {
-#                    // no need to force newline on 'function': (function
-#                    // DONOTHING
+
 #                } else if (last_type === 'TK_WORD' && (last_text === 'return' || last_text === 'throw')) {
 #                    // no newline between 'return nnn'
 #                    print_space();
