@@ -3,7 +3,7 @@ package JavaScript::Beautifier;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use base 'Exporter';
@@ -513,11 +513,11 @@ JavaScript::Beautifier - Beautify Javascript (beautifier for javascript)
     my $pretty_js = js_beautify( $js_source_code, {
         indent_size => 4,
         indent_character => ' ',
-    }
+    } );
 
 =head1 EXPORT
 
-This module is mostly a Perl-write of L<http://github.com/einars/js-beautify/tree/master/beautify.js>
+This module is mostly a Perl-rewrite of L<http://github.com/einars/js-beautify/tree/master/beautify.js>
 
 You can check it through L<http://elfz.laacz.lv/beautify/>
 

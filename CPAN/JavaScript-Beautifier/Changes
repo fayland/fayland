@@ -1,6 +1,9 @@
 Revision history for JavaScript-Beautifier
 
-0.02	2008.12.18
+0.03    2008.12.18
+        tiny POD updates
+
+0.02    2008.12.18
         more test cases
 
 0.01    Date/time
