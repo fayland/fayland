@@ -1,0 +1,21 @@
+---
+name: Padre-Plugin-JSBeautifier
+version: 0.01
+author:
+  - 'Fayland Lam <fayland@gmail.com>'
+abstract: 'beautify javascript in L<Padre>'
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+build_requires:
+  JavaScript::Beautifier: 0.03
+  Padre: 0.18
+  Test::More: 0
+provides:
+  Padre::Plugin::JSBeautifier:
+    file: lib/Padre/Plugin/JSBeautifier.pm
+    version: 0.01
+generated_by: Module::Build version 0.3
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
