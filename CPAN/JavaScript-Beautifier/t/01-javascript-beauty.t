@@ -13,7 +13,7 @@ my $opts = {
 my @tests = (
 	[ 'a        =          1', 'a = 1' ],
 	[ 'a=1', 'a = 1' ],
-#	[ "a( ],\n\nb( ],", "a( ],\n\nb( ]," ],
+	[ "a();\n\nb();", "a();\n\nb();"],
 	[ 'var a = 1 var b = 2', "var a = 1\nvar b = 2" ],
 	[ 'if (a == 1) b = 2', "if (a == 1) b = 2" ],
 	[ 'if(1){2}else{3}', "if (1) {\n    2\n} else {\n    3\n}" ],
@@ -22,8 +22,8 @@ my @tests = (
 	[ 'var a = 1 if (2) 3', "var a = 1\nif (2) 3" ],
 	[ 'a=0xff+4', 'a = 0xff + 4' ],
 	[ 'F*(g/=f)*g+b', 'F * (g /= f) * g + b' ],
- #   [ 'a.b({c:d})', "a.b({\n c: d\n})" ],
- #   [ 'a.b\n(\n{\nc:\nd\n}\n)', "a.b({\n c: d\n})" ],
+    [ 'a.b({c:d})', "a.b({\n    c: d\n})" ],
+    [ "a.b\n(\n{\nc:\nd\n}\n)", "a.b({\n    c: d\n})" ],
     [ 'a=!b', 'a = !b' ],
     [ 'a?b:c', 'a ? b: c' ], # 'a ? b : c' would need too make parser more complex to differentiate between ternary op and object assignment
     [ 'a?1:2', 'a ? 1 : 2' ], # 'a ? b : c' would need too make parser more complex to differentiate between ternary op and object assignment
@@ -32,20 +32,20 @@ my @tests = (
     [ 'a=~a', 'a = ~a' ],
     [ 'a;/*comment*/b;', "a;\n/*comment*/\nb;" ],
     [ 'if(a)break', "if (a) break" ],
-#    [ 'if(a){break}', "if (a) {\n break\n}" ],
+    [ 'if(a){break}', "if (a) {\n    break\n}" ],
     [ 'if((a))', 'if ((a))' ],
     [ 'for(var i=0;;)', 'for (var i = 0;;)' ],
     [ 'a++;', 'a++;' ],
     [ 'for(;;i++)', 'for (;; i++)' ],
     [ 'for(;;++i)', 'for (;; ++i)' ],
     [ 'return(1)', 'return (1)' ],
-#    [ 'try{a( ],}catch(b){c( ],}finally{d( ],}', "try {\n a( ],\n} catch(b) {\n c( ],\n} finally {\n d( ],\n}" ],
-#    [ 'if(a){b( ],}else if(', "if (a) {\n b( ],\n} else if (" ],
-#    [ 'switch(x) {case 0: case 1: a( ], break; default: break}', "switch (x) {\ncase 0:\ncase 1:\n a( ],\n break;\ndefault:\n break\n}" ],
-#    [ 'if (a) b( ], else c( ],', "if (a) b( ],\nelse c( ]," ],
-#    [ '{a:1, b:2}', "{\n a: 1,\n b: 2\n}" ],
-#    [ 'var l = {\'a\':\'1\', \'b\':\'2\'}', "var l = {\n 'a': '1',\n 'b': '2'\n}" ],
-#    [ '{{}/z/}', "{\n {}\n /z/\n}" ],
+	[ 'try{a();}catch(b){c();}finally{d();}', "try {\n    a();\n} catch(b) {\n    c();\n} finally {\n    d();\n}" ],
+    [ 'if(a){b();}else if(', "if (a) {\n    b();\n} else if (" ],
+    [ 'switch(x) {case 0: case 1: a(); break; default: break}', "switch (x) {\ncase 0:\ncase 1:\n    a();\n    break;\ndefault:\n    break\n}" ],
+    [ 'if (a) b(); else c();', "if (a) b();\nelse c();" ],
+    [ '{a:1, b:2}', "{\n    a: 1,\n    b: 2\n}" ],
+    [ 'var l = {\'a\':\'1\', \'b\':\'2\'}', "var l = {\n    'a': '1',\n    'b': '2'\n}" ],
+    [ '{{}/z/}', "{\n    {}\n    /z/\n}" ],
     [ 'return 45', "return 45" ],
     [ 'If[1]', "If[1]" ],
     [ 'Then[1]', "Then[1]" ],
@@ -62,24 +62,35 @@ my @tests = (
  
     [ "if\n(a)\nb()", "if (a) b()" ], # test for proper newline removal
  
-#    [ "if (a) {\n// comment\n}else{\n// comment\n}", "if (a) {\n // comment\n} else {\n // comment\n}" ], # if/else statement with empty body
-#    [ "if (a) {\n// comment\n// comment\n}", "if (a) {\n // comment\n // comment\n}" ], # multiple comments indentation
+    [ "if (a) {\n// comment\n}else{\n// comment\n}", "if (a) {\n    // comment\n} else {\n    // comment\n}" ], # if/else statement with empty body
+    [ "if (a) {\n// comment\n// comment\n}", "if (a) {\n    // comment\n    // comment\n}" ], # multiple comments indentation
     [ "if (a) b() else c()", "if (a) b()\nelse c()" ],
     [ "if (a) b() else if c() d()", "if (a) b()\nelse if c() d()" ],
  
-#    [ "do { a( ], } while ( 1  ],", "do {\n a( ],\n} while ( 1  ]," ],
-#    [ "do {\n} while ( 1  ],", "do {} while ( 1  ]," ],
+    [ "do { a(); } while ( 1 );", "do {\n    a();\n} while ( 1 );" ],
+    [ "do {\n} while ( 1 );", "do {} while ( 1 );" ],
     [ "var a, b, c, d = 0, c = function() {}, d = '';", "var a, b, c, d = 0,\nc = function() {},\nd = '';" ],
-#    [ "delete x if (a) b( ],", "delete x\nif (a) b( ]," ],
-#    [ "delete x[x] if (a) b( ],", "delete x[x]\nif (a) b( ]," ],
-#    [ "x( ], /reg/exp.match(something)", "x( ],\n/reg/exp.match(something)" ],
+    [ "delete x if (a) b();", "delete x\nif (a) b();" ],
+    [ "delete x[x] if (a) b();", "delete x[x]\nif (a) b();" ],
+    [ "x(); /reg/exp.match(something)", "x();\n/reg/exp.match(something)" ],
  );
 
-plan tests => scalar @tests;
+plan tests => scalar @tests + 2;
 
 foreach my $t (@tests) {
 	my $run_js = js_beautify($t->[0], $opts );
 	is $run_js, $t->[1], $t->[0];
 }
+
+# test indent
+my $in = '{ one_char() }';
+my $out = "{\n one_char()\n}";
+my $js = js_beautify( $in, { indent_size => 1, indent_char => ' ' } );
+is($out, $js);
+
+$in = '{ one_char() }';
+$out = "{\n    one_char()\n}";
+$js = js_beautify( $in, { indent_size => 4, indent_char => ' ' } );
+is($out, $js);
 
 1;
