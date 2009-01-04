@@ -40,7 +40,13 @@ augment pre_insert => sub {
     );
     $finder->find( $message_ref );
     
-    $$message_ref .= "</br>";
+    # [#padre 20:25] Action: *Fayland read Kephra source code to see if there is something to borrow
+    if ( $$message_ref =~ /\s+Action\:\s+\S+/ ) {
+    	$$message_ref =~ s/Action\:\s+/\<i\>/;
+    	$$message_ref .= '</i>';
+    }
+    
+    $$message_ref .= "<br />";
 };
 
 package IRC::Bot2;
