@@ -18,12 +18,12 @@ our $AUTHORITY = 'cpan:FAYLAND';
 
 sub get_svn_config_dir {
 	if ( $^O eq 'MSWin32' ) {
-		require Win32;
-		return File::Spec->catdir( Win32::GetFolderPath( CSIDL_APPDATA ), 'Subversion' );
+#		require Win32;
+#		return File::Spec->catdir( Win32::GetFolderPath( CSIDL_APPDATA ), 'Subversion' );
 	}
-	require File::HomeDir;
-	my $home = File::HomeDir->my_home;
-	return File::Spec->catdir( $home, '.subversion' );
+#	require File::HomeDir;
+#	my $home = File::HomeDir->my_home;
+#	return File::Spec->catdir( $home, '.subversion' );
 }
 
 sub get_svn_auth {
@@ -44,7 +44,7 @@ sub upload {
 	my @form_fields = (
 		summary => $summary,
 	);
-	push @form_fields, ( label => $_ ) foreach (@$lebals);
+	push @form_fields, ( label => $_ ) foreach (@$labels);
 	
 	my ( $content_type, $body ) = encode_upload_request(\@form_fields, $file);
 	
@@ -79,7 +79,7 @@ sub encode_upload_request {
 			"--$BOUNDARY",
 			qq~Content-Disposition: form-data; name="$key"~,
 			'',
-			$value
+			$val
 		);
 	}
 	

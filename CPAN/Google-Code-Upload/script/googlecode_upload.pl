@@ -26,8 +26,13 @@ my $file = pop @ARGV;
 defined $file or pod2usage(1);
 -e $file or die "$file is not found\n";
 
+my @labels;
+if ( $params{labels} ) {
+	@labels = split(/\,\s*/, $params{labels} );
+}
+
 my ( $status, $reason, $url ) = 
-	upload( $file, $params{project}, $params{user}, $params{pass}, $params{summary}, $params{labels} );
+	upload( $file, $params{project}, $params{user}, $params{pass}, $params{summary}, \@labels );
 
 if ( $url ) {
 	print "The file was uploaded successfully.\nURL: $url\n";
