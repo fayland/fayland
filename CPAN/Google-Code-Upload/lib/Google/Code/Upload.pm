@@ -3,6 +3,8 @@ package Google::Code::Upload;
 use warnings;
 use strict;
 use File::Spec ();
+use File::Basename ();
+use List::MoreUtils qw/natatime/
 
 our $VERSION = '0.01';
 
@@ -21,6 +23,62 @@ sub get_svn_auth {
 	
 	my $realm = "<https://$project_name.googlecode.com:443> Google Code Subversion Repository";
 	
+}
+
+sub upload {
+	my ( $file, $project_name, $username, $password, $summary, $labels ) = @_;
+	
+	$labels ||= [];
+	if ( $username =~ /^(.*?)\@gmail\.com$/ ) {
+		$username = $1;
+	}
+	
+	my @form_fields = (
+		summary => $summary,
+	);
+	push @form_fields, ( label => $_ ) foreach (@$lebals);
+	
+	my ( $content_type, $body ) = encode_upload_request(\@form_fields, $file);
+}
+
+sub encode_upload_request {
+	my ($form_fields, $file) = @_;
+	
+	my $BOUNDARY = '----------Googlecode_boundary_reindeer_flotilla';
+	my $CRLF = "\r\n";
+
+	my @body;
+	
+	my $it = natatime 2, @$form_fields;
+	while (my ( $key, $val ) = $it->()) {
+		push @body, (
+			"--$BOUNDARY",
+			qq~Content-Disposition: form-data; name="$key"~,
+			'',
+			$value
+		);
+	}
+	
+	my $filename = File::Basename::basename($file);
+	local $/;
+	open(my $fh, '<', $file) or die $!;
+	my $content = <$fh>;
+	close($fh);
+	
+	push @body, (
+		"--$BOUNDARY",
+		qq~Content-Disposition: form-data; name="filename"; filename="$filename"'~,
+		# The upload server determines the mime-type, no need to set it.
+		'Content-Type: application/octet-stream',
+		'',
+		$content,
+    );
+
+	# Finalize the form body
+	push @body, ("--$BOUNDARY--", '');
+
+	return ("multipart/form-data; boundary=$BOUNDARY", join( $CRLF, @body ) );
+
 }
 
 1;
