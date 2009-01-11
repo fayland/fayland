@@ -4,9 +4,17 @@ use warnings;
 use strict;
 use File::Spec ();
 use File::Basename ();
-use List::MoreUtils qw/natatime/
+use List::MoreUtils qw/natatime/;
+use MIME::Base64;
+use LWP::UserAgent;
+use HTTP::Request::Common qw/POST/;
+
+use base 'Exporter';
+use vars qw/@EXPORT_OK/;
+@EXPORT_OK = qw/ upload /;
 
 our $VERSION = '0.01';
+our $AUTHORITY = 'cpan:FAYLAND';
 
 sub get_svn_config_dir {
 	if ( $^O eq 'MSWin32' ) {
@@ -39,6 +47,22 @@ sub upload {
 	push @form_fields, ( label => $_ ) foreach (@$lebals);
 	
 	my ( $content_type, $body ) = encode_upload_request(\@form_fields, $file);
+	
+  my $upload_uri  = "http://$project_name.googlecode.com/files";
+  my $auth_token  = encode_base64("$username:$password");
+
+	my $ua = LWP::UserAgent->new;
+  my $response = $ua->request(POST $upload_uri,
+       'Authorization' => 'Basic $auth_token',
+    	 'User-Agent' => 'Googlecode.com uploader v0.9.4',
+    	 'Content-Type' => $content_type,
+       Content      => $body);
+
+	if ($response->code == 201) {
+		return ( $response->code, $response->status_line, $response->header('Location') );
+	} else {
+		return ( $response->code, $response->status_line, undef );
+	}
 }
 
 sub encode_upload_request {
@@ -90,10 +114,9 @@ Google::Code::Upload - uploading files to a Google Code project.
 
 =head1 SYNOPSIS
 
-    use Google::Code::Upload;
+    use Google::Code::Upload qw/upload/;
 
-    my $foo = Google::Code::Upload->new();
-    ...
+    upload( $file, $project_name, $username, $password, $summary, $labels );
 
 =head1 DESCRIPTION
 
