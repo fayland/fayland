@@ -122,7 +122,7 @@ Google::Code::Upload - uploading files to a Google Code project.
 
 It's a Perl port of L<http://support.googlecode.com/svn/trunk/scripts/googlecode_upload.py>
 
-=haed1 METHODS
+=head1 METHODS
 
 =head2 get_svn_config_dir
 
