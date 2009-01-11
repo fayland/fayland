@@ -7,7 +7,8 @@ use File::Basename ();
 use List::MoreUtils qw/natatime/;
 use MIME::Base64;
 use LWP::UserAgent;
-use HTTP::Request::Common qw/POST/;
+use HTTP::Headers;
+use HTTP::Request;
 
 use base 'Exporter';
 use vars qw/@EXPORT_OK/;
@@ -16,32 +17,6 @@ use vars qw/@EXPORT_OK/;
 our $VERSION = '0.01';
 our $AUTHORITY = 'cpan:FAYLAND';
 
-our ( $_user, $_pass );
-
-{
-	no warnings 'redefine';
-  local *LWP::UserAgent::get_basic_credentials = sub {
-      return ( $_user, $_pass );
-  };
-}
-
-sub get_svn_config_dir {
-	if ( $^O eq 'MSWin32' ) {
-#		require Win32;
-#		return File::Spec->catdir( Win32::GetFolderPath( CSIDL_APPDATA ), 'Subversion' );
-	}
-#	require File::HomeDir;
-#	my $home = File::HomeDir->my_home;
-#	return File::Spec->catdir( $home, '.subversion' );
-}
-
-sub get_svn_auth {
-	my ( $project_name, $config_dir ) = @_;
-	
-	my $realm = "<https://$project_name.googlecode.com:443> Google Code Subversion Repository";
-	
-}
-
 sub upload {
 	my ( $file, $project_name, $username, $password, $summary, $labels ) = @_;
 	
@@ -49,10 +24,7 @@ sub upload {
 	if ( $username =~ /^(.*?)\@gmail\.com$/ ) {
 		$username = $1;
 	}
-	
-	$_user = $username;
-	$_pass = $password;
-	
+
 	my @form_fields = (
 		summary => $summary,
 	);
@@ -61,14 +33,19 @@ sub upload {
 	my ( $content_type, $body ) = encode_upload_request(\@form_fields, $file);
 	
   my $upload_uri  = "https://$project_name.googlecode.com/files";
-  my $auth_token  = encode_base64("$username:$password");
+  my $auth_token  = encode_base64("$username:$password", '');
 
-	my $ua = LWP::UserAgent->new;
-  my $response = $ua->request(POST $upload_uri,
-       'Authorization' => 'Basic $auth_token',
-    	 'User-Agent' => 'Googlecode.com uploader v0.9.4',
-    	 'Content-Type' => $content_type,
-       Content      => $body);
+  my $header = HTTP::Headers->new;
+  $header->header('Authorization' => "Basic $auth_token");
+  $header->header('User-Agent' => 'Googlecode.com uploader v0.9.4');
+  $header->header('Content-Type' => $content_type);
+  
+	my $ua = LWP::UserAgent->new(
+		agent => 'Googlecode.com uploader v0.9.4',
+		show_progress => 1,
+	);
+	my $request = HTTP::Request->new(POST =>$upload_uri, $header, $body);
+  my $response = $ua->request($request);
 
 	if ($response->code == 201) {
 		return ( $response->code, $response->status_line, $response->header('Location') );
@@ -132,13 +109,15 @@ Google::Code::Upload - uploading files to a Google Code project.
 
 =head1 DESCRIPTION
 
-It's a Perl port of L<http://support.googlecode.com/svn/trunk/scripts/googlecode_upload.py>
+It's an incomplete Perl port of L<http://support.googlecode.com/svn/trunk/scripts/googlecode_upload.py>
+
+basically you need L<googlecode_upload> script instead.
 
 =head1 METHODS
 
-=head2 get_svn_config_dir
+=head2 upload
 
-get svn config dir. "$home/Application Data/Subversion" for Win32, while ~/.subversion for others.
+	upload( $file, $project_name, $username, $password, $summary, $labels );
 
 =head1 AUTHOR
 

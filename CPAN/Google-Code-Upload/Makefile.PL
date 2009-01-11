@@ -10,6 +10,8 @@ requires 'File::Basename';
 requires 'List::MoreUtils';
 requires 'MIME::Base64';
 requires 'LWP::UserAgent';
+requires 'HTTP::Headers';
+requires 'HTTP::Request';
 requires 'Getopt::Long';
 requires 'Pod::Usage';
 

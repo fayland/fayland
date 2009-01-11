@@ -26,6 +26,27 @@ my $file = pop @ARGV;
 defined $file or pod2usage(1);
 -e $file or die "$file is not found\n";
 
+unless ( exists $params{u} ) {
+	print "Please enter your googlecode.com username:"
+	while ( $params{u} = <> ) {
+		chomp($params{u});
+	}
+}
+unless ( exists $params{p} ) {
+	print "** Note that this is NOT your Gmail account password! **\n",
+		"It is the password you use to access Subversion repositories,\n",
+		"and can be found here: http://code.google.com/hosting/settings";
+	while ( $params{p} = <> ) {
+		chomp($params{p});
+	}
+}
+unless ( exists $params{s} ) {
+	print "Please enter your file summary:"
+	while ( $params{s} = <> ) {
+		chomp($params{s});
+	}
+}
+
 my @labels;
 if ( $params{l} ) {
 	@labels = split(/\,\s*/, $params{l} );
