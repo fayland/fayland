@@ -32,7 +32,7 @@ if ( $params{l} ) {
 }
 
 my ( $status, $reason, $url ) = 
-	upload( $file, $params{n}, $params{u}, $params{p}, $params{d}, \@labels );
+	upload( $file, $params{n}, $params{u}, $params{p}, $params{s}, \@labels );
 
 if ( $url ) {
 	print "The file was uploaded successfully.\nURL: $url\n";

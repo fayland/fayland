@@ -60,7 +60,7 @@ sub upload {
 	
 	my ( $content_type, $body ) = encode_upload_request(\@form_fields, $file);
 	
-  my $upload_uri  = "http://$project_name.googlecode.com/files";
+  my $upload_uri  = "https://$project_name.googlecode.com/files";
   my $auth_token  = encode_base64("$username:$password");
 
 	my $ua = LWP::UserAgent->new;
@@ -103,7 +103,7 @@ sub encode_upload_request {
 	
 	push @body, (
 		"--$BOUNDARY",
-		qq~Content-Disposition: form-data; name="filename"; filename="$filename"'~,
+		qq~Content-Disposition: form-data; name="filename"; filename="$filename"~,
 		# The upload server determines the mime-type, no need to set it.
 		'Content-Type: application/octet-stream',
 		'',
