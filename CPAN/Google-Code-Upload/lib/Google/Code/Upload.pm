@@ -16,6 +16,15 @@ use vars qw/@EXPORT_OK/;
 our $VERSION = '0.01';
 our $AUTHORITY = 'cpan:FAYLAND';
 
+our ( $_user, $_pass );
+
+{
+	no warnings 'redefine';
+  local *LWP::UserAgent::get_basic_credentials = sub {
+      return ( $_user, $_pass );
+  };
+}
+
 sub get_svn_config_dir {
 	if ( $^O eq 'MSWin32' ) {
 #		require Win32;
@@ -40,6 +49,9 @@ sub upload {
 	if ( $username =~ /^(.*?)\@gmail\.com$/ ) {
 		$username = $1;
 	}
+	
+	$_user = $username;
+	$_pass = $password;
 	
 	my @form_fields = (
 		summary => $summary,
