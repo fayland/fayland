@@ -43,7 +43,8 @@ unless ( exists $params{u} ) {
 unless ( exists $params{p} ) {
 	print "** Note that this is NOT your Gmail account password! **\n",
 		"It is the password you use to access Subversion repositories,\n",
-		"and can be found here: http://code.google.com/hosting/settings";
+		"and can be found here: http://code.google.com/hosting/settings\n",
+		"your password:";
 	while ( $params{p} = <> ) {
 		chomp($params{p});
 		last if $params{p};
