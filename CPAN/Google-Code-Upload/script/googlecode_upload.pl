@@ -27,13 +27,13 @@ defined $file or pod2usage(1);
 -e $file or die "$file is not found\n";
 
 unless ( exists $params{n} ) {
-	print "Please enter your project name:"
+	print "Please enter your project name:";
 	while ( $params{n} = <> ) {
 		chomp($params{n});
 	}
 }
 unless ( exists $params{u} ) {
-	print "Please enter your googlecode.com username:"
+	print "Please enter your googlecode.com username:";
 	while ( $params{u} = <> ) {
 		chomp($params{u});
 	}
@@ -47,7 +47,7 @@ unless ( exists $params{p} ) {
 	}
 }
 unless ( exists $params{s} ) {
-	print "Please enter your file summary:"
+	print "Please enter your file summary:";
 	while ( $params{s} = <> ) {
 		chomp($params{s});
 	}
