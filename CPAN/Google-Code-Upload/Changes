@@ -1,5 +1,8 @@
 Revision history for Google-Code-Upload
 
+0.02	2009.1.12
+        ReadMode('noecho'); for password in googlecode_upload.pl
+
 0.01    Date/time
         First version, released on an unsuspecting world.
 

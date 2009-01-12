@@ -3,11 +3,12 @@
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use Getopt::Long;
 use Pod::Usage;
+use Term::ReadKey;
 use Google::Code::Upload qw/upload/;
 
 my %params;
@@ -28,31 +29,33 @@ defined $file or pod2usage(1);
 
 unless ( exists $params{n} ) {
 	print "Please enter your project name:";
-	while ( $params{n} = <> ) {
+	while ( $params{n} = ReadLine(0) ) {
 		chomp($params{n});
 		last if $params{n};
 	}
 }
 unless ( exists $params{u} ) {
 	print "Please enter your googlecode.com username:";
-	while ( $params{u} = <> ) {
+	while ( $params{u} = ReadLine(0) ) {
 		chomp($params{u});
 		last if $params{u};
 	}
 }
+ReadMode('noecho');
 unless ( exists $params{p} ) {
 	print "** Note that this is NOT your Gmail account password! **\n",
 		"It is the password you use to access Subversion repositories,\n",
 		"and can be found here: http://code.google.com/hosting/settings\n",
 		"your password:";
-	while ( $params{p} = <> ) {
+	while ( $params{p} = ReadLine(0) ) {
 		chomp($params{p});
 		last if $params{p};
 	}
 }
+ReadMode 'normal';
 unless ( exists $params{s} ) {
 	print "Please enter your file summary:";
-	while ( $params{s} = <> ) {
+	while ( $params{s} = ReadLine(0) ) {
 		chomp($params{s});
 		last if $params{s};
 	}

@@ -14,6 +14,7 @@ requires 'HTTP::Headers';
 requires 'HTTP::Request';
 requires 'Getopt::Long';
 requires 'Pod::Usage';
+requires 'Term::ReadKey';
 
 #if ( $^O eq 'MSWin32' ) {
 #	requires 'Win32';
