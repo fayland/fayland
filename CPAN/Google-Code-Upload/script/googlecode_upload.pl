@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use Getopt::Long;
@@ -28,14 +28,14 @@ defined $file or pod2usage(1);
 -e $file or die "$file is not found\n";
 
 unless ( exists $params{n} ) {
-	print "Please enter your project name:";
+	print "Please enter your project name: ";
 	while ( $params{n} = ReadLine(0) ) {
 		chomp($params{n});
 		last if $params{n};
 	}
 }
 unless ( exists $params{u} ) {
-	print "Please enter your googlecode.com username:";
+	print "Please enter your googlecode.com username: ";
 	while ( $params{u} = ReadLine(0) ) {
 		chomp($params{u});
 		last if $params{u};
@@ -46,7 +46,7 @@ unless ( exists $params{p} ) {
 	print "** Note that this is NOT your Gmail account password! **\n",
 		"It is the password you use to access Subversion repositories,\n",
 		"and can be found here: http://code.google.com/hosting/settings\n",
-		"your password:";
+		"your password: ";
 	while ( $params{p} = ReadLine(0) ) {
 		chomp($params{p});
 		last if $params{p};
@@ -54,7 +54,7 @@ unless ( exists $params{p} ) {
 }
 ReadMode 'normal';
 unless ( exists $params{s} ) {
-	print "Please enter your file summary:";
+	print "\nPlease enter your file summary: ";
 	while ( $params{s} = ReadLine(0) ) {
 		chomp($params{s});
 		last if $params{s};

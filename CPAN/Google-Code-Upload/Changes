@@ -1,5 +1,8 @@
 Revision history for Google-Code-Upload
 
+0.03
+        cleanup the code
+
 0.02	2009.1.12
         ReadMode('noecho'); for password in googlecode_upload.pl
 
