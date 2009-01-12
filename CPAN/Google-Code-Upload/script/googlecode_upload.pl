@@ -30,12 +30,14 @@ unless ( exists $params{n} ) {
 	print "Please enter your project name:";
 	while ( $params{n} = <> ) {
 		chomp($params{n});
+		last if $params{n};
 	}
 }
 unless ( exists $params{u} ) {
 	print "Please enter your googlecode.com username:";
 	while ( $params{u} = <> ) {
 		chomp($params{u});
+		last if $params{u};
 	}
 }
 unless ( exists $params{p} ) {
@@ -44,12 +46,14 @@ unless ( exists $params{p} ) {
 		"and can be found here: http://code.google.com/hosting/settings";
 	while ( $params{p} = <> ) {
 		chomp($params{p});
+		last if $params{p};
 	}
 }
 unless ( exists $params{s} ) {
 	print "Please enter your file summary:";
 	while ( $params{s} = <> ) {
 		chomp($params{s});
+		last if $params{s};
 	}
 }
 
