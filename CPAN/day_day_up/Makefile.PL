@@ -23,5 +23,7 @@ requires 'Scope::Guard';
 
 tests ( join ' ', ( glob('t/*.t'), glob('t/*/*.t') ) );
 
+install_script glob('bin/*.pl');
+
 auto_install;
 WriteAll;
