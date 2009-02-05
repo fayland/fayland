@@ -3,10 +3,11 @@ package Acme::CPANAuthors::Chinese;
 use strict;
 use warnings;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Acme::CPANAuthors::Register (
     AGENT       => 'Agent Zhang (章亦春)',
+    ALEXE       => 'Alexe',
     CHAOSLAW    => '王晓哲',
     CHENYR      => 'Chen Yirong (春江)',
     CHUNZI      => 'Chunzi',
