@@ -24,7 +24,7 @@ GetOptions(
 );
 
 my $file = pop @ARGV;
-defined $file or pod2usage(1);
+unless ($file) { pod2usage(1); }
 -e $file or die "$file is not found\n";
 
 unless ( exists $params{n} ) {
