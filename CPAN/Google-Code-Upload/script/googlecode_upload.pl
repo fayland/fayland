@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use Getopt::Long;
@@ -65,10 +65,11 @@ my @labels;
 if ( exists $params{l} ) {
 	@labels = split(/\,\s*/, $params{l} );
 } else {
-    print "\nPlease enter your file labels (eg: 'Featured, Type-Source, OpSys-All'): ";
+    print "Please enter your file labels (eg: 'Featured, Type-Source, OpSys-All'): ";
 	while ( my $labels = ReadLine(0) ) {
 		chomp($labels);
 		@labels = split(/\,\s*/, $labels);
+		last;
     }
 }
 

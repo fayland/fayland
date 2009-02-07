@@ -1,5 +1,8 @@
 Revision history for Google-Code-Upload
 
+0.04    2009.2.7
+        bug fix in googlecode_upload.pl
+
 0.03    2009.2.7
         cleanup the code
         add labels prompt in googlecode_upload.pl

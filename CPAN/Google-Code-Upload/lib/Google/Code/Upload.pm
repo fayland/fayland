@@ -14,7 +14,7 @@ use base 'Exporter';
 use vars qw/@EXPORT_OK/;
 @EXPORT_OK = qw/ upload /;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 sub upload {
