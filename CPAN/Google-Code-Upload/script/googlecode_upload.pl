@@ -41,8 +41,8 @@ unless ( exists $params{u} ) {
 		last if $params{u};
 	}
 }
-ReadMode('noecho');
 unless ( exists $params{p} ) {
+    ReadMode('noecho');
 	print "** Note that this is NOT your Gmail account password! **\n",
 		"It is the password you use to access Subversion repositories,\n",
 		"and can be found here: http://code.google.com/hosting/settings\n",
@@ -51,8 +51,8 @@ unless ( exists $params{p} ) {
 		chomp($params{p});
 		last if $params{p};
 	}
+	ReadMode 'normal';
 }
-ReadMode 'normal';
 unless ( exists $params{s} ) {
 	print "\nPlease enter your file summary: ";
 	while ( $params{s} = ReadLine(0) ) {
@@ -62,8 +62,14 @@ unless ( exists $params{s} ) {
 }
 
 my @labels;
-if ( $params{l} ) {
+if ( exists $params{l} ) {
 	@labels = split(/\,\s*/, $params{l} );
+} else {
+    print "\nPlease enter your file labels (eg: 'Featured, Type-Source, OpSys-All'): ";
+	while ( my $labels = ReadLine(0) ) {
+		chomp($labels);
+		@labels = split(/\,\s*/, $labels);
+    }
 }
 
 my ( $status, $reason, $url ) = 
