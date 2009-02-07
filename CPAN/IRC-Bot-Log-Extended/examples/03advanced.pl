@@ -39,13 +39,13 @@ augment pre_insert => sub {
         }
     );
     $finder->find( $message_ref );
-    
+
     # [#padre 20:25] Action: *Fayland read Kephra source code to see if there is something to borrow
     if ( $$message_ref =~ /\s+Action\:\s+\S+/ ) {
-    	$$message_ref =~ s/Action\:\s+/\<i\>/;
-    	$$message_ref .= '</i>';
+         $$message_ref =~ s/Action\:\s+/\<i\>/;
+         $$message_ref .= '</i>';
     }
-    
+
     $$message_ref .= "<br />";
 };
 
@@ -73,15 +73,23 @@ sub check_cmd_run {
 
     my $p = new Proc::ProcessTable( 'cache_ttys' => 1 );
     my $all = $p->table;
-    my $how_many = 0;
+    my $pid = 0; # this file's pid
+    my $please_kill = 0;
     foreach my $one (@$all) {
         my $basename = basename($0);
-        if ($one->cmndline =~ /$basename/) {
-            $how_many++;
+	if ( $one->cmndline =~ /perl/ and $one->state eq 'defunct' ) {
+		$please_kill = 1;
+	}
+        if ($one->cmndline =~ /$basename/ and $one->pid != $$) {
+	    $pid = $one->pid;
+	    last;
         }
     }
-    
-    return ( $how_many > 1 ) ? 1 : 0;
+    if ($pid and not $please_kill) {
+	return 1;
+    }
+    kill(9, $pid) if $pid;
+    return 0;
 }
 
 if ( check_cmd_run() ) {
@@ -98,7 +106,7 @@ my $bot = IRC::Bot2->new(
     Port     => '6667',
     Username => 'Fayland_Logger',
     Ircname  => 'Fayland_Logger',
-    Channels => [ '#moose', '#catalyst', '#dbix-class', '#reaction', '#padre' ],
+    Channels => [ '#moose', '#catalyst', '#dbix-class', '#reaction', '#kiokudb', '#padre', '#mojo', '#parrot' ],
     LogPath  => '/home/faylandfoorum/irclog.foorumbbs.com/',
     NSPass   => 'nickservpass'
 );
