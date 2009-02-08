@@ -52,6 +52,7 @@ augment pre_insert => sub {
 package IRC::Bot2;
 
 use Moose;
+require IRC::Bot;
 extends 'IRC::Bot';
 
 after 'bot_start' => sub {
