@@ -9,7 +9,7 @@ use YAML::XS 'LoadFile';
 use Path::Class 'file';
 use MRO::Compat;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub setup {
 	my $c = shift;
