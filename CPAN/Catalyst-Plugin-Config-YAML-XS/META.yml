@@ -1,24 +1,23 @@
 ---
 name: Catalyst-Plugin-Config-YAML-XS
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
-abstract: |-
-  Configure your Catalyst application via an 
-  external YAML file
+abstract: "Configure your Catalyst application via an \r\nexternal YAML file"
 license: perl
 resources:
-  license: http://dev.perl.org/licenses/
+  license: ~
 build_requires:
   Catalyst: 0
+  MRO::Compat: 0
   Path::Class: 0
   Test::More: 0
   YAML::XS: 0
 provides:
   Catalyst::Plugin::Config::YAML::XS:
     file: lib/Catalyst/Plugin/Config/YAML/XS.pm
-    version: 0.01
-generated_by: Module::Build version 0.2808
+    version: 0.02
+generated_by: Module::Build version 0.31012
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2
