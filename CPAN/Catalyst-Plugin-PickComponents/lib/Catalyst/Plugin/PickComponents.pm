@@ -3,10 +3,10 @@ package Catalyst::Plugin::PickComponents;
 use strict;
 use warnings;
 use vars qw/$VERSION/;
-$VERSION = '0.01';
+$VERSION = '0.02';
 use Module::Pluggable::Object;
 use Catalyst::Utils ();
-use NEXT;
+use MRO::Compat;
 
 sub setup_components {
     my $class = shift;
@@ -14,7 +14,7 @@ sub setup_components {
     my $config  = $class->config->{ pick_components };
 
     unless ($config) {
-        return $class->NEXT::setup_components(@_);
+        return $class->maybe::next::method(@_);
     }
     
     my @paths   = exists $config->{paths}   ? @{ delete $config->{paths} }   : ();
