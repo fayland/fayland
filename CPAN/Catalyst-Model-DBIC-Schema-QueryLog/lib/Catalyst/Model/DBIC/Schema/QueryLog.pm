@@ -3,16 +3,16 @@ package Catalyst::Model::DBIC::Schema::QueryLog;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.05';
-
-use base qw/Catalyst::Model::DBIC::Schema Class::Accessor::Fast/;
-__PACKAGE__->mk_accessors('querylog');
-__PACKAGE__->mk_accessors('_querylog_analyzer');
+$VERSION = '0.06';
 
 use DBIx::Class::QueryLog;
 use DBIx::Class::QueryLog::Analyzer;
+
 use Moose;
-with 'Catalyst::Component::InstancePerContext';
+with 'Catalyst::Model::DBIC::Schema', 'Catalyst::Component::InstancePerContext';
+
+has 'querylog';
+has '_querylog_analyzer';
 
 sub querylog_analyzer {
     my $self = shift;
@@ -38,6 +38,9 @@ sub build_per_context_instance {
     
     return $self;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1; # End of Catalyst::Model::DBIC::Schema::QueryLog
 __END__
