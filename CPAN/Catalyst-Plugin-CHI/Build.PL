@@ -12,6 +12,7 @@ my $builder = Module::Build->new(
         'Catalyst'   => 0,
         'CHI'        => 0,
         'Class::Data::Inheritable' => 0,
+        'MRO::Compat' => 0,
     },
     add_to_cleanup      => [ 'Catalyst-Plugin-CHI-*' ],
     create_makefile_pl => 'traditional',

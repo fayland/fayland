@@ -1,5 +1,8 @@
 Revision history for Catalyst-Plugin-CHI
 
+0.03    2009.02.09
+        use MRO::Compat instead of NEXT
+
 0.02    2008.09.29
         add requires 'Class::Data::Inheritable'
 

@@ -4,9 +4,10 @@ use warnings;
 use strict;
 
 use vars qw/$VERSION/;
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use base 'Class::Data::Inheritable';
+use MRO::Compat;
 use CHI;
 
 __PACKAGE__->mk_classdata('cache');
@@ -18,7 +19,7 @@ sub setup {
     $params = $self->config->{CHI} if ( $self->config->{CHI} );
     $self->cache( CHI->new( %$params) );
 
-    return $self->NEXT::setup(@_);
+    return $self->maybe::next::method(@_);
 }
 
 1;
