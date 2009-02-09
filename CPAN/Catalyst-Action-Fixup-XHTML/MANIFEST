@@ -1,7 +1,9 @@
 Build.PL
 Changes
 lib/Catalyst/Action/Fixup/XHTML.pm
+Makefile.PL
 MANIFEST			This list of files
+META.yml
 README
 t/00-load.t
 t/lib/TestApp.pm
@@ -11,5 +13,3 @@ t/lib/TestApp/root/nothtml
 t/lib/TestApp/View/TT.pm
 t/live-test.t
 t/pod.t
-Makefile.PL
-META.yml
