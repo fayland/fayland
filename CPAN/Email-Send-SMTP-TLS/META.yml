@@ -1,21 +1,23 @@
 ---
 name: Email-Send-SMTP-TLS
-version: 0.02
+version: 0.03
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: Send Email using Net::SMTP::TLS (esp. Gmail)
 license: perl
 resources:
-  license: http://dev.perl.org/licenses/
+  license: ~
 build_requires:
+  Email::Address: 0
   Email::Send: 0
   Net::SMTP::TLS: 0
+  Return::Value: 0
   Test::More: 0
 provides:
   Email::Send::SMTP::TLS:
     file: lib/Email/Send/SMTP/TLS.pm
-    version: 0.02
-generated_by: Module::Build version 0.2808
+    version: 0.03
+generated_by: Module::Build version 0.31012
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2
