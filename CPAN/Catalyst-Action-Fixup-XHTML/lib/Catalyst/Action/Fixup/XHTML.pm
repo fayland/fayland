@@ -1,45 +1,22 @@
 package Catalyst::Action::Fixup::XHTML;
 
-use warnings;
-use strict;
+use Moose;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
-use base 'Catalyst::Action';
-use HTTP::Negotiate qw(choose);
+extends 'Catalyst::Action';
+with 'Catalyst::View::ContentNegotiation::XHTML';
+
 use MRO::Compat;
 
-our $variants = [
-    [qw| xhtml 1.000 application/xhtml+xml |],
-    [qw| html  0.900 text/html             |],
-];
+sub process {} # Make the role happy.
 
 sub execute {
     my $self = shift;
     my ($controller, $c ) = @_;
-    $self->next::method(@_);
-
-    if ($c->request->header('Accept') && $c->response->headers->{'content-type'} &&
-        $c->response->headers->{'content-type'} =~ m|text/html|) {
-        my $accept = _pragmatic_accept($c);
-        my $headers = $c->request->headers->clone;
-        $headers->header('Accept' => $accept);
-        if (choose($variants, $headers) eq 'xhtml') {
-            $c->response->headers->{'content-type'} =~ s|text/html|application/xhtml+xml|;
-        }
-    }
-    return 1;
-}
-
-sub _pragmatic_accept {
-    my ($c) = @_;
-    my $accept = $c->request->header('Accept');
-    if ($accept =~ m|text/html|) {
-        $accept =~ s!\*/\*\s*([,]+|$)!*/*;q=0.5$1!;
-    } else {
-        $accept =~ s!\*/\*\s*([,]+|$)!text/html,*/*;q=0.5$1!;
-    }
-    return $accept;
+    my $ret = $self->next::method( @_ );
+    $self->process($c);
+    return $ret;
 }
 
 1;
@@ -55,7 +32,7 @@ Catalyst::Action::Fixup::XHTML - Catalyst action which serves application/xhtml+
 
 =head1 DESCRIPTION
 
-Most of the code are copied from L<Catalyst::View::TT::XHTML>, please refer the doc there.
+A simple module to use L<Catalyst::View::ContentNegotiation::XHTML>
 
 It's an action because I think it can be used in other views like Mason.
 
