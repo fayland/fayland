@@ -10,6 +10,8 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'Email::Send' => 0,
+        'Email::Address' => 0,
+        'Return::Value'  => 0,
         'Net::SMTP::TLS' => 0,
     },
     add_to_cleanup      => [ 'Email-Send-SMTP-TLS-*' ],

@@ -7,7 +7,7 @@ use Email::Address;
 use Net::SMTP::TLS;
 use Return::Value;
 
-$VERSION   = '0.02';
+$VERSION   = '0.03';
 
 sub is_available {
     return 1;
