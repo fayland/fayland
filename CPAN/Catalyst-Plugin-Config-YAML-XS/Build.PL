@@ -9,8 +9,9 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Catalyst/Plugin/Config/YAML/XS.pm',
     build_requires => {
         'Test::More' => 0,
-        'Catalyst' => 0, 
-    	'YAML::XS' => 0, 
+        'Catalyst' => 0,
+        'MRO::Compat' => 0,
+    	'YAML::XS' => 0,
     	'Path::Class' => 0, 
     },
     add_to_cleanup      => [ 'Catalyst-Plugin-Config-YAML-XS-*' ],

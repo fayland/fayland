@@ -8,8 +8,9 @@ use UNIVERSAL 'isa';
 use NEXT;
 use YAML::XS 'LoadFile';
 use Path::Class 'file';
+use MRO::Compat;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub setup {
 	my $c = shift;
@@ -26,7 +27,7 @@ sub setup {
 		my $options = LoadFile($config_file);
 		$c->config($options);
 	}
-	$c->NEXT::setup;
+	$c->maybe::next::method(@_);
 }
 
 1;

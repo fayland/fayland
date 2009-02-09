@@ -1,5 +1,8 @@
 Revision history for Catalyst-Plugin-Config-YAML-XS
 
+0.02    2009.02.09
+        use MRO::Compat;
+
 0.01    Date/time
         First version, released on an unsuspecting world.
 

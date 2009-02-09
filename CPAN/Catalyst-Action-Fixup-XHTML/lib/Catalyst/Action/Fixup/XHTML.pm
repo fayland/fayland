@@ -3,11 +3,11 @@ package Catalyst::Action::Fixup::XHTML;
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use base 'Catalyst::Action';
-
 use HTTP::Negotiate qw(choose);
+use MRO::Compat;
 
 our $variants = [
     [qw| xhtml 1.000 application/xhtml+xml |],
@@ -17,7 +17,7 @@ our $variants = [
 sub execute {
     my $self = shift;
     my ($controller, $c ) = @_;
-    $self->NEXT::execute( @_ );
+    $self->next::method(@_);
 
     if ($c->request->header('Accept') && $c->response->headers->{'content-type'} &&
         $c->response->headers->{'content-type'} =~ m|text/html|) {
