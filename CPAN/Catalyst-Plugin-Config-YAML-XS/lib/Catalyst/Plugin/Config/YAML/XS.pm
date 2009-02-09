@@ -5,7 +5,6 @@ use strict;
 
 use UNIVERSAL 'isa';
 
-use NEXT;
 use YAML::XS 'LoadFile';
 use Path::Class 'file';
 use MRO::Compat;
