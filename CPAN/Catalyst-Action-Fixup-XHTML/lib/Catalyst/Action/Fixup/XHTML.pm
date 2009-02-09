@@ -3,11 +3,11 @@ package Catalyst::Action::Fixup::XHTML;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use base 'Catalyst::Action';
-
 use HTTP::Negotiate qw(choose);
+use MRO::Compat;
 
 our $variants = [
     [qw| xhtml 1.000 application/xhtml+xml |],
@@ -17,13 +17,13 @@ our $variants = [
 sub execute {
     my $self = shift;
     my ($controller, $c ) = @_;
-    $self->NEXT::execute( @_ );
+    $self->next::method(@_);
 
-    if ($c->request->header('Accept') && $c->response->headers->{'content-type'} &&
+    if ( my $accept = _pragmatic_accept($c) && $c->response->headers->{'content-type'} &&
         $c->response->headers->{'content-type'} =~ m|text/html|) {
-        _pragmatic_accept($c);
-        my $var = choose($variants, $c->request->headers);
-        if ($var eq 'xhtml') {
+        my $headers = $c->request->headers->clone;
+        $headers->header('Accept' => $accept);
+        if ( choose($variants, $headers) eq 'xhtml') {
             $c->response->headers->{'content-type'} =~ s|text/html|application/xhtml+xml|;
         }
     }
@@ -32,13 +32,14 @@ sub execute {
 
 sub _pragmatic_accept {
     my ($c) = @_;
-    my $accept = $c->request->header('Accept');
+    my $accept = $c->request->header('Accept') or return;
     if ($accept =~ m|text/html|) {
         $accept =~ s!\*/\*\s*([,]+|$)!*/*;q=0.5$1!;
-    } else {
+    } 
+    else {
         $accept =~ s!\*/\*\s*([,]+|$)!text/html,*/*;q=0.5$1!;
     }
-    $c->request->header('Accept' => $accept);
+    return $accept;
 }
 
 1;

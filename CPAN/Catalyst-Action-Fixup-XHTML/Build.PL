@@ -10,6 +10,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'HTTP::Negotiate' => 0,
+        'MRO::Compat' => 0,
         'Catalyst::Runtime' => 0,
     },
     add_to_cleanup      => [ 'Catalyst-Action-Fixup-XHTML-*' ],
