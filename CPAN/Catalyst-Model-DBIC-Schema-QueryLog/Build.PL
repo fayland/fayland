@@ -12,6 +12,7 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
         'Catalyst' => 0,
         'DBIx::Class::QueryLog' => 0,
+        'MooseX::Emulate::Class::Accessor::Fast'  => 0,
         'Catalyst::Component::InstancePerContext' => 0,
     },
     add_to_cleanup      => [ 'Catalyst-Model-DBIC-Schema-QueryLog-*' ],
