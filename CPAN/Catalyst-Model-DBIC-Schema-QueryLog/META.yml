@@ -1,6 +1,6 @@
 ---
 name: Catalyst-Model-DBIC-Schema-QueryLog
-version: 0.07
+version: 0.08
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: DBIx::Class::QueryLog Model Class
@@ -11,11 +11,12 @@ build_requires:
   Catalyst: 0
   Catalyst::Component::InstancePerContext: 0
   DBIx::Class::QueryLog: 0
+  MooseX::Emulate::Class::Accessor::Fast: 0
   Test::More: 0
 provides:
   Catalyst::Model::DBIC::Schema::QueryLog:
     file: lib/Catalyst/Model/DBIC/Schema/QueryLog.pm
-    version: 0.07
+    version: 0.08
 generated_by: Module::Build version 0.31012
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

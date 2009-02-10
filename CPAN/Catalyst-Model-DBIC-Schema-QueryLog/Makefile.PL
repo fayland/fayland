@@ -8,6 +8,7 @@ WriteMakefile
                            'Catalyst' => '0',
                            'Catalyst::Component::InstancePerContext' => '0',
                            'DBIx::Class::QueryLog' => '0',
+                           'MooseX::Emulate::Class::Accessor::Fast' => '0',
                            'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',
