@@ -3,13 +3,15 @@ package Catalyst::Model::DBIC::Schema::QueryLog;
 use warnings;
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 use DBIx::Class::QueryLog;
 use DBIx::Class::QueryLog::Analyzer;
 
 use Moose;
-with 'Catalyst::Model::DBIC::Schema', 'Catalyst::Component::InstancePerContext';
+
+extends 'Catalyst::Model::DBIC::Schema';
+with 'Catalyst::Component::InstancePerContext';
 
 has 'querylog';
 has '_querylog_analyzer';

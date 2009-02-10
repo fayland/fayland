@@ -1,5 +1,8 @@
 Revision history for Catalyst-Model-DBIC-Schema-QueryLog
 
+0.07    2009.02.10
+        bug fix
+
 0.06    2009.02.09
         remove 'Class::Accessor::Fast' => 0, use Moose
 
