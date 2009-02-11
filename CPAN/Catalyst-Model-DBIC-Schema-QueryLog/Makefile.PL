@@ -7,7 +7,9 @@ WriteMakefile
           'PREREQ_PM' => {
                            'Catalyst' => '0',
                            'Catalyst::Component::InstancePerContext' => '0',
+                           'Catalyst::Model::DBIC::Schema' => '0',
                            'DBIx::Class::QueryLog' => '0',
+                           'Moose' => '0',
                            'MooseX::Emulate::Class::Accessor::Fast' => '0',
                            'Test::More' => '0'
                          },
