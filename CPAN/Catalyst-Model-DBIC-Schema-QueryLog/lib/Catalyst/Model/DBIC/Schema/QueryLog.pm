@@ -2,7 +2,7 @@ package Catalyst::Model::DBIC::Schema::QueryLog;
 
 use Moose;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use DBIx::Class::QueryLog;
 use DBIx::Class::QueryLog::Analyzer;
@@ -65,7 +65,7 @@ Catalyst::Model::DBIC::Schema::QueryLog - DBIx::Class::QueryLog Model Class
 
 =head1 DESCRIPTION
 
-Generally, you should check the document of L<Catalyst::Model::DBIC::Schema>. this module use base of it, and only provide extra two methods below.
+Generally, you should check the document of L<Catalyst::Model::DBIC::Schema>. this module extends it, and only provide extra two methods below.
 
 =head1 METHODS
 

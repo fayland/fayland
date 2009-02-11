@@ -1,5 +1,8 @@
 Revision history for Catalyst-Model-DBIC-Schema-QueryLog
 
+0.09    2009.02.11
+        fix depends
+
 0.08    2009.02.10
         use MooseX::Emulate::Class::Accessor::Fast
 

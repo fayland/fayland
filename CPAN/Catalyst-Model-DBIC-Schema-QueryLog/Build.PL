@@ -10,8 +10,10 @@ my $builder = Module::Build->new(
     create_makefile_pl  => 'traditional',
     build_requires => {
         'Test::More' => 0,
-        'Catalyst' => 0,
+        'Catalyst'  => 0,
+        'Moose'     => 0,
         'DBIx::Class::QueryLog' => 0,
+        'Catalyst::Model::DBIC::Schema' => 0,
         'MooseX::Emulate::Class::Accessor::Fast'  => 0,
         'Catalyst::Component::InstancePerContext' => 0,
     },
