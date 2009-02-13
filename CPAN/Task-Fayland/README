@@ -1,4 +1,4 @@
-XML-HARef
+Task-Fayland
 
 The README is used to introduce the module and provide instructions on
 how to install the module, any machine dependencies it may have (for
@@ -16,36 +16,36 @@ INSTALLATION
 
 To install this module, run the following commands:
 
-	perl Build.PL
-	./Build
-	./Build test
-	./Build install
+	perl Makefile.PL
+	make
+	make test
+	make install
 
 SUPPORT AND DOCUMENTATION
 
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc XML::HARef
+    perldoc Task::Fayland
 
 You can also look for information at:
 
     RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=XML-HARef
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Task-Fayland
 
     AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/XML-HARef
+        http://annocpan.org/dist/Task-Fayland
 
     CPAN Ratings
-        http://cpanratings.perl.org/d/XML-HARef
+        http://cpanratings.perl.org/d/Task-Fayland
 
     Search CPAN
-        http://search.cpan.org/dist/XML-HARef/
+        http://search.cpan.org/dist/Task-Fayland/
 
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2008 Fayland Lam
+Copyright (C) 2009 Fayland Lam
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
