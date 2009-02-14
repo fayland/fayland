@@ -33,7 +33,7 @@ sub sql_for_unixtime {
     my ($dbh) = @_;
     
     my $driver = $dbh->{Driver}{Name};
-    if ( $driver eq 'mysql' ) {
+    if ( $driver and $driver eq 'mysql' ) {
         return "UNIX_TIMESTAMP()";
     }
     
