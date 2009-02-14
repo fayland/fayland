@@ -1,5 +1,8 @@
 Revision history for TheSchwartz-Moosified
 
+0.02    2009.2.14
+        fix _grab_a_job with WHERE grabbed_until = $old_grabbed_until
+
 0.01    2008.11.19
         rename from MooseX::TheSchwartz
 

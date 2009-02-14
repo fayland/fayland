@@ -11,7 +11,7 @@ use TheSchwartz::Moosified::Utils qw/insert_id sql_for_unixtime/;
 use TheSchwartz::Moosified::Job;
 use TheSchwartz::Moosified::JobHandle;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 ## Number of jobs to fetch at a time in find_job_for_workers.
@@ -23,10 +23,10 @@ my $sub_verbose = sub {
     $msg =~ s/\s+$//;
     print STDERR "$msg\n";
 };
-subtype 'Verbose'
+subtype 'TheSchwartz.Moosified.Verbose'
     => as 'CodeRef'
     => where { 1; };
-coerce 'Verbose'
+coerce 'TheSchwartz.Moosified.Verbose'
     => from 'Int'
     => via {
         if ($_) {
@@ -36,7 +36,7 @@ coerce 'Verbose'
         }
     };
 
-has 'verbose' => ( is => 'rw', isa => 'Verbose', coerce => 1, default => 0 );
+has 'verbose' => ( is => 'rw', isa => 'TheSchwartz.Moosified.Verbose', coerce => 1, default => 0 );
 has 'prioritize' => ( is => 'rw', isa => 'Bool', default => 0 );
 
 has 'retry_seconds' => (is => 'rw', isa => 'Int', default => 30);
@@ -102,10 +102,9 @@ sub insert {
     $job->arg( Storable::nfreeze( $job->arg ) ) if ref $job->arg;
 
     for my $dbh ( $self->shuffled_databases ) {
-        my $jobid;
         eval {
             $job->funcid( $self->funcname_to_id( $dbh, $job->funcname ) );
-            $job->insert_time(time);
+            $job->insert_time(time());
 
             my $row = $job->as_hashref;
             my @col = keys %$row;
@@ -116,7 +115,7 @@ sub insert {
             my $sth = $dbh->prepare_cached($sql);
             $sth->execute( @$row{@col} );
 
-            $jobid = insert_id( $dbh, $sth, "job", "jobid" );
+            my $jobid = insert_id( $dbh, $sth, "job", "jobid" );
             $job->jobid($jobid);
         };
 
@@ -207,9 +206,9 @@ sub _grab_a_job {
         
         my $new_grabbed_until = $server_time + ($worker_class->grab_for || 1);
 
-        my $sql  = q~UPDATE job SET grabbed_until = ? WHERE jobid = ?~;
+        my $sql  = q~UPDATE job SET grabbed_until = ? WHERE jobid = ? AND grabbed_until = ?~;
         my $sth  = $dbh->prepare($sql);
-        $sth->execute($new_grabbed_until, $job->jobid);
+        $sth->execute($new_grabbed_until, $job->jobid, $old_grabbed_until);
         my $rows = $sth->rows;
 
         ## Update the job in the database, and end the transaction.
