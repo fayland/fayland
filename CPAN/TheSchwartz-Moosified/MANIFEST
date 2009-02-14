@@ -5,7 +5,9 @@ lib/TheSchwartz/Moosified/Job.pm
 lib/TheSchwartz/Moosified/JobHandle.pm
 lib/TheSchwartz/Moosified/Utils.pm
 lib/TheSchwartz/Moosified/Worker.pm
+Makefile.PL
 MANIFEST			This list of files
+META.yml
 README
 t/00-load.t
 t/001-debug.t
@@ -20,5 +22,3 @@ t/012_scoreboard.t
 t/013_coalesce.t
 t/pod.t
 t/Utils.pm
-Makefile.PL
-META.yml
