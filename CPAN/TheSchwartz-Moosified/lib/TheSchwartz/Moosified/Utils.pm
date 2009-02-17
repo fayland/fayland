@@ -4,7 +4,7 @@ use base 'Exporter';
 use Carp;
 use vars qw/@EXPORT_OK/;
 
-@EXPORT_OK = qw/insert_id sql_for_unixtime/;
+@EXPORT_OK = qw/insert_id sql_for_unixtime bind_param_attr/;
 
 sub insert_id {
     my ( $dbh, $sth, $table, $col ) = @_;
@@ -39,6 +39,22 @@ sub sql_for_unixtime {
     
     return time();
 }
+
+sub bind_param_attr {
+    my ( $dbh, $col ) = @_;
+
+    return if $col ne 'arg';
+
+    my $driver = $dbh->{Driver}{Name};
+    if ( $driver and $driver eq 'Pg' ) {
+        return { pg_type => DBD::Pg::PG_BYTEA() };
+    }
+    elsif ( $driver and $driver eq 'SQLite' ) {
+        return DBI::SQL_BLOB();
+    }
+    return;
+}
+
 
 1;
 __END__

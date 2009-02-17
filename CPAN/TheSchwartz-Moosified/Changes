@@ -1,5 +1,8 @@
 Revision history for TheSchwartz-Moosified
 
+0.03    2009.2.17
+        borrow some code from TheSchwartz::Simple
+
 0.02    2009.2.14
         fix _grab_a_job with WHERE grabbed_until = $old_grabbed_until
 

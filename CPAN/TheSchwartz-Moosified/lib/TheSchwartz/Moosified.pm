@@ -7,11 +7,11 @@ use Scalar::Util qw( refaddr );
 use List::Util qw( shuffle );
 use File::Spec ();
 use Storable ();
-use TheSchwartz::Moosified::Utils qw/insert_id sql_for_unixtime/;
+use TheSchwartz::Moosified::Utils qw/insert_id sql_for_unixtime bind_param_attr/;
 use TheSchwartz::Moosified::Job;
 use TheSchwartz::Moosified::JobHandle;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 ## Number of jobs to fetch at a time in find_job_for_workers.
@@ -113,7 +113,14 @@ sub insert {
                 join( ", ", @col ), join( ", ", ("?") x @col );
 
             my $sth = $dbh->prepare_cached($sql);
-            $sth->execute( @$row{@col} );
+            my $i = 1;
+            for my $col (@col) {
+                $sth->bind_param(
+                    $i++,
+                    $row->{$col},
+                    bind_param_attr( $dbh, $col ),
+                );
+            }
 
             my $jobid = insert_id( $dbh, $sth, "job", "jobid" );
             $job->jobid($jobid);
@@ -722,6 +729,10 @@ C<$ability> and with a coalescing value beginning with C<$coval>.
 Note the C<TheSchwartz> implementation of this function uses a C<LIKE> query to
 find matching jobs, with all the attendant performance implications for your
 job databases.
+
+=head1 SEE ALSO
+
+L<TheSchwartz>, L<TheSchwartz::Simple>
 
 =head1 AUTHOR
 
