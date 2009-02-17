@@ -18,7 +18,7 @@ sub run_test (&) {
     my $tmp = File::Temp->new;
     $tmp->close();
     my $tmpf = $tmp->filename;
-    my $dbh = DBI->connect("dbi:SQLite:dbname=$tmpf", '', '', {RaiseError => 1}) or die $DBI::err;
+    my $dbh = DBI->connect("dbi:SQLite:dbname=$tmpf", '', '', {RaiseError => 1, PrintError => 0}) or die $DBI::err;
 
     # work around for DBD::SQLite's resource leak
     tie my %blackhole, 't::Utils::Blackhole';

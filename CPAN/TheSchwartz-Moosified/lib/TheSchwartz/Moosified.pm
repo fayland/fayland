@@ -121,7 +121,7 @@ sub insert {
                     bind_param_attr( $dbh, $col ),
                 );
             }
-            $sth->execute();
+            $sth->execute() or die $dbh->errstr;
 
             my $jobid = insert_id( $dbh, $sth, "job", "jobid" );
             $job->jobid($jobid);
