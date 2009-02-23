@@ -19,10 +19,16 @@ sub Dumper {
 
     unless ( Class::MOP::is_class_loaded( $self->dumper_class ) ) {
         Class::MOP::load_class( $self->dumper_class );
-        $self->dumper_class->import('Dumper');
     }
 
-    return Dumper(@_);
+    # Data::Dump 'dump'
+    foreach my $meth ( 'Dumper', 'dump', 'Dump' ) {
+        if ( $self->dumper_class->can($meth) ) {
+            my $class = $self->dumper_class;
+            my $val = eval "${class}::${meth}(\@_)"; # no critic
+            return $val;
+        }
+    }
 }
 
 no Moose;
@@ -39,12 +45,35 @@ MooseX::Dumper - Dumper with roles
 
     use MooseX::Dumper;
 
-    my $dumper = MooseX::Dumper->new_with_traits( traits => ['Perltidy', 'HTML'] );
+    my $dumper = MooseX::Dumper->new_with_traits(
+        traits => ['Perltidy', 'HTML'],
+        dumper_class => 'Data::Dump',
+    );
     print $dumper->Dumper(\$hash, \@array);
 
 =head1 DESCRIPTION
 
+=head1 METHODS
 
+=head2 new_with_traits
+
+=over 4
+
+=item traits
+
+Moose Roles, check L<MooseX::Dumper::Roles::Perltidy> and L<MooseX::Dumper::Roles::HTML>
+
+=item dumper_class
+
+L<Data::Dumper> by default. but you still have choice to use L<Data::Dump> or others.
+
+    my $dumper = MooseX::Dumper->new( dumper_class => 'Data::Dump' );
+
+=back
+
+=head2 Dumper
+
+    print $dumper->Dumper(\$hash, \@array);
 
 =head1 AUTHOR
 
