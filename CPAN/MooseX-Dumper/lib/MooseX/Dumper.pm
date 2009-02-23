@@ -2,7 +2,7 @@ package MooseX::Dumper;
 
 use Moose;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 with 'MooseX::Traits';
@@ -23,10 +23,8 @@ sub Dumper {
 
     # Data::Dump 'dump'
     foreach my $meth ( 'Dumper', 'dump', 'Dump' ) {
-        if ( $self->dumper_class->can($meth) ) {
-            my $class = $self->dumper_class;
-            my $val = eval "${class}::${meth}(\@_)"; # no critic
-            return $val;
+        if ( my $dump_code = $self->dumper_class->can($meth) ) {
+            return $dump_code->(@_);
         }
     }
 }

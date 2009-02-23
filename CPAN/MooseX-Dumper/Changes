@@ -1,5 +1,8 @@
 Revision history for MooseX-Dumper
 
+0.02    2009.02.23
+        use the return coderef instead of a eval string (thanks, miyagawa)
+
 0.01    Date/time
         First version, released on an unsuspecting world.
 
