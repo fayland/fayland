@@ -1,0 +1,25 @@
+Changes
+inc/Module/AutoInstall.pm
+inc/Module/Install.pm
+inc/Module/Install/AutoInstall.pm
+inc/Module/Install/Base.pm
+inc/Module/Install/Can.pm
+inc/Module/Install/Fetch.pm
+inc/Module/Install/Include.pm
+inc/Module/Install/Makefile.pm
+inc/Module/Install/Metadata.pm
+inc/Module/Install/Win32.pm
+inc/Module/Install/WriteAll.pm
+lib/MooseX/Dumper.pm
+lib/MooseX/Dumper/Roles/HTML.pm
+lib/MooseX/Dumper/Roles/Perltidy.pm
+Makefile.PL
+MANIFEST			This list of files
+META.yml
+README
+t/00-load.t
+t/01-basic.t
+t/02-roles-perltidy.t
+t/03-roles-html.t
+t/04-class-Dump.t
+t/pod.t
