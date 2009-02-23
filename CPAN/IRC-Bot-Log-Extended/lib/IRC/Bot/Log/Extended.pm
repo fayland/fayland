@@ -56,7 +56,7 @@ sub touch_file {
     return if ( -e $file );
     
     open( my $fh, '>', $file ) || croak "Cannot Open $file!";
-    print $fh "...\n";
+    print $fh "\n";
     close($fh) || croak "Cannot Close $file!";
 }
 
