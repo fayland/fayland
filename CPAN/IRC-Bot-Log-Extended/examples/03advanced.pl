@@ -52,7 +52,6 @@ augment pre_insert => sub {
 package IRC::Bot2;
 
 use Moose;
-require IRC::Bot;
 extends 'IRC::Bot';
 
 after 'bot_start' => sub {
@@ -76,18 +75,18 @@ sub check_cmd_run {
     my $all = $p->table;
     my $pid = 0; # this file's pid
     my $please_kill = 0;
+    my $basename = basename($0);
     foreach my $one (@$all) {
-        my $basename = basename($0);
-	if ( $one->cmndline =~ /perl/ and $one->state eq 'defunct' ) {
-		$please_kill = 1;
-	}
+        if ( $one->cmndline =~ /perl/ and $one->state eq 'defunct' ) {
+            $please_kill = 1;
+        }
         if ($one->cmndline =~ /$basename/ and $one->pid != $$) {
-	    $pid = $one->pid;
-	    last;
+        $pid = $one->pid;
+        last;
         }
     }
     if ($pid and not $please_kill) {
-	return 1;
+        return 1;
     }
     kill(9, $pid) if $pid;
     return 0;

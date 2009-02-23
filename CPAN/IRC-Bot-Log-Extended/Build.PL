@@ -10,7 +10,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'IRC::Bot'   => 0,
-        'Moose'      => 0,
+        'Moose'      => '0.70',
     },
     add_to_cleanup      => [ 'IRC-Bot-Log-Extended-*' ],
     create_makefile_pl => 'traditional',
