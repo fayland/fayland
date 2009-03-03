@@ -56,7 +56,7 @@ requires('Locale::Country::Multilingual');
 requires('Mail::Mailer::smtp_auth');
 requires('MojoX::Fixup::XHTML');
 requires('MooseX::Control');
-requures('MooseX::Dumper');
+requires('MooseX::Dumper');
 requires('MooseX::Types::IO');
 requires('MySQL::SlowLog::Filter');
 requires('Perlbal::Control');
