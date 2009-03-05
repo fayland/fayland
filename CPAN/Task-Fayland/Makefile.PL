@@ -15,7 +15,8 @@ if ($^O eq 'MSWin32') {
     system("ppm install Crypt-SSLeay");
     system("ppm install Net-SSLeay");
     system("ppm install DateTime-Format-Strptime"); # save Foorum
-    system("ppm install HTTP-Server-Simple"); # usually fails, save WWW::Mechanize
+    system("ppm install WWW-Mechanize");
+    system("ppm install GD-SecurityImage"); # Catalyst::Plugin::Captcha
 }
 
 requires( 'CPAN',                         '1.87' );
