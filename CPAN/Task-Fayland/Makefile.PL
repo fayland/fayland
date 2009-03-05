@@ -10,8 +10,12 @@ all_from 'lib/Task/Fayland.pm';
 author 'Fayland Lam <fayland@gmail.com>';
 license 'perl';
 
+# not to save the world, just to save myself!
 if ($^O eq 'MSWin32') {
-  system("ppm install Crypt-SSLeay");
+    system("ppm install Crypt-SSLeay");
+    system("ppm install Net-SSLeay");
+    system("ppm install DateTime-Format-Strptime"); # save Foorum
+    system("ppm install HTTP-Server-Simple"); # usually fails, save WWW::Mechanize
 }
 
 requires( 'CPAN',                         '1.87' );
@@ -63,7 +67,7 @@ requires('MooseX::Control');
 requires('MooseX::Dumper');
 requires('MooseX::Types::IO');
 requires('MySQL::SlowLog::Filter');
-requires('Perlbal::Control');
+requires('Perlbal::Control') if ($^O ne 'MSWin32');
 requires('Pod::From::GoogleWiki');
 requires('Pod::Simple::Wiki::Googlecode');
 requires('Sphinx::Control');
