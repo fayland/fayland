@@ -10,6 +10,10 @@ all_from 'lib/Task/Fayland.pm';
 author 'Fayland Lam <fayland@gmail.com>';
 license 'perl';
 
+if ($^O eq 'MSWin32') {
+  system("ppm install Crypt-SSLeay");
+}
+
 requires( 'CPAN',                         '1.87' );
 requires( 'CPAN::Reporter',               undef );        # be a CPAN tester
 requires( 'local::lib',                   undef );
