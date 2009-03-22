@@ -75,7 +75,7 @@ my @tests = (
     [ "x(); /reg/exp.match(something)", "x();\n/reg/exp.match(something)" ],
  );
 
-plan tests => scalar @tests + 2;
+plan tests => scalar @tests + 4;
 
 foreach my $t (@tests) {
 	my $run_js = js_beautify($t->[0], $opts );
@@ -91,6 +91,17 @@ is($out, $js);
 $in = '{ one_char() }';
 $out = "{\n    one_char()\n}";
 $js = js_beautify( $in, { indent_size => 4, indent_char => ' ' } );
+is($out, $js);
+
+# test preserve_newlines
+$in = "var\na=dont_preserve_newlines";
+$out = "var a = dont_preserve_newlines";
+$js = js_beautify( $in, { preserve_newlines => 0 } );
+is($out, $js);
+
+$in = "var\na=do_preserve_newlines";
+$out = "var\na = do_preserve_newlines";
+$js = js_beautify( $in, { preserve_newlines => 1 } );
 is($out, $js);
 
 1;

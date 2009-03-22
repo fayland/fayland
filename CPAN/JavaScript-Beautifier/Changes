@@ -1,5 +1,8 @@
 Revision history for JavaScript-Beautifier
 
+0.04    2009.03.23
+        Preserve existing line breaks?
+
 0.03    2008.12.18
         tiny POD updates
 

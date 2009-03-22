@@ -19,19 +19,20 @@ my @punct      = split(' ', '+ - * / % & ++ -- = += -= *= /= %= == === != !== > 
 # words which should always start on new line.
 my @line_starter = split(',', 'continue,try,throw,return,var,if,switch,case,default,for,while,break,function');
 
-my ( $indent_level, $indent_size, $indent_character );
+my ( $opt_indent_level, $opt_indent_size, $opt_indent_character, $opt_preserve_newlines );
 
 sub js_beautify {
     my ( $js_source_code, $opts ) = @_;
     
-    $indent_size = $opts->{indent_size} || 4;
-    $indent_character = $opts->{indent_character} || ' ';
-    $indent_level = $opts->{indent_level} ||= 0;
+    $opt_indent_size = $opts->{indent_size} || 4;
+    $opt_indent_character = $opts->{indent_character} || ' ';
+    $opt_preserve_newlines = exists $opts->{preserve_newlines} ? $opts->{preserve_newlines} : 1;
+    $opt_indent_level = $opts->{indent_level} ||= 0;
 
     # -------------------------------------
     $indent_string = '';
-    while ( $indent_size-- ) {
-        $indent_string .= $indent_character;
+    while ( $opt_indent_size-- ) {
+        $indent_string .= $opt_indent_character;
     }
     @input = split('', $js_source_code);
     
@@ -63,7 +64,9 @@ sub js_beautify {
         if ( $token_type eq 'TK_START_EXPR' ) {
             $var_line = 0;
             set_mode('EXPRESSION');
-            if ( $last_type eq 'TK_END_EXPR' || $last_type eq 'TK_START_EXPR' ) {
+            if ( $last_text eq ';' ) {
+                print_newline();
+            } elsif ( $last_type eq 'TK_END_EXPR' || $last_type eq 'TK_START_EXPR' ) {
                 # do nothing on (( and )( and ][ and ]( ..
             } elsif ( $last_type ne 'TK_WORD' && $last_type ne 'TK_OPERATOR' ) {
                 print_space();
@@ -325,7 +328,7 @@ sub print_newline {
     if ( $output[ scalar @output - 1 ] ne "\n" || ! $ignore_repeated ) {
         push @output, "\n";
     }
-    foreach my $i ( 0 .. $indent_level - 1 ) {
+    foreach my $i ( 0 .. $opt_indent_level - 1 ) {
         push @output, $indent_string;
     }
 }
@@ -341,11 +344,11 @@ sub print_token {
     push @output, $token_text;
 }
 sub indent {
-    $indent_level++;
+    $opt_indent_level++;
 }
 sub unindent {
-    if ( $indent_level ) {
-        $indent_level--;
+    if ( $opt_indent_level ) {
+        $opt_indent_level--;
     }
 }
 sub remove_indent {
@@ -375,13 +378,16 @@ sub get_next_token {
             $n_newlines += 1;
         }
     } while ( grep { $_ eq $c } @whitespace );
-    if ( $n_newlines > 1 ) {
-        foreach my $i ( 0 .. 1 ) {
-            my $flag = ( $i == 0 ) ? 1 : 0;
-            print_newline( $flag );
+    my $wanted_newline = 0;
+    if ( $opt_preserve_newlines ) {
+        if ( $n_newlines > 1 ) {
+            foreach my $i ( 0 .. 1 ) {
+                my $flag = ( $i == 0 ) ? 1 : 0;
+                print_newline( $flag );
+            }
         }
+        $wanted_newline = 1;
     }
-    my $wanted_newline = ($n_newlines == 1 ) ? 1 : 0;
     if ( grep { $c eq $_ } @wordchar ) {
         if ( $parser_pos < scalar @input ) {
             while ( grep { $input[$parser_pos] eq $_ } @wordchar ) {
@@ -519,7 +525,7 @@ JavaScript::Beautifier - Beautify Javascript (beautifier for javascript)
 
 This module is mostly a Perl-rewrite of L<http://github.com/einars/js-beautify/tree/master/beautify.js>
 
-You can check it through L<http://elfz.laacz.lv/beautify/>
+You can check it through L<http://jsbeautifier.org/>
 
 =head1 FUNCTIONS
 
