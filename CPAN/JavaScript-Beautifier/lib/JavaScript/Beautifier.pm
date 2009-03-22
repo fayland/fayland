@@ -3,7 +3,7 @@ package JavaScript::Beautifier;
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use base 'Exporter';
@@ -212,6 +212,10 @@ sub js_beautify {
                     $var_line = 0;
                 }
             }
+            if ($var_line && $token_text eq ',' && $current_mode eq 'EXPRESSION') {
+                # do not break on comma, for(var a = 1, b = 2)
+                $var_line_tainted = 0;
+            }
             if ( $token_text eq ':' && $in_case ) {
                 print_token(); # colon really asks for separate treatment
                 print_newline();
@@ -386,7 +390,7 @@ sub get_next_token {
                 print_newline( $flag );
             }
         }
-        $wanted_newline = 1;
+        $wanted_newline = ($n_newlines == 1) ? 1 : 0;
     }
     if ( grep { $c eq $_ } @wordchar ) {
         if ( $parser_pos < scalar @input ) {
@@ -521,7 +525,7 @@ JavaScript::Beautifier - Beautify Javascript (beautifier for javascript)
         indent_character => ' ',
     } );
 
-=head1 EXPORT
+=head1 DESCRIPTION
 
 This module is mostly a Perl-rewrite of L<http://github.com/einars/js-beautify/tree/master/beautify.js>
 
@@ -533,12 +537,35 @@ You can check it through L<http://jsbeautifier.org/>
 
 beautify javascript.
 
-$opts is a HASHREF, which contains indent_size and indent_character. if you prefer Tab than Space, try:
+=head3 options
+
+=over 4
+
+=item indent_size
+
+=item indent_character
+
+if you prefer Tab than Space, try:
 
     {
         indent_size => 1,
         indent_character => "\t",
     }
+
+=item preserve_newlines
+
+default is 1.
+
+    my $in = "var\na=dont_preserve_newlines";
+    my $out = "var a = dont_preserve_newlines";
+    my $js = js_beautify( $in, { preserve_newlines => 0 } );
+    # $out eq $js
+    $in = "var\na=do_preserve_newlines";
+    $out = "var\na = do_preserve_newlines";
+    $js = js_beautify( $in, { preserve_newlines => 1 } );
+    # $out eq $js
+
+=back
 
 =head1 AUTHOR
 
