@@ -1,5 +1,8 @@
 Revision history for Email-Sender-Transport-SMTP-TLS
 
+0.02    2009.03.25
+        back to Moose as Email::Sender 0.04
+
 0.01    Date/time
         First version, released on an unsuspecting world.
 

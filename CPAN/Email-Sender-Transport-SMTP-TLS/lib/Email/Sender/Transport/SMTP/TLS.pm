@@ -3,9 +3,9 @@ package Email::Sender::Transport::SMTP::TLS;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-use Mouse;
+use Moose;
 extends 'Email::Sender::Transport';
 
 use Net::SMTP::TLS;
@@ -128,7 +128,7 @@ sub send_email {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Mouse;
+no Moose;
 1;
 
 __END__
