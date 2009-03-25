@@ -1,21 +1,21 @@
 ---
 name: Email-Sender-Transport-SMTP-TLS
-version: 0.01
+version: 0.02
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: Email::Sender with L<Net::SMTP::TLS> (Eg. Gmail)
 license: perl
 resources:
-  license: http://dev.perl.org/licenses/
+  license: ~
 build_requires:
-  Email::Sender: 0
+  Email::Sender: 0.004
   Net::SMTP::TLS: 0
   Test::More: 0
 provides:
   Email::Sender::Transport::SMTP::TLS:
     file: lib/Email/Sender/Transport/SMTP/TLS.pm
-    version: 0.01
-generated_by: Module::Build version 0.3
+    version: 0.02
+generated_by: Module::Build version 0.31012
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2
