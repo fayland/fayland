@@ -18,8 +18,6 @@ requires 'DBD::SQLite';
 requires 'YAML';
 requires 'File::Slurp';
 requires 'LWP::Simple';
-requires 'WWW::Contact' => '0.22';
-requires 'Scope::Guard';
 
 tests ( join ' ', ( glob('t/*.t'), glob('t/*/*.t') ) );
 
