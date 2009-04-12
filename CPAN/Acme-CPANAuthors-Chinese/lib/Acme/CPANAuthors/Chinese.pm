@@ -33,7 +33,7 @@ use Acme::CPANAuthors::Register (
     REDICAPS    => 'woosley.xu(徐洲)',
     ROOTKWOK    => '郭樂聰', # HK, he posted to ChinaUnix Perl board
     SAL         => 'Sal Zhong (仲伟祥)',
-    SUNTONG     => 'Tong Sun'
+    SUNTONG     => 'Tong Sun',
     SWANSUN     => 'swansun huang',
     WEIQK       => '万朝伟',
     YEWENBIN    => '叶文彬',
