@@ -1,6 +1,6 @@
 ---
 name: Pod-Simple-Wiki-Googlecode
-version: 0.02
+version: 0.03
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: A class for creating Pod to Google Code Wiki filters.
@@ -13,8 +13,8 @@ build_requires:
 provides:
   Pod::Simple::Wiki::Googlecode:
     file: lib/Pod/Simple/Wiki/Googlecode.pm
-    version: 0.02
-generated_by: Module::Build version 0.280801
+    version: 0.03
+generated_by: Module::Build version 0.31012
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2
