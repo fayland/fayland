@@ -3,7 +3,7 @@ package Acme::CPANAuthors::Chinese;
 use strict;
 use warnings;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use Acme::CPANAuthors::Register (
     AGENT       => 'Agent Zhang (章亦春)',
@@ -27,6 +27,7 @@ use Acme::CPANAuthors::Register (
     KAILI       => '李凯',
     LAOMOI      => 'xiaoshengcaicai',
     MAIN        => '吴健源',
+    NSNAKE      => '徐昊',
     PANGJ       => 'Jeff Pang',
     QJZHOU      => 'Qing-Jie Zhou',
     RANN        => '灿烂微笑 / Ran Ningyu',
