@@ -55,12 +55,8 @@ augment pre_insert => sub {
 before 'chan_log' => sub {
     my ( $self, $message ) = @_;
 
-    my $name = 'channel';
-    if ( $split_channel ) {
-        # [#moose 21:40] 
-        my ($channel) = ( $message =~ /^\[\#(\S+)\s+/is );
-        $name = $channel;
-    }
+    # [#moose 21:40] 
+    my ($name) = ( $message =~ /^\[\#(\S+)\s+/is );
 
     my $path = $self->{'Path'};
     if ( $name eq 'padre' ) {
