@@ -65,7 +65,7 @@ before 'chan_log' => sub {
         $path .= 'pri/';
     }
     $self->{'Path'} = $path;
-}
+};
 
 package IRC::Bot2;
 
