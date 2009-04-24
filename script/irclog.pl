@@ -52,21 +52,6 @@ augment pre_insert => sub {
     $$message_ref .= "<br />";
 };
 
-before 'chan_log' => sub {
-    my ( $self, $message ) = @_;
-
-    # [#moose 21:40] 
-    my ($name) = ( $message =~ /^\[\#(\S+)\s+/is );
-
-    my $path = $self->{'Path'};
-    if ( $name eq 'padre' ) {
-        $path .= 'pub/';
-    } else {
-        $path .= 'pri/';
-    }
-    $self->{'Path'} = $path;
-};
-
 package IRC::Bot2;
 
 use lib '/home/faylandfoorum/perl5/lib/perl5';
