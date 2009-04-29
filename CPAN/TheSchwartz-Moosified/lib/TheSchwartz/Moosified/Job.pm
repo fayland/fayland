@@ -69,7 +69,9 @@ sub add_failure {
     my $job = shift;
     my ($msg) = @_;
     
-    my $sql = q~INSERT INTO error (error_time, jobid, message, funcid) VALUES (?, ?, ?, ?)~;
+    my $client = $job->handle->client;
+    my $table_error = $client->table_error;
+    my $sql = qq~INSERT INTO $table_error (error_time, jobid, message, funcid) VALUES (?, ?, ?, ?)~;
     my $dbh = $job->handle->dbh;
     my $sth = $dbh->prepare($sql);
     $sth->execute(time(), $job->jobid, $msg || '', $job->funcid);
@@ -77,7 +79,7 @@ sub add_failure {
     # and let's lazily clean some errors while we're here.
     my $maxage = $TheSchwartz::Moosified::T_ERRORS_MAX_AGE || (86400*7);
     my $dtime  = time() - $maxage;
-    $dbh->do(qq~DELETE FROM error WHERE error_time < $dtime~);
+    $dbh->do(qq~DELETE FROM $table_error WHERE error_time < $dtime~);
 
     return 1;
 }
@@ -98,9 +100,11 @@ sub completed {
 sub remove {
     my ($job) = @_;
     
+    my $client = $job->handle->client;
+    my $table_job = $client->table_job;
     my $dbh = $job->handle->dbh;
     my $jobid = $job->jobid;
-    $dbh->do(qq~DELETE FROM job WHERE jobid = $jobid~);
+    $dbh->do(qq~DELETE FROM $table_job WHERE jobid = $jobid~);
 }
 
 sub exit_status { shift->handle->exit_status }
@@ -113,7 +117,9 @@ sub set_exit_status {
     my $class = $job->funcname;
     my $secs = $class->keep_exit_status_for or return;
     
-    my $sql = q~INSERT INTO exitstatus (jobid, funcid, status, completion_time, delete_after) VALUES (?, ?, ?, ?, ?)~;
+    my $client = $job->handle->client;
+    my $table_exitstatus = $client->table_exitstatus;
+    my $sql = qq~INSERT INTO $table_exitstatus (jobid, funcid, status, completion_time, delete_after) VALUES (?, ?, ?, ?, ?)~;
     my $dbh = $job->handle->dbh;
     my $sth = $dbh->prepare($sql);
     $sth->execute( $job->jobid, $job->funcid, $exit, time(), time() + $secs );
@@ -125,7 +131,7 @@ sub set_exit_status {
     my $clean_thres = $TheSchwartz::Moosified::T_EXITSTATUS_CLEAN_THRES || 0.10;
     if (rand() < $clean_thres) {
         my $unixtime = sql_for_unixtime();
-        $dbh->do(qq~DELETE FROM exitstatus WHERE delete_after < $unixtime~);
+        $dbh->do(qq~DELETE FROM $table_exitstatus WHERE delete_after < $unixtime~);
     }
 
     return 1;
@@ -167,8 +173,10 @@ sub _failed {
     $job->add_failure($msg);
 
     if ($_retry) {
+        my $client = $job->handle->client;
+        my $table_job = $client->table_job;
         my $class = $job->funcname;
-        my $sql = q~UPDATE job SET ~;
+        my $sql = qq~UPDATE $table_job SET ~;
         if (my $delay = $class->retry_delay($failures)) {
             my $run_after = time() + $delay;
             $job->run_after($run_after);

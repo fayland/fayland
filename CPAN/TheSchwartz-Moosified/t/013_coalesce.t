@@ -5,11 +5,14 @@ use warnings;
 use t::Utils;
 use TheSchwartz::Moosified;
 
-plan tests => 14;
+plan tests => 28;
+
+foreach $::prefix ("", "someprefix") {
 
 run_test {
     my $dbh = shift;
     my $client = TheSchwartz::Moosified->new();
+    $client->prefix($::prefix) if $::prefix;
     $client->databases([$dbh]);
 
     my @keys = qw(foo bar baz);
@@ -37,6 +40,8 @@ run_test {
     my $rv = eval { $client->work_once; };
     ok(!$rv, "nothing to do now");
 };
+
+}
 
 ############################################################################
 package Worker::CoalesceTest;

@@ -2,12 +2,15 @@ use strict;
 use warnings;
 use t::Utils;
 use TheSchwartz::Moosified;
-plan tests => 20;
+plan tests => 40;
+
+foreach $::prefix ("", "someprefix") {
 
 run_test {
     my $dbh = shift;
     my $sch = TheSchwartz::Moosified->new();
     $sch->databases([$dbh]);
+    $sch->prefix($::prefix) if $::prefix;
 
     $sch->insert('fetch', 'http://wassr.jp/');
     $sch->insert(
@@ -66,3 +69,5 @@ run_test {
     $row = $jobs[0];
     is $row->funcname, 'fetch';
 };
+
+}

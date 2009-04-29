@@ -5,19 +5,25 @@ use warnings;
 use t::Utils;
 use TheSchwartz::Moosified;
 
-plan tests => 10;
+plan tests => 20;
 
 # for testing:
 $TheSchwartz::Moosified::T_EXITSTATUS_CLEAN_THRES = 1; # delete 100% of the time, not 10% of the time
 $TheSchwartz::Moosified::T_ERRORS_MAX_AGE = 2;         # keep errors for 3 seconds, not 1 week
 
+foreach $::prefix ("", "someprefix") {
+
 run_test {
     my $dbh = shift;
     my $client = TheSchwartz::Moosified->new();
     $client->databases([$dbh]);
+    $client->prefix($::prefix) if $::prefix;
 
     $client->can_do("Worker::Fail");
     $client->can_do("Worker::Complete");
+    
+    my $table_exitstatus = $client->table_exitstatus;
+    my $table_error = $client->table_error;
     
     # insert a job which will fail, then succeed.
     {
@@ -28,16 +34,16 @@ run_test {
         is($handle->failures, 1, "job has failed once");
 
         my $min;
-        my $rows = $dbh->selectrow_array("SELECT COUNT(*) FROM exitstatus");
-        is($rows, 1, "has 1 exitstatus row");
+        my $rows = $dbh->selectrow_array("SELECT COUNT(*) FROM $table_exitstatus");
+        is($rows, 1, "has 1 $table_exitstatus row");
 
         ok($client->insert("Worker::Complete"), "inserting to-pass job");
         $client->work_until_done;
-        $rows = $dbh->selectrow_array("SELECT COUNT(*) FROM exitstatus");
-        is($rows, 2, "has 2 exitstatus rows");
-        ($rows, $min) = $dbh->selectrow_array("SELECT COUNT(*), MIN(jobid) FROM error");
-        is($rows, 1, "has 1 error rows");
-        is($min, 1, "error jobid is the old one");
+        $rows = $dbh->selectrow_array("SELECT COUNT(*) FROM $table_exitstatus");
+        is($rows, 2, "has 2 $table_exitstatus rows");
+        ($rows, $min) = $dbh->selectrow_array("SELECT COUNT(*), MIN(jobid) FROM $table_error");
+        is($rows, 1, "has 1 $table_error rows");
+        is($min, 1, "$table_error jobid is the old one");
 
         # wait for exit status to pass
         sleep 3;
@@ -46,15 +52,17 @@ run_test {
         $handle = $client->insert("Worker::Fail");
         $client->work_until_done;
 
-        $rows = $dbh->selectrow_array("SELECT COUNT(*) FROM exitstatus");
+        $rows = $dbh->selectrow_array("SELECT COUNT(*) FROM $table_exitstatus");
         is($rows, 1, "1 exit status row now");
 
-        ($rows, $min) = $dbh->selectrow_array("SELECT COUNT(*), MIN(jobid) FROM error");
+        ($rows, $min) = $dbh->selectrow_array("SELECT COUNT(*), MIN(jobid) FROM $table_error");
         is($rows, 1, "has 1 error row still");
         is($min, 3, "error jobid is only the new one");
 
     }
 };
+
+}
 
 ############################################################################
 ############################################################################

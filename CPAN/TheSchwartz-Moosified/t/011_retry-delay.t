@@ -5,12 +5,15 @@ use warnings;
 use t::Utils;
 use TheSchwartz::Moosified;
 
-plan tests => 8;
+plan tests => 16;
+
+foreach $::prefix ("", "someprefix") {
 
 run_test {
     my $dbh = shift;
     my $client = TheSchwartz::Moosified->new();
     $client->databases([$dbh]);
+    $client->prefix($::prefix) if $::prefix;
 
     $client->can_do("Worker::Fail");
     $client->can_do("Worker::Complete");
@@ -43,6 +46,8 @@ run_test {
         is($handle->exit_status, 0, "job succeeded");
     }
 };
+
+}
 
 ############################################################################
 package Worker::CompleteEventually;

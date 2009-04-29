@@ -10,8 +10,10 @@ has 'dbh'    => ( is => 'rw', isa => 'Object' );
 sub job {
     my $handle = shift;
     
+    my $client = $handle->client;
     my $dbh = $handle->dbh;
-    my $sql = qq~SELECT * FROM job WHERE jobid = ?~;
+    my $table_job = $client->table_job;
+    my $sql = qq~SELECT * FROM $table_job WHERE jobid = ?~;
     my $sth = $dbh->prepare_cached($sql);
     $sth->execute($handle->jobid);
     my $row = $sth->fetchrow_hashref;
@@ -30,8 +32,10 @@ sub is_pending {
 sub exit_status {
     my $handle = shift;
     
+    my $client = $handle->client;
     my $dbh = $handle->dbh;
-    my $sql = q~SELECT status FROM exitstatus WHERE jobid = ?~;
+    my $table_exitstatus = $client->table_exitstatus;
+    my $sql = qq~SELECT status FROM $table_exitstatus WHERE jobid = ?~;
     my $sth = $dbh->prepare($sql);
     $sth->execute($handle->jobid);
     my ($status) = $sth->fetchrow_array;
@@ -41,8 +45,10 @@ sub exit_status {
 sub failure_log {
     my $handle = shift;
     
+    my $client = $handle->client;
     my $dbh = $handle->dbh;
-    my $sql = q~SELECT message FROM error WHERE jobid = ?~;
+    my $table_error = $client->table_error;
+    my $sql = qq~SELECT message FROM $table_error WHERE jobid = ?~;
     my $sth = $dbh->prepare($sql);
     $sth->execute($handle->jobid);
     

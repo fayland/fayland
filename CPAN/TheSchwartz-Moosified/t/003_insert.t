@@ -3,12 +3,15 @@ use warnings;
 use t::Utils;
 use TheSchwartz::Moosified;
 
-plan tests => 10;
+plan tests => 20;
+
+foreach $::prefix ("", "someprefix") {
 
 run_test {
     my $dbh = shift;
     my $sch = TheSchwartz::Moosified->new();
     $sch->databases([$dbh]);
+    $sch->prefix($::prefix) if $::prefix;
 
     $sch->insert('fetch', 'http://wassr.jp/');
     $sch->insert(
@@ -19,7 +22,8 @@ run_test {
         )
     );
 
-    my $sth = $dbh->prepare('SELECT jobid, funcid, arg, priority FROM job ORDER BY jobid ASC');
+    my $table_job = $sch->table_job;
+    my $sth = $dbh->prepare("SELECT jobid, funcid, arg, priority FROM $table_job ORDER BY jobid ASC");
     $sth->execute;
 
     my $row = $sth->fetchrow_hashref;
@@ -37,3 +41,4 @@ run_test {
     is $row->{priority}, 3;
 };
 
+}

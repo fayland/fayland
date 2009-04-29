@@ -6,12 +6,15 @@ use t::Utils;
 use TheSchwartz::Moosified;
 use File::Spec qw();
 
-plan tests => 9;
+plan tests => 18;
+
+foreach $::prefix ("", "someprefix") {
 
 run_test {
     my $dbh = shift;
     my $client = TheSchwartz::Moosified->new( scoreboard => 1 );
     $client->databases([$dbh]);
+    $client->prefix($::prefix) if $::prefix;
 
     my $sb_file = $client->scoreboard;
     
@@ -45,6 +48,8 @@ run_test {
         ok(! -e $sb_file, 'Scoreboard file goes away when worker finishes');
     }
 };
+
+}
 
 ############################################################################
 package Worker::Addition;

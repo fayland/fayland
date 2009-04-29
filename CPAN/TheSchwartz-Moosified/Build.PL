@@ -12,9 +12,15 @@ my $builder = Module::Build->new(
         'Moose' => '0.57',
         'DBI' => 0,
         'Scalar::Util' => 0,
+        'Storable' => '2.18',
     },
     add_to_cleanup      => [ 'TheSchwartz-Moosified-*' ],
     create_makefile_pl => 'traditional',
+    meta_merge     => {
+        resources => {
+          repository  => 'http://github.com/fayland/fayland/tree/master'
+        }
+    },
 );
 
 $builder->create_build_script();
