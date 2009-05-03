@@ -369,7 +369,6 @@ sub _find_job_with_coalescing {
             my $funcid = $client->funcname_to_id($dbh, $funcname);
 
             my $table_job = $client->table_job;
-            print STDERR $table_job . "\n";
             my $sql = qq~SELECT * FROM $table_job WHERE funcid = ? AND run_after <= $unixtime AND grabbed_until <= $unixtime AND coalesce $op ? $order_by LIMIT 0, $limit~;
             my $sth = $dbh->prepare_cached($sql);
             $sth->execute( $funcid, $coval );
