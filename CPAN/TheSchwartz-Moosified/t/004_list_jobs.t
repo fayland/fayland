@@ -39,6 +39,7 @@ run_test {
     
     # test priority
     my $sch2 = TheSchwartz::Moosified->new( databases => [ $dbh ], prioritize => 1 );
+    $sch2->prefix($::prefix) if $::prefix;
     
     $sch2->insert('fetch2', 'http://fayland.org/');
     $sch2->insert(
