@@ -67,13 +67,8 @@ has 'scoreboard'  => (
         if (($dir eq '1') or ($dir eq 'on')) {
             $dir = File::Spec->tmpdir();
         }
-    
-        $dir .= '/theschwartz';
-        unless (-e $dir) {
-            mkdir($dir, 0755) or die "Can't create scoreboard directory '$dir': $!";
-        }
-        
-        $self->{scoreboard} = $dir."/scoreboard.$$";
+
+        $self->{scoreboard} = $dir."/theschwartz.scoreboard.$$";
     }
 );
 
@@ -700,7 +695,7 @@ optional. prefix for tables. can go with L<TheSchwartz::Simple>
 
 =item * C<scoreboard>
 
-save job info to file. by default, the file will be saved at $tmpdir/theschwartz/scoreboard.$$
+save job info to file. by default, the file will be saved at $tmpdir/theschwartz.scoreboard.$$
 
     my $client = TheSchwartz::Moosified->new( scoreboard => 1 );
     
