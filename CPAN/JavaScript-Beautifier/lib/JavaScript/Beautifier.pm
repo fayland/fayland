@@ -3,7 +3,7 @@ package JavaScript::Beautifier;
 use warnings;
 use strict;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use base 'Exporter';
@@ -472,7 +472,7 @@ sub get_next_token {
          $c eq '"' || # string
         ($c eq '/' &&
         (( $last_type eq 'TK_WORD' && $last_text eq 'return') ||
-         ( $last_type eq 'TK_START_EXPR' || $last_type eq 'TK_END_BLOCK' || $last_type eq 'TK_OPERATOR' || $last_type eq 'TK_EOF' || $last_type eq 'TK_SEMICOLON')))) { # regexp
+         ( $last_type eq 'TK_START_EXPR' || $last_type eq 'TK_START_BLOCK' || $last_type eq 'TK_END_BLOCK' || $last_type eq 'TK_OPERATOR' || $last_type eq 'TK_EOF' || $last_type eq 'TK_SEMICOLON')))) { # regexp
          my $sep = $c;
          my $esc = 0;
          my $resulting_string = '';

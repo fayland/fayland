@@ -74,6 +74,8 @@ my @tests = (
     [ "delete x[x] if (a) b();", "delete x[x]\nif (a) b();" ],
     [ "do{x()}while(a>1)", "do {\n    x()\n} while (a > 1)" ],
     [ "x(); /reg/exp.match(something)", "x();\n/reg/exp.match(something)" ],
+    
+    [ "{/abc/i.test()}", "{\n    /abc/i.test()\n}" ],
  );
 
 plan tests => scalar @tests + 4;

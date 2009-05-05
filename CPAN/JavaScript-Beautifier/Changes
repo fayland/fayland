@@ -1,5 +1,8 @@
 Revision history for JavaScript-Beautifier
 
+0.06
+        Fix for { /regexp/ } mess up.
+
 0.05    2009.05.05
         do { ... } while (...) spacing fixes
 
