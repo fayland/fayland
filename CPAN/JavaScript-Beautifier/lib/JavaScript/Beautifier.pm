@@ -3,7 +3,7 @@ package JavaScript::Beautifier;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use base 'Exporter';
@@ -112,6 +112,7 @@ sub js_beautify {
                 print_space();
                 print_token();
                 print_space();
+                $do_block_just_closed = 0;
                 $last_type = $token_type;$last_text = $token_text;next;
             }
             if ( $token_text eq 'case' || $token_text eq 'default' ) {

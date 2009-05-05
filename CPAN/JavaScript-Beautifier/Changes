@@ -1,5 +1,8 @@
 Revision history for JavaScript-Beautifier
 
+0.05    2009.05.05
+        do { ... } while (...) spacing fixes
+
 0.04    2009.03.23
         Preserve existing line breaks?
 

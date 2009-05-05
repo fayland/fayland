@@ -67,11 +67,12 @@ my @tests = (
     [ "if (a) b() else c()", "if (a) b()\nelse c()" ],
     [ "if (a) b() else if c() d()", "if (a) b()\nelse if c() d()" ],
  
-    [ "do { a(); } while ( 1 );", "do {\n    a();\n} while ( 1 );" ],
-    [ "do {\n} while ( 1 );", "do {} while ( 1 );" ],
+    [ "do { a(); } while ( 1 );", "do {\n    a();\n} while (1);" ],
+    [ "do {\n} while ( 1 );", "do {} while (1);" ],
     [ "var a, b, c, d = 0, c = function() {}, d = '';", "var a, b, c, d = 0,\nc = function() {},\nd = '';" ],
     [ "delete x if (a) b();", "delete x\nif (a) b();" ],
     [ "delete x[x] if (a) b();", "delete x[x]\nif (a) b();" ],
+    [ "do{x()}while(a>1)", "do {\n    x()\n} while (a > 1)" ],
     [ "x(); /reg/exp.match(something)", "x();\n/reg/exp.match(something)" ],
  );
 
