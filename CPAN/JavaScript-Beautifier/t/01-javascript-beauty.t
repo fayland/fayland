@@ -76,6 +76,15 @@ my @tests = (
     [ "x(); /reg/exp.match(something)", "x();\n/reg/exp.match(something)" ],
     
     [ "{/abc/i.test()}", "{\n    /abc/i.test()\n}" ],
+    [ "{x=#1=[]}", "{\n    x = #1=[]\n}"],
+    [ "{a:#1={}}", "{\n    a: #1={}\n}"],
+    [ "{a:#1#}", "{\n    a: #1#\n}" ],
+    [ "{a:#1", "{\n    a: #1" ], # incomplete
+    [ "{a:#", "{\n    a: #" ], # incomplete
+
+    [ "a=/regexp", "a = /regexp" ], # incomplete regexp
+    [ "{a:#1=[],b:#1#,c:#999999#}", "{\n    a: #1=[],\n    b: #1#,\n    c: #999999#\n}" ],
+  
  );
 
 plan tests => scalar @tests + 4;
