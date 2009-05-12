@@ -1,6 +1,6 @@
 ---
 name: JavaScript-Beautifier
-version: 0.06
+version: 0.07
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: Beautify Javascript (beautifier for javascript)
@@ -12,7 +12,7 @@ build_requires:
 provides:
   JavaScript::Beautifier:
     file: lib/JavaScript/Beautifier.pm
-    version: 0.06
+    version: 0.07
 generated_by: Module::Build version 0.31012
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
