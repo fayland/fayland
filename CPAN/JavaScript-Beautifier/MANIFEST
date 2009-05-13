@@ -1,3 +1,4 @@
+bin/js_beatify.pl
 Build.PL
 Changes
 lib/JavaScript/Beautifier.pm

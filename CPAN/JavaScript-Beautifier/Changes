@@ -1,5 +1,8 @@
 Revision history for JavaScript-Beautifier
 
+0.08    2009.05.13
+        bin/js_beatify.pl
+
 0.07    2009.05.13
         Spidermonkey sharp variable support
 

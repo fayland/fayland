@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use JavaScript::Beautifier;
+use JavaScript::Beautifier qw/js_beautify/;
 use Getopt::Long;
 use Pod::Usage;
 
