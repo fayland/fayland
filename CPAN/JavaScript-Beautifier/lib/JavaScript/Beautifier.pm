@@ -3,7 +3,7 @@ package JavaScript::Beautifier;
 use warnings;
 use strict;
 
-our $VERSION = '0.05';
+our $VERSION = '0.08';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use base 'Exporter';
@@ -15,6 +15,7 @@ my ( $token_text, $last_type, $last_text, $last_word, $current_mode, $indent_str
 
 my @whitespace = split('', "\n\r\t ");
 my @wordchar   = split('', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$');
+my @digits     = split('', '0123456789');
 my @punct      = split(' ', '+ - * / % & ++ -- = += -= *= /= %= == === != !== > < >= <= >> << >>> >>>= >>= <<= && &= | || ! !! , : ? ^ ^= |= ::');
 # words which should always start on new line.
 my @line_starter = split(',', 'continue,try,throw,return,var,if,switch,case,default,for,while,break,function');
@@ -472,10 +473,10 @@ sub get_next_token {
          $c eq '"' || # string
         ($c eq '/' &&
         (( $last_type eq 'TK_WORD' && $last_text eq 'return') ||
-         ( $last_type eq 'TK_START_EXPR' || $last_type eq 'TK_END_BLOCK' || $last_type eq 'TK_OPERATOR' || $last_type eq 'TK_EOF' || $last_type eq 'TK_SEMICOLON')))) { # regexp
+         ( $last_type eq 'TK_START_EXPR' || $last_type eq 'TK_START_BLOCK' || $last_type eq 'TK_END_BLOCK' || $last_type eq 'TK_OPERATOR' || $last_type eq 'TK_EOF' || $last_type eq 'TK_SEMICOLON')))) { # regexp
          my $sep = $c;
          my $esc = 0;
-         my $resulting_string = '';
+         my $resulting_string = $c;
          if ( $parser_pos < scalar @input ) {
              while ( $esc || $input[$parser_pos] ne $sep ) {
                  $resulting_string .= $input[$parser_pos];
@@ -485,11 +486,15 @@ sub get_next_token {
                      $esc = 0;
                  }
                  $parser_pos++;
-                 last if ( $parser_pos >= scalar @input );
+                 if ( $parser_pos >= scalar @input ) {
+                    # incomplete string/rexp when end-of-file reached.
+                    # bail out with what had been received so far.
+                    return [$resulting_string, 'TK_STRING'];
+                 }
              }
          }
          $parser_pos++;
-         $resulting_string = $sep . $resulting_string . $sep;
+         $resulting_string .= $sep;
          if ( $sep eq '/' ) {
              # regexps may have modifiers /regexp/MOD , so fetch those, too
              while ( $parser_pos < scalar @input && (grep { $input[$parser_pos] eq $_ } @wordchar) ) {
@@ -499,6 +504,26 @@ sub get_next_token {
         }
         return [$resulting_string, 'TK_STRING'];
     }
+    
+    if ($c eq '#') {
+        # Spidermonkey-specific sharp variables for circular references
+        # https://developer.mozilla.org/En/Sharp_variables_in_JavaScript
+        # http://mxr.mozilla.org/mozilla-central/source/js/src/jsscan.cpp around line 1935
+        my $sharp = '#';
+        if ($parser_pos < scalar @input && (grep { $input[$parser_pos] eq $_ } @digits) ) {
+            do {
+                $c = $input[$parser_pos];
+                $sharp .= $c;
+                $parser_pos += 1;
+            } while ($parser_pos < scalar @input && $c ne '#' && $c ne '=');
+            if ($c eq '#') {
+                return [$sharp, 'TK_WORD'];
+            } else {
+                return [$sharp, 'TK_OPERATOR'];
+            }
+        }
+    }
+    
     if ( grep { $c eq $_ } @punct ) {
          while ( $parser_pos < scalar @input && (grep { $c . $input[$parser_pos] eq $_ } @punct) ) {
              $c .= $input[$parser_pos];

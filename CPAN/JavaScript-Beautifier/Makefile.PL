@@ -5,9 +5,13 @@ WriteMakefile
           'NAME' => 'JavaScript::Beautifier',
           'VERSION_FROM' => 'lib/JavaScript/Beautifier.pm',
           'PREREQ_PM' => {
+                           'Getopt::Long' => '0',
+                           'Pod::Usage' => '0',
                            'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',
-          'EXE_FILES' => []
+          'EXE_FILES' => [
+                           'bin/js_beatify.pl'
+                         ]
         )
 ;
