@@ -1,5 +1,8 @@
 Revision history for JavaScript-Beautifier
 
+0.09
+        Strip trailing newlines, minor support for <!--
+
 0.08    2009.05.13
         bin/js_beatify.pl
 
