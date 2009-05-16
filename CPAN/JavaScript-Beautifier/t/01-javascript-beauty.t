@@ -56,9 +56,9 @@ my @tests = (
     [ 'a = 1e-10', "a = 1e-10" ],
     [ 'a = e - 10', "a = e - 10" ],
     [ 'a = 11-10', "a = 11 - 10" ],
-    [ "a = 1;// comment\n", "a = 1; // comment\n" ],
-    [ "a = 1; // comment\n", "a = 1; // comment\n" ],
-    [ "a = 1;\n // comment\n", "a = 1;\n// comment\n" ],
+    [ "a = 1;// comment\n", "a = 1; // comment" ],
+    [ "a = 1; // comment\n", "a = 1; // comment" ],
+    [ "a = 1;\n // comment\n", "a = 1;\n// comment" ],
  
     [ "if\n(a)\nb()", "if (a) b()" ], # test for proper newline removal
  
@@ -81,6 +81,8 @@ my @tests = (
     [ "{a:#1#}", "{\n    a: #1#\n}" ],
     [ "{a:#1", "{\n    a: #1" ], # incomplete
     [ "{a:#", "{\n    a: #" ], # incomplete
+
+    ["<!--\nvoid();\n// -->", "<!--\nvoid();\n// -->"],
 
     [ "a=/regexp", "a = /regexp" ], # incomplete regexp
     [ "{a:#1=[],b:#1#,c:#999999#}", "{\n    a: #1=[],\n    b: #1#,\n    c: #999999#\n}" ],

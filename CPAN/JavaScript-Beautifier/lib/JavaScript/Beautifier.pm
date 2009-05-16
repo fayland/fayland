@@ -16,6 +16,7 @@ my ( $token_text, $last_type, $last_text, $last_word, $current_mode, $indent_str
 my @whitespace = split('', "\n\r\t ");
 my @wordchar   = split('', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$');
 my @digits     = split('', '0123456789');
+# <!-- is a special case (ok, it's a minor hack actually)
 my @punct      = split(' ', '+ - * / % & ++ -- = += -= *= /= %= == === != !== > < >= <= >> << >>> >>>= >>= <<= && &= | || ! !! , : ? ^ ^= |= ::');
 # words which should always start on new line.
 my @line_starter = split(',', 'continue,try,throw,return,var,if,switch,case,default,for,while,break,function');
@@ -313,7 +314,9 @@ sub js_beautify {
         $last_text = $token_text;
     }
     
-    return join('', @output);
+    my $output = join('', @output);
+    $output =~ s/\n+$//;
+    return $output;
 }
 
 sub trim_output {
@@ -522,6 +525,11 @@ sub get_next_token {
                 return [$sharp, 'TK_OPERATOR'];
             }
         }
+    }
+    
+    if ($c eq '<' && join('', @input[0..3]) eq '<!--') {
+        $parser_pos += 3;
+        return ['<!--', 'TK_COMMENT'];
     }
     
     if ( grep { $c eq $_ } @punct ) {
