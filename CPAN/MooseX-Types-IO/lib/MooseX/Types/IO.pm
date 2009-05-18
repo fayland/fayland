@@ -3,7 +3,7 @@ package MooseX::Types::IO;
 use warnings;
 use strict;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use IO qw/File Handle/;
@@ -104,6 +104,8 @@ Fayland Lam, C<< <fayland at gmail.com> >>
 =head1 ACKNOWLEDGEMENTS
 
 The L<Moose> Team
+
+Rafael Kitover (rkitover) for the patches on RT 46194
 
 =head1 COPYRIGHT & LICENSE
 
