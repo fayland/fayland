@@ -3,19 +3,19 @@ package MooseX::Types::IO;
 use warnings;
 use strict;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use IO qw/File Handle/;
 use IO::String;
 
-use MooseX::Types::Moose qw/Str ScalarRef FileHandle ArrayRef/;
+use MooseX::Types::Moose qw/Str ScalarRef FileHandle ArrayRef Object/;
 use namespace::clean;
 use MooseX::Types -declare => [qw( IO )];
 
-subtype 'IO', as 'Object';
+subtype IO, as Object;
 
-coerce 'IO',
+coerce IO,
     from Str,
         via {
             my $fh = new IO::File; $fh->open($_); return $fh;
@@ -24,10 +24,12 @@ coerce 'IO',
         via {
             IO::String->new($$_);
         },
-    from 'ArrayRef[FileHandle|Str]',
+    from ArrayRef[FileHandle|Str],
         via {
             IO::Handle->new_from_fd( @$_ );
         };
+
+require MooseX::Types::IO_Global;
 
 1;
 __END__
@@ -41,10 +43,10 @@ MooseX::Types::IO - L<IO> related constraints and coercions for Moose
     package Foo;
     
     use Moose;
-    use MooseX::Types::IO;
+    use MooseX::Types::IO 'IO';
     
     has io => (
-        isa => "IO",
+        isa => IO,
         is  => "rw",
         coerce => 1,
     );
@@ -102,6 +104,8 @@ Fayland Lam, C<< <fayland at gmail.com> >>
 =head1 ACKNOWLEDGEMENTS
 
 The L<Moose> Team
+
+Rafael Kitover (rkitover) for the patches on RT 46194
 
 =head1 COPYRIGHT & LICENSE
 

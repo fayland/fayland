@@ -3,7 +3,7 @@ package MooseX::Types::IO::All;
 use warnings;
 use strict;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use IO::All;
@@ -12,10 +12,10 @@ use MooseX::Types::Moose qw/Str ScalarRef FileHandle ArrayRef/;
 use namespace::clean;
 use MooseX::Types -declare => [qw( IO_All )];
 
-class_type 'IO::All';
+my $global = class_type 'IO::All';
 subtype IO_All, as 'IO::All';
 
-coerce 'IO::All',
+coerce IO_All,
     from Str,
         via {
             io $_;
@@ -26,6 +26,8 @@ coerce 'IO::All',
             $s->print($$_);
             return $s;
         };
+
+$global->coercion(IO_All->coercion);
 
 1;
 __END__
@@ -39,10 +41,10 @@ MooseX::Types::IO::All - L<IO::All> related constraints and coercions for Moose
     package Foo;
     
     use Moose;
-    use MooseX::Types::IO::All;
+    use MooseX::Types::IO::All 'IO_All';
     
     has io => (
-        isa => "IO::All",
+        isa => IO_All,
         is  => "rw",
         coerce => 1,
     );

@@ -1,35 +1,45 @@
 #!perl -T
 
-use Test::More tests => 8;
+use Test::More tests => 16;
 use Test::Exception;
 
-use MooseX::Types::IO::All;
+use MooseX::Types::IO::All 'IO_All';
 use FindBin qw/$Bin/;
 
 use Moose::Util::TypeConstraints;
+isa_ok( find_type_constraint(IO_All), "Moose::Meta::TypeConstraint" );
 isa_ok( find_type_constraint('IO::All'), "Moose::Meta::TypeConstraint" );
 
 {
     {
         package Foo;
         use Moose;
+	use MooseX::Types::IO::All 'IO_All';
 
         has io => (
-            isa => "IO::All",
+            isa => IO_All,
+            is  => "rw",
+            coerce => 1,
+        );
+
+	# global
+        has io2 => (
+            isa => 'IO::All',
             is  => "rw",
             coerce => 1,
         );
     }
 
-    my $str = "test for IO::All\n line 2";
-    my $coerced = Foo->new( io => \$str )->io;
+    for my $accessor (qw/io io2/) {
+	my $str = "test for IO::All\n line 2";
+	my $coerced = Foo->new( $accessor => \$str )->$accessor;
 
-    isa_ok( $coerced, "IO::All", "coerced IO::All" );
-    ok( $coerced->can('print'), "can print" );
-    is( ${ $coerced->string_ref }, $str, 'get string');
-    
-    my $filename = "$Bin/00-load.t";
-    my $str2 = <<'FC';
+	isa_ok( $coerced, "IO::All", "coerced IO::All" );
+	ok( $coerced->can('print'), "can print" );
+	is( ${ $coerced->string_ref }, $str, 'get string');
+	
+	my $filename = "$Bin/00-load.t";
+	my $str2 = <<'FC';
 #!perl -T
 
 use Test::More tests => 1;
@@ -40,12 +50,13 @@ BEGIN {
 
 diag( "Testing MooseX::Types::IO $MooseX::Types::IO::VERSION, Perl $], $^X" );
 FC
-    my $coerced2 = Foo->new( io => $filename )->io;
-    isa_ok( $coerced2, "IO::All", "coerced IO::All" );
-    ok( $coerced2->can('print'), "can print" );
-    is( $coerced2->all, $str2, 'get string');
+	my $coerced2 = Foo->new( $accessor => $filename )->$accessor;
+	isa_ok( $coerced2, "IO::All", "coerced IO::All" );
+	ok( $coerced2->can('print'), "can print" );
+	is( $coerced2->all, $str2, 'get string');
 
-    throws_ok { Foo->new( io => [\$str2] ) } qr/IO\:\:All/, "constraint";
+	throws_ok { Foo->new( $accessor => [\$str2] ) } qr/IO\:\:All/, "constraint";
+    }
 }
 
 

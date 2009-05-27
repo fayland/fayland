@@ -1,5 +1,8 @@
 Revision history for MooseX-Types-IO
 
+0.03    2009.05.19
+        thank (rkitover) for the patches on RT 46194
+
 0.02
         pod fix
 
