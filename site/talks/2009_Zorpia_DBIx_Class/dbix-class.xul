@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="chrome://global/skin/" type="text/css"?><?xml-stylesheet href="takahashi.css" type="text/css"?><page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" id="presentation" xmlns:html="http:/www.w3.org/1999/xhtml" orient="vertical" onkeypress="Presentation.onKeyPress(event);">
+<html:textarea id="builtinCode" style="visibility: collapse"><![CDATA[
+Organize code and tests
+with
+DBIx::Class
+----
+Fayland Lam
+fayland@gmail.com
+2009.05.27
+----
+Why this talk?
+----
+Make your coding easier
+----
+Make your coding easier
+Make my life happier
+----
+Why DBIx::Class?
+----
+DBIx::Class sucks
+----
+DBIx::Class sucks
+DBIx::Class confuses
+----
+DBIx::Class sucks
+DBIx::Class confuses
+DBIx::Class is complicated
+----
+True
+----
+Why DBIx::Class?
+----
+no SQL pure Perl
+----
+no SQL pure Perl
+Relationships
+----
+no SQL pure Perl
+Relationships
+Storage Independent
+----
+X
+----
+Organize your code
+----
+Organize your code
+Organize your tests
+----
+Organize your code
+Organize your tests
+Secrets you don't know
+----
+Organize your code
+with
+DBIx::Class::ResultSet
+----
+  package My::Schema::User;
+
+  ...
+
+  __PACKAGE__->resultset_class(
+    'My::ResultSet::User'
+  );
+----
+  package My::ResultSet::User;
+
+  use strict;
+  use warnings;
+
+  use base
+    qw(DBIx::Class::ResultSet);
+----
+  sub active {
+    shift->search({
+      status => 'active'
+    });
+  }
+----
+  $schema->resultset('User')
+         ->active;
+----
+What's ResultSet?
+----
+What's ResultSet?
+ResultSet is
+a collection of methods 
+----
+What's ResultSet?
+ResultSet is
+methods related to table
+----
+Why ResultSet?
+----
+Why ResultSet?
+Why not Catalyst Model?
+----
+Why not Catalyst Model!
+Catalyst Model = BAD
+----
+Why not Catalyst Model!
+Can't reuse the code outside
+----
+Why not Catalyst Model!
+Can't reuse the code outside
+Hard to write tests
+----
+Why ResultSet!
+Reusable
+----
+Why ResultSet!
+Reusable, Flexible
+----
+Why ResultSet!
+Reusable, Flexible, Robust
+----
+Reusable
+Catalyst, Cron, Email, Tests
+Share ONE ResultSets
+----
+Flexible
+Predefined searches
+$rs->result_source->schema
+----
+Robust
+Well tested
+----
+no $c please
+DBIx::Class ≠ Catalyst
+----
+Organize your tests
+----
+Why tests?
+----
+Test, Test, Test
+----
+Test saves the world
+----
+Test saves you!
+----
+With Tests
+  * no browser (slow)
+----
+With Tests
+  * no browser (slow)
+  * nail bug down (repeat)
+----
+With Tests
+  * no browser (slow)
+  * nail bug down (repeat)
+  * independent develop
+----
+  $ prove -l t/schema/
+----
+  $ prove -l t/schema/
+  Files=20, Tests=233, 49 wallclock secs
+  Result: PASS
+----
+Secrets you don't know
+----
+DBIx::Class::ResultSet
+----
+sub search return
+DBIx::Class::ResultSet
+----
+  $rs->search( { A => 1 } )
+     ->search( { B => 2 },
+        { page => 2 } )
+     ->search( { C => 3 },
+        { rows => 1 } );
+----
+  # DBIx::Class::Cursor
+  $rs->first; # no WHERE
+  $rs->all;
+  $rs->next;
+  ->first = ->reset->next;
+----
+  ->single($cond);
+  ->find($cond, $attrs);
+  ->search($cond, $attrs)->first;
+  ->search($cond, $attrs)->single;
+----
+  ->search($cond, $attrs)
+  ->get_column('id')
+  ->max();
+----
+  # DBIx::Class::Row
+  $user->email('a@a.com');
+  $user->update;
+----
+  # DBIx::Class::ResultSet
+  $user->search( {
+    user_id => 1
+  } )->update( {
+    email => 'a@a.com'
+  } );
+----
+DBIx::Class::ResultClass::HashRefInflator
+----
+  my $rs = $schema->resultset('CD');
+  $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
+  my $hash_ref = $rs->find(1);
+----
+as_query
+----
+  $schema->resultset('user')->search( {
+    user_id => { 'IN', [1, 2] },
+    -or => [
+      last_visit => { '>', time() - 86400 },
+      last_update => { '>', time() - 86400 },
+    ]
+  }, {
+    columns => ['username'],
+    rows    => 1,
+  } )->as_query;
+----
+  [ '(SELECT me.username FROM user me 
+     WHERE ( ( ( last_visit > ?
+              OR last_update > ? )
+        AND user_id IN ( ?, ? ) ) )
+     LIMIT 1)',
+    [ 'last_visit', 1242290843 ]
+  ... ]
+----
+DBIx::Class::ResultSet::Void 
+----
+  void context
+    $rs->find_or_create
+    $rs->update_or_create
+  NOT
+    my $row = $rs->find_or_create
+----
+  if ( $rs->exists( {
+    cond => $cond } ) )
+  NOT
+  if ( $rs->count( {
+    cond => $cond } ) )
+----
+  SELECT 1 FROM item me
+  WHERE ( me.id = ? ) LIMIT 1
+  
+  instead of
+  
+  SELECT me.id, me.name
+  FROM item me
+  WHERE ( me.id = ? ): '1'
+----
+I have a
+dream
+----
+One day
+there is one
+ResultSet
+----
+The End
+----
+Questions?
+]]></html:textarea>
+
+<deck flex="1" id="deck">
+
+<vbox flex="1"
+	onmousemove="Presentation.onMouseMoveOnCanvas(event);">
+	<toolbox id="canvasToolbar">
+		<toolbar>
+			<toolbarbutton oncommand="Presentation.home()" label="|&lt;&lt;"
+				observes="canBack"/>
+			<toolbarbutton oncommand="Presentation.back()" label="&lt;"
+				observes="canBack"/>
+			<toolbarbutton oncommand="Presentation.forward()" label="&gt;"
+				observes="canForward"/>
+			<toolbarbutton oncommand="Presentation.end()" label="&gt;&gt;|"
+				observes="canForward"/>
+			<toolbarseparator/>
+			<hbox align="center">
+				<textbox id="current_page" size="4"
+					oninput="if (this.value) Presentation.showPage(parseInt(this.value)-1);"/>
+				<description value="/"/>
+				<description id="max_page"/>
+			</hbox>
+			<toolbarseparator/>
+			<vbox flex="2">
+				<spacer flex="1"/>
+				<scrollbar id="scroller"
+					align="center" orient="horizontal"
+					oncommand="Presentation.showPage(parseInt(event.target.getAttribute('curpos')));"
+					onclick="Presentation.showPage(parseInt(event.target.getAttribute('curpos')));"
+					onmousedown="Presentation.onScrollerDragStart();"
+					onmousemove="Presentation.onScrollerDragMove();"
+					onmouseup="Presentation.onScrollerDragDrop();"/>
+				<spacer flex="1"/>
+			</vbox>
+			<toolbarseparator/>
+			<spacer flex="1"/>
+			<toolbarseparator/>
+			<toolbarbutton id="toggleEva" label="Eva"
+				type="checkbox"
+				autoCheck="false"
+				oncommand="Presentation.toggleEvaMode();"/>
+			<toolbarseparator/>
+			<toolbarbutton label="Edit"
+				oncommand="Presentation.toggleEditMode();"/>
+			<toolbarbutton oncommand="Presentation.reload();" label="Reload"/>
+		</toolbar>
+	</toolbox>
+	<vbox flex="1" id="canvas"
+		onclick="Presentation.onPresentationClick(event);">
+		<spacer flex="1"/>
+		<hbox flex="1">
+			<spacer flex="1"/>
+			<vbox id="content"/>
+			<spacer flex="1"/>
+		</hbox>
+		<spacer flex="1"/>
+	</vbox>
+</vbox>
+
+
+<vbox flex="1" id="edit">
+	<toolbox>
+		<toolbar>
+			<toolbarbutton label="New Page"
+				oncommand="Presentation.addPage()"/>
+			<spacer flex="1"/>
+			<toolbarseparator/>
+			<toolbarbutton label="View"
+				oncommand="Presentation.toggleEditMode();"/>
+			<toolbarbutton oncommand="Presentation.reload();" label="Reload"/>
+		</toolbar>
+	</toolbox>
+	<textbox id="textField" flex="1" multiline="true"
+		oninput="Presentation.onEdit()"/>
+	<hbox collapsed="true">
+		<iframe id="dataLoader" onload="if (window.Presentation) Presentation.onDataLoad();"/>
+	</hbox>
+</vbox>
+
+</deck>
+
+
+<broadcasterset>
+	<broadcaster id="canBack"/>
+	<broadcaster id="canForward"/>
+</broadcasterset>
+
+<commandset>
+	<command id="cmd_forward"
+		oncommand="if (Presentation.isPresentationMode) Presentation.forward();"/>
+	<command id="cmd_back"
+		oncommand="if (Presentation.isPresentationMode) Presentation.back();"/>
+	<command id="cmd_home"
+		oncommand="if (Presentation.isPresentationMode) Presentation.home();"/>
+	<command id="cmd_end"
+		oncommand="if (Presentation.isPresentationMode) Presentation.end();"/>
+</commandset>
+<keyset>
+	<key keycode="VK_ENTER"      command="cmd_forward"/>
+	<key keycode="VK_RETURN"     command="cmd_forward"/>
+	<key keycode="VK_PAGE_DOWN"  command="cmd_forward"/>
+	<key keycode="VK_RIGHT"      command="cmd_forward"/>
+	<key keycode="VK_DOWN"       command="cmd_forward"/>
+	<!-- key keycode="VK_BACK_SPACE" command="cmd_back"/-->
+	<key keycode="VK_PAGE_UP"    command="cmd_back"/>
+        <!-- <key keycode="VK_BACK_UP"    command="cmd_back"/>-->
+        <!-- <key keycode="VK_BACK_LEFT"  command="cmd_back"/>-->
+	<key keycode="VK_HOME"       command="cmd_home"/>
+	<key keycode="VK_END"        command="cmd_end"/>
+	<key key="n" modifiers="accel" oncommand="Presentation.addPage();"/>
+	<key key="r" modifiers="accel" oncommand="window.location.reload();"/>
+	<key key="e" modifiers="accel" oncommand="Presentation.toggleEditMode();"/>
+	<key key="a" modifiers="accel" oncommand="Presentation.toggleEvaMode();"/>
+</keyset>
+
+
+<script src="takahashi.js" type="application/x-javascript" />
+</page>
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is the Takahashi-Method-based Presentation Tool in XUL.
+   -
+   - The Initial Developer of the Original Code is SHIMODA Hiroshi.
+   - Portions created by the Initial Developer are Copyright (C) 2005
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s): SHIMODA Hiroshi <piro@p.club.ne.jp>
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+
