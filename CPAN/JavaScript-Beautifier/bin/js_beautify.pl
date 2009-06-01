@@ -48,11 +48,11 @@ __END__
 
 =head1 NAME
 
-js_beatify.pl - command tool to beatify your javascript files
+js_beautify.pl - command tool to beautify your javascript files
 
 =head1 SYNOPSIS
 
-    js_beatify.pl [options] FILE
+    js_beautify.pl [options] FILE
 
 =head1 OPTIONS
 
