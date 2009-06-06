@@ -1,5 +1,8 @@
 Revision history for JavaScript-Beautifier
 
+0.10
+        Fix for "function" statement
+
 0.09    2009.06.01
         Strip trailing newlines, minor support for <!--
 

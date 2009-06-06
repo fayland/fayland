@@ -3,7 +3,7 @@ package JavaScript::Beautifier;
 use warnings;
 use strict;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use base 'Exporter';
@@ -160,7 +160,7 @@ sub js_beautify {
                 if ( $last_text eq 'else' ) {
                     # no need to force newline on else break
                     print_space();
-                } elsif ( ( $last_type eq 'TK_START_EXPR' || $last_text eq '=' ) && $token_text eq 'function' ) {
+                } elsif ( ( $last_type eq 'TK_START_EXPR' || $last_text eq '=' || $last_text eq ',' ) && $token_text eq 'function' ) {
                     # no need to force newline on 'function': (function
                     # DONOTHING
                 } elsif ( $last_type eq 'TK_WORD' && ( $last_text eq 'return' || $last_text eq 'throw' ) ) {
