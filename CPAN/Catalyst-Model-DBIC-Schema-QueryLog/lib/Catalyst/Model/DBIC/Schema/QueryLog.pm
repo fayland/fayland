@@ -2,7 +2,7 @@ package Catalyst::Model::DBIC::Schema::QueryLog;
 
 use Moose;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 use DBIx::Class::QueryLog;
 use DBIx::Class::QueryLog::Analyzer;
@@ -27,6 +27,10 @@ sub querylog_analyzer {
 sub build_per_context_instance {
     my ($self, $c) = @_;
     
+    if ( $Catalyst::Model::DBIC::Schema::VERSION >= 0.24 ) {
+        warn "Catalyst::Model::DBIC::Schema::QueryLog is DEPERCATED for Catalyst::TraitFor::Model::DBIC::Schema::QueryLog\n";
+    }
+    
     my $schema = $self->schema;
     
     my $querylog = new DBIx::Class::QueryLog();
@@ -46,7 +50,7 @@ __END__
 
 =head1 NAME
 
-Catalyst::Model::DBIC::Schema::QueryLog - DBIx::Class::QueryLog Model Class
+Catalyst::Model::DBIC::Schema::QueryLog - (DEPERCATED) DBIx::Class::QueryLog Model Class
 
 =head1 SYNOPSIS
 
@@ -62,6 +66,10 @@ Catalyst::Model::DBIC::Schema::QueryLog - DBIx::Class::QueryLog Model Class
                         {AutoCommit => 1}
                       ]
   );
+
+=head1 DEPERCATED WARNING
+
+If you are using lastest (>= 0.24) L<Catalyst::Model::DBIC::Schema>, please use L<Catalyst::TraitFor::Model::DBIC::Schema::QueryLog> instead.
 
 =head1 DESCRIPTION
 
