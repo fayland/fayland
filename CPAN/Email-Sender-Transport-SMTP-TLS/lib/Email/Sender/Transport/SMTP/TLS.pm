@@ -1,12 +1,9 @@
 package Email::Sender::Transport::SMTP::TLS;
 
-use warnings;
-use strict;
-
-our $VERSION = '0.02';
-
 use Moose;
-extends 'Email::Sender::Transport';
+with 'Email::Sender::Transport';
+
+our $VERSION = '0.03';
 
 use Net::SMTP::TLS;
 use Email::Sender::Failure::Multi;

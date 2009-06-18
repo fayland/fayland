@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Email/Sender/Transport/SMTP/TLS.pm',
     build_requires => {
         'Test::More' => 0,
-        'Email::Sender' => '0.004',
+        'Email::Sender' => '0.091661',
         'Net::SMTP::TLS' => 0,
     },
     add_to_cleanup      => [ 'Email-Sender-Transport-SMTP-TLS-*' ],
