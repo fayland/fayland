@@ -5,13 +5,13 @@ use Moose::Util::TypeConstraints;
 use MooseX::Types::Path::Class;
 use Path::Class;
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 has 'control_name' => (
     is   => 'rw',
     isa  => 'Str',
-    default => 'unkown',
+    default => 'unknown',
 );
 
 has 'config_file' => (
@@ -158,7 +158,7 @@ sub stop {
     $self->debug("server is not running.");
 }
 
-no Moose;
+no Moose::Role;
 no Moose::Util::TypeConstraints;
 
 1;
