@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/MojoX/Fixup/XHTML.pm',
     build_requires => {
         'Test::More' => 0,
-        'Mojo'		 => '0.9',
+        'Mojo'		 => '0.991251',
         'HTTP::Headers'   => 0,
         'HTTP::Negotiate' => 0,
     },

@@ -3,9 +3,7 @@ package MojoX::Fixup::XHTML;
 use warnings;
 use strict;
 
-use base 'Mojo::Base';
-
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use HTTP::Headers;
 use HTTP::Negotiate qw(choose);
@@ -16,7 +14,7 @@ our $variants = [
 ];
 
 sub fix_xhtml {
-    my ( $self, $c ) = @_;
+    my ( undef, $c ) = @_;
 
     if ( $c->req->headers->header('Accept') && $c->res->headers->content_type &&
          $c->res->headers->content_type =~ m|text/html|) {
@@ -51,26 +49,15 @@ MojoX::Fixup::XHTML - serves application/xhtml+xml content for L<Mojo>
     
     use base 'Mojolicious';
     use MojoX::Fixup::XHTML;
+    use MRO::Compat;
 
+    # This method will run for each request
     sub dispatch {
         my ($self, $c) = @_;
-
-        # Try to find a static file
-        my $done = $self->static->dispatch($c);
-
-        # Use routes if we don't have a response code yet
-        unless ( $done ) {
-            $done = $self->routes->dispatch($c);
-            if ( $done ) {
-                MojoX::Fixup::XHTML->fix_xhtml( $c );
-            }
-        }
-
-        # Nothing found, serve static file "public/404.html"
-        unless ($done) {
-            $self->static->serve($c, '/404.html');
-            $c->res->code(404);
-        }
+    
+        $self->next::method($c);
+        
+        MojoX::Fixup::XHTML->fix_xhtml( $c );
     }
 
 =head1 DESCRIPTION
@@ -92,7 +79,7 @@ Tomas Doran - L<Catalyst::View::TT::XHTML>, most of the code are copied from the
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 Fayland Lam, all rights reserved.
+Copyright 2008-2009 Fayland Lam, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
