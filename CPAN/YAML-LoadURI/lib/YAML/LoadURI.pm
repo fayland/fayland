@@ -3,12 +3,12 @@ package YAML::LoadURI;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use base 'Exporter';
 our @EXPORT = ('LoadURI');
 
-use LWP::Simple ();
+use LWP::Simple qw/$ua/;
 use YAML::Any   ();
 use Carp qw/croak/;
 
@@ -17,17 +17,18 @@ sub LoadURI {
     
     $opts->{raise_error} = 1 unless exists $opts->{raise_error};
     
-    my $yaml = LWP::Simple::get($uri);
-    unless (defined $yaml) {
+    my $response = $ua->get($uri);
+    if ( $response->is_success ) {
+        my $yaml = $response->content;
+        unless ( $yaml =~ /^---/ ) {
+            croak "invalid YAML" if $opts->{raise_error};
+            return;
+        }
+        return YAML::Any::Load($yaml);
+    } else {
         croak "Couldn't get it!" if $opts->{raise_error};
-        return undef;
-    }
-    unless ( $yaml =~ /^---/ ) {
-        croak "invalid YAML" if $opts->{raise_error};
-        return undef;
-    }
-    
-    return YAML::Any::Load($yaml);
+        return;
+    }    
 }
 
 1;
@@ -43,8 +44,6 @@ YAML::LoadURI - Load YAML from URI file
     my $hashref = LoadURI( $uri );
 
 =head1 EXPORT
-
-=head1 FUNCTIONS
 
 =head2 LoadURI( $uri, $opts )
 
