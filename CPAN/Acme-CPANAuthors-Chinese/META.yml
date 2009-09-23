@@ -1,6 +1,6 @@
 ---
 name: Acme-CPANAuthors-Chinese
-version: 0.13
+version: 0.14
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: CPAN 中国作者
@@ -15,7 +15,7 @@ configure_requires:
 provides:
   Acme::CPANAuthors::Chinese:
     file: lib/Acme/CPANAuthors/Chinese.pm
-    version: 0.13
+    version: 0.14
 generated_by: Module::Build version 0.35
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
