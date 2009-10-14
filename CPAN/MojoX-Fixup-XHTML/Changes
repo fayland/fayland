@@ -1,5 +1,8 @@
 Revision history for MojoX-Fixup-XHTML
 
+0.06    2009.10.15
+        fix MRO::Compat dependency (Andreas Koenig, RT 50501)
+
 0.05    2009.09.16
         for the new Mojo
 

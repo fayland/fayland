@@ -12,6 +12,7 @@ my $builder = Module::Build->new(
         'Mojo'		 => '0.991251',
         'HTTP::Headers'   => 0,
         'HTTP::Negotiate' => 0,
+        'MRO::Compat'     => 0,
     },
     add_to_cleanup      => [ 'MojoX-Fixup-XHTML-*' ],
     create_makefile_pl => 'traditional',
