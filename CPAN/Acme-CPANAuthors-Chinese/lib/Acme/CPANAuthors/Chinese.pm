@@ -3,7 +3,7 @@ package Acme::CPANAuthors::Chinese;
 use strict;
 use warnings;
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 use Acme::CPANAuthors::Register (
     AGENT       => 'Agent Zhang (章亦春)',
@@ -43,6 +43,7 @@ use Acme::CPANAuthors::Register (
     SWANSUN     => 'swansun huang',
     WEIQK       => '万朝伟',
     YEWENBIN    => '叶文彬',
+    XIAOLAN     => '傅小兰',
     XUERON      => 'Xueron Nee',
     ZHUZHU      => 'Zhu Zhu',
 );
