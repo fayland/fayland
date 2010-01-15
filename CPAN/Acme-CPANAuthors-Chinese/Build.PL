@@ -9,6 +9,8 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Acme/CPANAuthors/Chinese.pm',
     build_requires => {
         'Test::More' => 0,
+    },
+    requires => {
         'Acme::CPANAuthors' => 0,
     },
     add_to_cleanup      => [ 'Acme-CPANAuthors-Chinese-*' ],
