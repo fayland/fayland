@@ -113,7 +113,7 @@ __END__
 
 =head1 NAME
 
-Acme::PlayCode - Play code to win
+Acme::PlayCode - Code transforming to avoid typical typing mistakes
 
 =head1 SYNOPSIS
 
@@ -178,6 +178,8 @@ Fayland Lam, C<< <fayland at gmail.com> >>
 =head1 ACKNOWLEDGEMENTS
 
 The L<Moose> Team.
+
+Jens Rehsack, for the description (RT 53680)
 
 =head1 COPYRIGHT & LICENSE
 
