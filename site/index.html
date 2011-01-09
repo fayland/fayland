@@ -15,41 +15,24 @@ urchinTracker();
 <body>
 <img src='images/camel/kiss.jpg' style='float: right' />
 package Fayland;<br>
-use strict;use warnings;<br>
-use vars qw/$VERSION/;
-$VERSION = '0.033';<br>
-<p>@_ = qw/<a href="/blog/">Blog/2008</a> <a href="/journal/">Journal/2005</a> <a href='/talks/'>Talks</a> <a href='/services/'>Services</a>/;</p>
+<p>use Moose;</p>
+<p>our $VERSION = '20110109';</p>
 
-<h2>print &lt;&lt;Introduction;</h2>
+<p>has 'email' => (is => 'ro', default => sub { join('', 'fayland', '@', 'gmail', '.', 'com') });</p>
+<p>has 'blog'  => (is => 'rw', default => '<a href="http://blog.fayland.org/">http://blog.fayland.org/</a>');</p>
+<p>has 'CPAN'  => (default => '<a href="http://search.cpan.org/~fayland/">http://search.cpan.org/~fayland/</a>');</p>
+<p>has 'github'  => (default => '<a href="https://github.com/fayland">https://github.com/fayland</a>');</p>
+
+<p>sub welcome {</p>
+<h2>&lt;&lt;Introduction;</h2>
 <p>Yup, I'm fayland. Welcome 2 my site. Enjoy!<br>
 	欢迎来访。此为 fayland 的个人站点。
 </p>
 <p>A Chinese guy who love <a href='http://www.perl.org'>Perl</a> only less than his girl.<br>
 	喜欢用 Perl 做所有可能的事。</p>
 
-Inrtoduction
-<h2>my $Summary = <<;</h2>
-<ul> 
-<li>2006-3-11  moving from <a href="/journal/">Journal/2005</a> to  <a href="/doodle/">Doodle/2006</a> </li>
-<li>2005-5-10  I'm the maintainer of <a href='http://china.pm.org'>China.pm</a> for now.</li>
-<li>2005-4-23  Finally I release the <a href='journal/Eplanet.html'>Eplanet-Beta</a>, Enjoy!
-<li>2005-3-28  It's roughly done. Still need more work. See <a href='journal/050328.html'>this journal</a> for more details.
-<li>2005-3-26  I want to use Catalyst to build my new site. It may take several days. God bless me.
-</ul>
-
-<h2>sub directory {</h2>
-<pre>  for (@_) {
-      /^CPAN$/ && $q->redirect('<a href='/CPAN/?C=M;O=D'>CPAN</a>');
-      /books?/i && $q->redirect('<a href='/books/'>Books</a>');
-      /Synopsis/i && $q->redirect('<a href='/Perl6/Synopsis/'>Synopsis</a>');
-      -e $_ && $q->redirect('$_');
-      die 'What are u looking for? my email?';
-  }
-}
-</pre>
-
-<h2># Contact</h2>
-<p>my $email = join('', 'fayland', '@', 'gmail', '.', 'com');</p>
+Introduction
+<p>}</p>
 
 1; # let mummy happy
 </body>
