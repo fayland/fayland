@@ -3,7 +3,7 @@ package MooseX::Types::IO::All;
 use warnings;
 use strict;
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use IO::All;
@@ -11,6 +11,7 @@ use IO::All;
 use MooseX::Types::Moose qw/Str ScalarRef FileHandle ArrayRef/;
 use namespace::clean;
 use MooseX::Types -declare => [qw( IO_All )];
+use Fcntl 'SEEK_SET';
 
 my $global = class_type 'IO::All';
 subtype IO_All, as 'IO::All';
@@ -24,6 +25,7 @@ coerce IO_All,
         via {
             my $s = io('$');
             $s->print($$_);
+            $s->seek(0, SEEK_SET);
             return $s;
         };
 
@@ -39,16 +41,16 @@ MooseX::Types::IO::All - L<IO::All> related constraints and coercions for Moose
 =head1 SYNOPSIS
 
     package Foo;
-    
+
     use Moose;
     use MooseX::Types::IO::All 'IO_All';
-    
+
     has io => (
         isa => IO_All,
         is  => "rw",
         coerce => 1,
     );
-    
+
     # later
     my $str = "test for IO::String\n line 2";
     my $foo = Foo->new( io => \$str );
@@ -71,7 +73,7 @@ designed to work with the L<IO::All> suite of objects.
 
     io $_;
 
-L<IO::All> object. 
+L<IO::All> object.
 
 =item B<ScalarRef>
 

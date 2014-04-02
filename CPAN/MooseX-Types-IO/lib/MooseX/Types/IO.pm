@@ -3,7 +3,7 @@ package MooseX::Types::IO;
 use warnings;
 use strict;
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:FAYLAND';
 
 use IO qw/File Handle/;
@@ -41,16 +41,16 @@ MooseX::Types::IO - L<IO> related constraints and coercions for Moose
 =head1 SYNOPSIS
 
     package Foo;
-    
+
     use Moose;
     use MooseX::Types::IO 'IO';
-    
+
     has io => (
         isa => IO,
         is  => "rw",
         coerce => 1,
     );
-    
+
     # later
     my $str = "test for IO::String\n line 2";
     my $foo = Foo->new( io => \$str );
@@ -83,13 +83,13 @@ L<IO::File> object.
 
     IO::String->new($$_);
 
-L<IO::String> object. 
+L<IO::String> object.
 
 =item B<ArrayRef[FileHandle|Str]>
 
     IO::Handle->new_from_fd( @$_ );
 
-L<IO::Handle> object. 
+L<IO::Handle> object.
 
 =back
 

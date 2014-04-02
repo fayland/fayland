@@ -1,6 +1,6 @@
 #!perl -T
 
-use Test::More tests => 16;
+use Test::More tests => 22;
 use Test::Exception;
 
 use MooseX::Types::IO::All 'IO_All';
@@ -32,12 +32,19 @@ isa_ok( find_type_constraint('IO::All'), "Moose::Meta::TypeConstraint" );
 
     for my $accessor (qw/io io2/) {
 	my $str = "test for IO::All\n line 2";
+
+	# split on the empty string after newlines
+	my @lines = split /(?<=\n)/, $str;
+
 	my $coerced = Foo->new( $accessor => \$str )->$accessor;
 
 	isa_ok( $coerced, "IO::All", "coerced IO::All" );
 	ok( $coerced->can('print'), "can print" );
 	is( ${ $coerced->string_ref }, $str, 'get string');
-	
+	is( $coerced->getline, $lines[0], 'getline 1');
+	is( $coerced->getline, $lines[1], 'getline 2');
+	is( $coerced->getline, undef, 'getline eof');
+
 	my $filename = "$Bin/00-load.t";
 	my $str2 = <<'FC';
 #!perl -T

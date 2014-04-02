@@ -11,3 +11,4 @@ t/00-load.t
 t/01-io.t
 t/02-io-all.t
 t/pod.t
+META.json
