@@ -1,5 +1,7 @@
 #!/usr/bin/perl
+
 use strict;
+use warnings;
 use Crypt::CBC;
 
 unless (scalar @ARGV == 3) {
